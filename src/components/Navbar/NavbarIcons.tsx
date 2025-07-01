@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import CartModal from "../CartModal/CartModal";
-import { FaUser } from "react-icons/fa";
-import { FaHeart } from "react-icons/fa";
+import { useState } from "react";
+import { FaHeart, FaUser } from "react-icons/fa";
 import { FaBagShopping } from "react-icons/fa6";
+import CartModal from "../CartModal/CartModal";
 
 export default function NavbarIcons() {
 	const router = useRouter();
@@ -36,18 +35,20 @@ export default function NavbarIcons() {
 					<div className="mt-2 cursor-pointer">Logout</div>
 				</div>
 			)}
-			<FaHeart
-				className="text-2xl cursor-pointer text-logo"
-			/>
+			<FaHeart className="text-2xl cursor-pointer text-logo" />
 			<div className="relative cursor-pointer">
 				<FaBagShopping
 					className="text-2xl cursor-pointer text-logo"
-					onClick={() => setIsCartOpen((prev) => !prev)}
+					data-cart-icon
+					onClick={(e) => {
+						e.stopPropagation();
+						setIsCartOpen((prev) => !prev);
+					}}
 				/>
 				<div className="absolute -top-4 -right-4 w-6 h-6 bg-[#F35C7A] rounded-full text-white text-sm flex items-center justify-center">
 					2
 				</div>
-				{isCartOpen && <CartModal />}
+				{isCartOpen && <CartModal onClose={() => setIsCartOpen(false)} />}
 			</div>
 		</div>
 	);

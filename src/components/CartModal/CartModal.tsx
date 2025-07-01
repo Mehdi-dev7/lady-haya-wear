@@ -1,11 +1,41 @@
 "use client";
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 
-export default function CartModal() {
+interface CartModalProps {
+	onClose: () => void;
+}
+
+export default function CartModal({ onClose }: CartModalProps) {
 	const cartItems = true;
+	const modalRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			// Vérifier si le clic est sur l'icône du panier
+			const target = event.target as HTMLElement;
+			const isCartIcon = target.closest("[data-cart-icon]");
+
+			if (
+				modalRef.current &&
+				!modalRef.current.contains(target) &&
+				!isCartIcon
+			) {
+				onClose();
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [onClose]);
 
 	return (
-		<div className="absolute w-96 top-12 right-0 p-10 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-nude-light flex flex-col gap-8 z-20">
+		<div
+			ref={modalRef}
+			className="absolute w-96 top-12 right-0 p-10 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-nude-light flex flex-col gap-8 z-20"
+		>
 			{!cartItems ? (
 				<div className="text-logo">Votre panier est vide</div>
 			) : (
