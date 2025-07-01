@@ -40,14 +40,7 @@ export default function Menu() {
 				>
 					{/* Contenu du menu */}
 					<div className="flex flex-col items-center justify-center pt-24 px-8 gap-6 text-xl">
-						<Link
-							href="/"
-							className="relative group text-nude-dark hover:text-nude-dark transition-colors inline-block"
-							onClick={() => setIsOpen(false)}
-						>
-							Accueil
-							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
-						</Link>
+						
 						<Link
 							href="/"
 							className="relative group text-nude-dark hover:text-nude-dark transition-colors inline-block"
@@ -70,6 +63,14 @@ export default function Menu() {
 							onClick={() => setIsOpen(false)}
 						>
 							Contact
+							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+						</Link>
+						<Link
+							href="/"
+							className="relative group text-nude-dark hover:text-nude-dark transition-colors inline-block"
+							onClick={() => setIsOpen(false)}
+						>
+							Qui sommes-nous ?
 							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 						</Link>
 						<Link
