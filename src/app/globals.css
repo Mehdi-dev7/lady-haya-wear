@@ -1,136 +1,148 @@
+/* Geist Fonts (fallback) - Doit être en premier */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
 @import "tailwindcss";
 
 /* Fonts */
 @font-face {
-  font-family: 'AlexBrush-Regular';
-  src: url('/fonts/AlexBrush-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+	font-family: "AlexBrush-Regular";
+	src: url("/fonts/AlexBrush-Regular.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
 }
 @font-face {
-  font-family: 'Balqis';
-  src: url('/fonts/Balqis.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+	font-family: "Balqis";
+	src: url("/fonts/Balqis.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
 }
 
 /* Couleurs et polices */
 @layer base {
-  :root {
-    /* Fonts */
-    --font-poppins: 'Poppins', sans-serif;
-    --font-alex-brush: 'AlexBrush-Regular', serif;
-    --font-balqis: 'Balqis', serif;
+	:root {
+		/* Fonts */
+		--font-poppins: "Poppins", sans-serif;
+		--font-alex-brush: "AlexBrush-Regular", serif;
+		--font-balqis: "Balqis", serif;
+		--font-geist-sans: "Geist", sans-serif;
+		--font-geist-mono: "Geist Mono", monospace;
 
-    /* Couleurs nude / rose / beige */
-    --color-nude-light: #f8ede4;
-    --color-nude-medium: #d9c4b5;
-    --color-nude-dark: #b49982;
+		/* Couleurs nude / rose / beige */
+		--color-nude-light: #f8ede4;
+		--color-nude-medium: #d9c4b5;
+		--color-nude-dark: #b49982;
 
-    --color-rose-light: #f7d7d7;
-    --color-rose-medium: #e89cae;
-    --color-rose-dark: #bb648f;
+		--color-rose-light: #f7d7d7;
+		--color-rose-medium: #e89cae;
+		--color-rose-dark: #bb648f;
 
-    --color-beige-light: #f5f1e9;
-    --color-beige-medium: #d7cdb9;
-    --color-beige-dark: #a99f88;
-  }
+		--color-beige-light: #f5f1e9;
+		--color-beige-medium: #d7cdb9;
+		--color-beige-dark: #a99f88;
+	}
 
-  html {
-    font-family: var(--font-poppins);
-  }
+	html {
+		font-family: var(--font-poppins);
+	}
 }
 
 /* Classes utilitaires pour fonts et couleurs */
 @layer utilities {
-  /* Fonts */
-  .font-alex-brush {
-    font-family: var(--font-alex-brush);
-  }
-  .font-balqis {
-    font-family: var(--font-balqis);
-  }
-  .font-poppins {
-    font-family: var(--font-poppins);
-  }
+	/* Fonts */
+	.font-alex-brush {
+		font-family: var(--font-alex-brush);
+	}
+	.font-balqis {
+		font-family: var(--font-balqis);
+	}
+	.font-poppins {
+		font-family: var(--font-poppins);
+	}
+	.font-geist-sans {
+		font-family: var(--font-geist-sans);
+	}
+	.font-geist-mono {
+		font-family: var(--font-geist-mono);
+	}
 
-  /* Background Colors */
-  .bg-nude-light {
-    background-color: var(--color-nude-light);
-  }
-  .bg-nude-medium {
-    background-color: var(--color-nude-medium);
-  }
-  .bg-nude-dark {
-    background-color: var(--color-nude-dark);
-  }
-  .bg-rose-light {
-    background-color: var(--color-rose-light);
-  }
-  .bg-rose-medium {
-    background-color: var(--color-rose-medium);
-  }
-  .bg-rose-dark {
-    background-color: var(--color-rose-dark);
-  }
-  .bg-beige-light {
-    background-color: var(--color-beige-light);
-  }
-  .bg-beige-medium {
-    background-color: var(--color-beige-medium);
-  }
-  .bg-beige-dark {
-    background-color: var(--color-beige-dark);
-  }
+	/* Background Colors */
+	.bg-nude-light {
+		background-color: var(--color-nude-light);
+	}
+	.bg-nude-medium {
+		background-color: var(--color-nude-medium);
+	}
+	.bg-nude-dark {
+		background-color: var(--color-nude-dark);
+	}
+	.bg-rose-light {
+		background-color: var(--color-rose-light);
+	}
+	.bg-rose-medium {
+		background-color: var(--color-rose-medium);
+	}
+	.bg-rose-dark {
+		background-color: var(--color-rose-dark);
+	}
+	.bg-beige-light {
+		background-color: var(--color-beige-light);
+	}
+	.bg-beige-medium {
+		background-color: var(--color-beige-medium);
+	}
+	.bg-beige-dark {
+		background-color: var(--color-beige-dark);
+	}
 
-  /* Text Colors */
-  .text-nude-light {
-    color: var(--color-nude-light);
-  }
-  .text-nude-medium {
-    color: var(--color-nude-medium);
-  }
-  .text-nude-dark {
-    color: var(--color-nude-dark);
-  }
-  .text-rose-light {
-    color: var(--color-rose-light);
-  }
-  .text-rose-medium {
-    color: var(--color-rose-medium);
-  }
-  .text-rose-dark {
-    color: var(--color-rose-dark);
-  }
-  .text-beige-light {
-    color: var(--color-beige-light);
-  }
-  .text-beige-medium {
-    color: var(--color-beige-medium);
-  }
-  .text-beige-dark {
-    color: var(--color-beige-dark);
-  }
-  .container {
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    max-width: 100%;
-  }
-  @media (min-width: 768px) {
-    .container {
-      max-width: 720px;
-    }
-  }
-  @media (min-width: 1024px) {
-    .container {
-      max-width: 960px;
-    }
-  }
-  @media (min-width: 1280px) {
-    .container {
-      max-width: 1200px;
-    }
-  }
+	/* Text Colors */
+	.text-nude-light {
+		color: var(--color-nude-light);
+	}
+	.text-nude-medium {
+		color: var(--color-nude-medium);
+	}
+	.text-nude-dark {
+		color: var(--color-nude-dark);
+	}
+	.text-rose-light {
+		color: var(--color-rose-light);
+	}
+	.text-rose-medium {
+		color: var(--color-rose-medium);
+	}
+	.text-rose-dark {
+		color: var(--color-rose-dark);
+	}
+	.text-beige-light {
+		color: var(--color-beige-light);
+	}
+	.text-beige-medium {
+		color: var(--color-beige-medium);
+	}
+	.text-beige-dark {
+		color: var(--color-beige-dark);
+	}
+	.container {
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: 1rem;
+		padding-right: 1rem;
+		max-width: 100%;
+	}
+	@media (min-width: 768px) {
+		.container {
+			max-width: 720px;
+		}
+	}
+	@media (min-width: 1024px) {
+		.container {
+			max-width: 960px;
+		}
+	}
+	@media (min-width: 1280px) {
+		.container {
+			max-width: 1200px;
+		}
+	}
 }
