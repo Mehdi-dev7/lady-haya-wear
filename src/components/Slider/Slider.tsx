@@ -71,7 +71,7 @@ export default function Slider() {
 								{slide.title}
 							</h1>
 							<Link href={slide.url} className="hidden lg:block">
-								<button className="rounded-md py-3 px-4 bg-nude-dark text-nude-light">
+								<button className="rounded-md py-3 px-4 bg-logo text-nude-light cursor-pointer">
 									Voir la collection
 								</button>
 							</Link>
@@ -94,7 +94,7 @@ export default function Slider() {
 							{/* BUTTON OVERLAY - BOTTOM RIGHT */}
 							<div className="absolute bottom-4 right-6 lg:hidden">
 								<Link href={slide.url}>
-									<button className="rounded-md py-2 px-3 bg-nude-dark text-nude-light text-sm">
+									<button className="rounded-md py-2 px-3  text-nude-light text-base bg-logo cursor-pointer">
 										Voir la collection
 									</button>
 								</Link>
