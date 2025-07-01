@@ -16,7 +16,7 @@ export default function Navbar() {
 						height={48}
 						className="w-12 h-12"
 					/>
-					<div className="text-4xl tracking-wide font-alex-brush text-nude-dark-2 font-semibold">
+					<div className="text-4xl tracking-wide font-alex-brush text-logo font-semibold">
 						Lady Haya{" "}
 					</div>
 				</Link>
@@ -33,7 +33,7 @@ export default function Navbar() {
 						height={48}
 						className="w-12 h-12"
 					/>
-					<div className="text-4xl tracking-wide font-alex-brush text-nude-dark-2 font-semibold">
+					<div className="text-4xl tracking-wide font-alex-brush text-logo font-semibold">
 						Lady Haya
 					</div>
 				</Link>
@@ -43,28 +43,28 @@ export default function Navbar() {
 					<div className="hidden lg:flex gap-8 lg:gap-6 2xl:gap-12 lg:ml-24 xl:ml-32">
 						<Link
 							href="/"
-							className="relative group text-nude-dark-2 text-lg transition-colors"
+							className="relative group text-logo text-lg transition-colors tracking-wide"
 						>
 							Collections
 							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-nude-dark-2 text-lg transition-colors"
+							className="relative group text-logo text-lg transition-colors tracking-wide"
 						>
 							Produits
 							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-nude-dark-2 text-lg transition-colors"
+							className="relative group text-logo text-lg transition-colors tracking-wide"
 						>
 							Contact
 							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-nude-dark-2 text-lg transition-colors"
+							className="relative group text-logo text-lg transition-colors tracking-wide"
 						>
 							Qui sommes-nous ?
 							<span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>

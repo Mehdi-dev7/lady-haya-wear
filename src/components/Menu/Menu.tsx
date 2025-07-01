@@ -12,13 +12,13 @@ export default function Menu() {
 			{/* Icône qui se transforme */}
 			<div className="relative">
 				<IoMdMenu
-					className={`text-4xl cursor-pointer text-nude-dark transition-all duration-300 ${
+					className={`text-4xl cursor-pointer text-logo transition-all duration-300 ${
 						isOpen ? "opacity-0 rotate-90" : "opacity-100 rotate-0"
 					}`}
 					onClick={() => setIsOpen((prev) => !prev)}
 				/>
 				<IoMdClose
-					className={`absolute top-0 left-0 text-4xl cursor-pointer text-nude-dark transition-all duration-300 ${
+					className={`absolute top-0 left-0 text-4xl cursor-pointer text-logo transition-all duration-300 ${
 						isOpen ? "opacity-100 rotate-0" : "opacity-0 -rotate-90"
 					}`}
 					onClick={() => setIsOpen((prev) => !prev)}
@@ -43,7 +43,7 @@ export default function Menu() {
 						
 						<Link
 							href="/"
-							className="relative group text-nude-dark hover:text-nude-dark transition-colors inline-block"
+							className="relative group text-logo hover:text-logo transition-colors inline-block"
 							onClick={() => setIsOpen(false)}
 						>
 							Collections
@@ -51,7 +51,7 @@ export default function Menu() {
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-nude-dark hover:text-nude-dark transition-colors inline-block"
+							className="relative group text-logo hover:text-logo transition-colors inline-block"
 							onClick={() => setIsOpen(false)}
 						>
 							Produits
@@ -59,7 +59,7 @@ export default function Menu() {
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-nude-dark hover:text-nude-dark transition-colors inline-block"
+							className="relative group text-logo hover:text-logo transition-colors inline-block"
 							onClick={() => setIsOpen(false)}
 						>
 							Contact
@@ -67,7 +67,7 @@ export default function Menu() {
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-nude-dark hover:text-nude-dark transition-colors inline-block"
+							className="relative group text-logo hover:text-logo transition-colors inline-block"
 							onClick={() => setIsOpen(false)}
 						>
 							Qui sommes-nous ?
@@ -75,7 +75,7 @@ export default function Menu() {
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-nude-dark hover:text-nude-dark transition-colors inline-block"
+							className="relative group text-logo hover:text-logo transition-colors inline-block"
 							onClick={() => setIsOpen(false)}
 						>
 							Cart(1)

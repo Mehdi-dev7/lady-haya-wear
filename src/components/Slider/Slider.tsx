@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const slides = [
 	{
@@ -20,7 +20,7 @@ const slides = [
 		description: "Collection Kimono",
 		img: "/assets/grid/img2.jpeg",
 		url: "/",
-		bg: "bg-gradient-to-r from-beige-light to-beige-dark",
+		bg: "bg-gradient-to-r from-nude-light to-nude-dark",
 	},
 	{
 		id: 3,
@@ -29,20 +29,20 @@ const slides = [
 		description: "Collection Robe",
 		img: "/assets/grid/img3.jpeg",
 		url: "/",
-		bg: "bg-gradient-to-r from-beige-light to-beige-dark",
+		bg: "bg-gradient-to-r from-white to-rose-medium",
 	},
 ];
 
 export default function Slider() {
 	const [currentSlide, setCurrentSlide] = useState(0);
 
-	// useEffect(() => {
-	// 	const interval = setInterval(() => {
-	// 		setCurrentSlide((prev) => (prev + 1) % slides.length);
-	// 	}, 3000);
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setCurrentSlide((prev) => (prev + 1) % slides.length);
+		}, 3000);
 
-	// 	return () => clearInterval(interval);
-	// }, []);
+		return () => clearInterval(interval);
+	}, []);
 
 	return (
 		<div className="h-[calc(100vh-80px)] lg:h-[calc(100vh-100px)] xl:h-[calc(100vh-120px)] 2xl:h-[calc(100vh-140px)] overflow-hidden">
@@ -64,10 +64,10 @@ export default function Slider() {
 								height={200}
 								className="w-24 h-24 lg:w-48 lg:h-48"
 							/>
-							<h2 className="hidden lg:block text-3xl xl:text-4xl 2xl:text-4xl font-semibold text-center">
+							<h2 className="hidden lg:block text-3xl xl:text-4xl 2xl:text-4xl font-semibold font-balqis text-center text-logo">
 								{slide.description}
 							</h2>
-							<h1 className="text-3xl lg:text-5xl xl:text-7xl text-center">
+							<h1 className="text-5xl font-alex-brush text-logo lg:text-5xl xl:text-7xl text-center">
 								{slide.title}
 							</h1>
 							<Link href={slide.url} className="hidden lg:block">
@@ -87,7 +87,7 @@ export default function Slider() {
 							/>
 							{/* DESCRIPTION OVERLAY - TOP */}
 							<div className="absolute top-4 left-1/2 transform -translate-x-1/2 lg:hidden">
-								<h2 className="text-lg font-semibold text-white drop-shadow-lg text-center">
+								<h2 className="text-3xl font-semibold text-white drop-shadow-lg text-center text-logo font-balqis">
 									{slide.description}
 								</h2>
 							</div>

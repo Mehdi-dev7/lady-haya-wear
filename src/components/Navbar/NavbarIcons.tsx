@@ -27,7 +27,7 @@ export default function NavbarIcons() {
 	return (
 		<div className="flex items-center gap-4 xl:gap-6 relative">
 			<FaUser
-				className="text-2xl cursor-pointer text-nude-dark"
+				className="text-2xl cursor-pointer text-logo"
 				onClick={handleProfile}
 			/>
 			{isProfileOpen && (
@@ -37,11 +37,11 @@ export default function NavbarIcons() {
 				</div>
 			)}
 			<FaHeart
-				className="text-2xl cursor-pointer text-nude-dark"
+				className="text-2xl cursor-pointer text-logo"
 			/>
 			<div className="relative cursor-pointer">
 				<FaBagShopping
-					className="text-2xl cursor-pointer text-nude-dark"
+					className="text-2xl cursor-pointer text-logo"
 					onClick={() => setIsCartOpen((prev) => !prev)}
 				/>
 				<div className="absolute -top-4 -right-4 w-6 h-6 bg-[#F35C7A] rounded-full text-white text-sm flex items-center justify-center">
