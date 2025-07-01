@@ -5,9 +5,9 @@ import NavbarIcons from "../Navbar/NavbarIcons";
 
 export default function Navbar() {
 	return (
-		<div className="h-18 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-rose-light">
+		<div className="h-18 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-42 bg-rose-light">
 			{/* Mobile */}
-			<div className="flex items-center justify-between h-full md:hidden">
+			<div className="flex items-center justify-between h-full lg:hidden">
 				<Link href="/" className="flex items-center gap-3">
 					<Image
 						src="/assets/logo-haya.png"
@@ -40,8 +40,7 @@ export default function Navbar() {
 
 				{/* CENTER - Navigation (centrée par rapport à l'écran) */}
 				<div className="w-full flex justify-center">
-					<div className="hidden lg:flex gap-8">
-						
+					<div className="hidden lg:flex gap-8 lg:gap-6 2xl:gap-12 lg:ml-24 xl:ml-32">
 						<Link
 							href="/"
 							className="relative group text-nude-dark-2 text-lg transition-colors"
