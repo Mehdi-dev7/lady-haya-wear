@@ -41,6 +41,8 @@
 		--color-beige-light: #f5f1e9;
 		--color-beige-medium: #d7cdb9;
 		--color-beige-dark: #a99f88;
+
+		--color-logo: #8a5f3d;
 	}
 
 	html {
@@ -95,6 +97,9 @@
 	.bg-beige-dark {
 		background-color: var(--color-beige-dark);
 	}
+	.bg-logo {
+		background-color: var(--color-logo);
+	}
 
 	/* Text Colors */
 	.text-nude-light {
@@ -126,6 +131,9 @@
 	}
 	.text-beige-dark {
 		color: var(--color-beige-dark);
+	}
+	.text-logo {
+		color: var(--color-logo);
 	}
 	.container {
 		margin-left: auto;

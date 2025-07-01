@@ -52,26 +52,32 @@ export default function Slider() {
 			>
 				{slides.map((slide) => (
 					<div
-						className={`${slide.bg} h-full w-screen flex flex-col gap-16 lg:flex-row`}
+						className={`${slide.bg} h-full w-screen flex flex-col lg:flex-row`}
 						key={slide.id}
 					>
 						{/* TEXT CONTAINER */}
-						<div className="h-1/2 lg:w-1/2 lg:h-full flex flex-col items-center justify-center gap-8 2xl:gap-12 text-center">
-							<Image src={slide.logo} alt="logo" width={200} height={200} />
-							<h2 className="text-2xl lg:text-3xl xl:text-4xl 2xl:text-4xl font-semibold">
+						<div className="h-1/3 lg:w-1/2 lg:h-full w-full flex flex-col items-center justify-center gap-3 lg:gap-8 2xl:gap-12 text-center  lg:pt-0">
+							<Image
+								src={slide.logo}
+								alt="logo"
+								width={200}
+								height={200}
+								className="w-24 h-24 lg:w-48 lg:h-48"
+							/>
+							<h2 className="hidden lg:block text-3xl xl:text-4xl 2xl:text-4xl font-semibold text-center">
 								{slide.description}
 							</h2>
-							<h1 className="text-5xl xl:text-7xl 2xl:text-8xl ">
+							<h1 className="text-3xl lg:text-5xl xl:text-7xl text-center">
 								{slide.title}
 							</h1>
-							<Link href={slide.url}>
+							<Link href={slide.url} className="hidden lg:block">
 								<button className="rounded-md py-3 px-4 bg-nude-dark text-nude-light">
 									Voir la collection
 								</button>
 							</Link>
 						</div>
 						{/* IMAGE CONTAINER */}
-						<div className="relative h-1/2 lg:w-1/2 lg:h-full">
+						<div className="relative h-2/3 lg:w-1/2 lg:h-full">
 							<Image
 								src={slide.img}
 								alt=""
@@ -79,6 +85,20 @@ export default function Slider() {
 								sizes="100%"
 								className="object-cover"
 							/>
+							{/* DESCRIPTION OVERLAY - TOP */}
+							<div className="absolute top-4 left-1/2 transform -translate-x-1/2 lg:hidden">
+								<h2 className="text-lg font-semibold text-white drop-shadow-lg text-center">
+									{slide.description}
+								</h2>
+							</div>
+							{/* BUTTON OVERLAY - BOTTOM RIGHT */}
+							<div className="absolute bottom-4 right-6 lg:hidden">
+								<Link href={slide.url}>
+									<button className="rounded-md py-2 px-3 bg-nude-dark text-nude-light text-sm">
+										Voir la collection
+									</button>
+								</Link>
+							</div>
 						</div>
 					</div>
 				))}
