@@ -34,9 +34,11 @@
 		--color-nude-dark: #b49982;
 		--color-nude-dark-2: #ab8d73;
 
-		--color-rose-light: #f7d7d7;
-		--color-rose-medium: #e89cae;
-		--color-rose-dark: #bb648f;
+		--color-rose-light-2: #fae4e4;
+		--color-rose-light: #f9dede;
+		--color-rose-medium: #f7d7d7;
+		--color-rose-dark: #f4cdcd;
+		--color-rose-dark-2: #e89cae;
 
 		--color-beige-light: #f5f1e9;
 		--color-beige-medium: #d7cdb9;
@@ -88,6 +90,9 @@
 	.bg-rose-dark {
 		background-color: var(--color-rose-dark);
 	}
+	.bg-rose-dark-2 {
+		background-color: var(--color-rose-dark-2);
+	}
 	.bg-beige-light {
 		background-color: var(--color-beige-light);
 	}
@@ -96,6 +101,9 @@
 	}
 	.bg-beige-dark {
 		background-color: var(--color-beige-dark);
+	}
+	.bg-rose-light-2 {
+		background-color: var(--color-rose-light-2);
 	}
 	.bg-logo {
 		background-color: var(--color-logo);
@@ -140,6 +148,19 @@
 	}
 	.from-white {
 		--tw-gradient-from: var(--color-white);
+		--tw-gradient-stops:
+			var(--tw-gradient-from), var(--tw-gradient-to, rgba(215, 205, 185, 0));
+	}
+	.from-rose-light-2 {
+		--tw-gradient-from: var(--color-rose-light-2);
+		--tw-gradient-stops:
+			var(--tw-gradient-from), var(--tw-gradient-to, rgba(245, 241, 233, 0));
+	}
+	.to-rose-dark {
+		--tw-gradient-to: var(--color-rose-dark);
+	}
+	.from-rose-medium {
+		--tw-gradient-from: var(--color-rose-medium);
 		--tw-gradient-stops:
 			var(--tw-gradient-from), var(--tw-gradient-to, rgba(215, 205, 185, 0));
 	}
@@ -193,6 +214,29 @@
 	}
 	.scrollbar-hide::-webkit-scrollbar {
 		display: none; /* Safari and Chrome */
+	}
+
+	/* Styles de hover personnalisés */
+	.btn-hover {
+		transition: all 0.3s ease;
+	}
+	.btn-hover:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+
+	/* Hover pour les couleurs personnalisées */
+	.hover\:bg-rose-dark:hover {
+		background-color: var(--color-rose-dark);
+	}
+	.hover\:bg-logo:hover {
+		background-color: var(--color-logo);
+	}
+	.hover\:bg-nude-dark:hover {
+		background-color: var(--color-nude-dark);
+	}
+	.hover\:bg-nude-dark-2:hover {
+		background-color: var(--color-nude-dark-2);
 	}
 	@media (min-width: 768px) {
 		.container {

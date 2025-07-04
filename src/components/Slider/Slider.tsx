@@ -29,7 +29,7 @@ const slides = [
 		description: "Collection Robe",
 		img: "/assets/grid/img3.jpeg",
 		url: "/",
-		bg: "bg-gradient-to-r from-white to-rose-medium",
+		bg: "bg-gradient-to-r from-rose-light-2 to-rose-dark",
 	},
 ];
 
@@ -71,7 +71,7 @@ export default function Slider() {
 								{slide.title}
 							</h1>
 							<Link href={slide.url} className="hidden lg:block">
-								<button className="rounded-md py-3 px-4 bg-logo text-nude-light cursor-pointer">
+								<button className="rounded-md py-3 px-4 bg-logo text-nude-light cursor-pointer hover:bg-nude-dark-2 hover:scale-105 transition-all duration-300">
 									Voir la collection
 								</button>
 							</Link>
@@ -94,7 +94,7 @@ export default function Slider() {
 							{/* BUTTON OVERLAY - BOTTOM RIGHT */}
 							<div className="absolute bottom-4 right-6 lg:hidden">
 								<Link href={slide.url}>
-									<button className="rounded-md py-2 px-3  text-nude-light text-base bg-logo cursor-pointer">
+									<button className="rounded-md py-2 px-3 text-nude-light text-base bg-logo cursor-pointer hover:bg-nude-dark-2 hover:scale-105 transition-all duration-300">
 										Voir la collection
 									</button>
 								</Link>

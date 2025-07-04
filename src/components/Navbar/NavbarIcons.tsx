@@ -1,5 +1,6 @@
 "use client";
 
+import { useFavorites } from "@/lib/FavoritesContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,6 +10,7 @@ import CartModal from "../CartModal/CartModal";
 
 export default function NavbarIcons() {
 	const router = useRouter();
+	const { favorites } = useFavorites();
 
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isCartOpen, setIsCartOpen] = useState(false);
@@ -35,7 +37,14 @@ export default function NavbarIcons() {
 					<div className="mt-2 cursor-pointer">Logout</div>
 				</div>
 			)}
-			<FaHeart className="text-2xl cursor-pointer text-logo" />
+			<div className="relative cursor-pointer">
+				<FaHeart className="text-2xl cursor-pointer text-logo" />
+				{favorites.length > 0 && (
+					<div className="absolute -top-4 -right-4 w-6 h-6 bg-red-400 rounded-full text-white text-sm flex items-center justify-center">
+						{favorites.length}
+					</div>
+				)}
+			</div>
 			<div className="relative cursor-pointer">
 				<FaBagShopping
 					className="text-2xl cursor-pointer text-logo"
@@ -45,7 +54,7 @@ export default function NavbarIcons() {
 						setIsCartOpen((prev) => !prev);
 					}}
 				/>
-				<div className="absolute -top-4 -right-4 w-6 h-6 bg-[#F35C7A] rounded-full text-white text-sm flex items-center justify-center">
+				<div className="absolute -top-4 -right-4 w-6 h-6 bg-red-400 rounded-full text-white text-sm flex items-center justify-center">
 					2
 				</div>
 				{isCartOpen && <CartModal onClose={() => setIsCartOpen(false)} />}

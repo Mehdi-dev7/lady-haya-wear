@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const categories = [
 	{ id: 1, name: "Abayas", image: "/assets/grid/img1.jpeg" },
@@ -19,6 +19,21 @@ const categories = [
 
 export default function CategoryList() {
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+	// Positionner sur la 2ème image au chargement
+	useEffect(() => {
+		if (scrollContainerRef.current) {
+			const container = scrollContainerRef.current;
+			const cardWidth = container.children[0]?.clientWidth || 300;
+			const gap = 16;
+			const scrollPosition = cardWidth + gap; // Position pour la 2ème image
+
+			// Petit délai pour s'assurer que le DOM est prêt
+			setTimeout(() => {
+				container.scrollTo({ left: scrollPosition, behavior: "smooth" });
+			}, 100);
+		}
+	}, []);
 
 	const scrollToNext = () => {
 		if (scrollContainerRef.current) {
@@ -54,6 +69,10 @@ export default function CategoryList() {
 
 			{/* Container de scroll */}
 			<div className="relative">
+				{/* Masques de fade-out sur les bords */}
+				<div className="absolute left-0 top-0 bottom-0 w-18 lg:w-32 bg-gradient-to-r from-rose-light  to-rose-light/50 z-10 pointer-events-none"></div>
+				<div className="absolute right-0 top-0 bottom-0 w-18 lg:w-32 bg-gradient-to-l from-rose-light  to-rose-light/50 z-10 pointer-events-none"></div>
+
 				<div
 					ref={scrollContainerRef}
 					className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-8"
@@ -100,7 +119,7 @@ export default function CategoryList() {
 						aria-label="Précédent"
 					>
 						<svg
-							className="w-6 h-6"
+							className="w-4 h-4 lg:w-6 lg:h-6"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -120,7 +139,7 @@ export default function CategoryList() {
 						aria-label="Suivant"
 					>
 						<svg
-							className="w-6 h-6"
+							className="w-4 h-4 lg:w-6 lg:h-6"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"

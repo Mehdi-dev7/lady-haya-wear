@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
-import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
+import Navbar from "@/components/Navbar/Navbar";
+import { FavoritesProvider } from "@/lib/FavoritesContext";
+import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,9 +17,11 @@ export default function RootLayout({
 	return (
 		<html lang="fr">
 			<body className="antialiased">
-				<Navbar />
-				{children}
-				<Footer />
+				<FavoritesProvider>
+					<Navbar />
+					{children}
+					<Footer />
+				</FavoritesProvider>
 			</body>
 		</html>
 	);
