@@ -116,7 +116,6 @@
 			var(--tw-gradient-from), var(--tw-gradient-to, rgba(215, 205, 185, 0));
 	}
 
-
 	.from-nude-light {
 		--tw-gradient-from: var(--color-nude-light);
 		--tw-gradient-stops:
@@ -130,7 +129,6 @@
 		--tw-gradient-stops:
 			var(--tw-gradient-from), var(--tw-gradient-to, rgba(215, 205, 185, 0));
 	}
-
 
 	.from-rose-light {
 		--tw-gradient-from: var(--color-rose-light);
@@ -186,6 +184,15 @@
 		padding-left: 1rem;
 		padding-right: 1rem;
 		max-width: 100%;
+	}
+
+	/* Masquer la barre de scroll */
+	.scrollbar-hide {
+		-ms-overflow-style: none; /* Internet Explorer 10+ */
+		scrollbar-width: none; /* Firefox */
+	}
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none; /* Safari and Chrome */
 	}
 	@media (min-width: 768px) {
 		.container {
