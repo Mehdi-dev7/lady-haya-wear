@@ -47,13 +47,13 @@ export default function ProductList() {
 						<span className="font-semibold">$49</span>
 					</div>
 					<div className="text-sm text-gray-500">My description</div>
-					<div className="flex items-center justify-between gap-3">
-						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300">
+					<div className="flex items-center justify-between gap-3 pointer-events-none">
+						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
 							Add to cart
 						</button>
 						<button
 							onClick={(e) => handleToggleFavorite(1, e)}
-							className="p-2 hover:scale-110 transition-transform duration-200"
+							className="p-2 hover:scale-110 transition-transform duration-200 cursor-pointer pointer-events-auto"
 						>
 							{favorites.includes(1) ? (
 								<FaHeart className="text-xl text-red-400" />
@@ -66,7 +66,7 @@ export default function ProductList() {
 
 				<Link
 					href="/products"
-					className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 bg-rose-light"
+					className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 bg-rose-light-2"
 				>
 					<div className="relative w-full h-80 rounded-2xl overflow-hidden">
 						<Image
@@ -89,13 +89,13 @@ export default function ProductList() {
 						<span className="font-semibold">$49</span>
 					</div>
 					<div className="text-sm text-gray-500">My description</div>
-					<div className="flex items-center justify-between gap-3">
-						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300">
+					<div className="flex items-center justify-between gap-3 pointer-events-none">
+						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
 							Add to cart
 						</button>
 						<button
 							onClick={(e) => handleToggleFavorite(2, e)}
-							className="p-2 hover:scale-110 transition-transform duration-200"
+							className="p-2 hover:scale-110 transition-transform duration-200 cursor-pointer pointer-events-auto"
 						>
 							{favorites.includes(2) ? (
 								<FaHeart className="text-xl text-red-400" />
@@ -131,13 +131,13 @@ export default function ProductList() {
 						<span className="font-semibold">$49</span>
 					</div>
 					<div className="text-sm text-gray-500">My description</div>
-					<div className="flex items-center justify-between gap-3">
-						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300">
+					<div className="flex items-center justify-between gap-3 pointer-events-none">
+						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
 							Add to cart
 						</button>
 						<button
 							onClick={(e) => handleToggleFavorite(3, e)}
-							className="p-2 hover:scale-110 transition-transform duration-200"
+							className="p-2 hover:scale-110 transition-transform duration-200 cursor-pointer pointer-events-auto"
 						>
 							{favorites.includes(3) ? (
 								<FaHeart className="text-xl text-red-400" />
@@ -150,7 +150,7 @@ export default function ProductList() {
 
 				<Link
 					href="/products"
-					className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 bg-rose-light"
+					className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 bg-rose-light-2"
 				>
 					<div className="relative w-full h-80 rounded-2xl overflow-hidden">
 						<Image
@@ -173,13 +173,13 @@ export default function ProductList() {
 						<span className="font-semibold">$49</span>
 					</div>
 					<div className="text-sm text-gray-500">My description</div>
-					<div className="flex items-center justify-between gap-3">
-						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300">
+					<div className="flex items-center justify-between gap-3 pointer-events-none">
+						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
 							Add to cart
 						</button>
 						<button
 							onClick={(e) => handleToggleFavorite(4, e)}
-							className="p-2 hover:scale-110 transition-transform duration-200"
+							className="p-2 hover:scale-110 transition-transform duration-200 cursor-pointer pointer-events-auto"
 						>
 							{favorites.includes(4) ? (
 								<FaHeart className="text-xl text-red-400" />
