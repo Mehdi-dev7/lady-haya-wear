@@ -15,9 +15,9 @@ export default function ProductList() {
 	};
 
 	return (
-		<div>
-			<div className="text-center mb-12">
-				<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mb-4">
+		<div className="mb-12">
+			<div className="text-center mb-8">
+				<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mb-4 mt-10">
 					Nos Coups de Cœur
 				</h2>
 			</div>
@@ -43,13 +43,13 @@ export default function ProductList() {
 						/>
 					</div>
 					<div className="flex justify-between">
-						<span className="font-medium">Product Name</span>
-						<span className="font-semibold">$49</span>
+						<span className="font-medium">Abaya</span>
+						<span className="font-semibold">49€</span>
 					</div>
-					<div className="text-sm text-gray-500">My description</div>
+					<div className="text-sm text-gray-500">description</div>
 					<div className="flex items-center justify-between gap-3 pointer-events-none">
 						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
-							Add to cart
+							Ajouter au panier
 						</button>
 						<button
 							onClick={(e) => handleToggleFavorite(1, e)}
@@ -85,13 +85,13 @@ export default function ProductList() {
 						/>
 					</div>
 					<div className="flex justify-between">
-						<span className="font-medium">Product Name</span>
-						<span className="font-semibold">$49</span>
+						<span className="font-medium">Jilbeb</span>
+						<span className="font-semibold">49€</span>
 					</div>
-					<div className="text-sm text-gray-500">My description</div>
+					<div className="text-sm text-gray-500">description</div>
 					<div className="flex items-center justify-between gap-3 pointer-events-none">
 						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
-							Add to cart
+							Ajouter au panier
 						</button>
 						<button
 							onClick={(e) => handleToggleFavorite(2, e)}
@@ -127,13 +127,13 @@ export default function ProductList() {
 						/>
 					</div>
 					<div className="flex justify-between">
-						<span className="font-medium">Product Name</span>
-						<span className="font-semibold">$49</span>
+						<span className="font-medium">Tunique</span>
+						<span className="font-semibold">49€</span>
 					</div>
-					<div className="text-sm text-gray-500">My description</div>
+					<div className="text-sm text-gray-500">description</div>
 					<div className="flex items-center justify-between gap-3 pointer-events-none">
 						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
-							Add to cart
+							Ajouter au panier
 						</button>
 						<button
 							onClick={(e) => handleToggleFavorite(3, e)}
@@ -169,13 +169,13 @@ export default function ProductList() {
 						/>
 					</div>
 					<div className="flex justify-between">
-						<span className="font-medium">Product Name</span>
-						<span className="font-semibold">$49</span>
+						<span className="font-medium">Hijab</span>
+						<span className="font-semibold">49€</span>
 					</div>
-					<div className="text-sm text-gray-500">My description</div>
+					<div className="text-sm text-gray-500">description</div>
 					<div className="flex items-center justify-between gap-3 pointer-events-none">
 						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
-							Add to cart
+							Ajouter au panier
 						</button>
 						<button
 							onClick={(e) => handleToggleFavorite(4, e)}
