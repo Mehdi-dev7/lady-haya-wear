@@ -22,43 +22,46 @@ export default defineType({
 			validation: (Rule) => Rule.required(),
 		}),
 		defineField({
-			name: "description",
-			title: "Description",
+			name: "shortDescription",
+			title: "Description courte",
 			type: "text",
-			rows: 4,
+			rows: 2,
+			description: "Description courte affichée sur les cartes produits",
+			validation: (Rule) => Rule.required().max(150),
 		}),
 		defineField({
-			name: "price",
-			title: "Prix (€)",
-			type: "number",
-			validation: (Rule) => Rule.required().positive(),
-		}),
-		defineField({
-			name: "images",
-			title: "Images",
-			type: "array",
-			of: [
+			name: "mainImage",
+			title: "Image principale",
+			type: "image",
+			options: {
+				hotspot: true,
+			},
+			fields: [
 				{
-					type: "image",
-					options: {
-						hotspot: true,
-					},
-					fields: [
-						{
-							name: "alt",
-							title: "Texte alternatif",
-							type: "string",
-							validation: (Rule) => Rule.required(),
-						},
-						{
-							name: "caption",
-							title: "Légende",
-							type: "string",
-						},
-					],
+					name: "alt",
+					title: "Texte alternatif",
+					type: "string",
+					validation: (Rule) => Rule.required(),
 				},
 			],
-			validation: (Rule) => Rule.required().min(1),
+			validation: (Rule) => Rule.required(),
+		}),
+		defineField({
+			name: "hoverImage",
+			title: "Image au survol",
+			type: "image",
+			options: {
+				hotspot: true,
+			},
+			fields: [
+				{
+					name: "alt",
+					title: "Texte alternatif",
+					type: "string",
+					validation: (Rule) => Rule.required(),
+				},
+			],
+			description: "Image qui s'affiche quand on survole le produit",
 		}),
 		defineField({
 			name: "category",
@@ -66,49 +69,6 @@ export default defineType({
 			type: "reference",
 			to: [{ type: "category" }],
 			validation: (Rule) => Rule.required(),
-		}),
-		defineField({
-			name: "sizes",
-			title: "Tailles disponibles",
-			type: "array",
-			of: [{ type: "string" }],
-			options: {
-				list: [
-					{ title: "XS", value: "XS" },
-					{ title: "S", value: "S" },
-					{ title: "M", value: "M" },
-					{ title: "L", value: "L" },
-					{ title: "XL", value: "XL" },
-					{ title: "XXL", value: "XXL" },
-					{ title: "Unique", value: "Unique" },
-				],
-			},
-		}),
-		defineField({
-			name: "colors",
-			title: "Couleurs disponibles",
-			type: "array",
-			of: [{ type: "string" }],
-			options: {
-				list: [
-					{ title: "Noir", value: "Noir" },
-					{ title: "Blanc", value: "Blanc" },
-					{ title: "Beige", value: "Beige" },
-					{ title: "Rose", value: "Rose" },
-					{ title: "Bleu", value: "Bleu" },
-					{ title: "Vert", value: "Vert" },
-					{ title: "Rouge", value: "Rouge" },
-					{ title: "Violet", value: "Violet" },
-					{ title: "Gris", value: "Gris" },
-					{ title: "Marron", value: "Marron" },
-				],
-			},
-		}),
-		defineField({
-			name: "inStock",
-			title: "En stock",
-			type: "boolean",
-			initialValue: true,
 		}),
 		defineField({
 			name: "featured",
@@ -122,31 +82,12 @@ export default defineType({
 			type: "boolean",
 			initialValue: false,
 		}),
-		defineField({
-			name: "tags",
-			title: "Tags",
-			type: "array",
-			of: [{ type: "string" }],
-			options: {
-				layout: "tags",
-			},
-		}),
 	],
 	orderings: [
 		{
 			title: "Date de création (plus récent)",
 			name: "createdAtDesc",
 			by: [{ field: "_createdAt", direction: "desc" }],
-		},
-		{
-			title: "Prix croissant",
-			name: "priceAsc",
-			by: [{ field: "price", direction: "asc" }],
-		},
-		{
-			title: "Prix décroissant",
-			name: "priceDesc",
-			by: [{ field: "price", direction: "desc" }],
 		},
 		{
 			title: "Nom A-Z",
@@ -157,14 +98,14 @@ export default defineType({
 	preview: {
 		select: {
 			title: "name",
-			subtitle: "price",
-			media: "images.0",
+			subtitle: "shortDescription",
+			media: "mainImage",
 		},
 		prepare(selection) {
 			const { title, subtitle, media } = selection;
 			return {
 				title: title,
-				subtitle: `${subtitle}€`,
+				subtitle: subtitle,
 				media: media,
 			};
 		},

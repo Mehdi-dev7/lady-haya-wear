@@ -42,23 +42,59 @@ export interface SanityImage extends Image {
 	caption?: string;
 }
 
+// Type pour les tailles
+export interface ProductSize {
+	size: string;
+	available: boolean;
+	quantity: number;
+}
+
+// Type pour les couleurs
+export interface ProductColor {
+	name: string;
+	hexCode: string;
+	productImage: SanityImage;
+	available: boolean;
+}
+
+// Type pour les produits (cartes)
 export interface Product {
 	_id: string;
 	_type: "product";
 	name: string;
 	slug: SanitySlug;
-	description: string;
-	price: number;
-	images: SanityImage[];
+	shortDescription: string;
+	mainImage: SanityImage;
+	hoverImage?: SanityImage;
 	category: SanityReference;
-	sizes: string[];
-	colors: string[];
-	inStock: boolean;
 	featured: boolean;
 	isNew: boolean;
-	tags: string[];
-	createdAt: string;
-	updatedAt: string;
+	_createdAt: string;
+	_updatedAt: string;
+}
+
+// Type pour les fiches produits détaillées
+export interface ProductDetail {
+	_id: string;
+	_type: "productDetail";
+	name: string;
+	slug: SanitySlug;
+	product: SanityReference;
+	description: string;
+	price: number;
+	originalPrice?: number;
+	stockQuantity: number;
+	sizes: ProductSize[];
+	colors: ProductColor[];
+	galleryImages?: SanityImage[];
+	isNew: boolean;
+	isPromo: boolean;
+	promoPercentage?: number;
+	category?: SanityReference;
+	featured: boolean;
+	tags?: string[];
+	_createdAt: string;
+	_updatedAt: string;
 }
 
 export interface Category {

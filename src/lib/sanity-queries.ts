@@ -1,6 +1,6 @@
-import { Category, Product, sanityClient } from "./sanity";
+import { Category, Product, ProductDetail, sanityClient } from "./sanity";
 
-// Requête pour récupérer tous les produits
+// Requête pour récupérer tous les produits (cartes)
 export async function getAllProducts(): Promise<Product[]> {
 	const query = `
     *[_type == "product"] {
@@ -8,23 +8,24 @@ export async function getAllProducts(): Promise<Product[]> {
       _type,
       name,
       slug,
-      description,
-      price,
-      images[] {
+      shortDescription,
+      mainImage {
         _type,
         asset->,
-        alt,
-        caption
+        alt
+      },
+      hoverImage {
+        _type,
+        asset->,
+        alt
       },
       category-> {
         _id,
         name,
         slug
       },
-      sizes,
-      colors,
-      inStock,
       featured,
+      isNew,
       _createdAt,
       _updatedAt
     } | order(_createdAt desc)
@@ -33,7 +34,7 @@ export async function getAllProducts(): Promise<Product[]> {
 	return sanityClient.fetch(query);
 }
 
-// Requête pour récupérer un produit par slug
+// Requête pour récupérer un produit par slug (cartes)
 export async function getProductBySlug(slug: string): Promise<Product | null> {
 	const query = `
     *[_type == "product" && slug.current == $slug][0] {
@@ -41,23 +42,24 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       _type,
       name,
       slug,
-      description,
-      price,
-      images[] {
+      shortDescription,
+      mainImage {
         _type,
         asset->,
-        alt,
-        caption
+        alt
+      },
+      hoverImage {
+        _type,
+        asset->,
+        alt
       },
       category-> {
         _id,
         name,
         slug
       },
-      sizes,
-      colors,
-      inStock,
       featured,
+      isNew,
       _createdAt,
       _updatedAt
     }
@@ -66,40 +68,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 	return sanityClient.fetch(query, { slug });
 }
 
-// Requête pour récupérer les produits mis en avant
-export async function getFeaturedProducts(): Promise<Product[]> {
-	const query = `
-    *[_type == "product" && featured == true] {
-      _id,
-      _type,
-      name,
-      slug,
-      description,
-      price,
-      images[] {
-        _type,
-        asset->,
-        alt,
-        caption
-      },
-      category-> {
-        _id,
-        name,
-        slug
-      },
-      sizes,
-      colors,
-      inStock,
-      featured,
-      _createdAt,
-      _updatedAt
-    } | order(_createdAt desc) [0...6]
-  `;
-
-	return sanityClient.fetch(query);
-}
-
-// Requête pour récupérer tous les produits d'une catégorie
+// Requête pour récupérer tous les produits d'une catégorie (cartes)
 export async function getProductsByCategory(
 	categorySlug: string
 ): Promise<Product[]> {
@@ -109,29 +78,210 @@ export async function getProductsByCategory(
       _type,
       name,
       slug,
-      description,
-      price,
-      images[] {
+      shortDescription,
+      mainImage {
         _type,
         asset->,
-        alt,
-        caption
+        alt
+      },
+      hoverImage {
+        _type,
+        asset->,
+        alt
       },
       category-> {
         _id,
         name,
         slug
       },
-      sizes,
-      colors,
-      inStock,
       featured,
+      isNew,
       _createdAt,
       _updatedAt
     } | order(_createdAt desc)
   `;
 
 	return sanityClient.fetch(query, { categorySlug });
+}
+
+// Requête pour récupérer tous les produits détaillés
+export async function getAllProductDetails(): Promise<ProductDetail[]> {
+	const query = `
+    *[_type == "productDetail"] {
+      _id,
+      _type,
+      name,
+      slug,
+      product-> {
+        _id,
+        name,
+        slug,
+        shortDescription,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        hoverImage {
+          _type,
+          asset->,
+          alt
+        },
+        category-> {
+          _id,
+          name,
+          slug
+        }
+      },
+      description,
+      price,
+      originalPrice,
+      stockQuantity,
+      sizes[] {
+        size,
+        available,
+        quantity
+      },
+      colors[] {
+        name,
+        hexCode,
+        productImage {
+          _type,
+          asset->,
+          alt
+        },
+        available
+      },
+      galleryImages[] {
+        _type,
+        asset->,
+        alt,
+        caption
+      },
+      isNew,
+      isPromo,
+      promoPercentage,
+      category-> {
+        _id,
+        name,
+        slug
+      },
+      featured,
+      tags,
+      _createdAt,
+      _updatedAt
+    } | order(_createdAt desc)
+  `;
+
+	return sanityClient.fetch(query);
+}
+
+// Requête pour récupérer une fiche produit détaillée par slug
+export async function getProductDetailBySlug(
+	slug: string
+): Promise<ProductDetail | null> {
+	const query = `
+    *[_type == "productDetail" && slug.current == $slug][0] {
+      _id,
+      _type,
+      name,
+      slug,
+      product-> {
+        _id,
+        name,
+        slug,
+        shortDescription,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        hoverImage {
+          _type,
+          asset->,
+          alt
+        },
+        category-> {
+          _id,
+          name,
+          slug
+        }
+      },
+      description,
+      price,
+      originalPrice,
+      stockQuantity,
+      sizes[] {
+        size,
+        available,
+        quantity
+      },
+      colors[] {
+        name,
+        hexCode,
+        productImage {
+          _type,
+          asset->,
+          alt
+        },
+        available
+      },
+      galleryImages[] {
+        _type,
+        asset->,
+        alt,
+        caption
+      },
+      isNew,
+      isPromo,
+      promoPercentage,
+      category-> {
+        _id,
+        name,
+        slug
+      },
+      featured,
+      tags,
+      _createdAt,
+      _updatedAt
+    }
+  `;
+
+	return sanityClient.fetch(query, { slug });
+}
+
+// Requête pour récupérer les produits mis en avant (cartes)
+export async function getFeaturedProducts(): Promise<Product[]> {
+	const query = `
+    *[_type == "product" && featured == true] {
+      _id,
+      _type,
+      name,
+      slug,
+      shortDescription,
+      mainImage {
+        _type,
+        asset->,
+        alt
+      },
+      hoverImage {
+        _type,
+        asset->,
+        alt
+      },
+      category-> {
+        _id,
+        name,
+        slug
+      },
+      featured,
+      isNew,
+      _createdAt,
+      _updatedAt
+    } | order(_createdAt desc) [0...6]
+  `;
+
+	return sanityClient.fetch(query);
 }
 
 // Requête pour récupérer toutes les catégories
@@ -183,30 +333,31 @@ export async function searchProducts(searchTerm: string): Promise<Product[]> {
 	const query = `
     *[_type == "product" && (
       name match $searchTerm + "*" ||
-      description match $searchTerm + "*" ||
+      shortDescription match $searchTerm + "*" ||
       category->name match $searchTerm + "*"
     )] {
       _id,
       _type,
       name,
       slug,
-      description,
-      price,
-      images[] {
+      shortDescription,
+      mainImage {
         _type,
         asset->,
-        alt,
-        caption
+        alt
+      },
+      hoverImage {
+        _type,
+        asset->,
+        alt
       },
       category-> {
         _id,
         name,
         slug
       },
-      sizes,
-      colors,
-      inStock,
       featured,
+      isNew,
       _createdAt,
       _updatedAt
     } | order(_createdAt desc)
