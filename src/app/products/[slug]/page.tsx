@@ -10,13 +10,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 interface ProductPageProps {
-	params: {
+	params: Promise<{
 		slug: string;
-	};
+	}>;
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-	const product = await getProductDetailBySlug(params.slug);
+	const { slug } = await params;
+	const product = await getProductDetailBySlug(slug);
 
 	if (!product) {
 		notFound();

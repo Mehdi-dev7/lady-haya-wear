@@ -5,19 +5,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 interface CollectionPageProps {
-	params: {
+	params: Promise<{
 		slug: string;
-	};
+	}>;
 }
 
 export default async function CollectionPage({ params }: CollectionPageProps) {
-	const category = await getCategoryBySlug(params.slug);
+	const { slug } = await params;
+	const category = await getCategoryBySlug(slug);
 
 	if (!category) {
 		notFound();
 	}
 
-	const products = await getProductsByCategory(params.slug);
+	const products = await getProductsByCategory(slug);
 
 	return (
 		<div>
