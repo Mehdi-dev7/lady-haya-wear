@@ -33,7 +33,7 @@ export default function Menu() {
 				onClick={() => setIsOpen(false)}
 			>
 				<div
-					className={`absolute left-0 top-18 h-[calc(100vh-72px)] w-2/3 bg-rose-light border-t border-white transform transition-transform duration-300 ease-out ${
+					className={`absolute left-0 top-18 h-[calc(100vh-72px)] w-2/3 bg-logo border-t border-white transform transition-transform duration-300 ease-out ${
 						isOpen ? "translate-x-0" : "-translate-x-full"
 					}`}
 					onClick={(e) => e.stopPropagation()}
@@ -43,44 +43,37 @@ export default function Menu() {
 						
 						<Link
 							href="/"
-							className="relative group text-logo hover:text-logo transition-colors inline-block"
+							className="relative group text-rose-light transition-colors inline-block"
+							onClick={() => setIsOpen(false)}
+						>
+							Accueil
+							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-rose-light group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+						</Link>
+						<Link
+							href="/"
+							className="relative group text-rose-light transition-colors inline-block"
 							onClick={() => setIsOpen(false)}
 						>
 							Collections
-							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-rose-light group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-logo hover:text-logo transition-colors inline-block"
+							className="relative group text-rose-light transition-colors inline-block"
 							onClick={() => setIsOpen(false)}
 						>
 							Produits
-							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-rose-light group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-logo hover:text-logo transition-colors inline-block"
+							className="relative group text-rose-light transition-colors inline-block"
 							onClick={() => setIsOpen(false)}
 						>
 							Contact
-							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-rose-light group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 						</Link>
-						<Link
-							href="/"
-							className="relative group text-logo hover:text-logo transition-colors inline-block"
-							onClick={() => setIsOpen(false)}
-						>
-							Qui sommes-nous ?
-							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
-						</Link>
-						<Link
-							href="/"
-							className="relative group text-logo hover:text-logo transition-colors inline-block"
-							onClick={() => setIsOpen(false)}
-						>
-							Cart(1)
-							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
-						</Link>
+						
 					</div>
 				</div>
 			</div>

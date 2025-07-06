@@ -63,15 +63,15 @@ export default function CategoryList() {
 					Nos Collections
 				</h2>
 				<p className="text-nude-dark-2 font-light text-lg lg:text-xl">
-					Découvrez nos catégories élégantes
+					Découvrez nos collections élégantes
 				</p>
 			</div>
 
 			{/* Container de scroll */}
 			<div className="relative">
-				{/* Masques de fade-out sur les bords */}
-				<div className="absolute left-0 top-0 bottom-0 w-18 lg:w-32 bg-gradient-to-r from-rose-light  to-rose-light/50 z-10 pointer-events-none"></div>
-				<div className="absolute right-0 top-0 bottom-0 w-18 lg:w-32 bg-gradient-to-l from-rose-light  to-rose-light/50 z-10 pointer-events-none"></div>
+				{/* Masques de fade-out sur les bords (tablette et au-dessus) */}
+				<div className="hidden md:block absolute left-0 top-0 bottom-0 w-18 lg:w-32 bg-gradient-to-r from-rose-light-2  to-rose-light/50 z-10 pointer-events-none"></div>
+				<div className="hidden md:block absolute right-0 top-0 bottom-0 w-18 lg:w-32 bg-gradient-to-l from-rose-light-2  to-rose-light/50 z-10 pointer-events-none"></div>
 
 				<div
 					ref={scrollContainerRef}
@@ -115,7 +115,7 @@ export default function CategoryList() {
 				<div className="flex justify-center gap-4 mt-6">
 					<button
 						onClick={scrollToPrev}
-						className="bg-white/80 hover:bg-white text-logo p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110"
+						className="bg-white/80 hover:bg-white text-logo p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 cursor-pointer"
 						aria-label="Précédent"
 					>
 						<svg
@@ -135,7 +135,7 @@ export default function CategoryList() {
 
 					<button
 						onClick={scrollToNext}
-						className="bg-white/80 hover:bg-white text-logo p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110"
+						className="bg-white/80 hover:bg-white text-logo p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 cursor-pointer"
 						aria-label="Suivant"
 					>
 						<svg
