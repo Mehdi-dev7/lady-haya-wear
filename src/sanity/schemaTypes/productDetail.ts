@@ -207,25 +207,33 @@ export default defineType({
 			description: "Images supplémentaires pour la galerie du produit",
 		}),
 		defineField({
-			name: "isNew",
-			title: "Nouveau produit",
-			type: "boolean",
-			initialValue: false,
-			description: "Afficher le badge 'Nouveau'",
-		}),
-		defineField({
-			name: "isPromo",
-			title: "Produit en promotion",
-			type: "boolean",
-			initialValue: false,
-			description: "Afficher le badge 'Promo' et le prix barré",
-		}),
-		defineField({
-			name: "promoPercentage",
-			title: "Pourcentage de réduction",
-			type: "number",
-			description: "Pourcentage de réduction (ex: 20 pour 20%)",
-			validation: (Rule) => Rule.min(0).max(100),
+			name: "badges",
+			title: "Badges",
+			type: "object",
+			fields: [
+				defineField({
+					name: "isNew",
+					title: "Nouveau produit",
+					type: "boolean",
+					initialValue: false,
+				}),
+				defineField({
+					name: "isPromo",
+					title: "Produit en promotion",
+					type: "boolean",
+					initialValue: false,
+				}),
+				defineField({
+					name: "promoPercentage",
+					title: "Pourcentage de réduction",
+					type: "number",
+					hidden: ({ parent }) => !parent?.isPromo,
+					validation: (Rule) =>
+						Rule.min(1)
+							.max(100)
+							.warning("Le pourcentage doit être entre 1 et 100"),
+				}),
+			],
 		}),
 		defineField({
 			name: "category",
@@ -273,14 +281,14 @@ export default defineType({
 			by: [{ field: "name", direction: "asc" }],
 		},
 	],
-		preview: {
+	preview: {
 		select: {
 			title: "name",
 			subtitle: "price",
 			media: "colors.0.productImage",
 			productName: "product.name",
-			isNew: "isNew",
-			isPromo: "isPromo",
+			isNew: "badges.isNew",
+			isPromo: "badges.isPromo",
 		},
 		prepare(selection) {
 			const { title, subtitle, media, productName, isNew, isPromo } = selection;
@@ -288,7 +296,7 @@ export default defineType({
 			if (productName) badges.push("📋");
 			if (isNew) badges.push("🆕");
 			if (isPromo) badges.push("🏷️");
-			
+
 			return {
 				title: title,
 				subtitle: `${subtitle}€ ${badges.join(" ")}`,

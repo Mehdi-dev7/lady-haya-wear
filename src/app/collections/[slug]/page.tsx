@@ -4,21 +4,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-interface CollectionPageProps {
-	params: Promise<{
-		slug: string;
-	}>;
-}
+type Props = {
+	params: { slug: string };
+	searchParams: { [key: string]: string | string[] | undefined };
+};
 
-export default async function CollectionPage({ params }: CollectionPageProps) {
-	const { slug } = await params;
-	const category = await getCategoryBySlug(slug);
+export default async function CollectionPage({ params, searchParams }: Props) {
+	const category = await getCategoryBySlug(params.slug);
 
 	if (!category) {
 		notFound();
 	}
 
-	const products = await getProductsByCategory(slug);
+	const products = await getProductsByCategory(params.slug);
 
 	return (
 		<div>
@@ -99,9 +97,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
 							<Link
 								key={product._id}
 								href={`/products/${product.slug?.current || product._id}`}
-								className={`w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 ${
-									index % 2 === 0 ? "bg-nude-light" : "bg-rose-light-2"
-								}`}
+								className={`w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 ${index % 2 === 0 ? "bg-nude-light" : "bg-rose-light-2"}`}
 							>
 								{/* Image du produit */}
 								<div className="relative w-full h-80 rounded-2xl overflow-hidden group">
