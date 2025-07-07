@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer/Footer";
+import Menu from "@/components/Menu/Menu";
 import Navbar from "@/components/Navbar/Navbar";
 import { FavoritesProvider } from "@/lib/FavoritesContext";
 import type { Metadata } from "next";
@@ -23,6 +24,7 @@ export default function RootLayout({
 			<body className="antialiased">
 				<FavoritesProvider>
 					<Navbar />
+					<Menu />
 					{children}
 					<Footer />
 				</FavoritesProvider>
