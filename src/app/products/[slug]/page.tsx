@@ -32,8 +32,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 	// Produits similaires (même catégorie)
 	const similarProducts = allProducts
 		.filter(
-			(p) =>
-				p.category?._ref === product.category?._ref && p._id !== product._id
+			(p) => p.category?._id === product.category?._id && p._id !== product._id
 		)
 		.slice(0, 4);
 

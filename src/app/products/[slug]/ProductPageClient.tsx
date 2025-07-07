@@ -27,6 +27,13 @@ export function ProductPageClient({
 	// Couleur actuellement sélectionnée
 	const selectedColor = product.colors[selectedColorIndex];
 
+	// Trouver la quantité de la taille sélectionnée
+	const selectedSizeQuantity =
+		(selectedSize &&
+			selectedColor?.sizes?.find((size: any) => size.size === selectedSize)
+				?.quantity) ||
+		0;
+
 	// Toutes les images de la couleur sélectionnée
 	const colorImages = selectedColor
 		? [selectedColor.mainImage, ...(selectedColor.additionalImages || [])]
@@ -157,7 +164,7 @@ export function ProductPageClient({
 							{/* Couleurs */}
 							{product.colors && product.colors.length > 0 && (
 								<div>
-									<h3 className="text-lg font-medium text-nude-dark mb-3">
+									<h3 className="text-xl font-medium text-nude-dark mb-3">
 										Couleur
 									</h3>
 									<div className="flex gap-3">
@@ -200,48 +207,60 @@ export function ProductPageClient({
 								selectedColor.sizes &&
 								selectedColor.sizes.length > 0 && (
 									<div>
-										<h3 className="text-lg font-medium text-nude-dark mb-3">
+										<h3 className="text-xl font-medium text-nude-dark mb-3">
 											Taille
 										</h3>
 										<div className="flex gap-2">
 											{selectedColor.sizes.map((size: any, index: number) => (
 												<button
 													key={index}
-													className={`px-4 py-2 rounded-lg border-2 transition-colors ${
+													className={`px-4 py-2 rounded-lg border-2 transition-all duration-300 ${
 														size.available
 															? selectedSize === size.size
-																? "border-red-400 bg-red-400 text-white"
-																: "border-gray-300 hover:border-red-400"
-															: "border-gray-200 text-gray-400 cursor-not-allowed"
+																? "border-rose-dark bg-rose-dark text-white shadow-lg"
+																: "border-nude-dark text-nude-dark hover:border-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 cursor-pointer"
+															: "border-nude-medium text-nude-medium opacity-50 cursor-not-allowed"
 													}`}
 													disabled={!size.available}
-													onClick={() => setSelectedSize(size.size)}
+													onClick={() =>
+														size.available && setSelectedSize(size.size)
+													}
 												>
 													{size.size}
-													{size.available &&
-														size.quantity <= 5 &&
-														size.quantity > 0 && (
-															<span className="ml-1 text-xs">
-																({size.quantity})
-															</span>
-														)}
 												</button>
 											))}
 										</div>
+
+										{/* Message d'alerte pour stock faible */}
+										{selectedSize &&
+											selectedSizeQuantity <= 3 &&
+											selectedSizeQuantity > 0 && (
+												<p className="text-xs text-black mt-4">
+													⚠️ Il ne reste plus que{" "}
+													<span className="font-bold text-red-500">
+														{selectedSizeQuantity}
+													</span>{" "}
+													exemplaire{selectedSizeQuantity > 1 ? "s" : ""}
+												</p>
+											)}
 									</div>
 								)}
 
 							{/* Quantité */}
-							<div>
-								<h3 className="text-lg font-medium text-nude-dark mb-3">
+							<div className="mb-10">
+								<h3 className="text-xl font-medium text-nude-dark mb-3">
 									Quantité
 								</h3>
-								<div className="flex items-center gap-4">
-									<button className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-red-400 flex items-center justify-center transition-colors">
-										-
+								<div className="flex items-center  gap-4">
+									<button className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg font-bold text-sm">
+										−
 									</button>
-									<span className="text-lg font-medium">1</span>
-									<button className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-red-400 flex items-center justify-center transition-colors">
+									<div className="w-12 h-8 bg-white ring-2 ring-nude-dark rounded-lg flex items-center justify-center shadow-md">
+										<span className="text-base font-semibold text-nude-dark">
+											1
+										</span>
+									</div>
+									<button className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg font-bold text-sm">
 										+
 									</button>
 								</div>
@@ -250,16 +269,14 @@ export function ProductPageClient({
 							{/* Boutons d'action */}
 							<div className="flex gap-4">
 								<button
-									className="flex-1 bg-red-400 text-white py-4 px-6 rounded-2xl font-medium hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+									className="w-48 ring-2 ring-nude-dark text-nude-dark py-4 px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg hover:shadow-xl text-base"
 									disabled={!selectedSize}
 								>
-									{selectedSize
-										? "Ajouter au panier"
-										: "Sélectionnez une taille"}
+									{selectedSize ? "Ajouter au panier" : "Choisir taille"}
 								</button>
-								<button className="p-4 border-2 border-red-400 text-red-400 rounded-2xl hover:bg-red-400 hover:text-white transition-colors">
+								<button className="p-4 ring-2 ring-nude-dark text-nude-dark rounded-2xl hover:bg-rose-dark hover:text-white transition-all cursor-pointer duration-300 shadow-lg hover:shadow-xl">
 									<svg
-										className="w-6 h-6"
+										className="w-5 h-5"
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"

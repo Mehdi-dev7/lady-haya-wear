@@ -187,6 +187,12 @@
 	.text-rose-dark {
 		color: var(--color-rose-dark);
 	}
+	.text-rose-dark-2 {
+		color: var(--color-rose-dark-2);
+	}
+	.text-rose-medium {
+		color: var(--color-rose-medium);
+	}
 	.text-beige-light {
 		color: var(--color-beige-light);
 	}
@@ -229,6 +235,9 @@
 	.hover\:bg-rose-dark:hover {
 		background-color: var(--color-rose-dark);
 	}
+	.hover\:bg-rose-dark-2:hover {
+		background-color: var(--color-rose-dark-2);
+	}
 	.hover\:bg-logo:hover {
 		background-color: var(--color-logo);
 	}
@@ -237,6 +246,17 @@
 	}
 	.hover\:bg-nude-dark-2:hover {
 		background-color: var(--color-nude-dark-2);
+	}
+
+	/* Ring colors pour les bordures */
+	.ring-rose-medium {
+		--tw-ring-color: var(--color-rose-medium);
+	}
+	.ring-rose-dark-2 {
+		--tw-ring-color: var(--color-rose-dark-2);
+	}
+	.ring-nude-dark {
+		--tw-ring-color: var(--color-nude-dark);
 	}
 	@media (min-width: 768px) {
 		.container {
