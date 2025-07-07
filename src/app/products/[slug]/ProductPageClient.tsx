@@ -69,6 +69,27 @@ export function ProductPageClient({
 
 			{/* Section principale du produit */}
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16">
+				{/* Titre et badges - version mobile (au-dessus de l'image) */}
+				<div className="block md:hidden mb-8">
+					{/* Badges */}
+					<div className="flex gap-2 mb-4 justify-center">
+						{product.badges?.isNew && (
+							<span className="bg-red-400 text-white px-3 py-1 rounded-full text-xs font-medium">
+								Nouveau
+							</span>
+						)}
+						{product.badges?.isPromo && (
+							<span className="bg-orange-400 text-white px-3 py-1 rounded-full text-xs font-medium">
+								Promo {product.badges?.promoPercentage}%
+							</span>
+						)}
+					</div>
+
+					<h1 className="text-4xl md:text-5xl font-alex-brush text-logo mb-2 text-center">
+						{product.name}
+					</h1>
+				</div>
+
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-12">
 					{/* Galerie d'images */}
 					<div className="space-y-4 w-[420px] md:w-[350px] lg:w-[450px] mx-auto lg:mx-0">
@@ -118,8 +139,8 @@ export function ProductPageClient({
 
 					{/* Informations du produit */}
 					<div className="space-y-6">
-						{/* En-tête */}
-						<div>
+						{/* En-tête - version desktop */}
+						<div className="hidden md:block">
 							{/* Badges */}
 							<div className="flex gap-2 mb-4">
 								{product.badges?.isNew && (

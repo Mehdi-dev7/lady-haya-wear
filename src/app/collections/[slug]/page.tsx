@@ -101,7 +101,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
 								className={`w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 ${index % 2 === 0 ? "bg-nude-light" : "bg-rose-light-2"}`}
 							>
 								{/* Image du produit */}
-								<div className="relative w-full h-80 rounded-2xl overflow-hidden group">
+								<div className="relative w-full h-[28rem] rounded-2xl overflow-hidden group">
 									{/* Image principale */}
 									<Image
 										src={

@@ -18,10 +18,14 @@ export default function Menu() {
 
 		const handleOpenMenu = () => {
 			setIsOpen(true);
+			// Empêcher le scroll quand le menu est ouvert
+			document.body.style.overflow = "hidden";
 		};
 
 		const handleCloseMenu = () => {
 			setIsOpen(false);
+			// Restaurer le scroll quand le menu se ferme
+			document.body.style.overflow = "unset";
 		};
 
 		window.addEventListener("scroll", handleScroll);
@@ -32,11 +36,15 @@ export default function Menu() {
 			window.removeEventListener("scroll", handleScroll);
 			window.removeEventListener("openMenu", handleOpenMenu);
 			window.removeEventListener("closeMenu", handleCloseMenu);
+			// S'assurer que le scroll est restauré si le composant est démonté
+			document.body.style.overflow = "unset";
 		};
 	}, []);
 
 	const closeMenu = () => {
 		setIsOpen(false);
+		// Restaurer le scroll quand on ferme le menu
+		document.body.style.overflow = "unset";
 		window.dispatchEvent(
 			new CustomEvent("menuToggle", { detail: { isOpen: false } })
 		);
