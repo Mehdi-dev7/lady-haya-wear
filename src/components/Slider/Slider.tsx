@@ -45,7 +45,7 @@ export default function Slider() {
 	}, []);
 
 	return (
-		<div className="h-[calc(100vh-80px)] lg:h-[calc(100vh-100px)] xl:h-[calc(100vh-120px)] 2xl:h-[calc(100vh-140px)] overflow-hidden relative">
+		<div className="mt-10 h-[calc(100vh-72px)] lg:h-[calc(100vh-72px)] xl:h-[calc(100vh-72px)] 2xl:h-[calc(100vh-72px)] overflow-hidden relative">
 			<div
 				className="w-max h-full flex transition-all ease-in-out duration-1000"
 				style={{ transform: `translateX(-${currentSlide * 100}vw)` }}
