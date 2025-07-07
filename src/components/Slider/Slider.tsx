@@ -45,7 +45,7 @@ export default function Slider() {
 	}, []);
 
 	return (
-		<div className="h-[calc(100vh-80px)] lg:h-[calc(100vh-100px)] xl:h-[calc(100vh-120px)] 2xl:h-[calc(100vh-140px)] overflow-hidden">
+		<div className="h-[calc(100vh-80px)] lg:h-[calc(100vh-100px)] xl:h-[calc(100vh-120px)] 2xl:h-[calc(100vh-140px)] overflow-hidden relative">
 			<div
 				className="w-max h-full flex transition-all ease-in-out duration-1000"
 				style={{ transform: `translateX(-${currentSlide * 100}vw)` }}
@@ -76,6 +76,7 @@ export default function Slider() {
 								</button>
 							</Link>
 						</div>
+
 						{/* IMAGE CONTAINER */}
 						<div className="relative h-2/3 lg:w-1/2 lg:h-full">
 							<Image
@@ -103,7 +104,9 @@ export default function Slider() {
 					</div>
 				))}
 			</div>
-			<div className="absolute m-auto left-1/2 bottom-8 lg:bottom-12 xl:bottom-16 2xl:bottom-20 flex gap-4">
+
+			{/* DOTS - FIXED AT BOTTOM */}
+			<div className="absolute left-1/2 bottom-8 lg:bottom-12 xl:bottom-16 2xl:bottom-20 transform -translate-x-1/2 flex gap-4 z-10">
 				{slides.map((slide, index) => (
 					<div
 						className={`w-3 h-3 rounded-full ring-1 ring-gray-600 cursor-pointer flex items-center justify-center ${

@@ -52,7 +52,7 @@ export default function Menu() {
 				onClick={closeMenu}
 			>
 				<div
-					className={`absolute left-0 top-0 h-full w-3/4 bg-nude-medium border-t border-white transform transition-transform duration-300 ease-out ${
+					className={`absolute left-0 top-0 h-full w-[90%] md:w-3/4 bg-nude-medium border-t border-white transform transition-transform duration-300 ease-out ${
 						isOpen ? "translate-x-0" : "-translate-x-full"
 					}`}
 					onClick={(e) => e.stopPropagation()}
