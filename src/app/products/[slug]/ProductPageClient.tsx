@@ -69,17 +69,16 @@ export function ProductPageClient({
 
 			{/* Section principale du produit */}
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16">
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-12">
 					{/* Galerie d'images */}
-					<div className="space-y-4">
+					<div className="space-y-4 w-[420px] md:w-[350px] lg:w-[450px] mx-auto lg:mx-0">
 						{/* Image principale */}
-						<div className="h-[500px] relative rounded-2xl overflow-hidden shadow-lg">
+						<div className="h-[400px] md:h-[450px] lg:h-[500px] relative rounded-2xl overflow-hidden shadow-lg">
 							{currentImage ? (
 								<Image
 									src={urlFor(currentImage)?.url() || "/assets/placeholder.jpg"}
 									alt={currentImage?.alt || product.name}
 									fill
-									sizes="50vw"
 									className="object-cover rounded-2xl transition-all duration-300"
 								/>
 							) : (
@@ -91,11 +90,11 @@ export function ProductPageClient({
 
 						{/* Miniatures des images de la couleur sélectionnée */}
 						{colorImages && colorImages.length > 1 && (
-							<div className="flex justify-start gap-4 mt-8">
+							<div className="flex justify-center lg:justify-start gap-2 lg:gap-4 mt-8">
 								{colorImages.map((image: any, i: number) => (
 									<div
 										key={i}
-										className={`w-1/4 h-32 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
+										className={`w-20 h-20 lg:w-1/4 lg:h-32 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
 											selectedImageIndex === i
 												? "ring-2 ring-nude-dark shadow-lg"
 												: "hover:shadow-md"
@@ -406,7 +405,7 @@ export function ProductPageClient({
 						</p>
 					</div>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-[200px] md:max-w-[450px] lg:max-w-[1000px] mx-auto lg:mx-0">
 						{similarProducts.map((similarProduct) => (
 							<Link
 								key={similarProduct._id}

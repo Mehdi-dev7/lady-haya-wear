@@ -89,7 +89,7 @@ export default function Menu() {
 							></span>
 						</Link>
 						<Link
-							href="/"
+							href="/collections"
 							className="relative group text-logo font-balqis font-semibold text-2xl transition-colors inline-block"
 							onClick={closeMenu}
 						>
