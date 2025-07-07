@@ -6,7 +6,6 @@ import {
 	FaMapMarkerAlt,
 	FaPhone,
 	FaTwitter,
-	FaWhatsapp,
 } from "react-icons/fa";
 
 export default function Footer() {
@@ -46,14 +45,6 @@ export default function Footer() {
 							Suivez-nous
 						</h3>
 						<div className="flex gap-4">
-							<a
-								href="https://wa.me/33123456789"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="p-3 bg-green-600 rounded-full hover:bg-green-700 transition-colors duration-300"
-							>
-								<FaWhatsapp className="text-xl" />
-							</a>
 							<a
 								href="https://twitter.com/ladyhaya"
 								target="_blank"
