@@ -5,15 +5,17 @@ import {
 	FaInstagram,
 	FaMapMarkerAlt,
 	FaPhone,
+	FaSnapchat,
 	FaTwitter,
 } from "react-icons/fa";
+import { FaTiktok } from "react-icons/fa6";
 
 export default function Footer() {
 	return (
 		<footer className="bg-logo text-nude-light">
 			{/* Contenu principal du footer */}
 			<div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-12">
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+				<div className="grid grid-cols-1 lg:grid-cols-4  gap-8">
 					{/* Logo et informations de l'entreprise */}
 					<div className="lg:col-span-2">
 						<div className="flex items-center gap-3 mb-4">
@@ -60,6 +62,22 @@ export default function Footer() {
 								className="p-3 bg-pink-600 rounded-full hover:bg-pink-700 transition-colors duration-300"
 							>
 								<FaInstagram className="text-xl" />
+							</a>
+							<a
+								href="https://tiktok.com/@ladyhaya"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="p-3 bg-black rounded-full hover:bg-gray-800 transition-colors duration-300"
+							>
+								<FaTiktok className="text-xl" />
+							</a>
+							<a
+								href="https://snapchat.com/add/ladyhaya"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="p-3 bg-yellow-400 rounded-full hover:bg-yellow-500 transition-colors duration-300"
+							>
+								<FaSnapchat className="text-xl" />
 							</a>
 						</div>
 					</div>
@@ -110,7 +128,7 @@ export default function Footer() {
 					<div className="text-sm">
 						© 2024 Lady Haya. Tous droits réservés.
 					</div>
-					<div className="flex gap-6 text-sm">
+					<div className="flex flex-wrap justify-center items-center text-sm gap-4">
 						<Link
 							href="/mentions-legales"
 							className="hover:text-nude-medium transition-colors duration-300"
