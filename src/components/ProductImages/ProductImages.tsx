@@ -54,7 +54,9 @@ export default function ProductImages({
 					<div
 						key={i}
 						className={`w-1/4 h-32 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
-							i === index ? "ring-2 ring-logo shadow-lg" : "hover:shadow-md"
+							i === index
+								? "ring-2 ring-nude-dark shadow-lg"
+								: "hover:shadow-md"
 						}`}
 						onClick={() => setIndex(i)}
 					>

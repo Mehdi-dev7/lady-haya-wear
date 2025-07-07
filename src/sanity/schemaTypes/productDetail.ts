@@ -51,71 +51,6 @@ export default defineType({
 			validation: (Rule) => Rule.positive(),
 		}),
 		defineField({
-			name: "stockQuantity",
-			title: "Quantité en stock",
-			type: "number",
-			initialValue: 0,
-			validation: (Rule) => Rule.required().min(0),
-		}),
-		defineField({
-			name: "sizes",
-			title: "Tailles disponibles",
-			type: "array",
-			of: [
-				{
-					type: "object",
-					fields: [
-						{
-							name: "size",
-							title: "Taille",
-							type: "string",
-							options: {
-								list: [
-									{ title: "XS", value: "XS" },
-									{ title: "S", value: "S" },
-									{ title: "M", value: "M" },
-									{ title: "L", value: "L" },
-									{ title: "XL", value: "XL" },
-									{ title: "XXL", value: "XXL" },
-									{ title: "Unique", value: "Unique" },
-								],
-							},
-						},
-						{
-							name: "available",
-							title: "Disponible",
-							type: "boolean",
-							initialValue: true,
-						},
-						{
-							name: "quantity",
-							title: "Quantité pour cette taille",
-							type: "number",
-							initialValue: 0,
-							validation: (Rule) => Rule.min(0),
-						},
-					],
-					preview: {
-						select: {
-							title: "size",
-							subtitle: "available",
-							quantity: "quantity",
-						},
-						prepare(selection) {
-							const { title, subtitle, quantity } = selection;
-							return {
-								title: `Taille ${title}`,
-								subtitle: subtitle
-									? `Disponible (${quantity})`
-									: "Indisponible",
-							};
-						},
-					},
-				},
-			],
-			validation: (Rule) => Rule.required().min(1),
-		}),
-		defineField({
 			name: "colors",
 			title: "Couleurs disponibles",
 			type: "array",
@@ -137,8 +72,8 @@ export default defineType({
 							validation: (Rule) => Rule.required().regex(/^#[0-9A-F]{6}$/i),
 						},
 						{
-							name: "productImage",
-							title: "Image du produit avec cette couleur",
+							name: "mainImage",
+							title: "Image principale de cette couleur",
 							type: "image",
 							options: {
 								hotspot: true,
@@ -154,8 +89,94 @@ export default defineType({
 							validation: (Rule) => Rule.required(),
 						},
 						{
+							name: "additionalImages",
+							title: "Images supplémentaires pour cette couleur",
+							type: "array",
+							of: [
+								{
+									type: "image",
+									options: {
+										hotspot: true,
+									},
+									fields: [
+										{
+											name: "alt",
+											title: "Texte alternatif",
+											type: "string",
+											validation: (Rule) => Rule.required(),
+										},
+										{
+											name: "caption",
+											title: "Légende",
+											type: "string",
+										},
+									],
+								},
+							],
+							description:
+								"Images supplémentaires pour cette couleur spécifique",
+						},
+						{
+							name: "sizes",
+							title: "Tailles disponibles pour cette couleur",
+							type: "array",
+							of: [
+								{
+									type: "object",
+									fields: [
+										{
+											name: "size",
+											title: "Taille",
+											type: "string",
+											options: {
+												list: [
+													{ title: "XS", value: "XS" },
+													{ title: "S", value: "S" },
+													{ title: "M", value: "M" },
+													{ title: "L", value: "L" },
+													{ title: "XL", value: "XL" },
+													{ title: "XXL", value: "XXL" },
+													{ title: "Unique", value: "Unique" },
+												],
+											},
+										},
+										{
+											name: "available",
+											title: "Disponible",
+											type: "boolean",
+											initialValue: true,
+										},
+										{
+											name: "quantity",
+											title: "Quantité pour cette taille",
+											type: "number",
+											initialValue: 0,
+											validation: (Rule) => Rule.min(0),
+										},
+									],
+									preview: {
+										select: {
+											title: "size",
+											subtitle: "available",
+											quantity: "quantity",
+										},
+										prepare(selection) {
+											const { title, subtitle, quantity } = selection;
+											return {
+												title: `Taille ${title}`,
+												subtitle: subtitle
+													? `Disponible (${quantity})`
+													: "Indisponible",
+											};
+										},
+									},
+								},
+							],
+							validation: (Rule) => Rule.required().min(1),
+						},
+						{
 							name: "available",
-							title: "Disponible",
+							title: "Couleur disponible",
 							type: "boolean",
 							initialValue: true,
 						},
@@ -164,7 +185,7 @@ export default defineType({
 						select: {
 							title: "name",
 							subtitle: "available",
-							media: "productImage",
+							media: "mainImage",
 						},
 						prepare(selection) {
 							const { title, subtitle, media } = selection;
@@ -181,7 +202,7 @@ export default defineType({
 		}),
 		defineField({
 			name: "galleryImages",
-			title: "Images de la galerie",
+			title: "Images de la galerie générale",
 			type: "array",
 			of: [
 				{
@@ -204,7 +225,8 @@ export default defineType({
 					],
 				},
 			],
-			description: "Images supplémentaires pour la galerie du produit",
+			description:
+				"Images supplémentaires pour la galerie générale du produit (non liées à une couleur spécifique)",
 		}),
 		defineField({
 			name: "badges",
@@ -285,7 +307,7 @@ export default defineType({
 		select: {
 			title: "name",
 			subtitle: "price",
-			media: "colors.0.productImage",
+			media: "colors.0.mainImage",
 			productName: "product.name",
 			isNew: "badges.isNew",
 			isPromo: "badges.isPromo",

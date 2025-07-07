@@ -7,6 +7,10 @@ import "./globals.css";
 export const metadata: Metadata = {
 	title: "Lady Haya Wear",
 	description: "Vêtements pour femmes musulmanes",
+	icons: {
+		icon: "/icon.png",
+		apple: "/apple-touch-icon.png",
+	},
 };
 
 export default function RootLayout({

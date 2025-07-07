@@ -10,13 +10,14 @@ type Props = {
 };
 
 export default async function CollectionPage({ params, searchParams }: Props) {
-	const category = await getCategoryBySlug(params.slug);
+	const resolvedParams = await params;
+	const category = await getCategoryBySlug(resolvedParams.slug);
 
 	if (!category) {
 		notFound();
 	}
 
-	const products = await getProductsByCategory(params.slug);
+	const products = await getProductsByCategory(resolvedParams.slug);
 
 	return (
 		<div>
@@ -92,7 +93,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
 
 				{/* Grille des produits */}
 				{products.length > 0 ? (
-					<div className="flex gap-x-8 gap-y-16 justify-between flex-wrap">
+					<div className="flex gap-x-8 gap-y-16 justify-start flex-wrap">
 						{products.map((product, index) => (
 							<Link
 								key={product._id}

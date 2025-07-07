@@ -49,11 +49,20 @@ export interface ProductSize {
 	quantity: number;
 }
 
-// Type pour les couleurs
+// Type pour les badges
+export interface ProductBadges {
+	isNew: boolean;
+	isPromo: boolean;
+	promoPercentage?: number;
+}
+
+// Type pour les couleurs (nouvelle structure)
 export interface ProductColor {
 	name: string;
 	hexCode: string;
-	productImage: SanityImage;
+	mainImage: SanityImage;
+	additionalImages?: SanityImage[];
+	sizes: ProductSize[];
 	available: boolean;
 }
 
@@ -73,24 +82,36 @@ export interface Product {
 	_updatedAt: string;
 }
 
-// Type pour les fiches produits détaillées
+// Type pour les fiches produits détaillées (nouvelle structure)
 export interface ProductDetail {
 	_id: string;
 	_type: "productDetail";
 	name: string;
 	slug: SanitySlug;
-	product: SanityReference;
+	product: {
+		_id: string;
+		name: string;
+		slug: SanitySlug;
+		shortDescription: string;
+		mainImage: SanityImage;
+		hoverImage?: SanityImage;
+		category: {
+			_id: string;
+			name: string;
+			slug: SanitySlug;
+		};
+	};
 	description: string;
 	price: number;
 	originalPrice?: number;
-	stockQuantity: number;
-	sizes: ProductSize[];
 	colors: ProductColor[];
 	galleryImages?: SanityImage[];
-	isNew: boolean;
-	isPromo: boolean;
-	promoPercentage?: number;
-	category?: SanityReference;
+	badges?: ProductBadges;
+	category?: {
+		_id: string;
+		name: string;
+		slug: SanitySlug;
+	};
 	featured: boolean;
 	tags?: string[];
 	_createdAt: string;

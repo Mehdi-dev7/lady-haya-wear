@@ -136,19 +136,24 @@ export async function getAllProductDetails(): Promise<ProductDetail[]> {
       description,
       price,
       originalPrice,
-      stockQuantity,
-      sizes[] {
-        size,
-        available,
-        quantity
-      },
       colors[] {
         name,
         hexCode,
-        productImage {
+        mainImage {
           _type,
           asset->,
           alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt,
+          caption
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
         },
         available
       },
@@ -158,9 +163,11 @@ export async function getAllProductDetails(): Promise<ProductDetail[]> {
         alt,
         caption
       },
-      isNew,
-      isPromo,
-      promoPercentage,
+      badges {
+        isNew,
+        isPromo,
+        promoPercentage
+      },
       category-> {
         _id,
         name,
@@ -210,19 +217,24 @@ export async function getProductDetailBySlug(
       description,
       price,
       originalPrice,
-      stockQuantity,
-      sizes[] {
-        size,
-        available,
-        quantity
-      },
       colors[] {
         name,
         hexCode,
-        productImage {
+        mainImage {
           _type,
           asset->,
           alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt,
+          caption
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
         },
         available
       },
@@ -232,9 +244,11 @@ export async function getProductDetailBySlug(
         alt,
         caption
       },
-      isNew,
-      isPromo,
-      promoPercentage,
+      badges {
+        isNew,
+        isPromo,
+        promoPercentage
+      },
       category-> {
         _id,
         name,
