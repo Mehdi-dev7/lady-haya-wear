@@ -127,28 +127,28 @@ export default function Navbar() {
 								className="relative group text-logo text-2xl transition-colors tracking-wide font-balqis font-semibold"
 							>
 								Accueil
-								<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in "></span>
+								<span className="absolute bottom-0 left-1/2 w-0 menu-underline h-[1px] group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in "></span>
 							</Link>
 							<Link
 								href="/collections"
 								className="relative group text-logo font-balqis font-semibold text-2xl transition-colors tracking-wide"
 							>
 								Collections
-								<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+								<span className="absolute bottom-0 left-1/2 w-0 menu-underline h-[1px] group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 							</Link>
 							<Link
 								href="/"
 								className="relative group text-logo font-balqis font-semibold text-2xl transition-colors tracking-wide"
 							>
 								Produits
-								<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+								<span className="absolute bottom-0 left-1/2 w-0 menu-underline h-[1px] group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 							</Link>
 							<Link
 								href="/"
 								className="relative group text-logo font-balqis font-semibold text-2xl transition-colors tracking-wide"
 							>
 								Contact
-								<span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-nude-dark group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+								<span className="absolute bottom-0 left-1/2 w-0 menu-underline h-[1px] group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 							</Link>
 						</div>
 					</div>

@@ -60,6 +60,12 @@ body.navbar-visible {
 	padding-top: 72px; /* Compenser la navbar fixed seulement quand elle est visible */
 }
 
+/* Classe pour les spans du menu - hauteur uniforme */
+.menu-underline {
+	height: 1px !important;
+	background-color: var(--color-nude-dark) !important;
+}
+
 /* Classes utilitaires pour fonts et couleurs */
 @layer utilities {
 	/* Fonts */

@@ -49,7 +49,7 @@ export default function Menu() {
 				onClick={closeMenu}
 			>
 				<div
-					className={`absolute left-0 top-0 h-full w-2/3 bg-logo border-t border-white transform transition-transform duration-300 ease-out ${
+					className={`absolute left-0 top-0 h-full w-3/4 bg-nude-medium border-t border-white transform transition-transform duration-300 ease-out ${
 						isOpen ? "translate-x-0" : "-translate-x-full"
 					}`}
 					onClick={(e) => e.stopPropagation()}
@@ -58,35 +58,59 @@ export default function Menu() {
 					<div className="flex flex-col items-center justify-center pt-24 px-8 gap-6 text-xl">
 						<Link
 							href="/"
-							className="relative group text-rose-light transition-colors inline-block"
+							className="relative group text-logo font-balqis font-semibold text-2xl transition-colors inline-block"
 							onClick={closeMenu}
 						>
 							Accueil
-							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-rose-light group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+							<span
+								className="absolute bottom-0 left-1/2 w-0 menu-underline group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"
+								style={{
+									height: "1px",
+									backgroundColor: "var(--color-nude-dark)",
+								}}
+							></span>
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-rose-light transition-colors inline-block"
+							className="relative group text-logo font-balqis font-semibold text-2xl transition-colors inline-block"
 							onClick={closeMenu}
 						>
 							Collections
-							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-rose-light group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+							<span
+								className="absolute bottom-0 left-1/2 w-0 menu-underline group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"
+								style={{
+									height: "1px",
+									backgroundColor: "var(--color-nude-dark)",
+								}}
+							></span>
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-rose-light transition-colors inline-block"
+							className="relative group text-logo font-balqis font-semibold text-2xl transition-colors inline-block"
 							onClick={closeMenu}
 						>
 							Produits
-							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-rose-light group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+							<span
+								className="absolute bottom-0 left-1/2 w-0 menu-underline group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"
+								style={{
+									height: "1px",
+									backgroundColor: "var(--color-nude-dark)",
+								}}
+							></span>
 						</Link>
 						<Link
 							href="/"
-							className="relative group text-rose-light transition-colors inline-block"
+							className="relative group text-logo font-balqis font-semibold text-2xl transition-colors inline-block"
 							onClick={closeMenu}
 						>
 							Contact
-							<span className="absolute bottom-0 left-1/2 w-0 h-[1.5px] bg-rose-light group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
+							<span
+								className="absolute bottom-0 left-1/2 w-0 menu-underline group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"
+								style={{
+									height: "1px",
+									backgroundColor: "var(--color-nude-dark)",
+								}}
+							></span>
 						</Link>
 					</div>
 				</div>
