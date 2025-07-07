@@ -14,38 +14,23 @@ export default function Navbar() {
 	useEffect(() => {
 		const handleScroll = () => {
 			const scrollY = window.scrollY;
-			const shouldBeScrolled = scrollY > 200;
-			// Disparaît à 200px, réapparaît dès qu'on remonte en dessous de 200px
-			setIsScrolled(shouldBeScrolled);
-
-			// Afficher le bouton remonter à 500px
+			setIsScrolled(scrollY > 200);
 			setShowScrollTop(scrollY > 1000);
-
-			// Gérer la classe sur le body
-			if (shouldBeScrolled) {
-				document.body.classList.remove("navbar-visible");
-			} else {
-				document.body.classList.add("navbar-visible");
-			}
 		};
 
 		const handleMenuToggle = (event: CustomEvent) => {
 			setIsMenuOpen(event.detail.isOpen);
 		};
 
-		// Initialiser l'état
-		document.body.classList.add("navbar-visible");
-
 		window.addEventListener("scroll", handleScroll);
 		window.addEventListener("menuToggle", handleMenuToggle as EventListener);
+
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
 			window.removeEventListener(
 				"menuToggle",
 				handleMenuToggle as EventListener
 			);
-			// Nettoyer la classe au démontage
-			document.body.classList.remove("navbar-visible");
 		};
 	}, []);
 

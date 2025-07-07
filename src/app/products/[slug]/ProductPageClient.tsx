@@ -92,7 +92,7 @@ export function ProductPageClient({
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-12">
 					{/* Galerie d'images */}
-					<div className="space-y-4 w-[420px] md:w-[350px] lg:w-[450px] mx-auto lg:mx-0">
+					<div className="space-y-4 w-full max-w-[420px] md:w-[350px] lg:w-[450px] mx-auto lg:mx-0">
 						{/* Image principale */}
 						<div className="h-[400px] md:h-[450px] lg:h-[500px] relative rounded-2xl overflow-hidden shadow-lg">
 							{currentImage ? (

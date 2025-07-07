@@ -8,35 +8,24 @@ import { FaTiktok } from "react-icons/fa6";
 
 export default function Menu() {
 	const [isOpen, setIsOpen] = useState(false);
-	const [isScrolled, setIsScrolled] = useState(false);
 
 	useEffect(() => {
-		const handleScroll = () => {
-			// Le menu monte immédiatement au scroll
-			setIsScrolled(window.scrollY > 190);
-		};
-
 		const handleOpenMenu = () => {
 			setIsOpen(true);
-			// Empêcher le scroll quand le menu est ouvert
 			document.body.style.overflow = "hidden";
 		};
 
 		const handleCloseMenu = () => {
 			setIsOpen(false);
-			// Restaurer le scroll quand le menu se ferme
 			document.body.style.overflow = "unset";
 		};
 
-		window.addEventListener("scroll", handleScroll);
 		window.addEventListener("openMenu", handleOpenMenu);
 		window.addEventListener("closeMenu", handleCloseMenu);
 
 		return () => {
-			window.removeEventListener("scroll", handleScroll);
 			window.removeEventListener("openMenu", handleOpenMenu);
 			window.removeEventListener("closeMenu", handleCloseMenu);
-			// S'assurer que le scroll est restauré si le composant est démonté
 			document.body.style.overflow = "unset";
 		};
 	}, []);
@@ -56,7 +45,7 @@ export default function Menu() {
 			<div
 				className={`fixed left-0 right-0 bottom-0 z-60 transition-all duration-300 ${
 					isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-				} ${isScrolled ? "top-0" : "top-18"}`}
+				} top-18`}
 				onClick={closeMenu}
 			>
 				<div
