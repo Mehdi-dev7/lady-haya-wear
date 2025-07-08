@@ -21,7 +21,7 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 
 	return (
 		<div className="mb-12">
-			<div className="text-center mb-8">
+			<div className="text-center mb-12">
 				<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mb-4 mt-10">
 					Nos Coups de Cœur
 				</h2>
@@ -32,7 +32,7 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 						<Link
 							key={product._id}
 							href={`/products/${product.slug?.current || product._id}`}
-							className={`w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 ${index % 2 === 0 ? "bg-nude-medium" : "bg-rose-light-2"}`}
+							className={`w-full flex flex-col gap-4 sm:w-[45%] lg:w-[28%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 ${index % 2 === 0 ? "bg-[#d9c4b5]/80" : "bg-rose-light-2"}`}
 						>
 							{/* Image du produit */}
 							<div className="relative w-full h-[28rem] rounded-2xl overflow-hidden group">
@@ -72,7 +72,7 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 
 							{/* Informations du produit */}
 							<div className="flex flex-col gap-2">
-								<h3 className="font-medium text-nude-dark text-lg">
+								<h3 className="font-medium text-nude text-lg">
 									{product.name}
 								</h3>
 								<p className="text-sm text-gray-500 line-clamp-2">

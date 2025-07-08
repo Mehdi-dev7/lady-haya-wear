@@ -55,7 +55,7 @@ export default function Menu() {
 					onClick={(e) => e.stopPropagation()}
 				>
 					{/* Contenu du menu */}
-					<div className="flex flex-col items-center justify-center pt-24 px-8 gap-6 text-xl">
+					<div className="flex flex-col items-center justify-center pt-20 px-8 gap-6 text-xl">
 						<div className="flex items-center gap-2">
 							<Image
 								src="/assets/logo-haya.png"
