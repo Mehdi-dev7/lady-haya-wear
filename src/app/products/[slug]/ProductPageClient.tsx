@@ -76,6 +76,8 @@ export function ProductPageClient({
 			});
 
 			setIsAddingToCart(false);
+			// Réinitialiser la quantité à 1 après l'ajout
+			setQuantity(1);
 			// Optionnel : afficher une notification de succès
 		}, 500);
 	};

@@ -87,52 +87,65 @@ export default function CartPage() {
 									{cartItems.map((item) => (
 										<div
 											key={item.id}
-											className="flex gap-6 p-4 bg-nude-light/30 rounded-xl"
+											className="flex flex-col sm:flex-row gap-4 p-4 bg-nude-light/30 rounded-xl"
 										>
-											{/* Image */}
-											<div className="relative w-24 h-32 flex-shrink-0">
-												<Image
-													src={item.image}
-													alt={item.imageAlt || item.name}
-													fill
-													className="object-cover rounded-lg"
-												/>
+											{/* Image et bouton supprimer */}
+											<div className="flex items-start justify-between sm:flex-col sm:items-start">
+												<div className="relative w-20 h-24 sm:w-24 sm:h-32 flex-shrink-0">
+													<Image
+														src={item.image}
+														alt={item.imageAlt || item.name}
+														fill
+														className="object-cover rounded-lg"
+													/>
+												</div>
+
+												{/* Bouton supprimer - mobile */}
+												<button
+													onClick={() => removeFromCart(item.id)}
+													className="flex items-center gap-1 text-red-400 hover:text-red-600 transition-colors cursor-pointer sm:hidden"
+												>
+													<FiTrash2 className="w-3 h-3" />
+													<span className="text-xs">Supprimer</span>
+												</button>
 											</div>
 
 											{/* Informations */}
 											<div className="flex-1 flex flex-col justify-between">
 												<div>
 													{/* Nom et prix */}
-													<div className="flex justify-between items-start mb-2">
-														<h3 className="font-semibold text-lg text-nude-dark">
+													<div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
+														<h3 className="font-semibold text-base sm:text-lg text-nude-dark">
 															{item.name}
 														</h3>
-														<div className="text-right">
+														<div className="text-left sm:text-right">
 															{item.originalPrice &&
 															item.originalPrice < item.price ? (
 																<div className="text-sm text-gray-400 line-through">
 																	{item.originalPrice.toFixed(2)}€
 																</div>
 															) : null}
-															<div className="text-xl font-semibold text-logo">
+															<div className="text-lg sm:text-xl font-semibold text-logo">
 																{item.price.toFixed(2)}€
 															</div>
 														</div>
 													</div>
 
 													{/* Détails couleur et taille */}
-													<div className="flex items-center gap-4 mb-4">
+													<div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4">
 														<div className="flex items-center gap-2">
 															<div
-																className="w-4 h-4 rounded-full border border-gray-300"
+																className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-300"
 																style={{ backgroundColor: item.colorHex }}
 															/>
-															<span className="text-sm text-gray-600">
+															<span className="text-xs sm:text-sm text-gray-600">
 																{item.color}
 															</span>
 														</div>
-														<span className="text-gray-400">•</span>
-														<span className="text-sm text-gray-600">
+														<span className="hidden sm:inline text-gray-400">
+															•
+														</span>
+														<span className="text-xs sm:text-sm text-gray-600">
 															Taille {item.size}
 														</span>
 													</div>
@@ -141,17 +154,17 @@ export default function CartPage() {
 												{/* Actions */}
 												<div className="flex items-center justify-between">
 													{/* Quantité */}
-													<div className="flex items-center gap-3">
+													<div className="flex items-center gap-2 sm:gap-3">
 														<button
 															onClick={() =>
 																updateQuantity(item.id, item.quantity - 1)
 															}
 															disabled={item.quantity <= 1}
-															className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+															className="w-6 h-6 sm:w-8 sm:h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
 														>
 															−
 														</button>
-														<span className="text-lg font-medium text-nude-dark min-w-[30px] text-center">
+														<span className="text-base sm:text-lg font-medium text-nude-dark min-w-[20px] sm:min-w-[30px] text-center">
 															{item.quantity}
 														</span>
 														<button
@@ -161,16 +174,16 @@ export default function CartPage() {
 															disabled={
 																item.quantity >= getAvailableStock(item)
 															}
-															className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+															className="w-6 h-6 sm:w-8 sm:h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
 														>
 															+
 														</button>
 													</div>
 
-													{/* Supprimer */}
+													{/* Supprimer - desktop */}
 													<button
 														onClick={() => removeFromCart(item.id)}
-														className="flex items-center gap-2 text-red-400 hover:text-red-600 transition-colors cursor-pointer"
+														className="hidden sm:flex items-center gap-2 text-red-400 hover:text-red-600 transition-colors cursor-pointer"
 													>
 														<FiTrash2 className="w-4 h-4" />
 														<span className="text-sm">Supprimer</span>
@@ -243,7 +256,7 @@ export default function CartPage() {
 								{/* Bouton commander */}
 								<Link
 									href="/checkout"
-									className="w-2/3 lg:w-full 2xl:w-2/3 bg-nude-dark text-white py-3 px-6 rounded-2xl text-base md:text-lg font-semibold hover:bg-rose-dark transition-all duration-300 text-center block"
+									className="w-[80%] md:w-[60%] lg:w-full 2xl:w-[80%] bg-nude-dark text-white py-3 px-6 rounded-2xl text-base md:text-lg font-semibold hover:bg-rose-dark transition-all duration-300 text-center block"
 								>
 									Passer la commande
 								</Link>
