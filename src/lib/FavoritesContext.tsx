@@ -1,9 +1,21 @@
 "use client";
 import { createContext, ReactNode, useContext, useState } from "react";
 
+interface Product {
+	productId: string;
+	name: string;
+	price: number;
+	originalPrice?: number;
+	image: string;
+	imageAlt?: string;
+	slug?: string;
+}
+
 interface FavoritesContextType {
-	favorites: number[];
-	toggleFavorite: (productId: number) => void;
+	favorites: Product[];
+	addToFavorites: (product: Product) => void;
+	removeFromFavorites: (productId: string) => void;
+	toggleFavorite: (product: Product) => void;
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(
@@ -11,18 +23,38 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(
 );
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
-	const [favorites, setFavorites] = useState<number[]>([]);
+	const [favorites, setFavorites] = useState<Product[]>([]);
 
-	const toggleFavorite = (productId: number) => {
-		setFavorites((prev) =>
-			prev.includes(productId)
-				? prev.filter((id) => id !== productId)
-				: [...prev, productId]
-		);
+	const addToFavorites = (product: Product) => {
+		setFavorites((prev) => {
+			if (!prev.find((fav) => fav.productId === product.productId)) {
+				return [...prev, product];
+			}
+			return prev;
+		});
+	};
+
+	const removeFromFavorites = (productId: string) => {
+		setFavorites((prev) => prev.filter((fav) => fav.productId !== productId));
+	};
+
+	const toggleFavorite = (product: Product) => {
+		setFavorites((prev) => {
+			const isInFavorites = prev.find(
+				(fav) => fav.productId === product.productId
+			);
+			if (isInFavorites) {
+				return prev.filter((fav) => fav.productId !== product.productId);
+			} else {
+				return [...prev, product];
+			}
+		});
 	};
 
 	return (
-		<FavoritesContext.Provider value={{ favorites, toggleFavorite }}>
+		<FavoritesContext.Provider
+			value={{ favorites, addToFavorites, removeFromFavorites, toggleFavorite }}
+		>
 			{children}
 		</FavoritesContext.Provider>
 	);

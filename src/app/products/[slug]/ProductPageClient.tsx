@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/lib/CartContext";
+import { useFavorites } from "@/lib/FavoritesContext";
 import { urlFor } from "@/lib/sanity";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,6 +29,12 @@ export function ProductPageClient({
 	const [isAddingToCart, setIsAddingToCart] = useState(false);
 
 	const { addToCart } = useCart();
+	const { favorites, toggleFavorite } = useFavorites();
+
+	// Vérifier si le produit est dans les favoris
+	const isInFavorites = favorites.some(
+		(fav: any) => fav.productId === product._id
+	);
 
 	// Couleur actuellement sélectionnée
 	const selectedColor = product.colors[selectedColorIndex];
@@ -86,6 +93,19 @@ export function ProductPageClient({
 		if (newQuantity >= 1 && newQuantity <= selectedSizeQuantity) {
 			setQuantity(newQuantity);
 		}
+	};
+
+	const handleToggleFavorite = () => {
+		toggleFavorite({
+			productId: product._id,
+			name: product.name,
+			price: product.price,
+			originalPrice: product.originalPrice,
+			image:
+				urlFor(selectedColor?.mainImage)?.url() || "/assets/placeholder.jpg",
+			imageAlt: selectedColor?.mainImage?.alt || product.name,
+			slug: product.slug?.current || product._id,
+		});
 	};
 
 	return (
@@ -316,7 +336,7 @@ export function ProductPageClient({
 									<button
 										onClick={() => handleQuantityChange(quantity - 1)}
 										disabled={quantity <= 1}
-										className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+										className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
 									>
 										−
 									</button>
@@ -328,7 +348,7 @@ export function ProductPageClient({
 									<button
 										onClick={() => handleQuantityChange(quantity + 1)}
 										disabled={quantity >= selectedSizeQuantity}
-										className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+										className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
 									>
 										+
 									</button>
@@ -348,11 +368,19 @@ export function ProductPageClient({
 											? "Ajouter au panier"
 											: "Choisir taille"}
 								</button>
-								<button className="p-4 ring-2 ring-nude-dark text-nude-dark rounded-2xl hover:bg-rose-dark hover:text-white transition-all cursor-pointer duration-300 shadow-lg hover:shadow-xl">
+								<button
+									onClick={handleToggleFavorite}
+									className="p-4 ring-2 ring-nude-dark text-nude-dark rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer"
+								>
 									<svg
-										className="w-5 h-5"
-										fill="none"
-										stroke="currentColor"
+										className={`w-5 h-5 transition-all duration-300 ${
+											isInFavorites ? "scale-110" : "scale-100"
+										}`}
+										fill={isInFavorites ? "currentColor" : "none"}
+										stroke={isInFavorites ? "currentColor" : "currentColor"}
+										style={{
+											color: isInFavorites ? "#ef4444" : "currentColor",
+										}}
 										viewBox="0 0 24 24"
 									>
 										<path

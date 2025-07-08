@@ -75,7 +75,7 @@ export default function CartPage() {
 					</div>
 				) : (
 					/* Panier avec articles */
-					<div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+					<div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-8 lg:mt-14">
 						{/* Liste des articles */}
 						<div className="lg:col-span-2">
 							<div className="bg-nude-light rounded-2xl shadow-lg p-6">
