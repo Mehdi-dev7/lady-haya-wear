@@ -93,9 +93,9 @@ export default function Slider() {
 								</h2>
 							</div>
 							{/* BUTTON OVERLAY - BOTTOM RIGHT */}
-							<div className="absolute bottom-4 right-6 lg:hidden">
+							<div className="absolute bottom-14 right-2 md:right-6 lg:hidden">
 								<Link href={slide.url}>
-									<button className="rounded-md py-2 px-3 text-nude-light text-base bg-logo cursor-pointer hover:bg-nude-dark-2 hover:scale-105 transition-all duration-300">
+									<button className="rounded-md py-2 px-2 md:px-3  text-nude-light text-base bg-logo cursor-pointer hover:bg-nude-dark-2 hover:scale-105 transition-all duration-300">
 										Voir la collection
 									</button>
 								</Link>

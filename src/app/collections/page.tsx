@@ -11,7 +11,7 @@ export default async function CollectionsPage() {
 			{/* Header */}
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-beige-light py-16">
 				<div className="text-center mb-12">
-					<h1 className="text-5xl lg:text-6xl font-alex-brush text-logo mb-4">
+					<h1 className="text-5xl lg:text-6xl font-alex-brush text-logo mt-8 mb-4">
 						Nos Collections
 					</h1>
 					<p className="text-lg text-nude-dark max-w-2xl mx-auto">
