@@ -1,23 +1,14 @@
 "use client";
+import { urlFor } from "@/lib/sanity";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
-const categories = [
-	{ id: 1, name: "Abayas", image: "/assets/grid/img1.jpeg" },
-	{ id: 2, name: "Kimonos", image: "/assets/grid/img2.jpeg" },
-	{ id: 3, name: "Robes", image: "/assets/grid/img3.jpeg" },
-	{ id: 4, name: "Tuniques", image: "/assets/grid/img4.jpeg" },
-	{ id: 5, name: "Jupes", image: "/assets/grid/img5.jpeg" },
-	{ id: 6, name: "Pantalons", image: "/assets/grid/img6.jpeg" },
-	{ id: 7, name: "Accessoires", image: "/assets/grid/img7.jpeg" },
-	{ id: 8, name: "Écharpes", image: "/assets/grid/img9.jpeg" },
-	{ id: 9, name: "Voiles", image: "/assets/grid/img12.jpeg" },
-	{ id: 10, name: "Ensembles", image: "/assets/grid/img10.jpeg" },
-	{ id: 11, name: "Caftans", image: "/assets/grid/img11.jpeg" },
-];
+interface CategoryListProps {
+	categories: any[];
+}
 
-export default function CategoryList() {
+export default function CategoryList({ categories }: CategoryListProps) {
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 	// Positionner sur la 2ème image au chargement
@@ -80,15 +71,20 @@ export default function CategoryList() {
 				>
 					{categories.map((category) => (
 						<Link
-							key={category.id}
-							href={`/list?cat=${category.name.toLowerCase()}`}
+							key={category._id}
+							href={`/collections/${category.slug?.current || category._id}`}
 							className="flex-shrink-0 w-64 h-80 group"
 							style={{ scrollSnapAlign: "center" }}
 						>
 							<div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-xl">
 								<Image
-									src={category.image}
-									alt={category.name}
+									src={
+										category.image
+											? urlFor(category.image)?.url() ||
+												"/assets/placeholder.jpg"
+											: "/assets/placeholder.jpg"
+									}
+									alt={category.image?.alt || category.name}
 									fill
 									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 									className="object-cover transition-all duration-500 group-hover:scale-105"

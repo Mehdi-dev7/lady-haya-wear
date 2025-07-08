@@ -4,8 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 import { FiHeart } from "react-icons/fi";
+import { urlFor } from "@/lib/sanity";
 
-export default function ProductList() {
+interface ProductListProps {
+	featuredProducts: any[];
+}
+
+export default function ProductList({ featuredProducts }: ProductListProps) {
 	const { favorites, toggleFavorite } = useFavorites();
 
 	const handleToggleFavorite = (productId: number, e: React.MouseEvent) => {
@@ -21,175 +26,90 @@ export default function ProductList() {
 					Nos Coups de Cœur
 				</h2>
 			</div>
-			<div className="flex gap-x-8 gap-y-16 justify-between flex-wrap">
-				<Link
-					href="/products"
-					className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 bg-nude-light"
-				>
-					<div className="relative w-full h-80 rounded-2xl overflow-hidden">
-						<Image
-							src="/assets/grid/img1.jpeg"
-							alt="Product Image"
-							fill
-							sizes="25vw"
-							className="absolute object-cover rounded-2xl z-10 hover:opacity-0 transition-opacity easy duration-500"
-						/>
-						<Image
-							src="/assets/grid/img2.jpeg"
-							alt="Product Image"
-							fill
-							sizes="25vw"
-							className="absolute object-cover rounded-2xl"
-						/>
-					</div>
-					<div className="flex justify-between">
-						<span className="font-medium">Abaya</span>
-						<span className="font-semibold">49€</span>
-					</div>
-					<div className="text-sm text-gray-500">description</div>
-					<div className="flex items-center justify-between gap-3 pointer-events-none">
-						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
-							Ajouter au panier
-						</button>
-						<button
-							onClick={(e) => handleToggleFavorite(1, e)}
-							className="p-2 hover:scale-110 transition-transform duration-200 cursor-pointer pointer-events-auto"
+			{featuredProducts.length > 0 ? (
+				<div className="flex gap-x-8 gap-y-16 justify-start flex-wrap">
+					{featuredProducts.map((product, index) => (
+						<Link
+							key={product._id}
+							href={`/products/${product.slug?.current || product._id}`}
+							className={`w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 ${index % 2 === 0 ? "bg-nude-medium" : "bg-rose-light-2"}`}
 						>
-							{favorites.includes(1) ? (
-								<FaHeart className="text-xl text-red-400" />
-							) : (
-								<FiHeart className="text-xl text-gray-400 hover:text-red-400 transition-colors duration-200" />
-							)}
-						</button>
-					</div>
-				</Link>
+							{/* Image du produit */}
+							<div className="relative w-full h-[28rem] rounded-2xl overflow-hidden group">
+								{/* Image principale */}
+								<Image
+									src={
+										urlFor(product.mainImage)?.url() ||
+										"/assets/placeholder.jpg"
+									}
+									alt={product.mainImage?.alt || product.name}
+									fill
+									sizes="25vw"
+									className="absolute object-cover rounded-2xl transition-opacity duration-500 group-hover:opacity-0"
+								/>
 
-				<Link
-					href="/products"
-					className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 bg-rose-light-2"
-				>
-					<div className="relative w-full h-80 rounded-2xl overflow-hidden">
-						<Image
-							src="/assets/grid/img4.jpeg"
-							alt="Product Image"
-							fill
-							sizes="25vw"
-							className="absolute object-cover rounded-2xl z-10 hover:opacity-0 transition-opacity easy duration-500"
-						/>
-						<Image
-							src="/assets/grid/img5.jpeg"
-							alt="Product Image"
-							fill
-							sizes="25vw"
-							className="absolute object-cover rounded-2xl"
-						/>
-					</div>
-					<div className="flex justify-between">
-						<span className="font-medium">Jilbeb</span>
-						<span className="font-semibold">49€</span>
-					</div>
-					<div className="text-sm text-gray-500">description</div>
-					<div className="flex items-center justify-between gap-3 pointer-events-none">
-						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
-							Ajouter au panier
-						</button>
-						<button
-							onClick={(e) => handleToggleFavorite(2, e)}
-							className="p-2 hover:scale-110 transition-transform duration-200 cursor-pointer pointer-events-auto"
-						>
-							{favorites.includes(2) ? (
-								<FaHeart className="text-xl text-red-400" />
-							) : (
-								<FiHeart className="text-xl text-gray-400 hover:text-red-400 transition-colors duration-200" />
-							)}
-						</button>
-					</div>
-				</Link>
+								{/* Image de hover */}
+								{product.hoverImage && (
+									<Image
+										src={
+											urlFor(product.hoverImage)?.url() ||
+											"/assets/placeholder.jpg"
+										}
+										alt={product.hoverImage?.alt || product.name}
+										fill
+										sizes="25vw"
+										className="absolute object-cover rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+									/>
+								)}
 
-				<Link
-					href="/products"
-					className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 bg-nude-light"
-				>
-					<div className="relative w-full h-80 rounded-2xl overflow-hidden">
-						<Image
-							src="/assets/grid/img6.jpeg"
-							alt="Product Image"
-							fill
-							sizes="25vw"
-							className="absolute object-cover rounded-2xl z-10 hover:opacity-0 transition-opacity easy duration-500"
-						/>
-						<Image
-							src="/assets/grid/img7.jpeg"
-							alt="Product Image"
-							fill
-							sizes="25vw"
-							className="absolute object-cover rounded-2xl"
-						/>
-					</div>
-					<div className="flex justify-between">
-						<span className="font-medium">Tunique</span>
-						<span className="font-semibold">49€</span>
-					</div>
-					<div className="text-sm text-gray-500">description</div>
-					<div className="flex items-center justify-between gap-3 pointer-events-none">
-						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
-							Ajouter au panier
-						</button>
-						<button
-							onClick={(e) => handleToggleFavorite(3, e)}
-							className="p-2 hover:scale-110 transition-transform duration-200 cursor-pointer pointer-events-auto"
-						>
-							{favorites.includes(3) ? (
-								<FaHeart className="text-xl text-red-400" />
-							) : (
-								<FiHeart className="text-xl text-gray-400 hover:text-red-400 transition-colors duration-200" />
-							)}
-						</button>
-					</div>
-				</Link>
+								{/* Badge "Nouveau" si le produit est récent */}
+								{product.isNew && (
+									<div className="absolute top-2 left-2 bg-red-400 text-white px-2 py-1 rounded-full text-xs font-medium z-20">
+										Nouveau
+									</div>
+								)}
+							</div>
 
-				<Link
-					href="/products"
-					className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 bg-rose-light-2"
-				>
-					<div className="relative w-full h-80 rounded-2xl overflow-hidden">
-						<Image
-							src="/assets/grid/img8.jpeg"
-							alt="Product Image"
-							fill
-							sizes="25vw"
-							className="absolute object-cover rounded-2xl z-10 hover:opacity-0 transition-opacity easy duration-500"
-						/>
-						<Image
-							src="/assets/grid/img9.jpeg"
-							alt="Product Image"
-							fill
-							sizes="25vw"
-							className="absolute object-cover rounded-2xl"
-						/>
-					</div>
-					<div className="flex justify-between">
-						<span className="font-medium">Hijab</span>
-						<span className="font-semibold">49€</span>
-					</div>
-					<div className="text-sm text-gray-500">description</div>
-					<div className="flex items-center justify-between gap-3 pointer-events-none">
-						<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
-							Ajouter au panier
-						</button>
-						<button
-							onClick={(e) => handleToggleFavorite(4, e)}
-							className="p-2 hover:scale-110 transition-transform duration-200 cursor-pointer pointer-events-auto"
-						>
-							{favorites.includes(4) ? (
-								<FaHeart className="text-xl text-red-400" />
-							) : (
-								<FiHeart className="text-xl text-gray-400 hover:text-red-400 transition-colors duration-200" />
-							)}
-						</button>
-					</div>
-				</Link>
-			</div>
+							{/* Informations du produit */}
+							<div className="flex flex-col gap-2">
+								<h3 className="font-medium text-nude-dark text-lg">
+									{product.name}
+								</h3>
+								<p className="text-sm text-gray-500 line-clamp-2">
+									{product.shortDescription}
+								</p>
+							</div>
+
+							{/* Boutons d'action */}
+							<div className="flex items-center justify-between gap-3 pointer-events-none">
+								<button className="rounded-2xl w-max ring-1 ring-red-400 text-red-400 py-2 px-4 text-xs hover:bg-red-400 hover:text-white transition-all duration-300 cursor-pointer pointer-events-auto">
+									Voir le produit
+								</button>
+								<button
+									onClick={(e) => handleToggleFavorite(product._id, e)}
+									className="p-2 hover:scale-110 transition-transform duration-200 cursor-pointer pointer-events-auto"
+								>
+									{favorites.includes(product._id) ? (
+										<FaHeart className="text-xl text-red-400" />
+									) : (
+										<FiHeart className="text-xl text-gray-400 hover:text-red-400 transition-colors duration-200" />
+									)}
+								</button>
+							</div>
+						</Link>
+					))}
+				</div>
+			) : (
+				<div className="text-center py-16">
+					<div className="text-6xl mb-4">🛍️</div>
+					<h3 className="text-2xl font-alex-brush text-logo mb-2">
+						Aucun produit mis en avant
+					</h3>
+					<p className="text-nude-dark mb-6">
+						Les produits mis en avant apparaîtront ici.
+					</p>
+				</div>
+			)}
 		</div>
 	);
 }

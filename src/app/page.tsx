@@ -1,18 +1,21 @@
 import CategoryList from "@/components/CategoryList/CategoryList";
-import FeaturedProducts from "@/components/FeaturedProducts/FeaturedProducts";
 import ProductList from "@/components/ProductList/ProductList";
 import Slider from "@/components/Slider/Slider";
+import { getAllCategories, getFeaturedCategories, getFeaturedProducts } from "@/lib/sanity-queries";
 
-export default function Home() {
+export default async function Home() {
+	const featuredCategories = await getFeaturedCategories();
+	const allCategories = await getAllCategories();
+	const featuredProducts = await getFeaturedProducts();
+
 	return (
 		<div>
-			<Slider />
-			<FeaturedProducts />
+			<Slider featuredCategories={featuredCategories} />
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-rose-light-2 py-16">
-				<CategoryList />
+				<CategoryList categories={allCategories} />
 			</section>
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-beige-light py-16">
-				<ProductList />
+				<ProductList featuredProducts={featuredProducts} />
 			</section>
 		</div>
 	);

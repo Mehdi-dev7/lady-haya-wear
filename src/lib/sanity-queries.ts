@@ -379,3 +379,26 @@ export async function searchProducts(searchTerm: string): Promise<Product[]> {
 
 	return sanityClient.fetch(query, { searchTerm });
 }
+
+// Requête pour récupérer les catégories mises en avant pour le slider
+export async function getFeaturedCategories(): Promise<Category[]> {
+	const query = `
+    *[_type == "category" && featured == true] {
+      _id,
+      _type,
+      name,
+      slug,
+      description,
+      image {
+        _type,
+        asset->,
+        alt
+      },
+      featured,
+      _createdAt,
+      _updatedAt
+    } | order(_createdAt desc)
+  `;
+
+	return sanityClient.fetch(query);
+}
