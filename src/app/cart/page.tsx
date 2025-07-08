@@ -28,7 +28,7 @@ export default function CartPage() {
 	return (
 		<div className="min-h-screen bg-beige-light">
 			{/* Header */}
-			<header className="bg-white/50 border-b border-gray-200">
+			<header className="bg-nude-light border-b border-gray-200">
 				<div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-6">
 					<div className="flex items-center gap-4">
 						<Link

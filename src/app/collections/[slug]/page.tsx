@@ -25,7 +25,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-rose-200/40 py-16">
 				<div className="flex flex-col md:flex-row items-center gap-8">
 					{/* Image de la collection */}
-					<div className="relative w-full md:w-1/3 h-80 mt-8 rounded-2xl overflow-hidden shadow-lg">
+					<div className="relative w-full md:w-1/3 h-80 mt-8 lg:mt-14 rounded-2xl overflow-hidden shadow-lg">
 						{category.image ? (
 							<Image
 								src={urlFor(category.image)?.url() || "/assets/placeholder.jpg"}
