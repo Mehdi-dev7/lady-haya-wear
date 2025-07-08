@@ -1,13 +1,21 @@
 "use client";
+import { useCart } from "@/lib/CartContext";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { FiTrash2 } from "react-icons/fi";
 
 interface CartModalProps {
 	onClose: () => void;
 }
 
 export default function CartModal({ onClose }: CartModalProps) {
-	const cartItems = true;
+	const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
+
+	// Fonction pour vérifier le stock disponible d'un item
+	const getAvailableStock = (item: any) => {
+		return item.maxQuantity || 10; // Utilise la quantité max stockée dans l'item
+	};
 	const modalRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -34,60 +42,127 @@ export default function CartModal({ onClose }: CartModalProps) {
 	return (
 		<div
 			ref={modalRef}
-			className="absolute w-96 top-12 right-0 p-10 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-nude-light flex flex-col gap-8 z-20"
+			className="absolute w-96 top-12 right-0 p-6 rounded-2xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-nude-light flex flex-col gap-6 z-20 max-h-[80vh] overflow-y-auto cursor-default"
 		>
-			{!cartItems ? (
-				<div className="text-logo">Votre panier est vide</div>
+			{!cartItems || cartItems.length === 0 ? (
+				<div className="text-center py-8">
+					<div className="text-4xl mb-4">🛒</div>
+					<div className="text-logo text-lg mb-2">Votre panier est vide</div>
+					<div className="text-gray-500 text-sm">
+						Ajoutez des produits pour commencer vos achats
+					</div>
+				</div>
 			) : (
 				<>
-					<h2 className="text-2xl text-logo">Panier</h2>
-					<div className="flex flex-col gap-10">
+					<h2 className="text-2xl text-logo font-semibold">Panier</h2>
+					<div className="flex flex-col gap-4">
 						{/* ITEMS */}
-						<div className="flex gap-6">
-							<Image
-								src="/assets/grid/img1.jpeg"
-								alt="Cart"
-								width={100}
-								height={120}
-								className="object-cover rounded-md"
-							/>
-							<div className="flex flex-col justify-between w-full">
-								{/* TOP */}
-								<div className="">
-									{/* TITLE */}
-									<div className="flex items-center justify-between gap-8">
-										<h3 className="font-semibold ">Nom du produit</h3>
-										<div className="p-1 ">49€</div>
+						{cartItems.map((item) => (
+							<div
+								key={item.id}
+								className="flex gap-4 p-3 bg-white rounded-xl shadow-sm cursor-default"
+							>
+								<Image
+									src={item.image}
+									alt={item.imageAlt || item.name}
+									width={80}
+									height={96}
+									className="object-cover rounded-lg"
+								/>
+								<div className="flex flex-col justify-between w-full">
+									{/* TOP */}
+									<div className="">
+										{/* TITLE */}
+										<div className="flex items-center justify-between gap-4">
+											<h3 className="font-semibold text-sm text-nude-dark line-clamp-2">
+												{item.name}
+											</h3>
+											<div className="text-sm font-semibold text-logo">
+												{item.originalPrice &&
+												item.originalPrice < item.price ? (
+													<span className="line-through text-gray-400 mr-1">
+														{item.originalPrice.toFixed(2)}€
+													</span>
+												) : null}
+												{item.price.toFixed(2)}€
+											</div>
+										</div>
+
+										{/* DESC */}
+										<div className="text-xs text-gray-500 mt-1">
+											<div className="flex items-center gap-2">
+												<div
+													className="w-3 h-3 rounded-full border border-gray-300"
+													style={{ backgroundColor: item.colorHex }}
+												/>
+												<span>{item.color}</span>
+												<span>•</span>
+												<span>Taille {item.size}</span>
+											</div>
+										</div>
 									</div>
 
-									{/* DESC */}
-									<div className="text-sm text-gray-500">Disponible</div>
-								</div>
-
-								{/* BOTTOM */}
-								<div className="flex justify-between text-sm">
-									<span className="text-gray-500">Qty. 2</span>
-									<span className="text-blue-500">Supprimer</span>
+									{/* BOTTOM */}
+									<div className="flex items-center justify-between mt-3">
+										<div className="flex items-center gap-2">
+											<button
+												onClick={() =>
+													updateQuantity(item.id, item.quantity - 1)
+												}
+												disabled={item.quantity <= 1}
+												className="w-6 h-6 rounded-full ring-1 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+											>
+												−
+											</button>
+											<span className="text-sm font-medium text-nude-dark min-w-[20px] text-center">
+												{item.quantity}
+											</span>
+											<button
+												onClick={() =>
+													updateQuantity(item.id, item.quantity + 1)
+												}
+												disabled={item.quantity >= getAvailableStock(item)}
+												className="w-6 h-6 rounded-full ring-1 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+											>
+												+
+											</button>
+										</div>
+										<button
+											onClick={() => removeFromCart(item.id)}
+											className="p-1 text-red-400 hover:text-red-600 transition-colors cursor-pointer"
+											title="Supprimer"
+										>
+											<FiTrash2 className="w-3 h-3" />
+										</button>
+									</div>
 								</div>
 							</div>
-						</div>
+						))}
 					</div>
 					{/* BOTTOM */}
-					<div className="">
-						<div className="flex items-center justify-between font-semibold">
-							<span className="">Sous-total</span>
-							<span className="">49€</span>
+					<div className="border-t border-gray-200 pt-4">
+						<div className="flex items-center justify-between font-semibold mb-2">
+							<span className="text-nude-dark">Sous-total</span>
+							<span className="text-logo text-lg">
+								{getCartTotal().toFixed(2)}€
+							</span>
 						</div>
-						<p className="text-gray-500 text-sm mt-2 mb-4">
-							Lorem ipsum dolor sit amet.
+						<p className="text-gray-500 text-xs mb-4">
+							Livraison gratuite dès 50€ d'achat
 						</p>
-						<div className="flex justify-between text-sm">
-							<button className="rounded-md bg-nude-light text-logo py-3 px-4 ring-1 ring-nude-dark">
+						<div className="flex gap-2">
+							<Link
+								href="/cart"
+								className="flex-1 rounded-xl bg-nude-light text-logo py-3 px-4 ring-1 ring-nude-dark text-center text-sm hover:bg-nude-dark hover:text-white transition-all duration-300 cursor-pointer"
+							>
 								Voir le panier
-							</button>
-							<button className="rounded-md py-3 px-4 bg-logo text-nude-light">
-								Valider la commande
-							</button>
+							</Link>
+							<Link
+								href="/checkout"
+								className="flex-1 rounded-xl py-3 px-4 bg-logo text-nude-light text-sm hover:bg-rose-dark transition-all duration-300 cursor-pointer text-center"
+							>
+								Commander
+							</Link>
 						</div>
 					</div>
 				</>

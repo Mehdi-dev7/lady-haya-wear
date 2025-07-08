@@ -1,5 +1,6 @@
 import StudioWrapper from "@/components/StudioWrapper";
 import { FavoritesProvider } from "@/lib/FavoritesContext";
+import { CartProvider } from "@/lib/CartContext";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -21,7 +22,9 @@ export default function RootLayout({
 		<html lang="fr">
 			<body className="antialiased">
 				<FavoritesProvider>
-					<StudioWrapper>{children}</StudioWrapper>
+					<CartProvider>
+						<StudioWrapper>{children}</StudioWrapper>
+					</CartProvider>
 				</FavoritesProvider>
 			</body>
 		</html>

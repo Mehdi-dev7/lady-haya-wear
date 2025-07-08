@@ -261,6 +261,9 @@ body.navbar-visible {
 	.hover\:bg-nude-dark-2:hover {
 		background-color: var(--color-nude-dark-2);
 	}
+	.hover\:text-logo:hover {
+		color: var(--color-logo);
+	}
 
 	/* Ring colors pour les bordures */
 	.ring-rose-medium {

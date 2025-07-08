@@ -1,5 +1,6 @@
 "use client";
 
+import { useCart } from "@/lib/CartContext";
 import { urlFor } from "@/lib/sanity";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +24,10 @@ export function ProductPageClient({
 	const [selectedColorIndex, setSelectedColorIndex] = useState(0);
 	const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 	const [selectedSize, setSelectedSize] = useState<string | null>(null);
+	const [quantity, setQuantity] = useState(1);
+	const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+	const { addToCart } = useCart();
 
 	// Couleur actuellement sélectionnée
 	const selectedColor = product.colors[selectedColorIndex];
@@ -46,6 +51,40 @@ export function ProductPageClient({
 	// Tailles disponibles pour la couleur sélectionnée
 	const availableSizes =
 		selectedColor?.sizes?.filter((size: any) => size.available) || [];
+
+	const handleAddToCart = () => {
+		if (!selectedSize || !selectedColor) return;
+
+		setIsAddingToCart(true);
+
+		// Simuler un délai pour l'ajout au panier
+		setTimeout(() => {
+			addToCart({
+				productId: product._id,
+				name: product.name,
+				price: product.price,
+				originalPrice: product.originalPrice,
+				image:
+					urlFor(selectedColor.mainImage)?.url() || "/assets/placeholder.jpg",
+				imageAlt: selectedColor.mainImage?.alt || product.name,
+				color: selectedColor.name,
+				colorHex: selectedColor.hexCode,
+				size: selectedSize,
+				quantity: quantity,
+				maxQuantity: selectedSizeQuantity, // Stock maximum disponible
+				slug: product.slug?.current || product._id,
+			});
+
+			setIsAddingToCart(false);
+			// Optionnel : afficher une notification de succès
+		}, 500);
+	};
+
+	const handleQuantityChange = (newQuantity: number) => {
+		if (newQuantity >= 1 && newQuantity <= selectedSizeQuantity) {
+			setQuantity(newQuantity);
+		}
+	};
 
 	return (
 		<div className="min-h-screen bg-beige-light">
@@ -271,16 +310,24 @@ export function ProductPageClient({
 								<h3 className="text-xl font-medium text-nude-dark mb-3">
 									Quantité
 								</h3>
-								<div className="flex items-center  gap-4">
-									<button className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg font-bold text-sm">
+								<div className="flex items-center gap-4">
+									<button
+										onClick={() => handleQuantityChange(quantity - 1)}
+										disabled={quantity <= 1}
+										className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+									>
 										−
 									</button>
 									<div className="w-12 h-8 bg-white ring-2 ring-nude-dark rounded-lg flex items-center justify-center shadow-md">
 										<span className="text-base font-semibold text-nude-dark">
-											1
+											{quantity}
 										</span>
 									</div>
-									<button className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg font-bold text-sm">
+									<button
+										onClick={() => handleQuantityChange(quantity + 1)}
+										disabled={quantity >= selectedSizeQuantity}
+										className="w-8 h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+									>
 										+
 									</button>
 								</div>
@@ -289,10 +336,15 @@ export function ProductPageClient({
 							{/* Boutons d'action */}
 							<div className="flex gap-4">
 								<button
+									onClick={handleAddToCart}
+									disabled={!selectedSize || isAddingToCart}
 									className="w-48 ring-2 ring-nude-dark text-nude-dark py-4 px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg hover:shadow-xl text-base"
-									disabled={!selectedSize}
 								>
-									{selectedSize ? "Ajouter au panier" : "Choisir taille"}
+									{isAddingToCart
+										? "Ajout en cours..."
+										: selectedSize
+											? "Ajouter au panier"
+											: "Choisir taille"}
 								</button>
 								<button className="p-4 ring-2 ring-nude-dark text-nude-dark rounded-2xl hover:bg-rose-dark hover:text-white transition-all cursor-pointer duration-300 shadow-lg hover:shadow-xl">
 									<svg

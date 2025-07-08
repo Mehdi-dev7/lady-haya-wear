@@ -1,5 +1,6 @@
 "use client";
 
+import { useCart } from "@/lib/CartContext";
 import { useFavorites } from "@/lib/FavoritesContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,6 +12,7 @@ import CartModal from "../CartModal/CartModal";
 export default function NavbarIcons() {
 	const router = useRouter();
 	const { favorites } = useFavorites();
+	const { getCartCount } = useCart();
 
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isCartOpen, setIsCartOpen] = useState(false);
@@ -54,9 +56,11 @@ export default function NavbarIcons() {
 						setIsCartOpen((prev) => !prev);
 					}}
 				/>
-				<div className="absolute -top-4 -right-4 w-6 h-6 bg-red-400 rounded-full text-white text-sm flex items-center justify-center mr-2 md:mr-0">
-					2
-				</div>
+				{getCartCount() > 0 && (
+					<div className="absolute -top-4 -right-4 w-6 h-6 bg-red-400 rounded-full text-white text-sm flex items-center justify-center mr-2 md:mr-0">
+						{getCartCount()}
+					</div>
+				)}
 				{isCartOpen && <CartModal onClose={() => setIsCartOpen(false)} />}
 			</div>
 		</div>
