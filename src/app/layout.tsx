@@ -1,7 +1,9 @@
 import StudioWrapper from "@/components/StudioWrapper";
-import { FavoritesProvider } from "@/lib/FavoritesContext";
 import { CartProvider } from "@/lib/CartContext";
+import { FavoritesProvider } from "@/lib/FavoritesContext";
 import type { Metadata } from "next";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,6 +26,18 @@ export default function RootLayout({
 				<FavoritesProvider>
 					<CartProvider>
 						<StudioWrapper>{children}</StudioWrapper>
+						<ToastContainer
+							position="top-right"
+							autoClose={5000}
+							hideProgressBar={false}
+							newestOnTop={false}
+							closeOnClick
+							rtl={false}
+							pauseOnFocusLoss
+							draggable
+							pauseOnHover
+							theme="light"
+						/>
 					</CartProvider>
 				</FavoritesProvider>
 			</body>

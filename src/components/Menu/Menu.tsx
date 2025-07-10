@@ -114,7 +114,7 @@ export default function Menu() {
 							></span>
 						</Link>
 						<Link
-							href="/"
+							href="/contact"
 							className="relative group text-logo font-balqis font-semibold text-2xl transition-colors inline-block"
 							onClick={closeMenu}
 						>

@@ -9,19 +9,25 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@getbrevo/brevo": "^2.5.0",
+		"@hookform/resolvers": "^5.1.1",
 		"@sanity/client": "^7.6.0",
 		"@sanity/image-url": "^1.1.0",
 		"@sanity/vision": "^3.97.1",
 		"clsx": "^2.1.1",
+		"framer-motion": "^12.23.3",
 		"next": "15.3.4",
 		"next-sanity": "^9.12.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"react-hook-form": "^7.60.0",
 		"react-icons": "^5.5.0",
 		"react-is": "^19.1.0",
+		"react-toastify": "^11.0.5",
 		"sanity": "^3.97.1",
 		"styled-components": "^6.1.19",
-		"tailwind-merge": "^3.3.1"
+		"tailwind-merge": "^3.3.1",
+		"zod": "^4.0.4"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",
