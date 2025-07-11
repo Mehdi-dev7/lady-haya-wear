@@ -12,9 +12,9 @@ export default function ContactLeft() {
 				transition={{ duration: 0.6 }}
 			>
 				<h2 className="text-3xl md:text-4xl font-alex-brush text-logo mb-6">
-					Obtenir un devis
+					Formulaire de contact
 				</h2>
-				<p className="text-nude-dark-2 font-balqis text-lg leading-relaxed">
+				<p className="text-nude-dark text-lg leading-relaxed">
 					Remplissez le formulaire ci-dessous et nous vous répondrons dans les
 					plus brefs délais.
 				</p>

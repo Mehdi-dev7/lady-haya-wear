@@ -264,6 +264,53 @@ body.navbar-visible {
 	.hover\:text-logo:hover {
 		color: var(--color-logo);
 	}
+	.hover\:text-nude-light:hover {
+		color: var(--color-nude-light);
+	}
+	.hover\:text-nude-dark:hover {
+		color: var(--color-nude-dark);
+	}
+	.hover\:border-nude-dark:hover {
+		border-color: var(--color-nude-dark);
+	}
+
+	/* Border colors */
+	.border-nude-light {
+		border-color: var(--color-nude-light);
+	}
+	.border-nude-medium {
+		border-color: var(--color-nude-medium);
+	}
+	.border-nude-dark {
+		border-color: var(--color-nude-dark);
+	}
+	.border-nude-dark-2 {
+		border-color: var(--color-nude-dark-2);
+	}
+	.border-rose-light {
+		border-color: var(--color-rose-light);
+	}
+	.border-rose-medium {
+		border-color: var(--color-rose-medium);
+	}
+	.border-rose-dark {
+		border-color: var(--color-rose-dark);
+	}
+	.border-rose-dark-2 {
+		border-color: var(--color-rose-dark-2);
+	}
+	.border-beige-light {
+		border-color: var(--color-beige-light);
+	}
+	.border-beige-medium {
+		border-color: var(--color-beige-medium);
+	}
+	.border-beige-dark {
+		border-color: var(--color-beige-dark);
+	}
+	.border-logo {
+		border-color: var(--color-logo);
+	}
 
 	/* Ring colors pour les bordures */
 	.ring-rose-medium {

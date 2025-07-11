@@ -1,10 +1,10 @@
 "use client";
 import { useFavorites } from "@/lib/FavoritesContext";
+import { urlFor } from "@/lib/sanity";
 import Image from "next/image";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 import { FiHeart } from "react-icons/fi";
-import { urlFor } from "@/lib/sanity";
 
 interface ProductListProps {
 	featuredProducts: any[];
@@ -13,10 +13,22 @@ interface ProductListProps {
 export default function ProductList({ featuredProducts }: ProductListProps) {
 	const { favorites, toggleFavorite } = useFavorites();
 
-	const handleToggleFavorite = (productId: number, e: React.MouseEvent) => {
+	const handleToggleFavorite = (product: any, e: React.MouseEvent) => {
 		e.preventDefault(); // Empêcher la navigation du Link
 		e.stopPropagation();
-		toggleFavorite(productId);
+
+		// Créer l'objet Product attendu par le contexte
+		const productForFavorites = {
+			productId: product._id,
+			name: product.name,
+			price: product.price || 0,
+			originalPrice: product.originalPrice,
+			image: urlFor(product.mainImage)?.url() || "/assets/placeholder.jpg",
+			imageAlt: product.mainImage?.alt || product.name,
+			slug: product.slug?.current || product._id,
+		};
+
+		toggleFavorite(productForFavorites);
 	};
 
 	return (
@@ -86,10 +98,10 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 									Voir le produit
 								</button>
 								<button
-									onClick={(e) => handleToggleFavorite(product._id, e)}
+									onClick={(e) => handleToggleFavorite(product, e)}
 									className="p-2 hover:scale-110 transition-transform duration-200 cursor-pointer pointer-events-auto"
 								>
-									{favorites.includes(product._id) ? (
+									{favorites.some((fav) => fav.productId === product._id) ? (
 										<FaHeart className="text-xl text-red-400" />
 									) : (
 										<FiHeart className="text-xl text-gray-400 hover:text-red-400 transition-colors duration-200" />

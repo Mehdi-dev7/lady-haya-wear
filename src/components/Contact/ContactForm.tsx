@@ -76,20 +76,20 @@ export default function ContactForm() {
 					viewport={{ amount: 0.3, once: true }}
 					transition={{ duration: 0.5, delay: 0.1 }}
 				>
-					<label className="block text-nude-dark-2 font-balqis text-lg mb-2">
-						Nom ou Société
+					<label className="block text-nude-dark text-lg mb-2">
+						Nom & Prénom
 					</label>
 					<input
 						type="text"
-						placeholder="Votre nom ou le nom de votre société"
+						placeholder="Votre nom & prénom"
 						required
-						className={`h-14 rounded-xl bg-white/80 backdrop-blur-sm px-4 w-full border-2 ${
+						className={`h-14 rounded-xl bg-beige-light backdrop-blur-sm px-4 w-full border-2 border-nude-dark ${
 							errors.name ? "border-red-400" : "border-nude-light"
 						} focus:border-logo focus:outline-none transition-all duration-300 font-balqis text-lg`}
 						{...register("name")}
 					/>
 					{errors.name && (
-						<p className="text-red-500 text-sm mt-2 font-balqis">
+						<p className="text-red-500 text-sm mt-2">
 							{errors.name.message}
 						</p>
 					)}
@@ -101,19 +101,19 @@ export default function ContactForm() {
 					viewport={{ amount: 0.3, once: true }}
 					transition={{ duration: 0.5, delay: 0.2 }}
 				>
-					<label className="block text-nude-dark-2 font-balqis text-lg mb-2">
+					<label className="block text-nude-dark text-lg mb-2">
 						Email
 					</label>
 					<input
 						type="email"
 						placeholder="votre.email@exemple.com"
-						className={`h-14 rounded-xl bg-white/80 backdrop-blur-sm px-4 w-full border-2 ${
+						className={`h-14 rounded-xl bg-beige-light backdrop-blur-sm px-4 w-full border-2 border-nude-dark ${
 							errors.email ? "border-red-400" : "border-nude-light"
-						} focus:border-logo focus:outline-none transition-all duration-300 font-balqis text-lg`}
+						} focus:border-logo focus:outline-none transition-all duration-300 font-balqis  text-lg`}
 						{...register("email")}
 					/>
 					{errors.email && (
-						<p className="text-red-500 text-sm mt-2 font-balqis">
+						<p className="text-red-500 text-sm mt-2">
 							{errors.email.message}
 						</p>
 					)}
@@ -125,20 +125,20 @@ export default function ContactForm() {
 					viewport={{ amount: 0.3, once: true }}
 					transition={{ duration: 0.5, delay: 0.3 }}
 				>
-					<label className="block text-nude-dark-2 font-balqis text-lg mb-2">
+					<label className="block text-nude-dark text-lg mb-2">
 						Message
 					</label>
 					<textarea
-						placeholder="Décrivez votre projet ou posez votre question..."
+						placeholder="Décrivez votre problème ou posez votre question..."
 						rows={8}
 						required
-						className={`rounded-xl bg-white/80 backdrop-blur-sm p-4 w-full border-2 ${
+						className={`rounded-xl bg-beige-light backdrop-blur-sm p-4 w-full border-2 border-nude-dark ${
 							errors.message ? "border-red-400" : "border-nude-light"
 						} focus:border-logo focus:outline-none transition-all duration-300 resize-none font-balqis text-lg`}
 						{...register("message")}
 					/>
 					{errors.message && (
-						<p className="text-red-500 text-sm mt-2 font-balqis">
+						<p className="text-red-500 text-sm mt-2">
 							{errors.message.message}
 						</p>
 					)}
@@ -153,7 +153,7 @@ export default function ContactForm() {
 					<button
 						type="submit"
 						disabled={isSubmitting}
-						className={`w-full mt-8 rounded-xl border-2 border-logo hover:bg-logo hover:text-white duration-300 bg-white/80 backdrop-blur-sm h-14 font-balqis text-xl cursor-pointer shadow-lg hover:shadow-xl hover:scale-105 transition-all ${
+						className={`w-full mt-8 rounded-xl border-2 border-nude-light bg-nude-dark hover:bg-rose-dark text-nude-light hover:text-nude-dark hover:border-nude-dark duration-300   backdrop-blur-sm h-14 text-lg cursor-pointer shadow-lg hover:shadow-xl hover:scale-105 transition-all ${
 							isSubmitting ? "opacity-50 cursor-not-allowed" : ""
 						}`}
 					>

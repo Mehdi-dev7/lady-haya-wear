@@ -22,7 +22,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
 	return (
 		<div>
 			{/* Header de la collection */}
-			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-rose-200/40 py-16">
+			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-nude-light py-16">
 				<div className="flex flex-col md:flex-row items-center gap-8">
 					{/* Image de la collection */}
 					<div className="relative w-full md:w-1/3 h-80 mt-8 lg:mt-14 rounded-2xl overflow-hidden shadow-lg">
@@ -98,7 +98,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
 							<Link
 								key={product._id}
 								href={`/products/${product.slug?.current || product._id}`}
-								className={`w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 ${index % 2 === 0 ? "bg-nude-light" : "bg-rose-light-2"}`}
+								className={`w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 ${index % 2 === 0 ? "bg-[#d9c4b5]/80" : "bg-rose-light-2"}`}
 							>
 								{/* Image du produit */}
 								<div className="relative w-full h-[28rem] rounded-2xl overflow-hidden group">
