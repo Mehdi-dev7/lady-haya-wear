@@ -76,22 +76,21 @@ export default function ContactForm() {
 					viewport={{ amount: 0.3, once: true }}
 					transition={{ duration: 0.5, delay: 0.1 }}
 				>
-					<label className="block text-nude-dark text-lg mb-2">
+					<label className="block text-nude-dark-2 text-lg mb-2 font-balqis">
 						Nom & Prénom
 					</label>
 					<input
 						type="text"
 						placeholder="Votre nom & prénom"
 						required
+						autoComplete=""
 						className={`h-14 rounded-xl bg-beige-light backdrop-blur-sm px-4 w-full border-2 border-nude-dark ${
 							errors.name ? "border-red-400" : "border-nude-light"
-						} focus:border-logo focus:outline-none transition-all duration-300 font-balqis text-lg`}
+						} focus:border-rose-200 focus:outline-none transition-all duration-300 text-lg text-gray-400 [&:-webkit-autofill]:bg-beige-light [&:-webkit-autofill]:text-gray-400 [&:-webkit-autofill]:shadow-[0_0_0_30px_#f5f5dc_inset]`}
 						{...register("name")}
 					/>
 					{errors.name && (
-						<p className="text-red-500 text-sm mt-2">
-							{errors.name.message}
-						</p>
+						<p className="text-red-500 text-sm mt-2">{errors.name.message}</p>
 					)}
 				</motion.div>
 
@@ -101,21 +100,20 @@ export default function ContactForm() {
 					viewport={{ amount: 0.3, once: true }}
 					transition={{ duration: 0.5, delay: 0.2 }}
 				>
-					<label className="block text-nude-dark text-lg mb-2">
+					<label className="block text-nude-dark-2 text-lg mb-2 font-balqis">
 						Email
 					</label>
 					<input
 						type="email"
 						placeholder="votre.email@exemple.com"
+						autoComplete=""
 						className={`h-14 rounded-xl bg-beige-light backdrop-blur-sm px-4 w-full border-2 border-nude-dark ${
 							errors.email ? "border-red-400" : "border-nude-light"
-						} focus:border-logo focus:outline-none transition-all duration-300 font-balqis  text-lg`}
+						} focus:border-rose-200 focus:outline-none transition-all duration-300  text-lg text-gray-400 [&:-webkit-autofill]:bg-beige-light [&:-webkit-autofill]:text-gray-400 [&:-webkit-autofill]:shadow-[0_0_0_30px_#f5f5dc_inset]`}
 						{...register("email")}
 					/>
 					{errors.email && (
-						<p className="text-red-500 text-sm mt-2">
-							{errors.email.message}
-						</p>
+						<p className="text-red-500 text-sm mt-2">{errors.email.message}</p>
 					)}
 				</motion.div>
 
@@ -125,16 +123,17 @@ export default function ContactForm() {
 					viewport={{ amount: 0.3, once: true }}
 					transition={{ duration: 0.5, delay: 0.3 }}
 				>
-					<label className="block text-nude-dark text-lg mb-2">
+					<label className="block text-nude-dark-2 text-lg mb-2 font-balqis">
 						Message
 					</label>
 					<textarea
 						placeholder="Décrivez votre problème ou posez votre question..."
 						rows={8}
 						required
+						autoComplete="off"
 						className={`rounded-xl bg-beige-light backdrop-blur-sm p-4 w-full border-2 border-nude-dark ${
 							errors.message ? "border-red-400" : "border-nude-light"
-						} focus:border-logo focus:outline-none transition-all duration-300 resize-none font-balqis text-lg`}
+						} focus:border-rose-200 focus:outline-none transition-all duration-300 resize-none text-lg text-gray-400 [&:-webkit-autofill]:bg-beige-light [&:-webkit-autofill]:text-gray-400 [&:-webkit-autofill]:shadow-[0_0_0_30px_#f5f5dc_inset]`}
 						{...register("message")}
 					/>
 					{errors.message && (

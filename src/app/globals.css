@@ -267,11 +267,20 @@ body.navbar-visible {
 	.hover\:text-nude-light:hover {
 		color: var(--color-nude-light);
 	}
+	.hover\:text-rose-light-2:hover {
+		color: var(--color-rose-light-2);
+	}
 	.hover\:text-nude-dark:hover {
 		color: var(--color-nude-dark);
 	}
 	.hover\:border-nude-dark:hover {
 		border-color: var(--color-nude-dark);
+	}
+	.hover\:border-nude-light:hover {
+		border-color: var(--color-nude-light);
+	}
+	.hover\:border-rose-light-2:hover {
+		border-color: var(--color-rose-light-2);
 	}
 
 	/* Border colors */
