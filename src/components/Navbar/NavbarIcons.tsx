@@ -8,6 +8,7 @@ import { useState } from "react";
 import { FaHeart, FaUser } from "react-icons/fa";
 import { FaBagShopping } from "react-icons/fa6";
 import CartModal from "../CartModal/CartModal";
+import FavModal from "../FavModal/FavModal";
 
 export default function NavbarIcons() {
 	const router = useRouter();
@@ -16,6 +17,7 @@ export default function NavbarIcons() {
 
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isCartOpen, setIsCartOpen] = useState(false);
+	const [isFavOpen, setIsFavOpen] = useState(false);
 
 	// TEMPORY
 	const isLoggedIn = false;
@@ -40,7 +42,10 @@ export default function NavbarIcons() {
 				</div>
 			)}
 			<div className="relative cursor-pointer">
-				<FaHeart className="text-xl md:text-2xl cursor-pointer text-logo" />
+				<FaHeart
+					className="text-xl md:text-2xl cursor-pointer text-logo"
+					onClick={() => setIsFavOpen(true)}
+				/>
 				{favorites.length > 0 && (
 					<div className="absolute -top-4 -right-4 w-6 h-6 bg-red-400 rounded-full text-white text-sm flex items-center justify-center">
 						{favorites.length}
@@ -63,6 +68,9 @@ export default function NavbarIcons() {
 				)}
 				{isCartOpen && <CartModal onClose={() => setIsCartOpen(false)} />}
 			</div>
+
+			{/* FavModal */}
+			<FavModal isOpen={isFavOpen} onClose={() => setIsFavOpen(false)} />
 		</div>
 	);
 }

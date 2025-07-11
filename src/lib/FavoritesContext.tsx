@@ -16,6 +16,7 @@ interface FavoritesContextType {
 	addToFavorites: (product: Product) => void;
 	removeFromFavorites: (productId: string) => void;
 	toggleFavorite: (product: Product) => void;
+	clearAllFavorites: () => void;
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(
@@ -51,9 +52,13 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 		});
 	};
 
+	const clearAllFavorites = () => {
+		setFavorites([]);
+	};
+
 	return (
 		<FavoritesContext.Provider
-			value={{ favorites, addToFavorites, removeFromFavorites, toggleFavorite }}
+			value={{ favorites, addToFavorites, removeFromFavorites, toggleFavorite, clearAllFavorites }}
 		>
 			{children}
 		</FavoritesContext.Provider>
