@@ -9,6 +9,13 @@ interface Product {
 	image: string;
 	imageAlt?: string;
 	slug?: string;
+	category?: {
+		_id: string;
+		name: string;
+		slug: {
+			current: string;
+		};
+	};
 }
 
 interface FavoritesContextType {
@@ -58,7 +65,13 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
 	return (
 		<FavoritesContext.Provider
-			value={{ favorites, addToFavorites, removeFromFavorites, toggleFavorite, clearAllFavorites }}
+			value={{
+				favorites,
+				addToFavorites,
+				removeFromFavorites,
+				toggleFavorite,
+				clearAllFavorites,
+			}}
 		>
 			{children}
 		</FavoritesContext.Provider>

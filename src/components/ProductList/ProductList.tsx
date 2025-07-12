@@ -26,6 +26,7 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 			image: urlFor(product.mainImage)?.url() || "/assets/placeholder.jpg",
 			imageAlt: product.mainImage?.alt || product.name,
 			slug: product.slug?.current || product._id,
+			category: product.category,
 		};
 
 		toggleFavorite(productForFavorites);
@@ -84,12 +85,27 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 
 							{/* Informations du produit */}
 							<div className="flex flex-col gap-2">
-								<h3 className="font-medium text-nude text-lg">
+								<h3 className="font-medium text-nude-dark-2 text-lg">
 									{product.name}
 								</h3>
 								<p className="text-sm text-gray-500 line-clamp-2">
 									{product.shortDescription}
 								</p>
+
+								{/* Prix */}
+								<div className="flex items-center gap-2 mt-2">
+									{product.originalPrice &&
+										product.originalPrice > product.price && (
+											<span className="text-sm text-gray-400 line-through">
+												{product.originalPrice.toFixed(2)} €
+											</span>
+										)}
+									<span className="text-lg font-semibold text-nude-dark">
+										{product.price
+											? `${product.price.toFixed(2)} €`
+											: "Prix sur demande"}
+									</span>
+								</div>
 							</div>
 
 							{/* Boutons d'action */}

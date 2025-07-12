@@ -97,7 +97,9 @@ export async function getProductsByCategory(
       featured,
       isNew,
       _createdAt,
-      _updatedAt
+      _updatedAt,
+      "price": *[_type == "productDetail" && product._ref == ^._id][0].price,
+      "originalPrice": *[_type == "productDetail" && product._ref == ^._id][0].originalPrice
     } | order(_createdAt desc)
   `;
 
@@ -291,7 +293,9 @@ export async function getFeaturedProducts(): Promise<Product[]> {
       featured,
       isNew,
       _createdAt,
-      _updatedAt
+      _updatedAt,
+      "price": *[_type == "productDetail" && product._ref == ^._id][0].price,
+      "originalPrice": *[_type == "productDetail" && product._ref == ^._id][0].originalPrice
     } | order(_createdAt desc) [0...6]
   `;
 

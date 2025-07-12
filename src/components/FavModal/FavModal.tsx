@@ -33,11 +33,11 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 						initial={{ scale: 0.9, opacity: 0 }}
 						animate={{ scale: 1, opacity: 1 }}
 						exit={{ scale: 0.9, opacity: 0 }}
-						className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
+						className="bg-nude-light rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
 					>
 						{/* Header */}
 						<div className="bg-nude-dark text-nude-light p-6">
-							<h2 className="text-2xl font-balqis text-center">
+							<h2 className="text-4xl font-alex-brush text-center">
 								Mes Favoris ({favorites.length})
 							</h2>
 						</div>
@@ -81,11 +81,11 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 														href={`/products/${favorite.slug}`}
 														className="block hover:opacity-80 transition-opacity"
 													>
-														<h3 className="font-balqis text-lg text-nude-dark-2 truncate">
+														<h3 className="font-balqis text-2xl font-semibold text-nude-dark-2 truncate">
 															{favorite.name}
 														</h3>
-														<p className="text-gray-600 text-sm truncate">
-															{favorite.category?.name}
+														<p className="text-gray-500 text-sm truncate">
+															Catégorie : {favorite.category?.name}
 														</p>
 														<p className="text-nude-dark font-semibold">
 															{favorite.price} €
@@ -96,7 +96,7 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 												{/* Delete Button */}
 												<button
 													onClick={() => removeFromFavorites(favorite.productId)}
-													className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors cursor-pointer"
+													className="p-2 text-gray-600 hover:text-red-500 hover:scale-105 transition-colors cursor-pointer"
 													title="Supprimer des favoris"
 												>
 													<FaTrash className="text-lg" />
@@ -122,7 +122,7 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 												clearAllFavorites();
 											}
 										}}
-										className="text-red-500 hover:text-red-700 text-sm font-medium cursor-pointer"
+										className="text-red-400 hover:text-red-600 text-sm font-medium cursor-pointer"
 									>
 										Tout supprimer
 									</button>

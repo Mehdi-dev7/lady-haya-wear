@@ -105,6 +105,7 @@ export function ProductPageClient({
 				urlFor(selectedColor?.mainImage)?.url() || "/assets/placeholder.jpg",
 			imageAlt: selectedColor?.mainImage?.alt || product.name,
 			slug: product.slug?.current || product._id,
+			category: product.category,
 		});
 	};
 
