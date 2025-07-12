@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import {
+	TbChevronUp,
 	TbCreditCard,
 	TbHeadset,
 	TbPackage,
@@ -35,6 +36,7 @@ export function ProductPageClient({
 	const [selectedSize, setSelectedSize] = useState<string | null>(null);
 	const [quantity, setQuantity] = useState(1);
 	const [isAddingToCart, setIsAddingToCart] = useState(false);
+	const [showSizeGuide, setShowSizeGuide] = useState(false);
 
 	const { addToCart } = useCart();
 	const { favorites, toggleFavorite } = useFavorites();
@@ -422,6 +424,77 @@ export function ProductPageClient({
 									</div>
 								)}
 
+							{/* Guide des tailles */}
+							<div className="border-t border-gray-200">
+								<button
+									onClick={() => setShowSizeGuide(!showSizeGuide)}
+									className="flex items-center gap-2 text-nude-dark hover:text-rose-dark-2 transition-colors cursor-pointer"
+								>
+									<h2 className="text-lg font-medium">Guide des tailles</h2>
+									<TbChevronUp
+										className={`w-5 h-5 transition-transform duration-300 ${
+											showSizeGuide ? "rotate-180" : ""
+										}`}
+									/>
+								</button>
+
+								{/* Contenu du guide des tailles */}
+								{showSizeGuide && (
+									<div className="mt-4 p-4 bg-rose-light-2 rounded-2xl border border-nude-light max-w-md">
+										{/* Tableau des tailles */}
+										<div>
+											<h3 className="font-semibold text-nude-dark mb-3">
+												Tailles disponibles
+											</h3>
+											<div className="space-y-2">
+												{[
+													{ size: "XS", height: "1M55-1M60" },
+													{ size: "S", height: "1M60-1M65" },
+													{ size: "M", height: "1M65-1M70" },
+													{ size: "L", height: "1M70-1M75" },
+													{ size: "XL", height: "1M75-1M80" },
+													{ size: "XXL", height: "1M80-1M85" },
+												].map((sizeInfo) => (
+													<div
+														key={sizeInfo.size}
+														className="flex justify-between items-center py-2 px-3 bg-white rounded-lg border border-nude-light"
+													>
+														<span className="font-semibold text-nude-dark">
+															{sizeInfo.size}
+														</span>
+														<span className="text-sm text-gray-600">
+															{sizeInfo.height}
+														</span>
+													</div>
+												))}
+											</div>
+
+											<div className="mt-4 text-center">
+												<Link
+													href="/guide-tailles"
+													className="inline-flex items-center gap-2 text-rose-dark-2 hover:text-rose-dark transition-colors text-sm font-medium underline"
+												>
+													Plus de détails sur les tailles
+													<svg
+														className="w-4 h-4"
+														fill="none"
+														stroke="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path
+															strokeLinecap="round"
+															strokeLinejoin="round"
+															strokeWidth={2}
+															d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+														/>
+													</svg>
+												</Link>
+											</div>
+										</div>
+									</div>
+								)}
+							</div>
+
 							{/* Quantité */}
 							<div className="mb-10">
 								<h3 className="text-xl font-medium text-nude-dark mb-3">
@@ -465,7 +538,7 @@ export function ProductPageClient({
 								</button>
 								<button
 									onClick={handleToggleFavorite}
-									className="p-4 ring-2 ring-nude-dark text-nude-dark rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer"
+									className="p-4 ring-2 ring-nude-dark text-nude-dark rounded-2xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer"
 								>
 									<svg
 										className={`w-5 h-5 transition-all duration-300 ${
@@ -493,7 +566,7 @@ export function ProductPageClient({
 						<div className="border-t border-gray-200 pt-6 space-y-4">
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 								{/* Livraison gratuite */}
-								<div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-100">
+								<div className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100">
 									<TbTruckDelivery className="w-6 h-6 text-green-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
@@ -504,7 +577,7 @@ export function ProductPageClient({
 								</div>
 
 								{/* Paiement sécurisé */}
-								<div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-100">
+								<div className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100">
 									<TbCreditCard className="w-6 h-6 text-blue-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
@@ -517,7 +590,7 @@ export function ProductPageClient({
 								</div>
 
 								{/* Satisfait ou remboursé */}
-								<div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-100">
+								<div className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100">
 									<TbPackage className="w-6 h-6 text-orange-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
@@ -530,7 +603,7 @@ export function ProductPageClient({
 								</div>
 
 								{/* Service client */}
-								<div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-100">
+								<div className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100">
 									<TbHeadset className="w-6 h-6 text-purple-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
@@ -541,7 +614,7 @@ export function ProductPageClient({
 								</div>
 
 								{/* Envoi rapide */}
-								<div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-100">
+								<div className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100">
 									<TbPackageExport className="w-6 h-6 text-red-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
