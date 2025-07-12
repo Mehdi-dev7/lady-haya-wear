@@ -56,7 +56,7 @@ export default function ContactRight() {
 						<FaTwitter className="text-xl text-white" />
 					</a>
 					<a
-						href="https://instagram.com/ladyhaya"
+						href="https://instagram.com/lady.haya_wear"
 						target="_blank"
 						rel="noopener noreferrer"
 						className="p-3 bg-pink-600 rounded-full hover:bg-pink-700 transition-colors duration-300"

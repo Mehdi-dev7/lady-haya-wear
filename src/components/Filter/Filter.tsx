@@ -246,9 +246,10 @@ export default function Filter({
 				</div>
 
 				<div className="flex gap-2 lg:-ml-12">
+					{/* Bouton Filtres - visible sur tous les écrans sauf xl+ */}
 					<button
 						onClick={() => setShowFilters(!showFilters)}
-						className={`flex items-center gap-2 px-2 py-1 rounded-2xl border-2 cursor-pointer transition-colors ${
+						className={`xl:hidden flex items-center gap-2 px-2 py-1 rounded-2xl border-2 cursor-pointer transition-colors ${
 							showFilters
 								? "border-nude-dark bg-nude-medium text-nude-light"
 								: "border-nude-medium text-nude-dark hover:border-nude-medium"
@@ -256,6 +257,18 @@ export default function Filter({
 					>
 						<FaFilter />
 						Filtres
+					</button>
+
+					{/* Menu hamburger pour xl+ */}
+					<button
+						onClick={() => setShowFilters(!showFilters)}
+						className={`hidden xl:flex items-center justify-center w-10 h-10 rounded-2xl border-2 cursor-pointer transition-colors ${
+							showFilters
+								? "border-nude-dark bg-nude-medium text-nude-light"
+								: "border-nude-medium text-nude-dark hover:border-nude-medium"
+						}`}
+					>
+						<FaFilter className="w-4 h-4" />
 					</button>
 
 					{hasActiveFilters && (

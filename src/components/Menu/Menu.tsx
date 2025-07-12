@@ -104,7 +104,7 @@ export default function Menu() {
 							className="relative group text-logo font-balqis font-semibold text-2xl transition-colors inline-block"
 							onClick={closeMenu}
 						>
-							Produits
+							Tous nos Produits
 							<span
 								className="absolute bottom-0 left-1/2 w-0 menu-underline group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"
 								style={{
@@ -147,7 +147,7 @@ export default function Menu() {
 									<FaTwitter className="text-xl text-white" />
 								</a>
 								<a
-									href="https://instagram.com/ladyhaya"
+									href="https://instagram.com/lady.haya_wear"
 									target="_blank"
 									rel="noopener noreferrer"
 									className="p-3 bg-pink-600 rounded-full hover:bg-pink-700 transition-colors duration-300"

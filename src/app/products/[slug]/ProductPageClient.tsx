@@ -6,6 +6,13 @@ import { urlFor } from "@/lib/sanity";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import {
+	TbCreditCard,
+	TbHeadset,
+	TbPackage,
+	TbPackageExport,
+	TbTruckDelivery,
+} from "react-icons/tb";
 import { toast } from "react-toastify";
 
 interface ProductPageClientProps {
@@ -484,41 +491,67 @@ export function ProductPageClient({
 
 						{/* Informations supplémentaires */}
 						<div className="border-t border-gray-200 pt-6 space-y-4">
-							<div className="flex items-center gap-3">
-								<svg
-									className="w-5 h-5 text-green-500"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M5 13l4 4L19 7"
-									/>
-								</svg>
-								<span className="text-sm text-nude-dark">
-									Livraison gratuite dès 50€
-								</span>
-							</div>
-							<div className="flex items-center gap-3">
-								<svg
-									className="w-5 h-5 text-green-500"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M5 13l4 4L19 7"
-									/>
-								</svg>
-								<span className="text-sm text-nude-dark">
-									Retours gratuits sous 30 jours
-								</span>
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+								{/* Livraison gratuite */}
+								<div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-100">
+									<TbTruckDelivery className="w-6 h-6 text-green-500 flex-shrink-0" />
+									<div>
+										<div className="font-semibold text-sm text-nude-dark">
+											Livraison gratuite
+										</div>
+										<div className="text-xs text-gray-600">Dès 60€ d'achat</div>
+									</div>
+								</div>
+
+								{/* Paiement sécurisé */}
+								<div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-100">
+									<TbCreditCard className="w-6 h-6 text-blue-500 flex-shrink-0" />
+									<div>
+										<div className="font-semibold text-sm text-nude-dark">
+											Paiement sécurisé
+										</div>
+										<div className="text-xs text-gray-600">
+											CB, PayPal, Apple Pay
+										</div>
+									</div>
+								</div>
+
+								{/* Satisfait ou remboursé */}
+								<div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-100">
+									<TbPackage className="w-6 h-6 text-orange-500 flex-shrink-0" />
+									<div>
+										<div className="font-semibold text-sm text-nude-dark">
+											Satisfait ou remboursé
+										</div>
+										<div className="text-xs text-gray-600">
+											30 jours pour changer d'avis
+										</div>
+									</div>
+								</div>
+
+								{/* Service client */}
+								<div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-100">
+									<TbHeadset className="w-6 h-6 text-purple-500 flex-shrink-0" />
+									<div>
+										<div className="font-semibold text-sm text-nude-dark">
+											Service client
+										</div>
+										<div className="text-xs text-gray-600">Support 7j/7</div>
+									</div>
+								</div>
+
+								{/* Envoi rapide */}
+								<div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-100">
+									<TbPackageExport className="w-6 h-6 text-red-500 flex-shrink-0" />
+									<div>
+										<div className="font-semibold text-sm text-nude-dark">
+											Envoi rapide
+										</div>
+										<div className="text-xs text-gray-600">
+											Livraison en 24-48h
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

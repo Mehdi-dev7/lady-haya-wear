@@ -48,8 +48,8 @@ export default function Navbar() {
 					isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
 				}`}
 			>
-				{/* Mobile */}
-				<div className="flex items-center justify-between h-full lg:hidden">
+				{/* Mobile et Tablet (sm à lg) */}
+				<div className="flex items-center justify-between h-full xl:hidden">
 					<div className="relative">
 						<IoMdMenu
 							className={`text-4xl cursor-pointer text-logo transition-all duration-300 ${
@@ -88,8 +88,8 @@ export default function Navbar() {
 					</Link>
 					<NavbarIcons />
 				</div>
-				{/* Desktop */}
-				<div className="hidden lg:flex items-center h-full relative">
+				{/* Desktop (xl+) */}
+				<div className="hidden xl:flex items-center h-full relative">
 					{/* LEFT - Logo */}
 					<Link href="/" className="flex items-center gap-3 absolute left-0">
 						<Image
@@ -125,7 +125,7 @@ export default function Navbar() {
 								href="/allProducts"
 								className="relative group text-logo font-balqis font-semibold text-2xl transition-colors tracking-wide"
 							>
-								Produits
+								Tous nos Produits
 								<span className="absolute bottom-0 left-1/2 w-0 menu-underline h-[1px] group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 							</Link>
 							<Link
