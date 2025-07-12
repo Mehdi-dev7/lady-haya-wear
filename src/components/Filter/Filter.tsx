@@ -241,11 +241,11 @@ export default function Filter({
 						placeholder="Rechercher un produit..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
-						className="w-1/2 pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors"
+						className="w-2/3 md:w-1/2 lg:w-1/3 pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors"
 					/>
 				</div>
 
-				<div className="flex gap-2">
+				<div className="flex gap-2 lg:-ml-12">
 					<button
 						onClick={() => setShowFilters(!showFilters)}
 						className={`flex items-center gap-2 px-2 py-1 rounded-2xl border-2 cursor-pointer transition-colors ${
