@@ -24,7 +24,6 @@ interface Product {
 
 export default function FeaturedProducts() {
 	const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchFeaturedProducts = async () => {
@@ -36,35 +35,11 @@ export default function FeaturedProducts() {
 					"Erreur lors du chargement des produits vedettes:",
 					error
 				);
-			} finally {
-				setLoading(false);
 			}
 		};
 
 		fetchFeaturedProducts();
 	}, []);
-
-	if (loading) {
-		return (
-			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-white py-16">
-				<div className="text-center mb-12">
-					<h2 className="text-4xl lg:text-5xl font-alex-brush text-logo mb-4">
-						Produits Vedettes
-					</h2>
-					<p className="text-lg text-nude-dark">Nos coups de cœur pour vous</p>
-				</div>
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-					{[...Array(6)].map((_, i) => (
-						<div key={i} className="animate-pulse">
-							<div className="h-80 bg-gray-200 rounded-2xl mb-4"></div>
-							<div className="h-4 bg-gray-200 rounded mb-2"></div>
-							<div className="h-4 bg-gray-200 rounded w-2/3"></div>
-						</div>
-					))}
-				</div>
-			</section>
-		);
-	}
 
 	if (featuredProducts.length === 0) {
 		return null; // Ne rien afficher s'il n'y a pas de produits vedettes
