@@ -5,11 +5,11 @@ export default function ProductLoading() {
 			<nav className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-4 bg-white/50">
 				<div className="animate-pulse">
 					<div className="flex items-center gap-2">
-						<div className="h-4 bg-nude-light rounded w-16"></div>
-						<div className="h-4 bg-nude-light rounded w-4"></div>
-						<div className="h-4 bg-nude-light rounded w-20"></div>
-						<div className="h-4 bg-nude-light rounded w-4"></div>
-						<div className="h-4 bg-nude-light rounded w-24"></div>
+						<div className="h-4 bg-nude-medium rounded w-16"></div>
+						<div className="h-4 bg-nude-medium rounded w-4"></div>
+						<div className="h-4 bg-nude-medium rounded w-20"></div>
+						<div className="h-4 bg-nude-medium rounded w-4"></div>
+						<div className="h-4 bg-nude-medium rounded w-24"></div>
 					</div>
 				</div>
 			</nav>
@@ -20,14 +20,14 @@ export default function ProductLoading() {
 					{/* Images Loading */}
 					<div className="animate-pulse">
 						{/* Image principale */}
-						<div className="w-full h-96 lg:h-[600px] bg-nude-light rounded-2xl mb-4"></div>
+						<div className="w-full h-96 lg:h-[600px] bg-nude-medium rounded-2xl mb-4"></div>
 
 						{/* Miniatures */}
 						<div className="flex gap-4">
 							{[...Array(4)].map((_, i) => (
 								<div
 									key={i}
-									className="w-20 h-20 bg-nude-light rounded-lg"
+									className="w-20 h-20 bg-nude-medium rounded-lg"
 								></div>
 							))}
 						</div>
@@ -36,29 +36,29 @@ export default function ProductLoading() {
 					{/* Product Info Loading */}
 					<div className="animate-pulse">
 						{/* Titre */}
-						<div className="h-8 bg-nude-light rounded-lg mb-4 w-3/4"></div>
+						<div className="h-8 bg-nude-medium rounded-lg mb-4 w-3/4"></div>
 
 						{/* Prix */}
 						<div className="flex items-center gap-4 mb-6">
-							<div className="h-6 bg-nude-light rounded w-20"></div>
-							<div className="h-6 bg-nude-light rounded w-16"></div>
+							<div className="h-6 bg-nude-medium rounded w-20"></div>
+							<div className="h-6 bg-nude-medium rounded w-16"></div>
 						</div>
 
 						{/* Description */}
 						<div className="space-y-3 mb-8">
-							<div className="h-4 bg-nude-light rounded w-full"></div>
-							<div className="h-4 bg-nude-light rounded w-5/6"></div>
-							<div className="h-4 bg-nude-light rounded w-4/6"></div>
+							<div className="h-4 bg-nude-medium rounded w-full"></div>
+							<div className="h-4 bg-nude-medium rounded w-5/6"></div>
+							<div className="h-4 bg-nude-medium rounded w-4/6"></div>
 						</div>
 
 						{/* Couleurs */}
 						<div className="mb-8">
-							<div className="h-6 bg-nude-light rounded w-24 mb-4"></div>
+							<div className="h-6 bg-nude-medium rounded w-24 mb-4"></div>
 							<div className="flex gap-3">
 								{[...Array(4)].map((_, i) => (
 									<div
 										key={i}
-										className="w-12 h-12 bg-nude-light rounded-full"
+										className="w-12 h-12 bg-nude-medium rounded-full"
 									></div>
 								))}
 							</div>
@@ -66,12 +66,12 @@ export default function ProductLoading() {
 
 						{/* Tailles */}
 						<div className="mb-8">
-							<div className="h-6 bg-nude-light rounded w-20 mb-4"></div>
+							<div className="h-6 bg-nude-medium rounded w-20 mb-4"></div>
 							<div className="flex gap-3">
 								{[...Array(5)].map((_, i) => (
 									<div
 										key={i}
-										className="w-16 h-12 bg-nude-light rounded-lg"
+										className="w-16 h-12 bg-nude-medium rounded-lg"
 									></div>
 								))}
 							</div>
@@ -79,18 +79,18 @@ export default function ProductLoading() {
 
 						{/* Quantité */}
 						<div className="mb-8">
-							<div className="h-6 bg-nude-light rounded w-24 mb-4"></div>
+							<div className="h-6 bg-nude-medium rounded w-24 mb-4"></div>
 							<div className="flex items-center gap-4">
-								<div className="w-8 h-8 bg-nude-light rounded-full"></div>
-								<div className="w-12 h-8 bg-nude-light rounded-lg"></div>
-								<div className="w-8 h-8 bg-nude-light rounded-full"></div>
+								<div className="w-8 h-8 bg-nude-medium rounded-full"></div>
+								<div className="w-12 h-8 bg-nude-medium rounded-lg"></div>
+								<div className="w-8 h-8 bg-nude-medium rounded-full"></div>
 							</div>
 						</div>
 
 						{/* Boutons */}
 						<div className="flex gap-4 mb-8">
-							<div className="w-48 h-12 bg-nude-light rounded-2xl"></div>
-							<div className="w-12 h-12 bg-nude-light rounded-2xl"></div>
+							<div className="w-48 h-12 bg-nude-medium rounded-2xl"></div>
+							<div className="w-12 h-12 bg-nude-medium rounded-2xl"></div>
 						</div>
 
 						{/* Services */}
@@ -115,18 +115,18 @@ export default function ProductLoading() {
 			{/* Similar Products Loading */}
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16 bg-white/50">
 				<div className="animate-pulse">
-					<div className="h-8 bg-nude-light rounded-lg mb-8 max-w-md mx-auto"></div>
+					<div className="h-8 bg-nude-medium rounded-lg mb-8 max-w-md mx-auto"></div>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 						{[...Array(4)].map((_, i) => (
 							<div
 								key={i}
 								className="bg-white rounded-2xl shadow-lg overflow-hidden"
 							>
-								<div className="w-full h-64 bg-nude-light"></div>
+								<div className="w-full h-64 bg-nude-medium"></div>
 								<div className="p-4 space-y-3">
-									<div className="h-5 bg-nude-light rounded-lg"></div>
-									<div className="h-4 bg-nude-light rounded-lg w-3/4"></div>
-									<div className="h-6 bg-nude-light rounded-lg w-16"></div>
+									<div className="h-5 bg-nude-medium rounded-lg"></div>
+									<div className="h-4 bg-nude-medium rounded-lg w-3/4"></div>
+									<div className="h-6 bg-nude-medium rounded-lg w-16"></div>
 								</div>
 							</div>
 						))}

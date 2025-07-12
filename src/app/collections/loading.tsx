@@ -5,8 +5,8 @@ export default function CollectionsLoading() {
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-beige-light py-16">
 				<div className="text-center mb-12">
 					<div className="animate-pulse">
-						<div className="h-16 bg-nude-light rounded-lg mb-4 max-w-lg mx-auto"></div>
-						<div className="h-6 bg-nude-light rounded-lg max-w-2xl mx-auto"></div>
+						<div className="h-16 bg-nude-medium rounded-lg mb-4 max-w-lg mx-auto"></div>
+						<div className="h-6 bg-nude-medium rounded-lg max-w-2xl mx-auto"></div>
 					</div>
 				</div>
 
@@ -15,7 +15,7 @@ export default function CollectionsLoading() {
 					{[...Array(8)].map((_, i) => (
 						<div key={i} className="w-full sm:w-[45%] lg:w-[28%] animate-pulse">
 							<div className="relative h-80 rounded-2xl overflow-hidden shadow-lg mb-4">
-								<div className="w-full h-full bg-nude-light"></div>
+								<div className="w-full h-full bg-nude-medium"></div>
 								{/* Overlay */}
 								<div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 								{/* Content */}
