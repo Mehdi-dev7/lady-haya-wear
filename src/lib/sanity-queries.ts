@@ -29,7 +29,28 @@ export async function getAllProducts(): Promise<Product[]> {
       _createdAt,
       _updatedAt,
       "price": *[_type == "productDetail" && product._ref == ^._id][0].price,
-      "originalPrice": *[_type == "productDetail" && product._ref == ^._id][0].originalPrice
+      "originalPrice": *[_type == "productDetail" && product._ref == ^._id][0].originalPrice,
+      "colors": *[_type == "productDetail" && product._ref == ^._id][0].colors[] {
+        name,
+        hexCode,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt,
+          caption
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
+        },
+        available
+      }
     } | order(_createdAt desc)
   `;
 
@@ -101,7 +122,28 @@ export async function getProductsByCategory(
       _createdAt,
       _updatedAt,
       "price": *[_type == "productDetail" && product._ref == ^._id][0].price,
-      "originalPrice": *[_type == "productDetail" && product._ref == ^._id][0].originalPrice
+      "originalPrice": *[_type == "productDetail" && product._ref == ^._id][0].originalPrice,
+      "colors": *[_type == "productDetail" && product._ref == ^._id][0].colors[] {
+        name,
+        hexCode,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt,
+          caption
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
+        },
+        available
+      }
     } | order(_createdAt desc)
   `;
 
@@ -297,7 +339,28 @@ export async function getFeaturedProducts(): Promise<Product[]> {
       _createdAt,
       _updatedAt,
       "price": *[_type == "productDetail" && product._ref == ^._id][0].price,
-      "originalPrice": *[_type == "productDetail" && product._ref == ^._id][0].originalPrice
+      "originalPrice": *[_type == "productDetail" && product._ref == ^._id][0].originalPrice,
+      "colors": *[_type == "productDetail" && product._ref == ^._id][0].colors[] {
+        name,
+        hexCode,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt,
+          caption
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
+        },
+        available
+      }
     } | order(_createdAt desc) [0...6]
   `;
 
@@ -379,7 +442,30 @@ export async function searchProducts(searchTerm: string): Promise<Product[]> {
       featured,
       isNew,
       _createdAt,
-      _updatedAt
+      _updatedAt,
+      "price": *[_type == "productDetail" && product._ref == ^._id][0].price,
+      "originalPrice": *[_type == "productDetail" && product._ref == ^._id][0].originalPrice,
+      "colors": *[_type == "productDetail" && product._ref == ^._id][0].colors[] {
+        name,
+        hexCode,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt,
+          caption
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
+        },
+        available
+      }
     } | order(_createdAt desc)
   `;
 

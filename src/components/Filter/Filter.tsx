@@ -1,12 +1,83 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaFilter, FaSearch, FaTimes } from "react-icons/fa";
+import { FaChevronDown, FaFilter, FaSearch, FaTimes } from "react-icons/fa";
 
 interface FilterProps {
 	products: any[];
 	onFilterChange: (filteredProducts: any[]) => void;
 	categories?: any[];
+}
+
+interface CustomSelectProps {
+	value: string;
+	onChange: (value: string) => void;
+	options: { value: string; label: string }[];
+	placeholder: string;
+	label: string;
+}
+
+// Composant Select personnalisé avec menu stylisé
+function CustomSelect({
+	value,
+	onChange,
+	options,
+	placeholder,
+	label,
+}: CustomSelectProps) {
+	const [isOpen, setIsOpen] = useState(false);
+
+	const selectedOption = options.find((option) => option.value === value);
+
+	return (
+		<div className="relative">
+			<label className="block text-sm font-medium text-nude-dark-2 mb-2">
+				{label}
+			</label>
+			<div className="relative">
+				<button
+					type="button"
+					onClick={() => setIsOpen(!isOpen)}
+					className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors bg-white cursor-pointer text-left flex items-center justify-between"
+				>
+					<span className={selectedOption ? "text-nude-dark" : "text-gray-500"}>
+						{selectedOption ? selectedOption.label : placeholder}
+					</span>
+					<FaChevronDown
+						className={`w-4 h-4 text-nude-dark transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+					/>
+				</button>
+
+				{/* Menu déroulant stylisé */}
+				{isOpen && (
+					<div className="absolute z-50 w-full mt-2 bg-white border-2 border-nude-medium rounded-2xl shadow-lg max-h-60 overflow-y-auto scrollbar-hide">
+						{options.map((option) => (
+							<button
+								key={option.value}
+								type="button"
+								onClick={() => {
+									onChange(option.value);
+									setIsOpen(false);
+								}}
+								className={`w-full px-4 py-3 text-left hover:bg-nude-light transition-colors first:rounded-t-2xl last:rounded-b-2xl ${
+									value === option.value
+										? "bg-nude-medium text-nude-dark font-medium"
+										: "text-nude-dark hover:text-nude-dark-2"
+								}`}
+							>
+								{option.label}
+							</button>
+						))}
+					</div>
+				)}
+			</div>
+
+			{/* Overlay pour fermer le menu en cliquant ailleurs */}
+			{isOpen && (
+				<div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+			)}
+		</div>
+	);
 }
 
 export default function Filter({
@@ -18,7 +89,6 @@ export default function Filter({
 	const [selectedCategory, setSelectedCategory] = useState("");
 	const [selectedColor, setSelectedColor] = useState("");
 	const [selectedSize, setSelectedSize] = useState("");
-	const [priceRange, setPriceRange] = useState({ min: "", max: "" });
 	const [sortBy, setSortBy] = useState("");
 	const [showFilters, setShowFilters] = useState(false);
 
@@ -41,6 +111,35 @@ export default function Filter({
 			)
 		),
 	].filter(Boolean);
+
+	// Options pour les selects
+	const sortOptions = [
+		{ value: "", label: "Tous" },
+		{ value: "price-asc", label: "Prix : Croissant" },
+		{ value: "price-desc", label: "Prix : Décroissant" },
+		{ value: "newest", label: "Plus récents" },
+		{ value: "oldest", label: "Plus anciens" },
+		{ value: "name-asc", label: "Nom : A-Z" },
+		{ value: "name-desc", label: "Nom : Z-A" },
+	];
+
+	const categoryOptions = [
+		{ value: "", label: "Toutes" },
+		...categories.map((category) => ({
+			value: category.name,
+			label: category.name,
+		})),
+	];
+
+	const colorOptions = [
+		{ value: "", label: "Toutes" },
+		...uniqueColors.map((color) => ({ value: color, label: color })),
+	];
+
+	const sizeOptions = [
+		{ value: "", label: "Toutes" },
+		...uniqueSizes.map((size) => ({ value: size, label: size })),
+	];
 
 	// Appliquer les filtres
 	useEffect(() => {
@@ -79,16 +178,6 @@ export default function Filter({
 			);
 		}
 
-		// Filtre par prix
-		if (priceRange.min || priceRange.max) {
-			filteredProducts = filteredProducts.filter((product) => {
-				const price = product.price || 0;
-				const min = priceRange.min ? parseFloat(priceRange.min) : 0;
-				const max = priceRange.max ? parseFloat(priceRange.max) : Infinity;
-				return price >= min && price <= max;
-			});
-		}
-
 		// Tri
 		if (sortBy) {
 			filteredProducts.sort((a, b) => {
@@ -123,7 +212,6 @@ export default function Filter({
 		selectedCategory,
 		selectedColor,
 		selectedSize,
-		priceRange,
 		sortBy,
 		products,
 		onFilterChange,
@@ -135,19 +223,12 @@ export default function Filter({
 		setSelectedCategory("");
 		setSelectedColor("");
 		setSelectedSize("");
-		setPriceRange({ min: "", max: "" });
 		setSortBy("");
 	};
 
 	// Vérifier s'il y a des filtres actifs
 	const hasActiveFilters =
-		searchTerm ||
-		selectedCategory ||
-		selectedColor ||
-		selectedSize ||
-		priceRange.min ||
-		priceRange.max ||
-		sortBy;
+		searchTerm || selectedCategory || selectedColor || selectedSize || sortBy;
 
 	return (
 		<div className="mb-8">
@@ -160,17 +241,17 @@ export default function Filter({
 						placeholder="Rechercher un produit..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
-						className="w-full pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-light focus:border-nude-dark focus:outline-none transition-colors"
+						className="w-1/2 pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors"
 					/>
 				</div>
 
 				<div className="flex gap-2">
 					<button
 						onClick={() => setShowFilters(!showFilters)}
-						className={`flex items-center gap-2 px-4 py-3 rounded-2xl border-2 transition-colors ${
+						className={`flex items-center gap-2 px-2 py-1 rounded-2xl border-2 cursor-pointer transition-colors ${
 							showFilters
-								? "border-nude-dark bg-nude-dark text-white"
-								: "border-nude-light text-nude-dark hover:border-nude-dark"
+								? "border-nude-dark bg-nude-medium text-nude-light"
+								: "border-nude-medium text-nude-dark hover:border-nude-medium"
 						}`}
 					>
 						<FaFilter />
@@ -180,7 +261,7 @@ export default function Filter({
 					{hasActiveFilters && (
 						<button
 							onClick={clearAllFilters}
-							className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 border-red-400 text-red-400 hover:bg-red-400 hover:text-white transition-colors"
+							className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 border-red-300 text-red-300 hover:bg-red-300 hover:text-white transition-colors cursor-pointer"
 						>
 							<FaTimes />
 							Effacer
@@ -191,122 +272,45 @@ export default function Filter({
 
 			{/* Panneau de filtres */}
 			{showFilters && (
-				<div className="bg-white rounded-2xl p-6 shadow-lg border border-nude-light mb-6">
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+				<div className="bg-rose-light-2 rounded-2xl p-6 shadow-lg border border-nude-light mb-6">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 						{/* Tri */}
-						<div>
-							<label className="block text-sm font-medium text-nude-dark mb-2">
-								Trier par
-							</label>
-							<select
-								value={sortBy}
-								onChange={(e) => setSortBy(e.target.value)}
-								className="w-full px-3 py-2 rounded-lg border-2 border-nude-light focus:border-nude-dark focus:outline-none transition-colors"
-							>
-								<option value="">Tous</option>
-								<option value="price-asc">Prix : Croissant</option>
-								<option value="price-desc">Prix : Décroissant</option>
-								<option value="newest">Plus récents</option>
-								<option value="oldest">Plus anciens</option>
-								<option value="name-asc">Nom : A-Z</option>
-								<option value="name-desc">Nom : Z-A</option>
-							</select>
-						</div>
+						<CustomSelect
+							value={sortBy}
+							onChange={setSortBy}
+							options={sortOptions}
+							placeholder="Trier par"
+							label="Trier par"
+						/>
 
 						{/* Catégorie */}
 						{categories.length > 0 && (
-							<div>
-								<label className="block text-sm font-medium text-nude-dark mb-2">
-									Collection
-								</label>
-								<select
-									value={selectedCategory}
-									onChange={(e) => setSelectedCategory(e.target.value)}
-									className="w-full px-3 py-2 rounded-lg border-2 border-nude-light focus:border-nude-dark focus:outline-none transition-colors"
-								>
-									<option value="">Toutes</option>
-									{categories.map((category) => (
-										<option key={category._id} value={category.name}>
-											{category.name}
-										</option>
-									))}
-								</select>
-							</div>
+							<CustomSelect
+								value={selectedCategory}
+								onChange={setSelectedCategory}
+								options={categoryOptions}
+								placeholder="Sélectionner une collection"
+								label="Collection"
+							/>
 						)}
 
 						{/* Couleur */}
-						{uniqueColors.length > 0 && (
-							<div>
-								<label className="block text-sm font-medium text-nude-dark mb-2">
-									Couleur
-								</label>
-								<select
-									value={selectedColor}
-									onChange={(e) => setSelectedColor(e.target.value)}
-									className="w-full px-3 py-2 rounded-lg border-2 border-nude-light focus:border-nude-dark focus:outline-none transition-colors"
-								>
-									<option value="">Toutes</option>
-									{uniqueColors.map((color) => (
-										<option key={color} value={color}>
-											{color}
-										</option>
-									))}
-								</select>
-							</div>
-						)}
+						<CustomSelect
+							value={selectedColor}
+							onChange={setSelectedColor}
+							options={colorOptions}
+							placeholder="Sélectionner une couleur"
+							label="Couleur"
+						/>
 
 						{/* Taille */}
-						{uniqueSizes.length > 0 && (
-							<div>
-								<label className="block text-sm font-medium text-nude-dark mb-2">
-									Taille
-								</label>
-								<select
-									value={selectedSize}
-									onChange={(e) => setSelectedSize(e.target.value)}
-									className="w-full px-3 py-2 rounded-lg border-2 border-nude-light focus:border-nude-dark focus:outline-none transition-colors"
-								>
-									<option value="">Toutes</option>
-									{uniqueSizes.map((size) => (
-										<option key={size} value={size}>
-											{size}
-										</option>
-									))}
-								</select>
-							</div>
-						)}
-
-						{/* Prix minimum */}
-						<div>
-							<label className="block text-sm font-medium text-nude-dark mb-2">
-								Prix min (€)
-							</label>
-							<input
-								type="number"
-								placeholder="0"
-								value={priceRange.min}
-								onChange={(e) =>
-									setPriceRange((prev) => ({ ...prev, min: e.target.value }))
-								}
-								className="w-full px-3 py-2 rounded-lg border-2 border-nude-light focus:border-nude-dark focus:outline-none transition-colors"
-							/>
-						</div>
-
-						{/* Prix maximum */}
-						<div>
-							<label className="block text-sm font-medium text-nude-dark mb-2">
-								Prix max (€)
-							</label>
-							<input
-								type="number"
-								placeholder="∞"
-								value={priceRange.max}
-								onChange={(e) =>
-									setPriceRange((prev) => ({ ...prev, max: e.target.value }))
-								}
-								className="w-full px-3 py-2 rounded-lg border-2 border-nude-light focus:border-nude-dark focus:outline-none transition-colors"
-							/>
-						</div>
+						<CustomSelect
+							value={selectedSize}
+							onChange={setSelectedSize}
+							options={sizeOptions}
+							placeholder="Sélectionner une taille"
+							label="Taille"
+						/>
 					</div>
 				</div>
 			)}
@@ -334,11 +338,7 @@ export default function Filter({
 							Taille : {selectedSize}
 						</span>
 					)}
-					{(priceRange.min || priceRange.max) && (
-						<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
-							Prix : {priceRange.min || "0"}€ - {priceRange.max || "∞"}€
-						</span>
-					)}
+
 					{sortBy && (
 						<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
 							Tri : {sortBy}
