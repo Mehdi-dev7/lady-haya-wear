@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 import { FiHeart } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 interface ProductListProps {
 	featuredProducts: any[];
@@ -16,6 +17,11 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 	const handleToggleFavorite = (product: any, e: React.MouseEvent) => {
 		e.preventDefault(); // Empêcher la navigation du Link
 		e.stopPropagation();
+
+		// Vérifier si le produit est actuellement dans les favoris
+		const isCurrentlyInFavorites = favorites.some(
+			(fav) => fav.productId === product._id
+		);
 
 		// Créer l'objet Product attendu par le contexte
 		const productForFavorites = {
@@ -30,6 +36,27 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 		};
 
 		toggleFavorite(productForFavorites);
+
+		// Notification pour les favoris
+		if (isCurrentlyInFavorites) {
+			toast.info(`${product.name} retiré des favoris`, {
+				position: "top-right",
+				autoClose: 3000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+			});
+		} else {
+			toast.success(`${product.name} ajouté aux favoris !`, {
+				position: "top-right",
+				autoClose: 3000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+			});
+		}
 	};
 
 	return (

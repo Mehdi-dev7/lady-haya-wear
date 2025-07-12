@@ -4,6 +4,7 @@ import { useFavorites } from "@/lib/FavoritesContext";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 interface FavModalProps {
 	isOpen: boolean;
@@ -16,6 +17,32 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 	const handleBackdropClick = (e: React.MouseEvent) => {
 		if (e.target === e.currentTarget) {
 			onClose();
+		}
+	};
+
+	const handleRemoveFavorite = (favorite: any) => {
+		removeFromFavorites(favorite.productId);
+		toast.info(`${favorite.name} retiré des favoris`, {
+			position: "top-right",
+			autoClose: 3000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+		});
+	};
+
+	const handleClearAllFavorites = () => {
+		if (confirm("Êtes-vous sûr de vouloir supprimer tous vos favoris ?")) {
+			clearAllFavorites();
+			toast.info("Tous les favoris ont été supprimés", {
+				position: "top-right",
+				autoClose: 3000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+			});
 		}
 	};
 
@@ -95,7 +122,7 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 
 												{/* Delete Button */}
 												<button
-													onClick={() => removeFromFavorites(favorite.productId)}
+													onClick={() => handleRemoveFavorite(favorite)}
 													className="p-2 text-gray-600 hover:text-red-500 hover:scale-105 transition-colors cursor-pointer"
 													title="Supprimer des favoris"
 												>
@@ -117,11 +144,7 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 										favori{favorites.length > 1 ? "s" : ""}
 									</p>
 									<button
-										onClick={() => {
-											if (confirm("Êtes-vous sûr de vouloir supprimer tous vos favoris ?")) {
-												clearAllFavorites();
-											}
-										}}
+										onClick={handleClearAllFavorites}
 										className="text-red-400 hover:text-red-600 text-sm font-medium cursor-pointer"
 									>
 										Tout supprimer
