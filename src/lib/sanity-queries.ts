@@ -27,7 +27,9 @@ export async function getAllProducts(): Promise<Product[]> {
       featured,
       isNew,
       _createdAt,
-      _updatedAt
+      _updatedAt,
+      "price": *[_type == "productDetail" && product._ref == ^._id][0].price,
+      "originalPrice": *[_type == "productDetail" && product._ref == ^._id][0].originalPrice
     } | order(_createdAt desc)
   `;
 

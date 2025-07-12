@@ -94,7 +94,7 @@ export default function Footer() {
 									href="mailto:contact@ladyhaya.fr"
 									className="hover:text-nude-medium transition-colors duration-300"
 								>
-									contact@ladyhaya.fr
+									contact@ladyhaya-wear.fr
 								</a>
 							</div>
 							<div className="flex items-center gap-3">

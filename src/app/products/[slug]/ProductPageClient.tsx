@@ -6,6 +6,7 @@ import { urlFor } from "@/lib/sanity";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 interface ProductPageClientProps {
 	product: any;
@@ -57,10 +58,32 @@ export function ProductPageClient({
 
 	// Tailles disponibles pour la couleur sélectionnée
 	const availableSizes =
-		selectedColor?.sizes?.filter((size: any) => size.available) || [];
+		selectedColor?.sizes?.filter(
+			(size: any) => size.available && size.quantity > 0
+		) || [];
+
+	// Vérifier si une couleur a des tailles disponibles
+	const isColorAvailable = (color: any) => {
+		return color.sizes?.some(
+			(size: any) => size.available && size.quantity > 0
+		);
+	};
 
 	const handleAddToCart = () => {
-		if (!selectedSize || !selectedColor) return;
+		if (!selectedSize || !selectedColor) {
+			toast.error(
+				"Veuillez sélectionner une taille avant d'ajouter au panier",
+				{
+					position: "top-right",
+					autoClose: 3000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				}
+			);
+			return;
+		}
 
 		setIsAddingToCart(true);
 
@@ -85,7 +108,26 @@ export function ProductPageClient({
 			setIsAddingToCart(false);
 			// Réinitialiser la quantité à 1 après l'ajout
 			setQuantity(1);
-			// Optionnel : afficher une notification de succès
+			// Notification de succès avec détails du produit
+			toast.success(
+				<div>
+					<div className="font-semibold">Produit ajouté au panier !</div>
+					<div className="text-sm opacity-90">
+						{product.name} - {selectedColor.name} - Taille {selectedSize}
+					</div>
+					<div className="text-sm opacity-90">
+						Quantité : {quantity} - {product.price.toFixed(2)} €
+					</div>
+				</div>,
+				{
+					position: "top-right",
+					autoClose: 4000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				}
+			);
 		}, 500);
 	};
 
@@ -96,6 +138,10 @@ export function ProductPageClient({
 	};
 
 	const handleToggleFavorite = () => {
+		const isCurrentlyInFavorites = favorites.some(
+			(fav: any) => fav.productId === product._id
+		);
+
 		toggleFavorite({
 			productId: product._id,
 			name: product.name,
@@ -107,6 +153,27 @@ export function ProductPageClient({
 			slug: product.slug?.current || product._id,
 			category: product.category,
 		});
+
+		// Notification pour les favoris
+		if (isCurrentlyInFavorites) {
+			toast.info(`${product.name} retiré des favoris`, {
+				position: "top-right",
+				autoClose: 3000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+			});
+		} else {
+			toast.success(`${product.name} ajouté aux favoris !`, {
+				position: "top-right",
+				autoClose: 3000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+			});
+		}
 	};
 
 	return (
@@ -250,36 +317,41 @@ export function ProductPageClient({
 										Couleur
 									</h3>
 									<div className="flex gap-3">
-										{product.colors.map((color: any, index: number) => (
-											<button
-												key={index}
-												className={`relative group ${!color.available ? "opacity-50" : ""}`}
-												title={color.name}
-												disabled={!color.available}
-												onClick={() => {
-													setSelectedColorIndex(index);
-													setSelectedImageIndex(0);
-													setSelectedSize(null);
-												}}
-											>
-												<div
-													className={`w-12 h-12 rounded-full border-2 transition-colors ${
-														selectedColorIndex === index
-															? "border-nude-dark ring-2 ring-nude-dark"
-															: "border-gray-300 hover:border-red-400"
-													}`}
-													style={{ backgroundColor: color.hexCode }}
-												/>
-												{!color.available && (
-													<div className="absolute inset-0 flex items-center justify-center">
-														<span className="text-red-500 text-lg">×</span>
-													</div>
-												)}
-												<span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-nude-dark opacity-0 group-hover:opacity-100 transition-opacity">
-													{color.name}
-												</span>
-											</button>
-										))}
+										{product.colors.map((color: any, index: number) => {
+											const isAvailable = isColorAvailable(color);
+											return (
+												<button
+													key={index}
+													className={`relative group ${!isAvailable ? "opacity-50" : ""}`}
+													title={`${color.name}${!isAvailable ? " - Non disponible" : ""}`}
+													disabled={!isAvailable}
+													onClick={() => {
+														if (isAvailable) {
+															setSelectedColorIndex(index);
+															setSelectedImageIndex(0);
+															setSelectedSize(null);
+														}
+													}}
+												>
+													<div
+														className={`w-12 h-12 rounded-full border-2 transition-colors ${
+															selectedColorIndex === index
+																? "border-nude-dark ring-2 ring-nude-dark"
+																: "border-gray-300 hover:border-red-400"
+														}`}
+														style={{ backgroundColor: color.hexCode }}
+													/>
+													{!isAvailable && (
+														<div className="absolute inset-0 flex items-center justify-center">
+															<div className="w-full h-0.5 bg-red-500 transform rotate-45"></div>
+														</div>
+													)}
+													<span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-nude-dark opacity-0 group-hover:opacity-100 transition-opacity">
+														{color.name}
+													</span>
+												</button>
+											);
+										})}
 									</div>
 								</div>
 							)}
@@ -293,24 +365,32 @@ export function ProductPageClient({
 											Taille
 										</h3>
 										<div className="flex gap-2">
-											{selectedColor.sizes.map((size: any, index: number) => (
-												<button
-													key={index}
-													className={`px-4 py-2 rounded-lg border-2 transition-all duration-300 ${
-														size.available
-															? selectedSize === size.size
-																? "border-rose-dark bg-rose-dark text-white shadow-lg"
-																: "border-nude-dark text-nude-dark hover:border-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 cursor-pointer"
-															: "border-nude-medium text-nude-medium opacity-50 cursor-not-allowed"
-													}`}
-													disabled={!size.available}
-													onClick={() =>
-														size.available && setSelectedSize(size.size)
-													}
-												>
-													{size.size}
-												</button>
-											))}
+											{selectedColor.sizes.map((size: any, index: number) => {
+												const isAvailable = size.available && size.quantity > 0;
+												return (
+													<button
+														key={index}
+														className={`px-4 py-2 rounded-lg border-2 transition-all duration-300 relative ${
+															isAvailable
+																? selectedSize === size.size
+																	? "border-rose-dark bg-rose-dark text-white shadow-lg"
+																	: "border-nude-dark text-nude-dark hover:border-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 cursor-pointer"
+																: "border-red-400 text-red-400 opacity-60 cursor-not-allowed"
+														}`}
+														disabled={!isAvailable}
+														onClick={() =>
+															isAvailable && setSelectedSize(size.size)
+														}
+													>
+														{size.size}
+														{!isAvailable && (
+															<div className="absolute inset-0 flex items-center justify-center">
+																<div className="w-full h-0.5 bg-red-500 transform rotate-45"></div>
+															</div>
+														)}
+													</button>
+												);
+											})}
 										</div>
 
 										{/* Message d'alerte pour stock faible */}
@@ -325,6 +405,13 @@ export function ProductPageClient({
 													exemplaire{selectedSizeQuantity > 1 ? "s" : ""}
 												</p>
 											)}
+
+										{/* Message si aucune taille n'est disponible */}
+										{availableSizes.length === 0 && (
+											<p className="text-sm text-red-500 mt-4">
+												❌ Aucune taille disponible pour cette couleur
+											</p>
+										)}
 									</div>
 								)}
 
@@ -461,7 +548,7 @@ export function ProductPageClient({
 								</div>
 								<div className="text-left">
 									<p className="text-sm text-gray-500">Précédent</p>
-									<p className="font-medium text-nude-dark group-hover:text-red-400 transition-colors">
+									<p className="font-medium text-rose-dark-2 hover:text-nude-dark-2 transition-colors">
 										{prevProduct.name}
 									</p>
 								</div>
@@ -471,11 +558,11 @@ export function ProductPageClient({
 						{nextProduct && (
 							<Link
 								href={`/products/${nextProduct.slug?.current || nextProduct._id}`}
-								className="flex items-center gap-4 group ml-auto"
+								className="flex items-center gap-4 ml-auto"
 							>
 								<div className="text-right">
-									<p className="text-sm text-gray-500">Suivant</p>
-									<p className="font-medium text-nude-dark group-hover:text-red-400 transition-colors">
+									<p className="text-sm text-gray-500 underline">Suivant</p>
+									<p className="font-medium text-rose-dark-2 hover:text-nude-dark-2 transition-colors">
 										{nextProduct.name}
 									</p>
 								</div>

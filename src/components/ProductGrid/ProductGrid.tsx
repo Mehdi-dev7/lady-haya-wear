@@ -4,21 +4,31 @@ import { useFavorites } from "@/lib/FavoritesContext";
 import { urlFor } from "@/lib/sanity";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FiHeart } from "react-icons/fi";
+import Filter from "../Filter/Filter";
 
 interface ProductGridProps {
 	products: any[];
 	title?: string;
 	showFilters?: boolean;
+	categories?: any[];
 }
 
 export default function ProductGrid({
 	products,
 	title,
 	showFilters = false,
+	categories = [],
 }: ProductGridProps) {
 	const { favorites, toggleFavorite } = useFavorites();
+	const [filteredProducts, setFilteredProducts] = useState(products);
+
+	// Mettre à jour les produits filtrés quand les produits changent
+	useEffect(() => {
+		setFilteredProducts(products);
+	}, [products]);
 
 	const handleToggleFavorite = (product: any, e: React.MouseEvent) => {
 		e.preventDefault(); // Empêcher la navigation du Link
@@ -49,20 +59,18 @@ export default function ProductGrid({
 				</div>
 			)}
 
-			{/* Filtres (optionnel) */}
+			{/* Filtres avancés */}
 			{showFilters && (
-				<div className="flex justify-center gap-2 mb-8">
-					<select className="px-4 py-2 border border-nude-dark rounded-2xl focus:ring-2 focus:ring-red-400 focus:border-transparent bg-white">
-						<option value="">Trier par</option>
-						<option value="newest">Plus récents</option>
-						<option value="featured">Mise en avant</option>
-					</select>
-				</div>
+				<Filter
+					products={products}
+					onFilterChange={setFilteredProducts}
+					categories={categories}
+				/>
 			)}
 
-			{products.length > 0 ? (
+			{filteredProducts.length > 0 ? (
 				<div className="flex gap-x-8 gap-y-16 justify-start flex-wrap">
-					{products.map((product, index) => (
+					{filteredProducts.map((product, index) => (
 						<Link
 							key={product._id}
 							href={`/products/${product.slug?.current || product._id}`}
