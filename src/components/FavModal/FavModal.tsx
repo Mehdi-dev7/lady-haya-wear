@@ -106,6 +106,7 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 												<div className="flex-1 min-w-0">
 													<Link
 														href={`/products/${favorite.slug}`}
+														onClick={onClose}
 														className="block hover:opacity-80 transition-opacity"
 													>
 														<h3 className="font-balqis text-2xl font-semibold text-nude-dark-2 truncate">

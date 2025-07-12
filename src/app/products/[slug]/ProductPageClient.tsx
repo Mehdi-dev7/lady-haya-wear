@@ -667,7 +667,7 @@ export function ProductPageClient({
 								className="flex items-center gap-4 ml-auto"
 							>
 								<div className="text-right">
-									<p className="text-sm text-gray-500 underline">Suivant</p>
+									<p className="text-sm text-gray-500 ">Suivant</p>
 									<p className="font-medium text-rose-dark-2 hover:text-nude-dark-2 transition-colors">
 										{nextProduct.name}
 									</p>
