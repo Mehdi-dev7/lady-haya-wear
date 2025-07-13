@@ -276,6 +276,9 @@ body.navbar-visible {
 	.hover\:text-nude-dark-2:hover {
 		color: var(--color-nude-dark-2);
 	}
+	.hover\:text-rose-dark-2:hover {
+		color: var(--color-rose-dark-2);
+	}
 	.hover\:border-nude-dark:hover {
 		border-color: var(--color-nude-dark);
 	}
