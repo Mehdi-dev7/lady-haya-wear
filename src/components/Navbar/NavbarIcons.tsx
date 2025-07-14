@@ -2,9 +2,10 @@
 
 import { useCart } from "@/lib/CartContext";
 import { useFavorites } from "@/lib/FavoritesContext";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaHeart, FaUser } from "react-icons/fa";
 import { FaBagShopping } from "react-icons/fa6";
 import CartModal from "../CartModal/CartModal";
@@ -14,19 +15,41 @@ export default function NavbarIcons() {
 	const router = useRouter();
 	const { favorites } = useFavorites();
 	const { getCartCount } = useCart();
+	const profileModalRef = useRef<HTMLDivElement>(null);
 
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isCartOpen, setIsCartOpen] = useState(false);
 	const [isFavOpen, setIsFavOpen] = useState(false);
 
 	// TEMPORY
-	const isLoggedIn = false;
+	const isLoggedIn = true;
+
+	// Fermeture de la modale au clic extérieur
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				profileModalRef.current &&
+				!profileModalRef.current.contains(event.target as Node)
+			) {
+				setIsProfileOpen(false);
+			}
+		};
+
+		if (isProfileOpen) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [isProfileOpen]);
 
 	const handleProfile = () => {
 		if (!isLoggedIn) {
 			router.push("/login");
+		} else {
+			setIsProfileOpen((prev) => !prev);
 		}
-		setIsProfileOpen((prev) => !prev);
 	};
 
 	return (
@@ -35,10 +58,49 @@ export default function NavbarIcons() {
 				className="text-xl md:text-2xl cursor-pointer text-logo"
 				onClick={handleProfile}
 			/>
-			{isProfileOpen && (
-				<div className="absolute p-4 rounded-md top-12 left-0 text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)] z-20 ">
-					<Link href="/">Profile</Link>
-					<div className="mt-2 cursor-pointer">Logout</div>
+			{isProfileOpen && isLoggedIn && (
+				<div
+					ref={profileModalRef}
+					className="absolute p-4 rounded-lg top-12 right-2 text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)] z-20 bg-nude-light border border-nude-light min-w-[200px]"
+				>
+					<div className="flex items-center gap-3 mb-3 pb-3 border-b border-nude-medium">
+						<Image
+							src="/assets/logo-haya.png"
+							alt="Lady Haya Wear"
+							width={32}
+							height={32}
+							className="rounded-full"
+						/>
+						<div>
+							<p className="text-logo font-medium">Lady Haya</p>
+							<p className="text-xs text-nude-dark">Bienvenue</p>
+						</div>
+					</div>
+					<Link
+						href="/profile"
+						className="block py-2 px-3 hover:bg-rose-light-2 rounded-md transition-colors duration-200 text-nude-dark hover:text-logo"
+						onClick={() => setIsProfileOpen(false)}
+					>
+						Mon compte
+					</Link>
+					<Link
+						href="/orders"
+						className="block py-2 px-3 hover:bg-rose-light-2 rounded-md transition-colors duration-200 text-nude-dark hover:text-logo"
+						onClick={() => setIsProfileOpen(false)}
+					>
+						Mes commandes
+					</Link>
+					<div className="border-t border-nude-light my-2"></div>
+					<button
+						className="block w-full text-left py-2 px-3 hover:bg-rose-light-2 rounded-md transition-colors duration-200 text-nude-dark hover:text-logo cursor-pointer"
+						onClick={() => {
+							setIsProfileOpen(false);
+							// Ici vous pourrez ajouter la logique de déconnexion
+							console.log("Déconnexion");
+						}}
+					>
+						Se déconnecter
+					</button>
 				</div>
 			)}
 			<div className="relative cursor-pointer">
