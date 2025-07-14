@@ -40,6 +40,24 @@ export default function Login() {
 						border-radius: 20vw;
 					}
 
+					.toggle-panel {
+						border-radius: 150px !important;
+					}
+
+					.form-box .relative {
+						margin-top: 1rem;
+						margin-bottom: 1rem;
+					}
+
+					.form-box h1 {
+						margin-bottom: 1rem;
+					}
+
+					.form-box div:has(.forgot-password) {
+						margin-top: -1rem !important;
+						margin-bottom: 1rem !important;
+					}
+
 					.login-container.active .toggle-bg {
 						left: 0;
 						top: 70%;
@@ -103,7 +121,7 @@ export default function Login() {
 
 				.login-container.active .form-box.register {
 					opacity: 1 !important;
-					transition-delay: 0.8s !important;
+					transition-delay: 1s !important;
 					pointer-events: auto !important;
 				}
 
@@ -121,7 +139,7 @@ export default function Login() {
 				}
 
 				.login-container.active .toggle-panel.toggle-right {
-					transition-delay: 0.6s !important;
+					transition-delay: 0.3s !important;
 				}
 
 				.toggle-bg {
@@ -139,7 +157,7 @@ export default function Login() {
 						}`}
 					>
 						<form onSubmit={(e) => e.preventDefault()} className="w-full">
-							<h1 className="text-5xl lg:text-6xl text-logo font-alex-brush -mt-2 mb-2">
+							<h1 className="text-5xl lg:text-6xl text-logo font-alex-brush lg:-mt-2 mb-2">
 								Login
 							</h1>
 							<div className="relative my-8">
@@ -163,7 +181,7 @@ export default function Login() {
 							<div className="-mt-4 mb-4">
 								<a
 									href="#"
-									className="text-sm text-nude-dark no-underline hover:text-logo transition-colors duration-300"
+									className="text-sm text-nude-dark no-underline hover:text-logo transition-colors duration-300 forgot-password"
 								>
 									Forgot Password?
 								</a>
