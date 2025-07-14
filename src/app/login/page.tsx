@@ -17,19 +17,25 @@ export default function Login() {
 		<>
 			<style jsx>{`
 				@media screen and (max-width: 650px) {
+					.login-section {
+						margin-top: 2rem;
+						min-height: 95vh;
+					}
+
 					.login-container {
-						height: calc(100vh - 40px);
+						height: calc(95vh - 40px);
+						max-height: 700px;
 					}
 
 					.form-box {
 						bottom: 0;
 						width: 100%;
-						height: 70%;
+						height: 75%;
 					}
 
 					.login-container.active .form-box {
 						right: 0;
-						bottom: 30%;
+						bottom: 25%;
 					}
 
 					.toggle-bg {
@@ -55,7 +61,15 @@ export default function Login() {
 
 					.form-box div:has(.forgot-password) {
 						margin-top: -1rem !important;
-						margin-bottom: 1rem !important;
+						margin-bottom: 0.5rem !important;
+					}
+
+					.form-box button[type="submit"] {
+						margin-bottom: 0.5rem !important;
+					}
+
+					.form-box .flex.justify-center {
+						margin-top: 0.5rem !important;
 					}
 
 					.login-container.active .toggle-bg {
@@ -65,7 +79,7 @@ export default function Login() {
 
 					.toggle-panel {
 						width: 100%;
-						height: 30%;
+						height: 25%;
 					}
 
 					.toggle-left {
@@ -74,12 +88,12 @@ export default function Login() {
 
 					.login-container.active .toggle-left {
 						left: 0;
-						top: -30%;
+						top: -25%;
 					}
 
 					.toggle-right {
 						right: 0;
-						bottom: -30%;
+						bottom: -25%;
 					}
 
 					.login-container.active .toggle-right {
@@ -89,7 +103,7 @@ export default function Login() {
 
 				@media screen and (max-width: 400px) {
 					.form-box {
-						padding: 20px;
+						padding: 20px 20px 10px 20px;
 					}
 
 					.toggle-panel h1 {
@@ -146,13 +160,15 @@ export default function Login() {
 					transition: 1.2s ease-in-out !important;
 				}
 			`}</style>
-			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-rose-light-2 py-16 min-h-screen flex items-center justify-center">
+			<section
+				className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16 min-h-screen flex items-center justify-center login-section bg-[#fae4e4]/75"
+			>
 				<div
-					className={`login-container relative w-[850px] h-[550px] bg-white rounded-[30px] shadow-lg overflow-hidden ${isActive ? "active" : ""}`}
+					className={`login-container relative w-[850px] h-[550px] bg-beige-light rounded-[30px] shadow-lg overflow-hidden ${isActive ? "active" : ""}`}
 				>
 					{/* Login Form */}
 					<div
-						className={`form-box login absolute right-0 w-1/2 h-full bg-white flex items-center text-logo text-center p-10 z-10 ${
+						className={`form-box login absolute right-0 w-1/2 h-full bg-beige-light flex items-center text-logo text-center p-10 z-10 ${
 							isActive ? "right-1/2" : ""
 						}`}
 					>
@@ -198,7 +214,7 @@ export default function Login() {
 							<div className="flex justify-center gap-4 mt-5">
 								<a
 									href="#"
-									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-dark-2 hover:text-white hover:border-rose-dark-2 hover:-translate-y-0.5"
+									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5"
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -228,7 +244,7 @@ export default function Login() {
 
 								<a
 									href="#"
-									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-dark-2 hover:text-white hover:border-rose-dark-2 hover:-translate-y-0.5"
+									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5"
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -263,7 +279,7 @@ export default function Login() {
 
 					{/* Register Form */}
 					<div
-						className={`form-box register absolute right-0 w-1/2 h-full bg-white flex items-center text-logo text-center p-10 z-10 ${
+						className={`form-box register absolute right-0 w-1/2 h-full bg-beige-light flex items-center text-logo text-center p-10 z-10 ${
 							isActive ? "right-1/2" : "right-[-100%]"
 						}`}
 					>
@@ -310,7 +326,7 @@ export default function Login() {
 							<div className="flex justify-center gap-4 mt-5">
 								<a
 									href="#"
-									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-dark-2 hover:text-white hover:border-rose-dark-2 hover:-translate-y-0.5"
+									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5"
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -340,7 +356,7 @@ export default function Login() {
 
 								<a
 									href="#"
-									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-dark-2 hover:text-white hover:border-rose-dark-2 hover:-translate-y-0.5"
+									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5"
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"

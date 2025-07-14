@@ -52,9 +52,7 @@
 	}
 }
 
-body {
-	background-color: var(--color-rose-light-2);
-}
+
 
 body.navbar-visible {
 	padding-top: 72px; /* Compenser la navbar fixed seulement quand elle est visible */
@@ -251,6 +249,9 @@ body.navbar-visible {
 	}
 	.hover\:bg-rose-dark-2:hover {
 		background-color: var(--color-rose-dark-2);
+	}
+	.hover\:bg-rose-light-2:hover {
+		background-color: var(--color-rose-light-2);
 	}
 	.hover\:bg-logo:hover {
 		background-color: var(--color-logo);
