@@ -1,4 +1,5 @@
 import StudioWrapper from "@/components/StudioWrapper";
+import { AuthProvider } from "@/lib/AuthContext";
 import { CartProvider } from "@/lib/CartContext";
 import { FavoritesProvider } from "@/lib/FavoritesContext";
 import type { Metadata } from "next";
@@ -23,23 +24,25 @@ export default function RootLayout({
 	return (
 		<html lang="fr">
 			<body className="antialiased">
-				<FavoritesProvider>
-					<CartProvider>
-						<StudioWrapper>{children}</StudioWrapper>
-						<ToastContainer
-							position="top-right"
-							autoClose={5000}
-							hideProgressBar={false}
-							newestOnTop={false}
-							closeOnClick
-							rtl={false}
-							pauseOnFocusLoss
-							draggable
-							pauseOnHover
-							theme="light"
-						/>
-					</CartProvider>
-				</FavoritesProvider>
+				<AuthProvider>
+					<FavoritesProvider>
+						<CartProvider>
+							<StudioWrapper>{children}</StudioWrapper>
+							<ToastContainer
+								position="top-right"
+								autoClose={5000}
+								hideProgressBar={false}
+								newestOnTop={false}
+								closeOnClick
+								rtl={false}
+								pauseOnFocusLoss
+								draggable
+								pauseOnHover
+								theme="light"
+							/>
+						</CartProvider>
+					</FavoritesProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	);

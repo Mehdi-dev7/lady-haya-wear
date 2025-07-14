@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import { useFavorites } from "@/lib/FavoritesContext";
 import Image from "next/image";
@@ -15,14 +16,15 @@ export default function NavbarIcons() {
 	const router = useRouter();
 	const { favorites } = useFavorites();
 	const { getCartCount } = useCart();
+	const { user, loading, logout } = useAuth();
 	const profileModalRef = useRef<HTMLDivElement>(null);
 
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isCartOpen, setIsCartOpen] = useState(false);
 	const [isFavOpen, setIsFavOpen] = useState(false);
 
-	// TEMPORY
-	const isLoggedIn = true;
+	// Vérifier si l'utilisateur est connecté
+	const isLoggedIn = !!user;
 
 	// Fermeture de la modale au clic extérieur
 	useEffect(() => {
@@ -52,6 +54,12 @@ export default function NavbarIcons() {
 		}
 	};
 
+	const handleLogout = async () => {
+		setIsProfileOpen(false);
+		await logout();
+		router.push("/");
+	};
+
 	return (
 		<div className="flex items-center gap-4 xl:gap-6 relative">
 			<FaUser
@@ -72,8 +80,12 @@ export default function NavbarIcons() {
 							className="rounded-full"
 						/>
 						<div>
-							<p className="text-logo font-medium">Lady Haya</p>
-							<p className="text-xs text-nude-dark">Bienvenue</p>
+							<p className="text-logo font-medium">
+								{user?.name || "Utilisateur"}
+							</p>
+							<p className="text-xs text-nude-dark">
+								{user?.email || "Bienvenue"}
+							</p>
 						</div>
 					</div>
 					<Link
@@ -93,11 +105,7 @@ export default function NavbarIcons() {
 					<div className="border-t border-nude-light my-2"></div>
 					<button
 						className="block w-full text-left py-2 px-3 hover:bg-rose-light-2 rounded-md transition-colors duration-200 text-nude-dark hover:text-logo cursor-pointer"
-						onClick={() => {
-							setIsProfileOpen(false);
-							// Ici vous pourrez ajouter la logique de déconnexion
-							console.log("Déconnexion");
-						}}
+						onClick={handleLogout}
 					>
 						Se déconnecter
 					</button>

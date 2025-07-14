@@ -1,9 +1,84 @@
 "use client";
 
-import { useState } from "react";
+import { useAuth } from "@/lib/AuthContext";
+import {
+	getFieldValidation,
+	validateEmail,
+	validateRegisterForm,
+} from "@/lib/validation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Login() {
 	const [isActive, setIsActive] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const router = useRouter();
+	const searchParams = useSearchParams();
+	const { login } = useAuth();
+
+	// Données du formulaire de connexion
+	const [loginData, setLoginData] = useState({
+		email: "",
+		password: "",
+	});
+
+	// Données du formulaire d'inscription
+	const [registerData, setRegisterData] = useState({
+		email: "",
+		password: "",
+		firstName: "",
+		lastName: "",
+	});
+
+	// Erreurs de validation
+	const [validationErrors, setValidationErrors] = useState<{
+		[key: string]: string;
+	}>({});
+
+	// Validation en temps réel
+	const handleFieldValidation = (fieldName: string, value: string) => {
+		const validation = getFieldValidation(fieldName, value);
+		setValidationErrors((prev) => ({
+			...prev,
+			[fieldName]: validation.isValid ? "" : validation.message,
+		}));
+	};
+
+	useEffect(() => {
+		// Gérer les messages d'erreur et de succès de l'URL
+		const error = searchParams.get("error");
+		const success = searchParams.get("success");
+
+		if (error) {
+			switch (error) {
+				case "token_missing":
+					toast.error("Token de vérification manquant");
+					break;
+				case "token_invalid":
+					toast.error("Token de vérification invalide");
+					break;
+				case "token_expired":
+					toast.error("Token de vérification expiré");
+					break;
+				case "server_error":
+					toast.error("Erreur serveur");
+					break;
+				default:
+					toast.error("Erreur lors de la connexion");
+			}
+		}
+
+		if (success) {
+			switch (success) {
+				case "email_verified":
+					toast.success(
+						"Email vérifié avec succès ! Vous pouvez maintenant vous connecter."
+					);
+					break;
+			}
+		}
+	}, [searchParams]);
 
 	const handleRegisterClick = () => {
 		setIsActive(true);
@@ -11,6 +86,86 @@ export default function Login() {
 
 	const handleLoginClick = () => {
 		setIsActive(false);
+	};
+
+	const handleLoginSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsLoading(true);
+
+		// Validation côté client pour la connexion
+		const emailValidation = validateEmail(loginData.email);
+		if (!emailValidation.isValid) {
+			toast.error(emailValidation.message);
+			setIsLoading(false);
+			return;
+		}
+
+		try {
+			const result = await login(loginData.email, loginData.password);
+
+			if (result.success) {
+				toast.success("Connexion réussie !");
+				router.push("/");
+			} else {
+				toast.error(result.error || "Erreur lors de la connexion");
+			}
+		} catch (error) {
+			toast.error("Erreur lors de la connexion");
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const handleRegisterSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsLoading(true);
+
+		// Validation côté client
+		const validation = validateRegisterForm(registerData);
+		if (!validation.isValid) {
+			setValidationErrors(validation.errors);
+			const firstError = Object.values(validation.errors)[0];
+			toast.error(firstError);
+			setIsLoading(false);
+			return;
+		}
+
+		try {
+			const response = await fetch("/api/auth/register", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(registerData),
+			});
+
+			const data = await response.json();
+
+			if (response.ok) {
+				toast.success(
+					"Inscription réussie ! Vérifiez votre email pour activer votre compte."
+				);
+				setRegisterData({
+					email: "",
+					password: "",
+					firstName: "",
+					lastName: "",
+				});
+				setValidationErrors({});
+				setIsActive(false);
+			} else {
+				toast.error(data.error || "Erreur lors de l'inscription");
+			}
+		} catch (error) {
+			toast.error("Erreur lors de l'inscription");
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const handleSocialLogin = async (provider: string) => {
+		// Fonctionnalité sociale temporairement désactivée
+		toast.info("Connexion sociale temporairement indisponible");
 	};
 
 	return (
@@ -159,6 +314,22 @@ export default function Login() {
 				.toggle-bg {
 					transition: 1.2s ease-in-out !important;
 				}
+
+				/* Styles pour les messages d'erreur */
+				.error-message {
+					color: #dc2626;
+					font-size: 0.75rem;
+					margin-top: 0.125rem;
+					line-height: 1.2;
+				}
+
+				.input-error {
+					border-color: #dc2626 !important;
+				}
+
+				.input-valid {
+					border-color: #059669 !important;
+				}
 			`}</style>
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16 min-h-screen flex items-center justify-center login-section bg-[#fae4e4]/75">
 				<div
@@ -170,23 +341,39 @@ export default function Login() {
 							isActive ? "right-1/2" : ""
 						}`}
 					>
-						<form onSubmit={(e) => e.preventDefault()} className="w-full">
+						<form onSubmit={handleLoginSubmit} className="w-full">
 							<h1 className="text-5xl lg:text-6xl text-logo font-alex-brush lg:-mt-2 mb-2">
 								Connexion
 							</h1>
 							<div className="relative my-8">
 								<input
-									type="text"
-									placeholder="Nom d'utilisateur"
+									type="email"
+									placeholder="Email"
+									value={loginData.email}
+									onChange={(e) => {
+										setLoginData({ ...loginData, email: e.target.value });
+										handleFieldValidation("email", e.target.value);
+									}}
 									required
-									className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
+									className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
+										validationErrors.email
+											? "input-error border-red-500"
+											: "border-rose-medium focus:border-rose-dark-2"
+									}`}
 								/>
 								<i className="bx bxs-user absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
+								{validationErrors.email && (
+									<p className="error-message">{validationErrors.email}</p>
+								)}
 							</div>
 							<div className="relative my-8">
 								<input
 									type="password"
 									placeholder="Mot de passe"
+									value={loginData.password}
+									onChange={(e) =>
+										setLoginData({ ...loginData, password: e.target.value })
+									}
 									required
 									className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
 								/>
@@ -202,17 +389,20 @@ export default function Login() {
 							</div>
 							<button
 								type="submit"
-								className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105"
+								disabled={isLoading}
+								className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
 							>
-								Se connecter
+								{isLoading ? "Connexion..." : "Se connecter"}
 							</button>
 							<p className="text-sm my-4 text-nude-dark">
 								ou se connecter avec
 							</p>
 							<div className="flex justify-center gap-4 mt-5">
-								<a
-									href="#"
-									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5"
+								<button
+									type="button"
+									onClick={() => handleSocialLogin("google")}
+									disabled={isLoading}
+									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -238,39 +428,7 @@ export default function Login() {
 											fill="#EA4335"
 										/>
 									</svg>
-								</a>
-
-								<a
-									href="#"
-									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="20"
-										height="20"
-										viewBox="0 0 24 24"
-										fill="none"
-									>
-										<defs>
-											<radialGradient
-												id="instagram-gradient-login"
-												cx="0"
-												cy="0"
-												r="1"
-												gradientUnits="userSpaceOnUse"
-												gradientTransform="translate(12 12) scale(12)"
-											>
-												<stop offset="0%" stopColor="#F58529" />
-												<stop offset="35%" stopColor="#E1306C" />
-												<stop offset="100%" stopColor="#C13584" />
-											</radialGradient>
-										</defs>
-										<path
-											d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
-											fill="url(#instagram-gradient-login)"
-										/>
-									</svg>
-								</a>
+								</button>
 							</div>
 						</form>
 					</div>
@@ -281,48 +439,116 @@ export default function Login() {
 							isActive ? "right-1/2" : "right-[-100%]"
 						}`}
 					>
-						<form onSubmit={(e) => e.preventDefault()} className="w-full">
+						<form onSubmit={handleRegisterSubmit} className="w-full">
 							<h1 className="text-5xl lg:text-6xl text-logo font-alex-brush -mt-2 mb-2">
 								S'inscrire
 							</h1>
-							<div className="relative my-8">
+							<div className="relative my-6">
 								<input
 									type="text"
-									placeholder="Nom d'utilisateur"
-									required
-									className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
+									placeholder="Prénom"
+									value={registerData.firstName}
+									onChange={(e) => {
+										setRegisterData({
+											...registerData,
+											firstName: e.target.value,
+										});
+										handleFieldValidation("firstName", e.target.value);
+									}}
+									className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
+										validationErrors.firstName
+											? "input-error border-red-500"
+											: "border-rose-medium focus:border-rose-dark-2"
+									}`}
 								/>
 								<i className="bx bxs-user absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
+								{validationErrors.firstName && (
+									<p className="error-message">{validationErrors.firstName}</p>
+								)}
 							</div>
-							<div className="relative my-8">
+							<div className="relative my-6">
+								<input
+									type="text"
+									placeholder="Nom"
+									value={registerData.lastName}
+									onChange={(e) => {
+										setRegisterData({
+											...registerData,
+											lastName: e.target.value,
+										});
+										handleFieldValidation("lastName", e.target.value);
+									}}
+									className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
+										validationErrors.lastName
+											? "input-error border-red-500"
+											: "border-rose-medium focus:border-rose-dark-2"
+									}`}
+								/>
+								<i className="bx bxs-user absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
+								{validationErrors.lastName && (
+									<p className="error-message">{validationErrors.lastName}</p>
+								)}
+							</div>
+							<div className="relative my-6">
 								<input
 									type="email"
 									placeholder="Email"
+									value={registerData.email}
+									onChange={(e) => {
+										setRegisterData({ ...registerData, email: e.target.value });
+										handleFieldValidation("email", e.target.value);
+									}}
 									required
-									className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
+									className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
+										validationErrors.email
+											? "input-error border-red-500"
+											: "border-rose-medium focus:border-rose-dark-2"
+									}`}
 								/>
 								<i className="bx bxs-envelope absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
+								{validationErrors.email && (
+									<p className="error-message">{validationErrors.email}</p>
+								)}
 							</div>
-							<div className="relative my-8">
+							<div className="relative my-6">
 								<input
 									type="password"
-									placeholder="Mot de passe"
+									placeholder="Mot de passe (min. 8 caractères)"
+									value={registerData.password}
+									onChange={(e) => {
+										setRegisterData({
+											...registerData,
+											password: e.target.value,
+										});
+										handleFieldValidation("password", e.target.value);
+									}}
 									required
-									className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
+									minLength={8}
+									className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
+										validationErrors.password
+											? "input-error border-red-500"
+											: "border-rose-medium focus:border-rose-dark-2"
+									}`}
 								/>
 								<i className="bx bxs-lock absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
+								{validationErrors.password && (
+									<p className="error-message">{validationErrors.password}</p>
+								)}
 							</div>
 							<button
 								type="submit"
-								className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105"
+								disabled={isLoading}
+								className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
 							>
-								S'inscrire
+								{isLoading ? "Inscription..." : "S'inscrire"}
 							</button>
 							<p className="text-sm my-4 text-nude-dark">ou s'inscrire avec</p>
 							<div className="flex justify-center gap-4 mt-5">
-								<a
-									href="#"
-									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5"
+								<button
+									type="button"
+									onClick={() => handleSocialLogin("google")}
+									disabled={isLoading}
+									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -348,39 +574,7 @@ export default function Login() {
 											fill="#EA4335"
 										/>
 									</svg>
-								</a>
-
-								<a
-									href="#"
-									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="20"
-										height="20"
-										viewBox="0 0 24 24"
-										fill="none"
-									>
-										<defs>
-											<radialGradient
-												id="instagram-gradient-register"
-												cx="0"
-												cy="0"
-												r="1"
-												gradientUnits="userSpaceOnUse"
-												gradientTransform="translate(12 12) scale(12)"
-											>
-												<stop offset="0%" stopColor="#F58529" />
-												<stop offset="35%" stopColor="#E1306C" />
-												<stop offset="100%" stopColor="#C13584" />
-											</radialGradient>
-										</defs>
-										<path
-											d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
-											fill="url(#instagram-gradient-register)"
-										/>
-									</svg>
-								</a>
+								</button>
 							</div>
 						</form>
 					</div>
@@ -394,7 +588,7 @@ export default function Login() {
 							className={`toggle-panel toggle-left absolute w-1/2 h-full bg-rose-dark-2 text-white flex flex-col justify-center items-center z-20 rounded-r-[150px] ${isActive ? "-left-1/2" : "left-0"}`}
 						>
 							<h1 className="text-4xl font-alex-brush mb-4 text-beige-light">
-							 Marhaban !
+								Marhaban !
 							</h1>
 							<p className="mb-5 text-beige-light">
 								Vous n'avez pas de compte ?
