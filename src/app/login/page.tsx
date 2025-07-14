@@ -160,9 +160,7 @@ export default function Login() {
 					transition: 1.2s ease-in-out !important;
 				}
 			`}</style>
-			<section
-				className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16 min-h-screen flex items-center justify-center login-section bg-[#fae4e4]/75"
-			>
+			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16 min-h-screen flex items-center justify-center login-section bg-[#fae4e4]/75">
 				<div
 					className={`login-container relative w-[850px] h-[550px] bg-beige-light rounded-[30px] shadow-lg overflow-hidden ${isActive ? "active" : ""}`}
 				>
@@ -174,12 +172,12 @@ export default function Login() {
 					>
 						<form onSubmit={(e) => e.preventDefault()} className="w-full">
 							<h1 className="text-5xl lg:text-6xl text-logo font-alex-brush lg:-mt-2 mb-2">
-								Login
+								Connexion
 							</h1>
 							<div className="relative my-8">
 								<input
 									type="text"
-									placeholder="Username"
+									placeholder="Nom d'utilisateur"
 									required
 									className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
 								/>
@@ -188,7 +186,7 @@ export default function Login() {
 							<div className="relative my-8">
 								<input
 									type="password"
-									placeholder="Password"
+									placeholder="Mot de passe"
 									required
 									className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
 								/>
@@ -199,17 +197,17 @@ export default function Login() {
 									href="#"
 									className="text-sm text-nude-dark no-underline hover:text-logo transition-colors duration-300 forgot-password"
 								>
-									Forgot Password?
+									Mot de passe oublié ?
 								</a>
 							</div>
 							<button
 								type="submit"
 								className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105"
 							>
-								Login
+								Se connecter
 							</button>
 							<p className="text-sm my-4 text-nude-dark">
-								or login with social platforms
+								ou se connecter avec
 							</p>
 							<div className="flex justify-center gap-4 mt-5">
 								<a
@@ -285,12 +283,12 @@ export default function Login() {
 					>
 						<form onSubmit={(e) => e.preventDefault()} className="w-full">
 							<h1 className="text-5xl lg:text-6xl text-logo font-alex-brush -mt-2 mb-2">
-								Register
+								S'inscrire
 							</h1>
 							<div className="relative my-8">
 								<input
 									type="text"
-									placeholder="Username"
+									placeholder="Nom d'utilisateur"
 									required
 									className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
 								/>
@@ -308,7 +306,7 @@ export default function Login() {
 							<div className="relative my-8">
 								<input
 									type="password"
-									placeholder="Password"
+									placeholder="Mot de passe"
 									required
 									className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
 								/>
@@ -318,11 +316,9 @@ export default function Login() {
 								type="submit"
 								className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105"
 							>
-								Register
+								S'inscrire
 							</button>
-							<p className="text-sm my-4 text-nude-dark">
-								or register with social platforms
-							</p>
+							<p className="text-sm my-4 text-nude-dark">ou s'inscrire avec</p>
 							<div className="flex justify-center gap-4 mt-5">
 								<a
 									href="#"
@@ -398,28 +394,32 @@ export default function Login() {
 							className={`toggle-panel toggle-left absolute w-1/2 h-full bg-rose-dark-2 text-white flex flex-col justify-center items-center z-20 rounded-r-[150px] ${isActive ? "-left-1/2" : "left-0"}`}
 						>
 							<h1 className="text-4xl font-alex-brush mb-4 text-beige-light">
-								Hello, Welcome Back!
+								Assalam Alaykoum, Marhaban !
 							</h1>
-							<p className="mb-5 text-beige-light">Don't have an account?</p>
+							<p className="mb-5 text-beige-light">
+								Vous n'avez pas de compte ?
+							</p>
 							<button
 								className="w-40 h-11 bg-transparent border-2 border-white rounded-lg shadow-none text-beige-light font-semibold hover:bg-white hover:text-rose-dark-2 transition-all duration-300 hover:scale-105 cursor-pointer"
 								onClick={handleRegisterClick}
 							>
-								Register
+								S'inscrire
 							</button>
 						</div>
 						<div
 							className={`toggle-panel toggle-right absolute w-1/2 h-full bg-rose-dark-2 text-white flex flex-col justify-center items-center z-20 rounded-l-[150px] ${isActive ? "right-0" : "-right-1/2"}`}
 						>
 							<h1 className="text-4xl font-alex-brush mb-4 text-beige-light">
-								Hello, Friend!
+								Assalam Alaykoum !
 							</h1>
-							<p className="mb-5 text-beige-light">Already have an account?</p>
+							<p className="mb-5 text-beige-light">
+								Vous avez déjà un compte ?
+							</p>
 							<button
 								className="w-40 h-11 bg-transparent border-2 border-white rounded-lg shadow-none text-beige-light font-semibold hover:bg-white hover:text-rose-dark-2 transition-all duration-300 hover:scale-105 cursor-pointer"
 								onClick={handleLoginClick}
 							>
-								Login
+								Se connecter
 							</button>
 						</div>
 					</div>
