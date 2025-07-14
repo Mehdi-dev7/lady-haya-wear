@@ -394,7 +394,7 @@ export default function Login() {
 							className={`toggle-panel toggle-left absolute w-1/2 h-full bg-rose-dark-2 text-white flex flex-col justify-center items-center z-20 rounded-r-[150px] ${isActive ? "-left-1/2" : "left-0"}`}
 						>
 							<h1 className="text-4xl font-alex-brush mb-4 text-beige-light">
-								Assalam Alaykoum, Marhaban !
+							 Marhaban !
 							</h1>
 							<p className="mb-5 text-beige-light">
 								Vous n'avez pas de compte ?

@@ -1,0 +1,5 @@
+{
+	"npm.packageManager": "npm",
+	"typescript.preferences.includePackageJsonAutoImports": "auto",
+	"typescript.suggest.autoImports": true
+}
