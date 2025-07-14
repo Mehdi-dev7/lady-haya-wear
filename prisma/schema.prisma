@@ -64,6 +64,7 @@ model User {
   sessions      Session[]
   orders        Order[]
   cartItems     CartItem[]
+  favorites     Favorite[]
   addresses     Address[]
 }
 
@@ -112,6 +113,18 @@ model CartItem {
   user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@unique([userId, productId, colorName, sizeName])
+}
+
+// === FAVORIS ===
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String   // ID du produit Sanity
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, productId])
 }
 
 // === COMMANDES ===

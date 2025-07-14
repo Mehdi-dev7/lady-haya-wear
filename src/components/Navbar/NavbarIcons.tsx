@@ -83,9 +83,6 @@ export default function NavbarIcons() {
 							<p className="text-logo font-medium">
 								{user?.name || "Utilisateur"}
 							</p>
-							<p className="text-xs text-nude-dark">
-								{user?.email || "Bienvenue"}
-							</p>
 						</div>
 					</div>
 					<Link
