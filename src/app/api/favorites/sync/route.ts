@@ -5,14 +5,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
+type LocalFavorite = {
+	productId: string;
+};
+
 export async function POST(request: NextRequest) {
 	try {
 		// Vérifier l'authentification
 		const token = request.cookies.get("auth-token")?.value;
-		console.log(
-			"🍪 [API favorites/sync] Cookie auth-token côté serveur:",
-			token
-		);
 		if (!token) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
@@ -20,7 +20,8 @@ export async function POST(request: NextRequest) {
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
 		const userId = decoded.userId;
 
-		const { localFavorites } = await request.json();
+		const { localFavorites }: { localFavorites: LocalFavorite[] } =
+			await request.json();
 
 		// Récupérer les favoris existants en base de données
 		const dbFavorites = await prisma.favorite.findMany({

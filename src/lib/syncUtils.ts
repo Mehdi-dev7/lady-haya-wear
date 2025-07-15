@@ -53,11 +53,6 @@ export async function enrichCartItems(dbItems: any[]) {
 				maxQuantity: 10, // Valeur par défaut
 				slug: productDetails.slug,
 			});
-		} else {
-			console.warn(
-				"Produit non trouvé dans Sanity pour productId:",
-				dbItem.productId
-			);
 		}
 	}
 

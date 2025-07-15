@@ -45,10 +45,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				window.dispatchEvent(
 					new CustomEvent("favoritesSynced", { detail: { favorites } })
 				);
-				console.log("✅ Favoris rechargés depuis la BDD");
 			}
 		} catch (e) {
-			console.error("Erreur lors du fetch favoris BDD:", e);
+			// Erreur lors du fetch favoris BDD:
 		}
 		// Panier
 		try {
@@ -58,10 +57,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				window.dispatchEvent(
 					new CustomEvent("cartSynced", { detail: { cartItems } })
 				);
-				console.log("✅ Panier rechargé depuis la BDD");
 			}
 		} catch (e) {
-			console.error("Erreur lors du fetch panier BDD:", e);
+			// Erreur lors du fetch panier BDD:
 		}
 	};
 
@@ -121,7 +119,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				method: "POST",
 			});
 		} catch (error) {
-			console.error("Erreur lors de la déconnexion:", error);
+			// Erreur lors de la déconnexion:
 		}
 
 		// Supprimer le cookie d'authentification
@@ -139,8 +137,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		try {
 			if (!authState.user) return;
 
-			console.log("🔄 Synchronisation du panier et des favoris...");
-
 			// Récupérer les données locales
 			const localCart = localStorage.getItem("cart");
 			const localFavorites = localStorage.getItem("favorites");
@@ -149,11 +145,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			const localFavoritesItems = localFavorites
 				? JSON.parse(localFavorites)
 				: [];
-
-			console.log("📦 Données locales:", {
-				cartItems: localCartItems.length,
-				favorites: localFavoritesItems.length,
-			});
 
 			// Synchroniser le panier
 			try {
@@ -167,16 +158,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 				if (cartResponse.ok) {
 					const { cartItems } = await cartResponse.json();
-					console.log("✅ Panier synchronisé:", cartItems.length, "articles");
 					// Déclencher un événement pour mettre à jour le contexte du panier
 					window.dispatchEvent(
 						new CustomEvent("cartSynced", { detail: { cartItems } })
 					);
 				} else {
-					console.error("❌ Erreur lors de la synchronisation du panier");
+					// Erreur lors de la synchronisation du panier:
 				}
 			} catch (error) {
-				console.error("❌ Erreur lors de la synchronisation du panier:", error);
+				// Erreur lors de la synchronisation du panier:
 			}
 
 			// Synchroniser les favoris
@@ -191,28 +181,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 				if (favoritesResponse.ok) {
 					const { favorites } = await favoritesResponse.json();
-					console.log("✅ Favoris synchronisés:", favorites.length, "articles");
 					// Déclencher un événement pour mettre à jour le contexte des favoris
 					window.dispatchEvent(
 						new CustomEvent("favoritesSynced", { detail: { favorites } })
 					);
 				} else {
-					console.error("❌ Erreur lors de la synchronisation des favoris");
+					// Erreur lors de la synchronisation des favoris:
 				}
 			} catch (error) {
-				console.error(
-					"❌ Erreur lors de la synchronisation des favoris:",
-					error
-				);
+				// Erreur lors de la synchronisation des favoris:
 			}
 
 			// Après synchronisation réussie, vider le localStorage
 			// (les données sont maintenant en BDD et dans les contextes)
 			localStorage.removeItem("cart");
 			localStorage.removeItem("favorites");
-			console.log("🧹 LocalStorage vidé après synchronisation");
 		} catch (error) {
-			console.error("❌ Erreur générale lors de la synchronisation:", error);
+			// Erreur générale lors de la synchronisation:
 		}
 	};
 

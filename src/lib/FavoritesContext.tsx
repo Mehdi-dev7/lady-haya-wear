@@ -50,7 +50,6 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 				const parsedFavorites = JSON.parse(savedFavorites);
 				setFavorites(parsedFavorites);
 			} catch (error) {
-				console.error("Erreur lors du parsing des favoris:", error);
 				localStorage.removeItem("favorites");
 			}
 		}
@@ -66,7 +65,6 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 		// Événement déclenché après connexion avec les favoris de la BDD
 		const handleFavoritesSynced = (event: CustomEvent) => {
 			const { favorites: syncedFavorites } = event.detail;
-			console.log("Favoris enrichis reçus:", syncedFavorites);
 			setFavorites(syncedFavorites);
 		};
 
@@ -101,13 +99,8 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 	// Fonction pour sauvegarder en base de données (seulement si connecté)
 	const saveToDatabase = async (favoritesList: Product[]) => {
 		if (!user) {
-			console.log("🔒 Utilisateur non connecté, pas de sauvegarde en BDD");
 			return;
 		}
-		console.log(
-			"💾 Sauvegarde des favoris en BDD pour l'utilisateur:",
-			user.id
-		);
 		try {
 			const response = await fetch("/api/favorites/sync", {
 				method: "POST",
@@ -122,8 +115,6 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 					"❌ Erreur lors de la sauvegarde des favoris en BDD:",
 					response.status
 				);
-			} else {
-				console.log("✅ Favoris sauvegardés en BDD avec succès");
 			}
 		} catch (error) {
 			console.error(

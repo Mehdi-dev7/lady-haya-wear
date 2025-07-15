@@ -49,7 +49,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 				const parsedCart = JSON.parse(savedCart);
 				setCartItems(parsedCart);
 			} catch (error) {
-				console.error("Erreur lors du parsing du panier:", error);
 				localStorage.removeItem("cart");
 			}
 		}
@@ -65,7 +64,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 		// Événement déclenché après connexion avec le panier de la BDD
 		const handleCartSynced = (event: CustomEvent) => {
 			const { cartItems: syncedItems } = event.detail;
-			console.log("Panier enrichi reçu:", syncedItems);
 			setCartItems(syncedItems);
 		};
 
@@ -93,12 +91,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 	// Fonction pour sauvegarder en base de données (seulement si connecté)
 	const saveToDatabase = async (items: CartItem[]) => {
 		if (!user) {
-			console.log(
-				"🔒 Utilisateur non connecté, pas de sauvegarde panier en BDD"
-			);
 			return;
 		}
-		console.log("💾 Sauvegarde du panier en BDD pour l'utilisateur:", user.id);
 		try {
 			// Convertir au format base de données
 			const dbItems = items.map((item) => ({
@@ -121,8 +115,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 					"❌ Erreur lors de la sauvegarde du panier en BDD:",
 					response.status
 				);
-			} else {
-				console.log("✅ Panier sauvegardé en BDD avec succès");
 			}
 		} catch (error) {
 			console.error(

@@ -26,7 +26,6 @@ export async function POST(request: NextRequest) {
 	try {
 		// Vérifier l'authentification
 		const token = request.cookies.get("auth-token")?.value;
-		console.log("🍪 [API cart/sync] Cookie auth-token côté serveur:", token);
 		if (!token) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
@@ -130,13 +129,11 @@ export async function GET(request: NextRequest) {
 
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
 		const userId = decoded.userId;
-		console.log("🛒 [API] userId utilisé pour le fetch panier:", userId);
 
 		// Récupérer le panier depuis la base de données
 		const cartItems = await prisma.cartItem.findMany({
 			where: { userId },
 		});
-		console.log("🛒 [API] CartItems bruts BDD:", cartItems);
 
 		// Enrichir les données avec les détails Sanity
 		const enrichedItems = await enrichCartItems(cartItems);
