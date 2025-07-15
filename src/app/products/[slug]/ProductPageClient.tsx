@@ -99,7 +99,7 @@ export function ProductPageClient({
 		// Simuler un délai pour l'ajout au panier
 		setTimeout(() => {
 			addToCart({
-				productId: product._id,
+				productId: product.product?._id || product._id, // Toujours l'ID du produit principal
 				name: product.name,
 				price: product.price,
 				originalPrice: product.originalPrice,

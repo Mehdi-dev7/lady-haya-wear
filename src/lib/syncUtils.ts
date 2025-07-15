@@ -9,8 +9,10 @@ export async function getProductDetails(productId: string) {
         name,
         price,
         originalPrice,
-        "image": gallery[0].asset->url,
-        "imageAlt": gallery[0].alt,
+        "image": mainImage.asset->url,
+        "imageAlt": mainImage.alt,
+        "hoverImage": hoverImage.asset->url,
+        "hoverImageAlt": hoverImage.alt,
         "slug": slug.current,
         category->{
           _id,
@@ -51,6 +53,11 @@ export async function enrichCartItems(dbItems: any[]) {
 				maxQuantity: 10, // Valeur par défaut
 				slug: productDetails.slug,
 			});
+		} else {
+			console.warn(
+				"Produit non trouvé dans Sanity pour productId:",
+				dbItem.productId
+			);
 		}
 	}
 

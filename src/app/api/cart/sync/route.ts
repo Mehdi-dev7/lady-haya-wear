@@ -5,10 +5,28 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
+type LocalCartItem = {
+	productId: string;
+	color: string;
+	size: string;
+	quantity: number;
+	price: number;
+};
+
+type DBCartItem = {
+	productId: string;
+	colorName: string | null;
+	sizeName: string | null;
+	quantity: number;
+	price: number;
+	// autres champs éventuels
+};
+
 export async function POST(request: NextRequest) {
 	try {
 		// Vérifier l'authentification
 		const token = request.cookies.get("auth-token")?.value;
+		console.log("🍪 [API cart/sync] Cookie auth-token côté serveur:", token);
 		if (!token) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
@@ -16,39 +34,34 @@ export async function POST(request: NextRequest) {
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
 		const userId = decoded.userId;
 
-		const { localCartItems } = await request.json();
+		const { localCartItems }: { localCartItems: LocalCartItem[] } =
+			await request.json();
 
 		// Récupérer le panier existant en base de données
-		const dbCartItems = await prisma.cartItem.findMany({
+		const dbCartItems: DBCartItem[] = await prisma.cartItem.findMany({
 			where: { userId },
 		});
 
 		// Synchroniser : fusionner les articles locaux avec ceux de la base
 		const syncedItems = [];
 
-		// Ajouter/mettre à jour les articles locaux dans la base
+		// Ajouter/mettre à jour les articles locaux dans la base (utiliser upsert)
 		for (const localItem of localCartItems) {
-			const existingItem = dbCartItems.find(
-				(dbItem) =>
-					dbItem.productId === localItem.productId &&
-					dbItem.colorName === localItem.color &&
-					dbItem.sizeName === localItem.size
-			);
-
-			if (existingItem) {
-				// Mettre à jour la quantité (prendre la plus récente)
-				const updatedItem = await prisma.cartItem.update({
-					where: { id: existingItem.id },
-					data: {
-						quantity: Math.max(existingItem.quantity, localItem.quantity),
+			try {
+				const upsertedItem = await prisma.cartItem.upsert({
+					where: {
+						userId_productId_colorName_sizeName: {
+							userId,
+							productId: localItem.productId,
+							colorName: localItem.color,
+							sizeName: localItem.size,
+						},
+					},
+					update: {
+						quantity: Math.max(localItem.quantity, 1), // Prendre la quantité locale
 						price: localItem.price,
 					},
-				});
-				syncedItems.push(updatedItem);
-			} else {
-				// Créer un nouvel article
-				const newItem = await prisma.cartItem.create({
-					data: {
+					create: {
 						userId,
 						productId: localItem.productId,
 						colorName: localItem.color,
@@ -57,7 +70,26 @@ export async function POST(request: NextRequest) {
 						price: localItem.price,
 					},
 				});
-				syncedItems.push(newItem);
+				syncedItems.push(upsertedItem);
+			} catch (error) {
+				console.error(
+					`Erreur lors de l'upsert de l'article ${localItem.productId}:`,
+					error
+				);
+				// Essayer de récupérer l'enregistrement existant
+				const existingItem = await prisma.cartItem.findUnique({
+					where: {
+						userId_productId_colorName_sizeName: {
+							userId,
+							productId: localItem.productId,
+							colorName: localItem.color,
+							sizeName: localItem.size,
+						},
+					},
+				});
+				if (existingItem) {
+					syncedItems.push(existingItem);
+				}
 			}
 		}
 
@@ -98,11 +130,13 @@ export async function GET(request: NextRequest) {
 
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
 		const userId = decoded.userId;
+		console.log("🛒 [API] userId utilisé pour le fetch panier:", userId);
 
 		// Récupérer le panier depuis la base de données
 		const cartItems = await prisma.cartItem.findMany({
 			where: { userId },
 		});
+		console.log("🛒 [API] CartItems bruts BDD:", cartItems);
 
 		// Enrichir les données avec les détails Sanity
 		const enrichedItems = await enrichCartItems(cartItems);

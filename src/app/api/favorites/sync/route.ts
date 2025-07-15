@@ -9,6 +9,10 @@ export async function POST(request: NextRequest) {
 	try {
 		// Vérifier l'authentification
 		const token = request.cookies.get("auth-token")?.value;
+		console.log(
+			"🍪 [API favorites/sync] Cookie auth-token côté serveur:",
+			token
+		);
 		if (!token) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
@@ -26,23 +30,42 @@ export async function POST(request: NextRequest) {
 		// Synchroniser : fusionner les favoris locaux avec ceux de la base
 		const syncedFavorites = [];
 
-		// Ajouter les favoris locaux à la base s'ils n'existent pas
+		// Ajouter les favoris locaux à la base s'ils n'existent pas (utiliser upsert)
 		for (const localFav of localFavorites) {
-			const existingFav = dbFavorites.find(
-				(dbFav) => dbFav.productId === localFav.productId
-			);
-
-			if (!existingFav) {
-				// Créer un nouveau favori
-				const newFavorite = await prisma.favorite.create({
-					data: {
+			try {
+				const upsertedFavorite = await prisma.favorite.upsert({
+					where: {
+						userId_productId: {
+							userId,
+							productId: localFav.productId,
+						},
+					},
+					update: {
+						// Rien à mettre à jour pour les favoris
+					},
+					create: {
 						userId,
 						productId: localFav.productId,
 					},
 				});
-				syncedFavorites.push(newFavorite);
-			} else {
-				syncedFavorites.push(existingFav);
+				syncedFavorites.push(upsertedFavorite);
+			} catch (error) {
+				console.error(
+					`Erreur lors de l'upsert du favori ${localFav.productId}:`,
+					error
+				);
+				// Essayer de récupérer l'enregistrement existant
+				const existingFav = await prisma.favorite.findUnique({
+					where: {
+						userId_productId: {
+							userId,
+							productId: localFav.productId,
+						},
+					},
+				});
+				if (existingFav) {
+					syncedFavorites.push(existingFav);
+				}
 			}
 		}
 

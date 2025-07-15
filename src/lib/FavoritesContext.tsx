@@ -42,7 +42,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const { user } = useAuth();
 
-	// Charger les favoris depuis localStorage au démarrage
+	// Charger les favoris depuis localStorage au démarrage (connecté ou non)
 	useEffect(() => {
 		const savedFavorites = localStorage.getItem("favorites");
 		if (savedFavorites) {
@@ -56,52 +56,58 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 		}
 	}, []);
 
-	// Quand l'utilisateur se connecte, synchroniser avec la base
-	useEffect(() => {
-		if (user) {
-			// Déclencher la synchronisation via l'AuthContext
-			const syncData = async () => {
-				try {
-					// Attendre un peu pour laisser le temps à l'AuthContext de se synchroniser
-					setTimeout(() => {
-						window.dispatchEvent(new CustomEvent("user-connected"));
-					}, 100);
-				} catch (error) {
-					console.error("Erreur lors de la synchronisation:", error);
-				}
-			};
-			syncData();
-		}
-	}, [user]);
-
 	// Sauvegarder automatiquement dans localStorage à chaque changement
 	useEffect(() => {
 		localStorage.setItem("favorites", JSON.stringify(favorites));
 	}, [favorites]);
 
-	// Écouter l'événement de synchronisation depuis AuthContext
+	// Écouter les événements de synchronisation depuis AuthContext
 	useEffect(() => {
+		// Événement déclenché après connexion avec les favoris de la BDD
 		const handleFavoritesSynced = (event: CustomEvent) => {
 			const { favorites: syncedFavorites } = event.detail;
-
-			// Les données sont déjà enrichies par l'API
+			console.log("Favoris enrichis reçus:", syncedFavorites);
 			setFavorites(syncedFavorites);
+		};
+
+		// Événement déclenché lors de la déconnexion pour vider
+		const handleFavoritesCleared = () => {
+			setFavorites([]);
+			localStorage.removeItem("favorites");
 		};
 
 		window.addEventListener(
 			"favoritesSynced",
 			handleFavoritesSynced as EventListener
 		);
+
+		window.addEventListener(
+			"favoritesCleared",
+			handleFavoritesCleared as EventListener
+		);
+
 		return () => {
 			window.removeEventListener(
 				"favoritesSynced",
 				handleFavoritesSynced as EventListener
 			);
+			window.removeEventListener(
+				"favoritesCleared",
+				handleFavoritesCleared as EventListener
+			);
 		};
 	}, []);
 
-	// Fonction pour sauvegarder en base de données (si connecté)
+	// Fonction pour sauvegarder en base de données (seulement si connecté)
 	const saveToDatabase = async (favoritesList: Product[]) => {
+		if (!user) {
+			console.log("🔒 Utilisateur non connecté, pas de sauvegarde en BDD");
+			return;
+		}
+		console.log(
+			"💾 Sauvegarde des favoris en BDD pour l'utilisateur:",
+			user.id
+		);
 		try {
 			const response = await fetch("/api/favorites/sync", {
 				method: "POST",
@@ -109,13 +115,21 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({ localFavorites: favoritesList }),
+				credentials: "include",
 			});
-
 			if (!response.ok) {
-				console.log("Utilisateur non connecté, sauvegarde locale uniquement");
+				console.error(
+					"❌ Erreur lors de la sauvegarde des favoris en BDD:",
+					response.status
+				);
+			} else {
+				console.log("✅ Favoris sauvegardés en BDD avec succès");
 			}
 		} catch (error) {
-			console.log("Erreur lors de la sauvegarde des favoris en base:", error);
+			console.error(
+				"❌ Erreur lors de la sauvegarde des favoris en base:",
+				error
+			);
 		}
 	};
 
@@ -127,7 +141,11 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 				? prev
 				: [...prev, product];
 
-			saveToDatabase(updatedFavorites);
+			// Sauvegarder en BDD si connecté
+			if (user) {
+				saveToDatabase(updatedFavorites);
+			}
+
 			return updatedFavorites;
 		});
 	};
@@ -137,7 +155,12 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 			const updatedFavorites = prev.filter(
 				(fav) => fav.productId !== productId
 			);
-			saveToDatabase(updatedFavorites);
+
+			// Sauvegarder en BDD si connecté
+			if (user) {
+				saveToDatabase(updatedFavorites);
+			}
+
 			return updatedFavorites;
 		});
 	};
@@ -149,14 +172,23 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 				? prev.filter((fav) => fav.productId !== product.productId)
 				: [...prev, product];
 
-			saveToDatabase(updatedFavorites);
+			// Sauvegarder en BDD si connecté
+			if (user) {
+				saveToDatabase(updatedFavorites);
+			}
+
 			return updatedFavorites;
 		});
 	};
 
 	const clearAllFavorites = () => {
 		setFavorites([]);
-		saveToDatabase([]);
+		localStorage.removeItem("favorites");
+
+		// Sauvegarder en BDD si connecté
+		if (user) {
+			saveToDatabase([]);
+		}
 	};
 
 	return (

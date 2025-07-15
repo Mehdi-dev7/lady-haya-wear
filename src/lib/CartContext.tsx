@@ -41,7 +41,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const { user } = useAuth();
 
-	// Charger le panier depuis localStorage au démarrage
+	// Charger le panier depuis localStorage au démarrage (connecté ou non)
 	useEffect(() => {
 		const savedCart = localStorage.getItem("cart");
 		if (savedCart) {
@@ -55,49 +55,50 @@ export function CartProvider({ children }: { children: ReactNode }) {
 		}
 	}, []);
 
-	// Quand l'utilisateur se connecte, synchroniser avec la base
-	useEffect(() => {
-		if (user) {
-			// Déclencher la synchronisation via l'AuthContext
-			const syncData = async () => {
-				try {
-					// Attendre un peu pour laisser le temps à l'AuthContext de se synchroniser
-					setTimeout(() => {
-						window.dispatchEvent(new CustomEvent("user-connected"));
-					}, 100);
-				} catch (error) {
-					console.error("Erreur lors de la synchronisation:", error);
-				}
-			};
-			syncData();
-		}
-	}, [user]);
-
 	// Sauvegarder automatiquement dans localStorage à chaque changement
 	useEffect(() => {
 		localStorage.setItem("cart", JSON.stringify(cartItems));
 	}, [cartItems]);
 
-	// Écouter l'événement de synchronisation depuis AuthContext
+	// Écouter les événements de synchronisation depuis AuthContext
 	useEffect(() => {
+		// Événement déclenché après connexion avec le panier de la BDD
 		const handleCartSynced = (event: CustomEvent) => {
 			const { cartItems: syncedItems } = event.detail;
-
-			// Les données sont déjà enrichies par l'API
+			console.log("Panier enrichi reçu:", syncedItems);
 			setCartItems(syncedItems);
 		};
 
+		// Événement déclenché lors de la déconnexion pour vider
+		const handleCartCleared = () => {
+			setCartItems([]);
+			localStorage.removeItem("cart");
+		};
+
 		window.addEventListener("cartSynced", handleCartSynced as EventListener);
+		window.addEventListener("cartCleared", handleCartCleared as EventListener);
+
 		return () => {
 			window.removeEventListener(
 				"cartSynced",
 				handleCartSynced as EventListener
 			);
+			window.removeEventListener(
+				"cartCleared",
+				handleCartCleared as EventListener
+			);
 		};
 	}, []);
 
-	// Fonction pour sauvegarder en base de données (si connecté)
+	// Fonction pour sauvegarder en base de données (seulement si connecté)
 	const saveToDatabase = async (items: CartItem[]) => {
+		if (!user) {
+			console.log(
+				"🔒 Utilisateur non connecté, pas de sauvegarde panier en BDD"
+			);
+			return;
+		}
+		console.log("💾 Sauvegarde du panier en BDD pour l'utilisateur:", user.id);
 		try {
 			// Convertir au format base de données
 			const dbItems = items.map((item) => ({
@@ -107,20 +108,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
 				quantity: item.quantity,
 				price: item.price,
 			}));
-
 			const response = await fetch("/api/cart/sync", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({ localCartItems: dbItems }),
+				credentials: "include",
 			});
-
 			if (!response.ok) {
-				console.log("Utilisateur non connecté, sauvegarde locale uniquement");
+				console.error(
+					"❌ Erreur lors de la sauvegarde du panier en BDD:",
+					response.status
+				);
+			} else {
+				console.log("✅ Panier sauvegardé en BDD avec succès");
 			}
 		} catch (error) {
-			console.log("Erreur lors de la sauvegarde en base:", error);
+			console.error(
+				"❌ Erreur lors de la sauvegarde du panier en base:",
+				error
+			);
 		}
 	};
 
@@ -149,8 +157,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 				updatedItems = [...prevItems, { ...newItem, id }];
 			}
 
-			// Sauvegarder en base de données
-			saveToDatabase(updatedItems);
+			// Sauvegarder en BDD si connecté
+			if (user) {
+				saveToDatabase(updatedItems);
+			}
+
 			return updatedItems;
 		});
 	};
@@ -158,7 +169,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
 	const removeFromCart = (id: string) => {
 		setCartItems((prevItems) => {
 			const updatedItems = prevItems.filter((item) => item.id !== id);
-			saveToDatabase(updatedItems);
+
+			// Sauvegarder en BDD si connecté
+			if (user) {
+				saveToDatabase(updatedItems);
+			}
+
 			return updatedItems;
 		});
 	};
@@ -178,14 +194,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
 				}
 				return item;
 			});
-			saveToDatabase(updatedItems);
+
+			// Sauvegarder en BDD si connecté
+			if (user) {
+				saveToDatabase(updatedItems);
+			}
+
 			return updatedItems;
 		});
 	};
 
 	const clearCart = () => {
 		setCartItems([]);
-		saveToDatabase([]);
+		localStorage.removeItem("cart");
+
+		// Sauvegarder en BDD si connecté
+		if (user) {
+			saveToDatabase([]);
+		}
 	};
 
 	const getCartTotal = () => {

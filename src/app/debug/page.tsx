@@ -1,3 +1,4 @@
+import ClearFavorites from "@/components/Debug/ClearFavorites";
 import { getAllProductDetails } from "@/lib/sanity-queries";
 
 export default async function DebugPage() {
@@ -8,6 +9,11 @@ export default async function DebugPage() {
 			<h1 className="text-3xl font-bold mb-8">
 				Debug - Fiches Produits Détaillées
 			</h1>
+
+			{/* Composant de nettoyage des favoris */}
+			<div className="mb-8">
+				<ClearFavorites />
+			</div>
 
 			<div className="mb-8">
 				<h2 className="text-2xl font-semibold mb-4">
