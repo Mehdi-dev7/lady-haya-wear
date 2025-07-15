@@ -25,8 +25,8 @@ export default function RootLayout({
 		<html lang="fr">
 			<body className="antialiased">
 				<AuthProvider>
-					<FavoritesProvider>
-						<CartProvider>
+					<CartProvider>
+						<FavoritesProvider>
 							<StudioWrapper>{children}</StudioWrapper>
 							<ToastContainer
 								position="top-right"
@@ -40,8 +40,8 @@ export default function RootLayout({
 								pauseOnHover
 								theme="light"
 							/>
-						</CartProvider>
-					</FavoritesProvider>
+						</FavoritesProvider>
+					</CartProvider>
 				</AuthProvider>
 			</body>
 		</html>

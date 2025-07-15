@@ -23,15 +23,21 @@ type DBCartItem = {
 };
 
 export async function POST(request: NextRequest) {
+	console.log(
+		"[API cart/sync] SYNC API appelée, cookies:",
+		request.cookies.getAll()
+	);
 	try {
 		// Vérifier l'authentification
 		const token = request.cookies.get("auth-token")?.value;
+		console.log("[API cart/sync] Token reçu:", token);
 		if (!token) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
 
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
 		const userId = decoded.userId;
+		console.log("[API cart/sync] UserId décodé:", userId);
 
 		const { localCartItems }: { localCartItems: LocalCartItem[] } =
 			await request.json();
@@ -108,6 +114,7 @@ export async function POST(request: NextRequest) {
 
 		// Enrichir les données avec les détails Sanity
 		const enrichedItems = await enrichCartItems(syncedItems);
+		console.log("[API cart/sync] Fin de sync, items en BDD:", syncedItems);
 
 		return NextResponse.json({ cartItems: enrichedItems }, { status: 200 });
 	} catch (error) {

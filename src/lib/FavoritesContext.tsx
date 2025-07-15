@@ -57,6 +57,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
 	// Sauvegarder automatiquement dans localStorage à chaque changement
 	useEffect(() => {
+		console.log("[FavoritesContext] favorites a changé :", favorites);
 		localStorage.setItem("favorites", JSON.stringify(favorites));
 	}, [favorites]);
 
@@ -65,11 +66,21 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 		// Événement déclenché après connexion avec les favoris de la BDD
 		const handleFavoritesSynced = (event: CustomEvent) => {
 			const { favorites: syncedFavorites } = event.detail;
-			setFavorites(syncedFavorites);
+			if (
+				localStorage.getItem("migrationDone") === "true" ||
+				syncedFavorites.length > 0
+			) {
+				setFavorites(syncedFavorites);
+				if (localStorage.getItem("migrationDone") === "true") {
+					localStorage.removeItem("favorites");
+					localStorage.removeItem("migrationDone");
+				}
+			}
 		};
 
 		// Événement déclenché lors de la déconnexion pour vider
 		const handleFavoritesCleared = () => {
+			console.log("[FavoritesContext] handleFavoritesCleared appelé");
 			setFavorites([]);
 			localStorage.removeItem("favorites");
 		};

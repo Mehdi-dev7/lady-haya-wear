@@ -2,11 +2,15 @@
 
 import ContactLeft from "@/components/Contact/ContactLeft";
 import ContactRight from "@/components/Contact/ContactRight";
+import DebugMigration from "@/components/DebugMigration";
 import { motion } from "framer-motion";
 
 export default function Contact() {
 	return (
 		<section className="bg-beige-light min-h-screen">
+			<div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-8 pt-32 pb-16">
+				<DebugMigration />
+			</div>
 			<div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-8 pt-32 pb-16">
 				{/* Header avec titre élégant */}
 				<motion.div

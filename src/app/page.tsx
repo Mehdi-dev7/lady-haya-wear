@@ -7,6 +7,7 @@ import {
 	getFeaturedCategories,
 	getFeaturedProducts,
 } from "@/lib/sanity-queries";
+import DebugMigration from "@/components/DebugMigration";
 
 export default async function Home() {
 	const featuredCategories = await getFeaturedCategories();
@@ -21,6 +22,7 @@ export default async function Home() {
 			</section>
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-beige-light py-16">
 				<ProductList featuredProducts={featuredProducts} />
+				
 			</section>
 			<ServicesInfo />
 		</div>

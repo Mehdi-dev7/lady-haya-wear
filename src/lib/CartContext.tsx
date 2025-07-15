@@ -56,6 +56,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 	// Sauvegarder automatiquement dans localStorage à chaque changement
 	useEffect(() => {
+		console.log("[CartContext] cartItems a changé :", cartItems);
 		localStorage.setItem("cart", JSON.stringify(cartItems));
 	}, [cartItems]);
 
@@ -64,11 +65,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
 		// Événement déclenché après connexion avec le panier de la BDD
 		const handleCartSynced = (event: CustomEvent) => {
 			const { cartItems: syncedItems } = event.detail;
-			setCartItems(syncedItems);
+			if (
+				localStorage.getItem("migrationDone") === "true" ||
+				syncedItems.length > 0
+			) {
+				setCartItems(syncedItems);
+				if (localStorage.getItem("migrationDone") === "true") {
+					localStorage.removeItem("cart");
+					localStorage.removeItem("migrationDone");
+				}
+			}
 		};
 
 		// Événement déclenché lors de la déconnexion pour vider
 		const handleCartCleared = () => {
+			console.log("[CartContext] handleCartCleared appelé");
 			setCartItems([]);
 			localStorage.removeItem("cart");
 		};

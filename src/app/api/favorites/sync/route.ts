@@ -10,15 +10,21 @@ type LocalFavorite = {
 };
 
 export async function POST(request: NextRequest) {
+	console.log(
+		"[API favorites/sync] SYNC API appelée, cookies:",
+		request.cookies.getAll()
+	);
 	try {
 		// Vérifier l'authentification
 		const token = request.cookies.get("auth-token")?.value;
+		console.log("[API favorites/sync] Token reçu:", token);
 		if (!token) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
 
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
 		const userId = decoded.userId;
+		console.log("[API favorites/sync] UserId décodé:", userId);
 
 		const { localFavorites }: { localFavorites: LocalFavorite[] } =
 			await request.json();
@@ -83,6 +89,10 @@ export async function POST(request: NextRequest) {
 
 		// Enrichir les données avec les détails Sanity
 		const enrichedFavorites = await enrichFavorites(syncedFavorites);
+		console.log(
+			"[API favorites/sync] Fin de sync, favoris en BDD:",
+			syncedFavorites
+		);
 
 		return NextResponse.json({ favorites: enrichedFavorites }, { status: 200 });
 	} catch (error) {
