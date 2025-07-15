@@ -6,7 +6,6 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { useAuth } from "./AuthContext";
 
 export interface CartItem {
 	id: string;
@@ -20,7 +19,7 @@ export interface CartItem {
 	colorHex: string;
 	size: string;
 	quantity: number;
-	maxQuantity: number; // Stock maximum disponible
+	maxQuantity: number;
 	slug: string;
 }
 
@@ -39,9 +38,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
 	const [cartItems, setCartItems] = useState<CartItem[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const { user } = useAuth();
 
-	// Charger le panier depuis localStorage au démarrage (connecté ou non)
+	// Charger le panier depuis localStorage au démarrage
 	useEffect(() => {
 		const savedCart = localStorage.getItem("cart");
 		if (savedCart) {
@@ -56,13 +54,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 	// Sauvegarder automatiquement dans localStorage à chaque changement
 	useEffect(() => {
-		console.log("[CartContext] cartItems a changé :", cartItems);
 		localStorage.setItem("cart", JSON.stringify(cartItems));
 	}, [cartItems]);
 
 	// Écouter les événements de synchronisation depuis AuthContext
 	useEffect(() => {
-		// Événement déclenché après connexion avec le panier de la BDD
 		const handleCartSynced = (event: CustomEvent) => {
 			const { cartItems: syncedItems } = event.detail;
 			if (
@@ -77,9 +73,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 			}
 		};
 
-		// Événement déclenché lors de la déconnexion pour vider
 		const handleCartCleared = () => {
-			console.log("[CartContext] handleCartCleared appelé");
 			setCartItems([]);
 			localStorage.removeItem("cart");
 		};
@@ -99,45 +93,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 		};
 	}, []);
 
-	// Fonction pour sauvegarder en base de données (seulement si connecté)
-	const saveToDatabase = async (items: CartItem[]) => {
-		if (!user) {
-			return;
-		}
-		try {
-			// Convertir au format base de données
-			const dbItems = items.map((item) => ({
-				productId: item.productId,
-				color: item.color,
-				size: item.size,
-				quantity: item.quantity,
-				price: item.price,
-			}));
-			const response = await fetch("/api/cart/sync", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ localCartItems: dbItems }),
-				credentials: "include",
-			});
-			if (!response.ok) {
-				console.error(
-					"❌ Erreur lors de la sauvegarde du panier en BDD:",
-					response.status
-				);
-			}
-		} catch (error) {
-			console.error(
-				"❌ Erreur lors de la sauvegarde du panier en base:",
-				error
-			);
-		}
-	};
+	// La sauvegarde en BDD est maintenant gérée par AuthProvider via les événements
 
 	const addToCart = (newItem: Omit<CartItem, "id">) => {
 		setCartItems((prevItems) => {
-			// Vérifier si le produit existe déjà avec la même couleur et taille
 			const existingItemIndex = prevItems.findIndex(
 				(item) =>
 					item.productId === newItem.productId &&
@@ -147,7 +106,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 			let updatedItems;
 			if (existingItemIndex !== -1) {
-				// Mettre à jour la quantité en respectant le stock maximum
 				updatedItems = [...prevItems];
 				const currentQuantity = updatedItems[existingItemIndex].quantity;
 				const newTotalQuantity = currentQuantity + newItem.quantity;
@@ -155,14 +113,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 				updatedItems[existingItemIndex].quantity = maxAllowed;
 			} else {
-				// Ajouter un nouvel item
 				const id = `${newItem.productId}-${newItem.color}-${newItem.size}`;
 				updatedItems = [...prevItems, { ...newItem, id }];
-			}
-
-			// Sauvegarder en BDD si connecté
-			if (user) {
-				saveToDatabase(updatedItems);
 			}
 
 			return updatedItems;
@@ -172,12 +124,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 	const removeFromCart = (id: string) => {
 		setCartItems((prevItems) => {
 			const updatedItems = prevItems.filter((item) => item.id !== id);
-
-			// Sauvegarder en BDD si connecté
-			if (user) {
-				saveToDatabase(updatedItems);
-			}
-
 			return updatedItems;
 		});
 	};
@@ -191,17 +137,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 		setCartItems((prevItems) => {
 			const updatedItems = prevItems.map((item) => {
 				if (item.id === id) {
-					// Respecter la limite de stock maximum
 					const maxAllowed = Math.min(quantity, item.maxQuantity);
 					return { ...item, quantity: maxAllowed };
 				}
 				return item;
 			});
-
-			// Sauvegarder en BDD si connecté
-			if (user) {
-				saveToDatabase(updatedItems);
-			}
 
 			return updatedItems;
 		});
@@ -210,11 +150,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 	const clearCart = () => {
 		setCartItems([]);
 		localStorage.removeItem("cart");
-
-		// Sauvegarder en BDD si connecté
-		if (user) {
-			saveToDatabase([]);
-		}
 	};
 
 	const getCartTotal = () => {

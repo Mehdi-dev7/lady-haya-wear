@@ -1,5 +1,7 @@
 "use client";
 
+import { useCart } from "@/lib/CartContext";
+import { useFavorites } from "@/lib/FavoritesContext";
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface User {
@@ -33,9 +35,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		user: null,
 		loading: true,
 	});
+	const { cartItems } = useCart();
+	const { favorites } = useFavorites();
 
 	const hydrateContextsFromDB = async () => {
-		// Favoris
 		try {
 			const favRes = await fetch("/api/favorites/sync", {
 				credentials: "include",
@@ -47,9 +50,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				);
 			}
 		} catch (e) {
-			// Erreur lors du fetch favoris BDD:
+			// Silently handle favorites sync error
 		}
-		// Panier
+
 		try {
 			const cartRes = await fetch("/api/cart/sync", { credentials: "include" });
 			if (cartRes.ok) {
@@ -59,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				);
 			}
 		} catch (e) {
-			// Erreur lors du fetch panier BDD:
+			// Silently handle cart sync error
 		}
 	};
 
@@ -69,9 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			if (response.ok) {
 				const data = await response.json();
 				setAuthState({ user: data.user, loading: false });
-				// Synchroniser immédiatement après reconnexion
 				setTimeout(() => syncCartAndFavorites(), 200);
-				// Hydrater les contextes depuis la BDD
 				setTimeout(() => hydrateContextsFromDB(), 400);
 			} else {
 				setAuthState({ user: null, loading: false });
@@ -96,11 +97,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			if (response.ok) {
 				setAuthState({ user: data.user, loading: false });
 
-				// Déclencher la synchronisation après la connexion
 				setTimeout(() => {
 					syncCartAndFavorites();
 				}, 200);
-				// Hydrater les contextes depuis la BDD
 				setTimeout(() => hydrateContextsFromDB(), 400);
 
 				return { success: true };
@@ -114,21 +113,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const logout = async () => {
 		try {
-			// Supprimer le token d'authentification
 			await fetch("/api/auth/logout", {
 				method: "POST",
 			});
 		} catch (error) {
-			// Erreur lors de la déconnexion:
+			// Silently handle logout error
 		}
 
-		// Supprimer le cookie d'authentification
 		document.cookie = "auth-token=; Max-Age=0; path=/";
-
-		// Réinitialiser l'état utilisateur
 		setAuthState({ user: null, loading: false });
 
-		// Déclencher les événements pour vider les contextes et localStorage
 		window.dispatchEvent(new CustomEvent("cartCleared"));
 		window.dispatchEvent(new CustomEvent("favoritesCleared"));
 	};
@@ -137,7 +131,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		try {
 			if (!authState.user) return;
 
-			// Récupérer les données locales
 			const localCart = localStorage.getItem("cart");
 			const localFavorites = localStorage.getItem("favorites");
 
@@ -146,7 +139,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				? JSON.parse(localFavorites)
 				: [];
 
-			// Synchroniser le panier
 			try {
 				const cartResponse = await fetch("/api/cart/sync", {
 					method: "POST",
@@ -158,18 +150,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 				if (cartResponse.ok) {
 					const { cartItems } = await cartResponse.json();
-					// Déclencher un événement pour mettre à jour le contexte du panier
 					window.dispatchEvent(
 						new CustomEvent("cartSynced", { detail: { cartItems } })
 					);
-				} else {
-					// Erreur lors de la synchronisation du panier:
 				}
 			} catch (error) {
-				// Erreur lors de la synchronisation du panier:
+				// Silently handle cart sync error
 			}
 
-			// Synchroniser les favoris
 			try {
 				const favoritesResponse = await fetch("/api/favorites/sync", {
 					method: "POST",
@@ -181,29 +169,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 				if (favoritesResponse.ok) {
 					const { favorites } = await favoritesResponse.json();
-					// Déclencher un événement pour mettre à jour le contexte des favoris
 					window.dispatchEvent(
 						new CustomEvent("favoritesSynced", { detail: { favorites } })
 					);
-				} else {
-					// Erreur lors de la synchronisation des favoris:
 				}
 			} catch (error) {
-				// Erreur lors de la synchronisation des favoris:
+				// Silently handle favorites sync error
 			}
 
-			// Après synchronisation réussie, vider le localStorage
-			// (les données sont maintenant en BDD et dans les contextes)
 			localStorage.removeItem("cart");
 			localStorage.removeItem("favorites");
 		} catch (error) {
-			// Erreur générale lors de la synchronisation:
+			// Silently handle general sync error
 		}
 	};
 
 	useEffect(() => {
 		checkAuth();
 	}, []);
+
+	// Migration automatique à la connexion
+	useEffect(() => {
+		if (authState.user) {
+			const localCart = localStorage.getItem("cart");
+			const localFavorites = localStorage.getItem("favorites");
+
+			if (localCart || localFavorites) {
+				const hasLocalData =
+					(localCart && JSON.parse(localCart).length > 0) ||
+					(localFavorites && JSON.parse(localFavorites).length > 0);
+
+				if (hasLocalData) {
+					setTimeout(() => {
+						syncCartAndFavorites();
+					}, 500);
+				}
+			}
+		}
+	}, [authState.user]);
 
 	const value = {
 		user: authState.user,

@@ -1,7 +1,17 @@
-import ClearFavorites from "@/components/Debug/ClearFavorites";
 import { getAllProductDetails } from "@/lib/sanity-queries";
 
 export default async function DebugPage() {
+	// Bloquer l'accès en production
+	if (process.env.NODE_ENV === "production") {
+		return (
+			<div className="p-8 text-center">
+				<h1 className="text-3xl font-bold text-red-600">
+					Page non disponible en production
+				</h1>
+			</div>
+		);
+	}
+
 	const allProductDetails = await getAllProductDetails();
 
 	return (
@@ -9,11 +19,6 @@ export default async function DebugPage() {
 			<h1 className="text-3xl font-bold mb-8">
 				Debug - Fiches Produits Détaillées
 			</h1>
-
-			{/* Composant de nettoyage des favoris */}
-			<div className="mb-8">
-				<ClearFavorites />
-			</div>
 
 			<div className="mb-8">
 				<h2 className="text-2xl font-semibold mb-4">

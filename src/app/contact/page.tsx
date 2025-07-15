@@ -2,15 +2,12 @@
 
 import ContactLeft from "@/components/Contact/ContactLeft";
 import ContactRight from "@/components/Contact/ContactRight";
-import DebugMigration from "@/components/DebugMigration";
+
 import { motion } from "framer-motion";
 
 export default function Contact() {
 	return (
 		<section className="bg-beige-light min-h-screen">
-			<div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-8 pt-32 pb-16">
-				<DebugMigration />
-			</div>
 			<div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-8 pt-32 pb-16">
 				{/* Header avec titre élégant */}
 				<motion.div
@@ -37,7 +34,6 @@ export default function Contact() {
 					transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
 					className="rounded-3xl shadow-2xl overflow-hidden"
 				>
-
 					{/* Contenu principal */}
 					<div className="flex flex-col lg:flex-row min-h-[600px]">
 						{/* Section gauche - Formulaire */}
