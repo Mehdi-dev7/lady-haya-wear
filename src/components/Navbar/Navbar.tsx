@@ -44,7 +44,7 @@ export default function Navbar() {
 	return (
 		<>
 			<div
-				className={`h-18 px-4 md:px-8 lg:px-8 xl:px-18 2xl:px-22 bg-rose-light fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+				className={`h-[72px] px-4 md:px-8 lg:px-8 xl:px-18 2xl:px-22 bg-rose-light fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
 					isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
 				}`}
 			>
@@ -82,7 +82,7 @@ export default function Navbar() {
 							height={48}
 							className="w-12 h-12"
 						/>
-						<div className="text-3xl lg:text-4xl tracking-wide font-alex-brush text-logo font-semibold">
+						<div className="text-3xl lg:text-4xl tracking-wide font-alex-brush text-logo font-semibold leading-none">
 							Lady Haya{" "}
 						</div>
 					</Link>
@@ -99,7 +99,7 @@ export default function Navbar() {
 							height={48}
 							className="w-12 h-12"
 						/>
-						<div className="text-4xl tracking-wide font-alex-brush text-logo font-semibold">
+						<div className="text-4xl tracking-wide font-alex-brush text-logo font-semibold leading-none">
 							Lady Haya
 						</div>
 					</Link>
@@ -109,28 +109,28 @@ export default function Navbar() {
 						<div className="hidden lg:flex gap-8 lg:gap-8 xl:gap-10 2xl:gap-12 lg:ml-24 xl:ml-32">
 							<Link
 								href="/"
-								className="relative group text-logo text-2xl transition-colors tracking-wide font-balqis font-semibold"
+								className="relative group text-logo text-2xl transition-colors tracking-wide font-balqis font-semibold leading-none"
 							>
 								Accueil
 								<span className="absolute bottom-0 left-1/2 w-0 menu-underline h-[1px] group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in "></span>
 							</Link>
 							<Link
 								href="/collections"
-								className="relative group text-logo font-balqis font-semibold text-2xl transition-colors tracking-wide"
+								className="relative group text-logo font-balqis font-semibold text-2xl transition-colors tracking-wide leading-none"
 							>
 								Collections
 								<span className="absolute bottom-0 left-1/2 w-0 menu-underline h-[1px] group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 							</Link>
 							<Link
 								href="/allProducts"
-								className="relative group text-logo font-balqis font-semibold text-2xl transition-colors tracking-wide"
+								className="relative group text-logo font-balqis font-semibold text-2xl transition-colors tracking-wide leading-none"
 							>
 								Tous nos Produits
 								<span className="absolute bottom-0 left-1/2 w-0 menu-underline h-[1px] group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
 							</Link>
 							<Link
 								href="/contact"
-								className="relative group text-logo font-balqis font-semibold text-2xl transition-colors tracking-wide"
+								className="relative group text-logo font-balqis font-semibold text-2xl transition-colors tracking-wide leading-none"
 							>
 								Contact
 								<span className="absolute bottom-0 left-1/2 w-0 menu-underline h-[1px] group-hover:w-full group-hover:left-0 group-hover:transition-all group-hover:duration-300 group-hover:ease-out transition-all duration-300 ease-in"></span>
