@@ -4,28 +4,16 @@
 
 @import "tailwindcss";
 
-/* Font smoothing pour un rendu homogène */
-html {
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
-
-/* Polices personnalisées avec plusieurs formats */
+/* Fonts */
 @font-face {
 	font-family: "AlexBrush-Regular";
-	src:
-		url("/fonts/AlexBrush-Regular.woff2") format("woff2"),
-		url("/fonts/AlexBrush-Regular.woff") format("woff"),
-		url("/fonts/AlexBrush-Regular.ttf") format("truetype");
+	src: url("/fonts/AlexBrush-Regular.ttf") format("truetype");
 	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
 	font-family: "Balqis";
-	src:
-		url("/fonts/Balqis.woff2") format("woff2"),
-		url("/fonts/Balqis.woff") format("woff"),
-		url("/fonts/Balqis.ttf") format("truetype");
+	src: url("/fonts/Balqis.ttf") format("truetype");
 	font-weight: normal;
 	font-style: normal;
 }
@@ -80,16 +68,21 @@ body.navbar-visible {
 	background-color: var(--color-nude-dark) !important;
 }
 
+/* .font-alex-brush {
+  font-size: 0.85em;
+}
+.font-balqis {
+  font-size: 0.9em;
+} */
+
 /* Classes utilitaires pour fonts et couleurs */
 @layer utilities {
 	/* Fonts */
 	.font-alex-brush {
 		font-family: var(--font-alex-brush);
-		font-size: 0.85em;
 	}
 	.font-balqis {
 		font-family: var(--font-balqis);
-		font-size: 0.9em;
 	}
 	.font-poppins {
 		font-family: var(--font-poppins);
@@ -415,10 +408,3 @@ body.navbar-visible {
 			0 10px 10px -5px rgba(0, 0, 0, 0.04);
 	}
 }
-
-/* .font-alex-brush {
-	font-size: 0.85em;
-}
-.font-balqis {
-	font-size: 0.9em;
-} */
