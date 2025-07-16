@@ -46,18 +46,17 @@
 
 		--color-logo: #8a5f3d;
 	}
-
 }
 html {
 	font-family: var(--font-poppins);
 	font-size: 16px !important;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 body {
 	font-size: 1rem !important;
 }
-
-
 
 body.navbar-visible {
 	padding-top: 72px; /* Compenser la navbar fixed seulement quand elle est visible */
