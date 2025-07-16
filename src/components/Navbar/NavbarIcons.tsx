@@ -86,7 +86,7 @@ export default function NavbarIcons() {
 						</div>
 					</div>
 					<Link
-						href="/profile"
+						href="/account"
 						className="block py-2 px-3 hover:bg-rose-light-2 rounded-md transition-colors duration-200 text-nude-dark hover:text-logo"
 						onClick={() => setIsProfileOpen(false)}
 					>
