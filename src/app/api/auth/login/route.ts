@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
 	} catch (error) {
 		console.error("Erreur lors de la connexion:", error);
 		return NextResponse.json(
-			{ error: "Erreur interne du serveur" },
+			{ error: "Utilisateur inconnu ou inexistant" },
 			{ status: 500 }
 		);
 	}
