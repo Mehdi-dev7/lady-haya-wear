@@ -47,9 +47,14 @@
 		--color-logo: #8a5f3d;
 	}
 
-	html {
-		font-family: var(--font-poppins);
-	}
+}
+html {
+	font-family: var(--font-poppins);
+	font-size: 16px !important;
+}
+
+body {
+	font-size: 1rem !important;
 }
 
 
