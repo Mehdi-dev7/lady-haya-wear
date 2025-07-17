@@ -408,3 +408,16 @@ body.navbar-visible {
 			0 10px 10px -5px rgba(0, 0, 0, 0.04);
 	}
 }
+
+/* Patch de secours pour forcer le rendu global */
+html,
+body {
+	font-size: 16px !important;
+	zoom: 1 !important;
+	box-sizing: border-box;
+}
+*,
+*::before,
+*::after {
+	box-sizing: inherit;
+}
