@@ -35,9 +35,9 @@ const commandesHistoriques = [
 
 export default function OrdersPage() {
 	return (
-		<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-12 min-h-screen bg-beige-light animate-fade-in-up">
+		<section className="px-4 mt-8 md:mt-16 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-12 min-h-screen bg-beige-light animate-fade-in-up">
 			<div className="w-full max-w-3xl mx-auto">
-				<h1 className="text-4xl md:text-5xl font-alex-brush text-logo mb-10 text-center">
+				<h1 className="text-5xl md:text-6xl font-alex-brush text-logo mb-10 text-center">
 					Mes commandes
 				</h1>
 

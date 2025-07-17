@@ -35,7 +35,7 @@ export default function Contact() {
 					className="rounded-3xl shadow-2xl overflow-hidden"
 				>
 					{/* Contenu principal */}
-					<div className="flex flex-col lg:flex-row min-h-[600px]">
+					<div className="flex flex-col lg:flex-row  min-h-[600px]">
 						{/* Section gauche - Formulaire */}
 						<div className="lg:w-[60%] p-8 lg:p-12 b backdrop-blur-sm bg-[#d9c4b5]/35">
 							<ContactLeft />

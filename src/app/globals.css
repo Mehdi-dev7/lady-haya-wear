@@ -349,6 +349,9 @@ body.navbar-visible {
 	.ring-nude-dark {
 		--tw-ring-color: var(--color-nude-dark);
 	}
+	.ring-nude-medium {
+		--tw-ring-color: var(--color-nude-medium);
+	}
 	@media (min-width: 768px) {
 		.container {
 			max-width: 720px;
