@@ -5,11 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-const client = new OAuth2Client({
-	clientId: process.env.GOOGLE_CLIENT_ID!,
-	clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-	redirectUri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
-});
+// SUPPRIMÉ : instanciation globale du client Google
+// const client = new OAuth2Client({ ... });
 
 export async function GET(request: NextRequest) {
 	try {
@@ -21,6 +18,13 @@ export async function GET(request: NextRequest) {
 				new URL("/login?error=google_auth_failed", request.url)
 			);
 		}
+
+		// Instanciation du client Google DANS le handler
+		const client = new OAuth2Client({
+			clientId: process.env.GOOGLE_CLIENT_ID!,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+			redirectUri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
+		});
 
 		// Échanger le code contre un token d'accès
 		const { tokens } = await client.getToken(code);
