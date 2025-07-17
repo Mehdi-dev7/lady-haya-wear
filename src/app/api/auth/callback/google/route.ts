@@ -82,6 +82,24 @@ export async function GET(request: NextRequest) {
 			}
 		}
 
+		// Créer ou mettre à jour l'entrée Account pour Google
+		const existingAccount = await prisma.account.findFirst({
+			where: {
+				userId: user.id,
+				provider: "google",
+			},
+		});
+		if (!existingAccount) {
+			await prisma.account.create({
+				data: {
+					userId: user.id,
+					provider: "google",
+					providerAccountId: email,
+					type: "oauth",
+				},
+			});
+		}
+
 		// Créer le token JWT
 		const token = jwt.sign(
 			{
