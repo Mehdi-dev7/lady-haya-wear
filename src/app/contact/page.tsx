@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 export default function Contact() {
 	return (
 		<section className="bg-beige-light min-h-screen">
-			<div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-8 pt-32 pb-16">
+			<div className="w-full px-4 sm:px-6 md:px-8 lg:px-8 pt-32 pb-16">
 				{/* Header avec titre élégant */}
 				<motion.div
 					initial={{ opacity: 0, y: 30 }}
@@ -32,7 +32,7 @@ export default function Contact() {
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true, amount: 0.3 }}
 					transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-					className="rounded-3xl shadow-2xl overflow-hidden"
+					className="rounded-3xl shadow-2xl overflow-hidden max-w-2xl md:max-w-3xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-auto w-full"
 				>
 					{/* Contenu principal */}
 					<div className="flex flex-col lg:flex-row  min-h-[600px]">
