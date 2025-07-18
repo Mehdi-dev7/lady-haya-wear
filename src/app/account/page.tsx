@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { CiEdit } from "react-icons/ci";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -29,6 +30,19 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 			ville: "",
 		}
 	);
+	useEffect(() => {
+		if (open) {
+			setForm(
+				initial || {
+					nom: "",
+					ligne1: "",
+					ligne2: "",
+					codePostal: "",
+					ville: "",
+				}
+			);
+		}
+	}, [initial, open]);
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setForm({ ...form, [e.target.name]: e.target.value });
@@ -43,9 +57,9 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 	if (!open) return null;
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-			<div className="bg-nude-light rounded-2xl shadow-lg p-8 w-full max-w-lg relative animate-fade-in-up">
+			<div className="bg-nude-light rounded-2xl shadow-lg p-4 sm:p-8 w-11/12 max-w-xs sm:max-w-lg relative animate-fade-in-up">
 				<button
-					className="absolute top-4 right-4 text-logo text-2xl font-bold hover:text-nude-dark"
+					className="absolute top-4 right-4 text-logo text-2xl font-bold hover:text-nude-dark cursor-pointer"
 					onClick={onClose}
 					type="button"
 				>
@@ -104,7 +118,7 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 					<div className="pt-4 text-center">
 						<button
 							type="submit"
-							className="bg-logo hover:bg-nude-dark text-white font-semibold px-8 py-2 rounded-full shadow btn-hover transition-all duration-200"
+							className="bg-logo hover:bg-nude-dark text-white font-semibold px-8 py-2 rounded-full shadow btn-hover transition-all duration-200 cursor-pointer"
 						>
 							Valider
 						</button>
@@ -277,13 +291,20 @@ export default function AccountPage() {
 									className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-nude-dark bg-beige-light text-logo placeholder-nude-dark"
 								/>
 								{!editing.nom && (
-									<button
-										type="button"
-										className="bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
-										onClick={() => handleEdit("nom")}
-									>
-										Modifier
-									</button>
+									<>
+										<button
+											type="button"
+											className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
+											onClick={() => handleEdit("nom")}
+										>
+											Modifier
+										</button>
+										<CiEdit
+											className="md:hidden text-2xl text-nude-dark cursor-pointer"
+											onClick={() => handleEdit("nom")}
+											title="Modifier"
+										/>
+									</>
 								)}
 							</div>
 						</div>
@@ -303,13 +324,20 @@ export default function AccountPage() {
 									className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-nude-dark bg-beige-light text-logo placeholder-nude-dark"
 								/>
 								{!editing.email && (
-									<button
-										type="button"
-										className="bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
-										onClick={() => handleEdit("email")}
-									>
-										Modifier
-									</button>
+									<>
+										<button
+											type="button"
+											className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
+											onClick={() => handleEdit("email")}
+										>
+											Modifier
+										</button>
+										<CiEdit
+											className="md:hidden text-2xl text-nude-dark cursor-pointer"
+											onClick={() => handleEdit("email")}
+											title="Modifier"
+										/>
+									</>
 								)}
 							</div>
 						</div>
@@ -329,13 +357,20 @@ export default function AccountPage() {
 									className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-nude-dark bg-beige-light text-logo placeholder-nude-dark"
 								/>
 								{!editing.telephone && (
-									<button
-										type="button"
-										className="bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
-										onClick={() => handleEdit("telephone")}
-									>
-										Modifier
-									</button>
+									<>
+										<button
+											type="button"
+											className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
+											onClick={() => handleEdit("telephone")}
+										>
+											Modifier
+										</button>
+										<CiEdit
+											className="md:hidden text-2xl text-nude-dark cursor-pointer"
+											onClick={() => handleEdit("telephone")}
+											title="Modifier"
+										/>
+									</>
 								)}
 							</div>
 						</div>
@@ -389,21 +424,28 @@ export default function AccountPage() {
 										className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-nude-dark bg-beige-light text-logo placeholder-nude-dark"
 									/>
 									{!editing.password && (
-										<button
-											type="button"
-											className="bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
-											onClick={() => handleEdit("password")}
-										>
-											Modifier
-										</button>
+										<>
+											<button
+												type="button"
+												className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
+												onClick={() => handleEdit("password")}
+											>
+												Modifier
+											</button>
+											<CiEdit
+												className="md:hidden text-2xl text-nude-dark cursor-pointer"
+												onClick={() => handleEdit("password")}
+												title="Modifier"
+											/>
+										</>
 									)}
 								</div>
 							</div>
 						)}
 						{/* DEBUG providers */}
-						<div className="text-xs text-nude-dark mb-2">
+						{/* <div className="text-xs text-nude-dark mb-2">
 							providers: {JSON.stringify(providers)}
-						</div>
+						</div> */}
 						<div className="pt-4 text-center">
 							<button
 								type="submit"
