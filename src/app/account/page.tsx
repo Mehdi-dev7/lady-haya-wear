@@ -576,7 +576,7 @@ export default function AccountPage() {
 											Modifier
 										</button>
 										<CiEdit
-											className="md:hidden text-2xl text-red-500 cursor-pointer"
+											className="md:hidden text-2xl text-nude-dark cursor-pointer flex-shrink-0"
 											onClick={() => handleEdit("nom")}
 											title="Modifier"
 										/>
@@ -611,7 +611,7 @@ export default function AccountPage() {
 											Modifier
 										</button>
 										<CiEdit
-											className="md:hidden text-2xl text-red-500 cursor-pointer"
+											className="md:hidden text-2xl text-nude-dark cursor-pointer flex-shrink-0"
 											onClick={() => handleEdit("email")}
 											title="Modifier"
 										/>
@@ -653,7 +653,7 @@ export default function AccountPage() {
 											Modifier
 										</button>
 										<CiEdit
-											className="md:hidden text-2xl text-red-500 cursor-pointer"
+											className="md:hidden text-2xl text-nude-dark cursor-pointer flex-shrink-0"
 											onClick={() => handleEdit("telephone")}
 											title="Modifier"
 										/>
@@ -722,7 +722,7 @@ export default function AccountPage() {
 												Modifier
 											</button>
 											<CiEdit
-												className="md:hidden text-2xl text-red-500 cursor-pointer"
+												className="md:hidden text-2xl text-nude-dark cursor-pointer flex-shrink-0"
 												onClick={() => setPasswordModalOpen(true)}
 												title="Modifier"
 											/>
