@@ -258,6 +258,9 @@ body.navbar-visible {
 	.hover\:bg-rose-dark:hover {
 		background-color: var(--color-rose-dark);
 	}
+	.hover\:bg-rose-medium:hover {
+		background-color: var(--color-rose-medium);
+	}
 	.hover\:bg-rose-dark-2:hover {
 		background-color: var(--color-rose-dark-2);
 	}

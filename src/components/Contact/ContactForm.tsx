@@ -2,7 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -14,21 +15,32 @@ const contactSchema = z.object({
 	message: z
 		.string()
 		.min(10, "Le message doit contenir au moins 10 caractères"),
+	commande: z.string().optional(),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
 export default function ContactForm() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const searchParams = useSearchParams();
+	const commandeParam = searchParams.get("commande") || "";
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 		reset,
+		setValue,
 	} = useForm<ContactFormData>({
 		resolver: zodResolver(contactSchema),
+		defaultValues: { commande: commandeParam },
 	});
+
+	// Si l'URL change (navigation client), on met à jour le champ commande
+	// (utile si la page contact est réutilisée sans rechargement)
+	React.useEffect(() => {
+		setValue("commande", commandeParam);
+	}, [commandeParam, setValue]);
 
 	const onSubmit = async (data: ContactFormData) => {
 		setIsSubmitting(true);
@@ -115,6 +127,25 @@ export default function ContactForm() {
 					{errors.email && (
 						<p className="text-red-500 text-sm mt-2">{errors.email.message}</p>
 					)}
+				</motion.div>
+
+				{/* Champ numéro de commande facultatif */}
+				<motion.div
+					initial={{ opacity: 0, x: -20 }}
+					whileInView={{ opacity: 1, x: 0 }}
+					viewport={{ amount: 0.3, once: true }}
+					transition={{ duration: 0.5, delay: 0.25 }}
+				>
+					<label className="block text-nude-dark-2 text-lg mb-2 font-balqis">
+						Numéro de commande (facultatif)
+					</label>
+					<input
+						type="text"
+						placeholder="Ex : CMD20250701"
+						autoComplete="off"
+						className="h-14 rounded-xl bg-beige-light backdrop-blur-sm px-4 w-full border-2 border-nude-light focus:border-rose-200 focus:outline-none transition-all duration-300 text-lg text-gray-400"
+						{...register("commande")}
+					/>
 				</motion.div>
 
 				<motion.div
