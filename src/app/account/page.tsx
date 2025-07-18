@@ -1,7 +1,9 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
+import { FaRegEyeSlash } from "react-icons/fa";
+import { IoEyeSharp } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -75,7 +77,7 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 						placeholder="Nom complet"
 						value={form.nom}
 						onChange={handleChange}
-						className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 bg-beige-light text-logo placeholder-nude-dark"
+						className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 						required
 					/>
 					<input
@@ -84,7 +86,7 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 						placeholder="Ligne d'adresse 1"
 						value={form.ligne1}
 						onChange={handleChange}
-						className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 bg-beige-light text-logo placeholder-nude-dark"
+						className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 						required
 					/>
 					<input
@@ -93,7 +95,7 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 						placeholder="Ligne d'adresse 2 (facultatif)"
 						value={form.ligne2}
 						onChange={handleChange}
-						className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 bg-beige-light text-logo placeholder-nude-dark"
+						className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 					/>
 					<div className="flex gap-4">
 						<input
@@ -102,7 +104,7 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 							placeholder="Code postal"
 							value={form.codePostal}
 							onChange={handleChange}
-							className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 bg-beige-light text-logo placeholder-nude-dark"
+							className="w-1/2 min-w-0 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 							required
 						/>
 						<input
@@ -111,7 +113,7 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 							placeholder="Ville"
 							value={form.ville}
 							onChange={handleChange}
-							className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 bg-beige-light text-logo placeholder-nude-dark"
+							className="w-1/2 min-w-0 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 							required
 						/>
 					</div>
@@ -121,6 +123,179 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 							className="bg-logo hover:bg-nude-dark text-white font-semibold px-8 py-2 rounded-full shadow btn-hover transition-all duration-200 cursor-pointer"
 						>
 							Valider
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	);
+}
+
+function PasswordModal({
+	open,
+	onClose,
+	onSave,
+}: {
+	open: boolean;
+	onClose: () => void;
+	onSave: (current: string, next: string) => void;
+}) {
+	const [current, setCurrent] = useState("");
+	const [next, setNext] = useState("");
+	const [confirm, setConfirm] = useState("");
+	const [showCurrent, setShowCurrent] = useState(false);
+	const [showNext, setShowNext] = useState(false);
+	const [showConfirm, setShowConfirm] = useState(false);
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		if (open) {
+			setCurrent("");
+			setNext("");
+			setConfirm("");
+			setShowCurrent(false);
+			setShowNext(false);
+			setShowConfirm(false);
+			setLoading(false);
+		}
+	}, [open]);
+
+	const validatePassword = (pwd: string) => {
+		return (
+			/[A-Z]/.test(pwd) &&
+			/[a-z]/.test(pwd) &&
+			/[0-9]/.test(pwd) &&
+			pwd.length >= 8
+		);
+	};
+
+	const handleSubmit = async (e: FormEvent) => {
+		e.preventDefault();
+		if (next !== confirm) {
+			toast.error("Les mots de passe ne correspondent pas");
+			return;
+		}
+		if (!validatePassword(next)) {
+			toast.error(
+				"Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre"
+			);
+			return;
+		}
+		setLoading(true);
+		try {
+			const res = await fetch("/api/user/account/password", {
+				method: "PATCH",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ currentPassword: current, newPassword: next }),
+			});
+			const data = await res.json();
+			if (!res.ok || data.error) {
+				toast.error(data.error || "Erreur lors du changement de mot de passe");
+			} else {
+				toast.success("Mot de passe modifié avec succès");
+				onClose();
+			}
+		} catch (err) {
+			toast.error("Erreur réseau ou serveur");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	if (!open) return null;
+	return (
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+			<div className="bg-nude-light rounded-2xl shadow-lg p-4 sm:p-8 w-11/12 max-w-xs sm:max-w-md relative animate-fade-in-up">
+				<button
+					className="absolute top-4 right-4 text-logo text-2xl font-bold hover:text-nude-dark cursor-pointer"
+					onClick={onClose}
+					type="button"
+				>
+					×
+				</button>
+				<h2 className="text-2xl font-bold text-logo mb-6 text-center">
+					Modifier le mot de passe
+				</h2>
+				<form className="space-y-4" onSubmit={handleSubmit}>
+					<div className="relative">
+						<input
+							type={showCurrent ? "text" : "password"}
+							name="current"
+							placeholder="Mot de passe actuel"
+							value={current}
+							onChange={(e) => setCurrent(e.target.value)}
+							className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark pr-10"
+							required
+						/>
+						{showCurrent ? (
+							<IoEyeSharp
+								className="absolute right-3 top-1/2 -translate-y-1/2 text-xl text-nude-dark cursor-pointer"
+								onClick={() => setShowCurrent((v) => !v)}
+								title="Masquer"
+							/>
+						) : (
+							<FaRegEyeSlash
+								className="absolute right-3 top-1/2 -translate-y-1/2 text-xl text-nude-dark cursor-pointer"
+								onClick={() => setShowCurrent((v) => !v)}
+								title="Afficher"
+							/>
+						)}
+					</div>
+					<div className="relative">
+						<input
+							type={showNext ? "text" : "password"}
+							name="next"
+							placeholder="Nouveau mot de passe"
+							value={next}
+							onChange={(e) => setNext(e.target.value)}
+							className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark pr-10"
+							required
+						/>
+						{showNext ? (
+							<IoEyeSharp
+								className="absolute right-3 top-1/2 -translate-y-1/2 text-xl text-nude-dark cursor-pointer"
+								onClick={() => setShowNext((v) => !v)}
+								title="Masquer"
+							/>
+						) : (
+							<FaRegEyeSlash
+								className="absolute right-3 top-1/2 -translate-y-1/2 text-xl text-nude-dark cursor-pointer"
+								onClick={() => setShowNext((v) => !v)}
+								title="Afficher"
+							/>
+						)}
+					</div>
+					<div className="relative">
+						<input
+							type={showConfirm ? "text" : "password"}
+							name="confirm"
+							placeholder="Confirmer le nouveau mot de passe"
+							value={confirm}
+							onChange={(e) => setConfirm(e.target.value)}
+							className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark pr-10"
+							required
+						/>
+						{showConfirm ? (
+							<IoEyeSharp
+								className="absolute right-3 top-1/2 -translate-y-1/2 text-xl text-nude-dark cursor-pointer"
+								onClick={() => setShowConfirm((v) => !v)}
+								title="Masquer"
+							/>
+						) : (
+							<FaRegEyeSlash
+								className="absolute right-3 top-1/2 -translate-y-1/2 text-xl text-nude-dark cursor-pointer"
+								onClick={() => setShowConfirm((v) => !v)}
+								title="Afficher"
+							/>
+						)}
+					</div>
+					<div className="pt-4 text-center">
+						<button
+							type="submit"
+							className="bg-logo hover:bg-nude-dark text-white font-semibold px-8 py-2 rounded-full shadow btn-hover transition-all duration-200 cursor-pointer"
+							disabled={loading}
+						>
+							{loading ? "Enregistrement..." : "Valider"}
 						</button>
 					</div>
 				</form>
@@ -146,6 +321,16 @@ export default function AccountPage() {
 	const [modalOpen, setModalOpen] = useState(false);
 	const [providers, setProviders] = useState<string[]>([]);
 	const [message, setMessage] = useState<string | null>(null);
+	const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+	// Ajout d'un state pour les erreurs de validation
+	const [errors, setErrors] = useState({ nom: "", telephone: "" });
+	// Ajout d'un state pour les champs touchés
+	const [touched, setTouched] = useState({ nom: false, telephone: false });
+
+	const nomInputRef = useRef<HTMLInputElement>(null);
+	const emailInputRef = useRef<HTMLInputElement>(null);
+	const telInputRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
 		// Récupération des providers (déjà présent)
@@ -188,22 +373,87 @@ export default function AccountPage() {
 			});
 	}, []);
 
+	// Fonction de capitalisation
+	function capitalize(str: string) {
+		return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+	}
+
+	// Fonction de validation nom/prénom
+	function validateNom(nom: string) {
+		const trimmed = nom.trim();
+		if (!trimmed) return "Le nom est requis.";
+		if (!/^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,20}$/.test(trimmed))
+			return "Le nom doit contenir uniquement des lettres, espaces, tirets ou apostrophes (2-20 caractères).";
+		return "";
+	}
+
+	// Fonction de validation téléphone
+	function validateTel(tel: string) {
+		const onlyDigits = tel.replace(/\D/g, "");
+		if (!onlyDigits) return "Le numéro est requis.";
+		if (!/^\d{10,15}$/.test(onlyDigits))
+			return "Le numéro doit contenir entre 10 et 15 chiffres.";
+		return "";
+	}
+
+	// Fonction de formatage téléphone (FR : espace tous les 2 chiffres)
+	function formatTel(tel: string) {
+		const onlyDigits = tel.replace(/\D/g, "");
+		return onlyDigits.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
+	}
+
+	// Handler de changement
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setFields({ ...fields, [e.target.name]: e.target.value });
+		const { name, value } = e.target;
+		let newValue = value;
+		let newErrors = { ...errors };
+		if (name === "nom") {
+			newValue = newValue.replace(/\s{2,}/g, " "); // pas de double espace
+			newErrors.nom = validateNom(newValue);
+		}
+		if (name === "telephone") {
+			newValue = formatTel(newValue);
+			newErrors.telephone = validateTel(newValue);
+		}
+		setFields({ ...fields, [name]: newValue });
+		setErrors(newErrors);
+	};
+
+	// Handler de blur pour trim/capitalisation
+	const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		let newValue = value.trim();
+		if (name === "nom") newValue = capitalize(newValue);
+		if (name === "telephone") newValue = formatTel(newValue);
+		setFields({ ...fields, [name]: newValue });
+		// Revalider au blur
+		let newErrors = { ...errors };
+		if (name === "nom") newErrors.nom = validateNom(newValue);
+		if (name === "telephone") newErrors.telephone = validateTel(newValue);
+		setErrors(newErrors);
+		setEditing({ ...editing, [name]: false });
+		setTouched({ ...touched, [name]: true });
 	};
 
 	const handleEdit = (field: keyof typeof fields) => {
 		if (field === "password" && providers.includes("google")) return;
 		setEditing({ ...editing, [field]: true });
+		setTimeout(() => {
+			if (field === "nom") nomInputRef.current?.focus();
+			if (field === "email") emailInputRef.current?.focus();
+			if (field === "telephone") telInputRef.current?.focus();
+		}, 0);
 	};
 
+	// Dans handleSave, marquer tous les champs comme touchés avant validation
 	const handleSave = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setTouched({ nom: true, telephone: true });
 		setEditing({
-			nom: fields.nom === "",
-			email: fields.email === "",
-			telephone: fields.telephone === "",
-			password: fields.password === "",
+			nom: false,
+			email: false,
+			telephone: false,
+			password: false,
 		});
 		try {
 			const res = await fetch("/api/user/account", {
@@ -255,15 +505,26 @@ export default function AccountPage() {
 		}
 	};
 
+	// Ajoute la fonction de gestion de la sauvegarde du mot de passe
+	const handleSavePassword = async (current: string, next: string) => {
+		// Ici tu pourras brancher l'appel API
+		// toast.success("Mot de passe modifié (simulation)"); // This line is removed
+	};
+
 	return (
 		<>
-			<ToastContainer position="top-center" />
+			<ToastContainer position="top-center" autoClose={3000} />
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-12 min-h-screen flex items-center justify-center bg-beige-light animate-fade-in-up">
 				<AdresseModal
 					open={modalOpen}
 					onClose={() => setModalOpen(false)}
 					onSave={handleSaveAdresse}
 					initial={adresse}
+				/>
+				<PasswordModal
+					open={passwordModalOpen}
+					onClose={() => setPasswordModalOpen(false)}
+					onSave={handleSavePassword}
 				/>
 				<div className="w-full max-w-xl bg-nude-light rounded-[30px] shadow-lg border border-nude-dark/30 p-8 md:p-12 mt-8">
 					<h1 className="text-5xl md:text-6xl font-alex-brush text-logo mb-8 text-center">
@@ -281,20 +542,30 @@ export default function AccountPage() {
 								Nom & Prénom
 							</label>
 							<div className="flex gap-2 items-center">
-								<input
-									type="text"
-									name="nom"
-									placeholder="Votre nom"
-									value={fields.nom}
-									onChange={handleChange}
-									disabled={!editing.nom}
-									className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-nude-dark bg-beige-light text-logo placeholder-nude-dark"
-								/>
+								<div className="flex flex-col flex-1">
+									<input
+										ref={nomInputRef}
+										type="text"
+										name="nom"
+										placeholder="Votre nom"
+										value={fields.nom}
+										onChange={handleChange}
+										onBlur={handleBlur}
+										disabled={!editing.nom}
+										maxLength={20}
+										className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
+									/>
+									{touched.nom && errors.nom && (
+										<div className="text-xs text-red-500 mt-1">
+											{errors.nom}
+										</div>
+									)}
+								</div>
 								{!editing.nom && (
 									<>
 										<button
 											type="button"
-											className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
+											className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200 cursor-pointer"
 											onClick={() => handleEdit("nom")}
 										>
 											Modifier
@@ -315,19 +586,21 @@ export default function AccountPage() {
 							</label>
 							<div className="flex gap-2 items-center">
 								<input
+									ref={emailInputRef}
 									type="email"
 									name="email"
 									placeholder="Votre email"
 									value={fields.email}
 									onChange={handleChange}
+									onBlur={() => setEditing({ ...editing, email: false })}
 									disabled={!editing.email}
-									className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-nude-dark bg-beige-light text-logo placeholder-nude-dark"
+									className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 								/>
 								{!editing.email && (
 									<>
 										<button
 											type="button"
-											className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
+											className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200 cursor-pointer"
 											onClick={() => handleEdit("email")}
 										>
 											Modifier
@@ -347,20 +620,29 @@ export default function AccountPage() {
 								Téléphone
 							</label>
 							<div className="flex gap-2 items-center">
-								<input
-									type="text"
-									name="telephone"
-									placeholder="Votre numéro de téléphone"
-									value={fields.telephone}
-									onChange={handleChange}
-									disabled={!editing.telephone}
-									className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-nude-dark bg-beige-light text-logo placeholder-nude-dark"
-								/>
+								<div className="flex flex-col flex-1">
+									<input
+										ref={telInputRef}
+										type="text"
+										name="telephone"
+										placeholder="Votre numéro de téléphone"
+										value={fields.telephone}
+										onChange={handleChange}
+										onBlur={handleBlur}
+										disabled={!editing.telephone}
+										className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
+									/>
+									{touched.telephone && errors.telephone && (
+										<div className="text-xs text-red-500 mt-1">
+											{errors.telephone}
+										</div>
+									)}
+								</div>
 								{!editing.telephone && (
 									<>
 										<button
 											type="button"
-											className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
+											className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200 cursor-pointer"
 											onClick={() => handleEdit("telephone")}
 										>
 											Modifier
@@ -414,27 +696,29 @@ export default function AccountPage() {
 									Mot de passe
 								</label>
 								<div className="flex gap-2 items-center">
-									<input
-										type="password"
-										name="password"
-										placeholder="********"
-										value={fields.password}
-										onChange={handleChange}
-										disabled={!editing.password}
-										className="flex-1 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-nude-dark bg-beige-light text-logo placeholder-nude-dark"
-									/>
+									<div className="flex-1">
+										<input
+											type="password"
+											name="password"
+											placeholder="********"
+											value={fields.password}
+											onChange={handleChange}
+											disabled={!editing.password}
+											className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark pr-10"
+										/>
+									</div>
 									{!editing.password && (
 										<>
 											<button
 												type="button"
-												className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200"
-												onClick={() => handleEdit("password")}
+												className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200 cursor-pointer"
+												onClick={() => setPasswordModalOpen(true)}
 											>
 												Modifier
 											</button>
 											<CiEdit
 												className="md:hidden text-2xl text-nude-dark cursor-pointer"
-												onClick={() => handleEdit("password")}
+												onClick={() => setPasswordModalOpen(true)}
 												title="Modifier"
 											/>
 										</>
