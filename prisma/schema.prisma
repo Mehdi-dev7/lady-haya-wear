@@ -66,6 +66,8 @@ model User {
   cartItems     CartItem[]
   favorites     Favorite[]
   addresses     Address[]
+  resetToken    String?   // Token de reset password
+  resetTokenExpiry DateTime? // Date d'expiration du token
 }
 
 model UserProfile {

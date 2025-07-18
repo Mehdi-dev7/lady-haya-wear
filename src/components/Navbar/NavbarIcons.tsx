@@ -80,8 +80,10 @@ export default function NavbarIcons() {
 							className="rounded-full"
 						/>
 						<div>
-							<p className="text-logo font-medium">
-								{user?.name || "Utilisateur"}
+							<p className="text-logo font-medium truncate max-w-[120px]">
+								{user?.profile?.firstName || user?.profile?.lastName
+									? `${user?.profile?.firstName || ""} ${user?.profile?.lastName || ""}`.trim()
+									: user?.name || user?.email || "Utilisateur"}
 							</p>
 						</div>
 					</div>

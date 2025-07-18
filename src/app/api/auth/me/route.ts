@@ -1,5 +1,8 @@
+import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
+
+const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
 	try {
@@ -11,12 +14,22 @@ export async function GET(request: NextRequest) {
 
 		// Vérifier le token JWT
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
-
+		const user = await prisma.user.findUnique({
+			where: { id: decoded.userId },
+			include: { profile: true },
+		});
+		if (!user) {
+			return NextResponse.json({ user: null }, { status: 401 });
+		}
 		return NextResponse.json({
 			user: {
-				id: decoded.userId,
-				email: decoded.email,
-				name: decoded.name,
+				id: user.id,
+				email: user.email,
+				name: user.name,
+				profile: {
+					firstName: user.profile?.firstName || "",
+					lastName: user.profile?.lastName || "",
+				},
 			},
 		});
 	} catch (error) {

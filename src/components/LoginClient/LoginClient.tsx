@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 export default function Login() {
 	const [isActive, setIsActive] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [showForgotPassword, setShowForgotPassword] = useState(false);
+	const [forgotEmail, setForgotEmail] = useState("");
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { login } = useAuth();
@@ -172,6 +174,32 @@ export default function Login() {
 			window.location.href = "/api/auth/google";
 		} else {
 			toast.info("Connexion sociale temporairement indisponible");
+		}
+	};
+
+	// Handler pour la demande de reset password
+	const handleForgotPassword = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!forgotEmail || !validateEmail(forgotEmail).isValid) {
+			toast.error("Veuillez entrer un email valide");
+			return;
+		}
+		setIsLoading(true);
+		try {
+			await fetch("/api/auth/forgot-password", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email: forgotEmail }),
+			});
+			toast.success(
+				"Si un compte existe, un email de réinitialisation a été envoyé."
+			);
+			setShowForgotPassword(false);
+			setForgotEmail("");
+		} catch (err) {
+			toast.error("Erreur lors de la demande de réinitialisation");
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -348,96 +376,132 @@ export default function Login() {
 							isActive ? "right-1/2" : ""
 						}`}
 					>
-						<form onSubmit={handleLoginSubmit} className="w-full">
-							<h1 className="text-5xl lg:text-6xl text-logo font-alex-brush lg:-mt-2 mb-2">
-								Connexion
-							</h1>
-							<div className="relative my-8">
-								<input
-									type="email"
-									placeholder="Email"
-									value={loginData.email}
-									onChange={(e) => {
-										setLoginData({ ...loginData, email: e.target.value });
-										handleFieldValidation("email", e.target.value);
-									}}
-									required
-									className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
-										validationErrors.email
-											? "input-error border-red-500"
-											: "border-rose-medium focus:border-rose-dark-2"
-									}`}
-								/>
-								<i className="bx bxs-user absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
-								{validationErrors.email && (
-									<p className="error-message">{validationErrors.email}</p>
-								)}
-							</div>
-							<div className="relative my-8">
-								<input
-									type="password"
-									placeholder="Mot de passe"
-									value={loginData.password}
-									onChange={(e) =>
-										setLoginData({ ...loginData, password: e.target.value })
-									}
-									required
-									className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
-								/>
-								<i className="bx bxs-lock absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
-							</div>
-							<div className="-mt-4 mb-4">
-								<a
-									href="#"
-									className="text-sm text-nude-dark no-underline hover:text-logo transition-colors duration-300 forgot-password"
+						{!showForgotPassword ? (
+							<form onSubmit={handleLoginSubmit} className="w-full">
+								<h1 className="text-5xl lg:text-6xl text-logo font-alex-brush lg:-mt-2 mb-2">
+									Connexion
+								</h1>
+								<div className="relative my-8">
+									<input
+										type="email"
+										placeholder="Email"
+										value={loginData.email}
+										onChange={(e) => {
+											setLoginData({ ...loginData, email: e.target.value });
+											handleFieldValidation("email", e.target.value);
+										}}
+										required
+										className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
+											validationErrors.email
+												? "input-error border-red-500"
+												: "border-rose-medium focus:border-rose-dark-2"
+										}`}
+									/>
+									<i className="bx bxs-user absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
+									{validationErrors.email && (
+										<p className="error-message">{validationErrors.email}</p>
+									)}
+								</div>
+								<div className="relative my-8">
+									<input
+										type="password"
+										placeholder="Mot de passe"
+										value={loginData.password}
+										onChange={(e) =>
+											setLoginData({ ...loginData, password: e.target.value })
+										}
+										required
+										className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
+									/>
+									<i className="bx bxs-lock absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
+								</div>
+								<div className="-mt-4 mb-4">
+									<button
+										type="button"
+										className="text-sm text-nude-dark no-underline hover:text-logo transition-colors duration-300 forgot-password bg-transparent border-none p-0 cursor-pointer"
+										onClick={() => setShowForgotPassword(true)}
+									>
+										Mot de passe oublié ?
+									</button>
+								</div>
+								<button
+									type="submit"
+									disabled={isLoading}
+									className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-									Mot de passe oublié ?
-								</a>
-							</div>
-							<button
-								type="submit"
-								disabled={isLoading}
-								className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-							>
-								{isLoading ? "Connexion..." : "Se connecter"}
-							</button>
-							<p className="text-sm my-4 text-nude-dark">
-								ou se connecter avec
-							</p>
-							<div className="flex justify-center gap-4 mt-5">
+									{isLoading ? "Connexion..." : "Se connecter"}
+								</button>
+								<p className="text-sm my-4 text-nude-dark">
+									ou se connecter avec
+								</p>
+								<div className="flex justify-center gap-4 mt-5">
+									<button
+										type="button"
+										onClick={() => handleSocialLogin("google")}
+										disabled={isLoading}
+										className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width="20"
+											height="20"
+											viewBox="0 0 24 24"
+											fill="none"
+										>
+											<path
+												d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+												fill="#4285F4"
+											/>
+											<path
+												d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+												fill="#34A853"
+											/>
+											<path
+												d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+												fill="#FBBC05"
+											/>
+											<path
+												d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+												fill="#EA4335"
+											/>
+										</svg>
+									</button>
+								</div>
+							</form>
+						) : (
+							<form onSubmit={handleForgotPassword} className="w-full">
+								<h1 className="text-3xl lg:text-4xl text-logo font-alex-brush mb-4">
+									Réinitialiser le mot de passe
+								</h1>
+								<div className="relative my-8">
+									<input
+										type="email"
+										placeholder="Votre email"
+										value={forgotEmail}
+										onChange={(e) => setForgotEmail(e.target.value)}
+										required
+										className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
+									/>
+									<i className="bx bxs-envelope absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
+								</div>
+								<button
+									type="submit"
+									disabled={isLoading}
+									className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+								>
+									{isLoading
+										? "Envoi..."
+										: "Envoyer le lien de réinitialisation"}
+								</button>
 								<button
 									type="button"
-									onClick={() => handleSocialLogin("google")}
-									disabled={isLoading}
-									className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+									className="w-full mt-4 h-11 bg-transparent border-2 border-rose-medium rounded-lg text-rose-medium font-semibold hover:bg-rose-light-2 transition-all duration-300 hover:scale-105 cursor-pointer"
+									onClick={() => setShowForgotPassword(false)}
 								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="20"
-										height="20"
-										viewBox="0 0 24 24"
-										fill="none"
-									>
-										<path
-											d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-											fill="#4285F4"
-										/>
-										<path
-											d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-											fill="#34A853"
-										/>
-										<path
-											d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-											fill="#FBBC05"
-										/>
-										<path
-											d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-											fill="#EA4335"
-										/>
-									</svg>
+									Retour à la connexion
 								</button>
-							</div>
-						</form>
+							</form>
+						)}
 					</div>
 
 					{/* Register Form */}
@@ -549,8 +613,6 @@ export default function Login() {
 							>
 								{isLoading ? "Inscription..." : "S'inscrire"}
 							</button>
-							
-							
 						</form>
 					</div>
 
