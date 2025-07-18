@@ -47,14 +47,7 @@ export default function Footer() {
 							Suivez-nous
 						</h3>
 						<div className="flex gap-4">
-							<a
-								href="https://twitter.com/ladyhaya"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="p-3 bg-blue-500 rounded-full hover:bg-blue-600 transition-colors duration-300"
-							>
-								<FaTwitter className="text-xl" />
-							</a>
+							
 							<a
 								href="https://instagram.com/lady.haya_wear"
 								target="_blank"
@@ -64,21 +57,14 @@ export default function Footer() {
 								<FaInstagram className="text-xl" />
 							</a>
 							<a
-								href="https://tiktok.com/@ladyhaya"
+								href="https://tiktok.com/@lady.haya_wear"
 								target="_blank"
 								rel="noopener noreferrer"
 								className="p-3 bg-black rounded-full hover:bg-gray-800 transition-colors duration-300"
 							>
 								<FaTiktok className="text-xl" />
 							</a>
-							<a
-								href="https://snapchat.com/add/ladyhaya"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="p-3 bg-yellow-400 rounded-full hover:bg-yellow-500 transition-colors duration-300"
-							>
-								<FaSnapchat className="text-xl" />
-							</a>
+							
 						</div>
 					</div>
 

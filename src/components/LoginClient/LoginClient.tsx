@@ -8,6 +8,7 @@ import {
 } from "@/lib/validation";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { FaInstagram } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 export default function Login() {
@@ -465,6 +466,16 @@ export default function Login() {
 												fill="#EA4335"
 											/>
 										</svg>
+									</button>
+									<button
+										type="button"
+										onClick={() =>
+											toast.info("Connexion Instagram bientôt disponible")
+										}
+										disabled={isLoading}
+										className="flex items-center justify-center w-11 h-11 border-2 border-rose-medium rounded-lg text-xl text-logo no-underline transition-all duration-300 hover:bg-rose-light-2 hover:text-logo hover:border-rose-light-2 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+									>
+										<FaInstagram />
 									</button>
 								</div>
 							</form>
