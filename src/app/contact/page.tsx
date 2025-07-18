@@ -2,8 +2,9 @@
 
 import ContactLeft from "@/components/Contact/ContactLeft";
 import ContactRight from "@/components/Contact/ContactRight";
-
+import Loader from "@/components/Loader";
 import { motion } from "framer-motion";
+import { Suspense } from "react";
 
 export default function Contact() {
 	return (
@@ -38,7 +39,9 @@ export default function Contact() {
 					<div className="flex flex-col lg:flex-row  min-h-[600px]">
 						{/* Section gauche - Formulaire */}
 						<div className="lg:w-[60%] p-8 lg:p-12 b backdrop-blur-sm bg-[#d9c4b5]/35">
-							<ContactLeft />
+							<Suspense fallback={<Loader size={48} />}>
+								<ContactLeft />
+							</Suspense>
 						</div>
 
 						{/* Section droite - Informations */}
