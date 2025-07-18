@@ -99,7 +99,7 @@ export default function Navbar() {
 							height={48}
 							className="w-12 h-12"
 						/>
-						<div className="text-4xl tracking-wide font-alex-brush text-red-500 font-semibold leading-none">
+						<div className="text-4xl tracking-wide font-alex-brush text-logo font-semibold leading-none">
 							Lady Haya
 						</div>
 					</Link>

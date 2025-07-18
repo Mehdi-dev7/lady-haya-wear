@@ -143,7 +143,7 @@ export default function ContactForm() {
 						type="text"
 						placeholder="Ex : CMD20250701"
 						autoComplete="off"
-						className="h-14 rounded-xl bg-beige-light backdrop-blur-sm px-4 w-full border-2 border-nude-light focus:border-rose-200 focus:outline-none transition-all duration-300 text-lg text-gray-400"
+						className="h-14 rounded-xl bg-beige-light backdrop-blur-sm px-4 w-full border-2 border-nude-dark focus:border-rose-200 focus:outline-none transition-all duration-300 text-lg text-gray-400"
 						{...register("commande")}
 					/>
 				</motion.div>
