@@ -20,7 +20,7 @@
 		"@types/jsonwebtoken": "^9.0.10",
 		"bcryptjs": "^3.0.2",
 		"clsx": "^2.1.1",
-		"framer-motion": "^12.23.3",
+		"framer-motion": "^12.23.6",
 		"google-auth-library": "^10.1.0",
 		"googleapis": "^152.0.0",
 		"jsonwebtoken": "^9.0.2",
