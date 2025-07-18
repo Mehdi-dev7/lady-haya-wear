@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import { Suspense } from "react";
+import Loader from "../Loader";
 import ContactForm from "./ContactForm";
 
 export default function ContactLeft() {
@@ -19,7 +21,9 @@ export default function ContactLeft() {
 					plus brefs délais.
 				</p>
 			</motion.div>
-			<ContactForm />
+			<Suspense fallback={<Loader />}>
+				<ContactForm />
+			</Suspense>
 		</div>
 	);
 }
