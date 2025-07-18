@@ -1,9 +1,12 @@
 "use client";
+
+import Loader from "@/components/Loader";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { toast } from "react-toastify";
 
-export default function ResetPasswordPage() {
+function ResetPasswordClient() {
+
 	const [password, setPassword] = useState("");
 	const [confirm, setConfirm] = useState("");
 	const [error, setError] = useState("");
@@ -62,9 +65,9 @@ export default function ResetPasswordPage() {
 		<section className="min-h-screen flex items-center justify-center bg-beige-light px-4 py-12">
 			<form
 				onSubmit={handleSubmit}
-				className="bg-rose-light-2 rounded-2xl shadow-lg p-8 w-full max-w-md flex flex-col gap-6"
+				className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md flex flex-col gap-6"
 			>
-				<h1 className="text-5xl  text-logo font-alex-brush mb-2 text-center">
+				<h1 className="text-3xl font-bold text-logo mb-2 text-center">
 					Nouveau mot de passe
 				</h1>
 				<input
@@ -93,5 +96,13 @@ export default function ResetPasswordPage() {
 				</button>
 			</form>
 		</section>
+	);
+}
+
+export default function ResetPasswordPageWrapper() {
+	return (
+		<Suspense fallback={<Loader size={48} />}>
+			<ResetPasswordClient />
+		</Suspense>
 	);
 }
