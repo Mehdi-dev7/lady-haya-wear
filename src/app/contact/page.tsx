@@ -1,4 +1,4 @@
-"use client";
+
 
 import ContactLeft from "@/components/Contact/ContactLeft";
 import ContactRight from "@/components/Contact/ContactRight";
