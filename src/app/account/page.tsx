@@ -1,5 +1,6 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaRegEyeSlash } from "react-icons/fa";
@@ -327,6 +328,7 @@ export default function AccountPage() {
 	const [errors, setErrors] = useState({ nom: "", telephone: "" });
 	// Ajout d'un state pour les champs touchés
 	const [touched, setTouched] = useState({ nom: false, telephone: false });
+	const [loading, setLoading] = useState(true);
 
 	const nomInputRef = useRef<HTMLInputElement>(null);
 	const emailInputRef = useRef<HTMLInputElement>(null);
@@ -353,6 +355,7 @@ export default function AccountPage() {
 						password: false,
 					});
 				}
+				setLoading(false);
 			});
 	}, []);
 
@@ -372,6 +375,8 @@ export default function AccountPage() {
 				}
 			});
 	}, []);
+
+	if (loading) return <Loader fullPage />;
 
 	// Fonction de capitalisation
 	function capitalize(str: string) {
@@ -571,7 +576,7 @@ export default function AccountPage() {
 											Modifier
 										</button>
 										<CiEdit
-											className="md:hidden text-2xl text-nude-dark cursor-pointer"
+											className="md:hidden text-2xl text-red-500 cursor-pointer"
 											onClick={() => handleEdit("nom")}
 											title="Modifier"
 										/>
@@ -606,7 +611,7 @@ export default function AccountPage() {
 											Modifier
 										</button>
 										<CiEdit
-											className="md:hidden text-2xl text-nude-dark cursor-pointer"
+											className="md:hidden text-2xl text-red-500 cursor-pointer"
 											onClick={() => handleEdit("email")}
 											title="Modifier"
 										/>
@@ -648,7 +653,7 @@ export default function AccountPage() {
 											Modifier
 										</button>
 										<CiEdit
-											className="md:hidden text-2xl text-nude-dark cursor-pointer"
+											className="md:hidden text-2xl text-red-500 cursor-pointer"
 											onClick={() => handleEdit("telephone")}
 											title="Modifier"
 										/>
@@ -717,7 +722,7 @@ export default function AccountPage() {
 												Modifier
 											</button>
 											<CiEdit
-												className="md:hidden text-2xl text-nude-dark cursor-pointer"
+												className="md:hidden text-2xl text-red-500 cursor-pointer"
 												onClick={() => setPasswordModalOpen(true)}
 												title="Modifier"
 											/>
