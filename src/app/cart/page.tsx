@@ -25,6 +25,12 @@ export default function CartPage() {
 		return getCartTotal() + getShippingCost();
 	};
 
+	// Calculs panier
+	const subtotalHT = cartItems.reduce((acc, item) => acc + item.price, 0);
+	const tva = subtotalHT * 0.2;
+	const livraison = subtotalHT + tva >= 50 ? 0 : 5.99;
+	const totalTTC = subtotalHT + tva + livraison;
+
 	return (
 		<div className="min-h-screen bg-beige-light">
 			{/* Header */}
@@ -224,31 +230,35 @@ export default function CartPage() {
 								{/* Détails des prix */}
 								<div className="space-y-4 mb-6">
 									<div className="flex justify-between text-gray-600">
-										<span>Sous-total</span>
-										<span>{getCartTotal().toFixed(2)}€</span>
+										<span>Sous-total HT</span>
+										<span>{subtotalHT.toFixed(2)}€</span>
+									</div>
+									<div className="flex justify-between text-gray-600">
+										<span>TVA (20%)</span>
+										<span>{tva.toFixed(2)}€</span>
 									</div>
 									<div className="flex justify-between text-gray-600">
 										<span>Frais de livraison</span>
 										<span>
-											{getShippingCost() === 0 ? (
+											{livraison === 0 ? (
 												<span className="text-green-600 font-medium">
 													Gratuit
 												</span>
 											) : (
-												`${getShippingCost().toFixed(2)}€`
+												`${livraison.toFixed(2)}€`
 											)}
 										</span>
 									</div>
-									{getShippingCost() > 0 && (
+									{livraison > 0 && (
 										<div className="text-sm text-green-600 bg-green-50 p-3 rounded-lg">
-											🎉 Plus que {(50 - getCartTotal()).toFixed(2)}€ pour la
-											livraison gratuite !
+											🎉 Plus que {(50 - (subtotalHT + tva)).toFixed(2)}€ pour
+											la livraison gratuite !
 										</div>
 									)}
 									<div className="border-t border-gray-200 pt-4">
 										<div className="flex justify-between text-xl font-semibold text-logo">
-											<span>Total</span>
-											<span>{getFinalTotal().toFixed(2)}€</span>
+											<span>Total TTC</span>
+											<span>{totalTTC.toFixed(2)}€</span>
 										</div>
 									</div>
 								</div>

@@ -44,10 +44,11 @@ export default function CheckoutPage() {
 		},
 		{ id: 2, name: "Kimono satin", price: 40, img: "/assets/grid/img2.jpeg" },
 	];
-	const subtotal = cart.reduce((acc, item) => acc + item.price, 0);
-	const livraison = subtotal > 50 ? 0 : 5.99; // Harmonisé avec cart
-	const tva = subtotal * 0.2;
-	const total = subtotal + livraison;
+	// Calculs panier
+	const subtotalHT = cart.reduce((acc, item) => acc + item.price, 0);
+	const tva = subtotalHT * 0.2;
+	const livraison = subtotalHT + tva >= 50 ? 0 : 5.99;
+	const totalTTC = subtotalHT + tva + livraison;
 
 	return (
 		<div className="min-h-screen bg-beige-light">
@@ -89,113 +90,114 @@ export default function CheckoutPage() {
 								<div className="font-medium">
 									{fakeUser.prenom} {fakeUser.nom}
 								</div>
-								<div>
-									<div
-										className={`border rounded-lg p-4 flex flex-col gap-2 bg-beige-light/60 w-full transition-all duration-300 ${showAddressMenu ? "max-w-lg w-full" : "max-w-sm"}`}
-									>
-										{hasAddress ? (
-											<>
-												<div className="text-base text-gray-700">
-													{fakeUser.adresse}
-												</div>
-												<button
-													className="text-sm text-nude-dark-2 underline flex items-center gap-1 cursor-pointer"
-													onClick={() => setShowAddressMenu((v) => !v)}
-												>
-													Modifier l'adresse{" "}
-													<FaChevronDown
-														className={`transition-transform ${showAddressMenu ? "rotate-180" : "rotate-0"}`}
-													/>
-												</button>
-											</>
-										) : (
+								<div className="text-nude-dark font-semibold mb-2 text-base">
+									Adresse de livraison
+								</div>
+								<div
+									className={`border rounded-lg p-4 flex flex-col gap-2 bg-beige-light/60 w-full transition-all duration-300 ${showAddressMenu ? "max-w-lg w-full" : "max-w-sm"}`}
+								>
+									{hasAddress ? (
+										<>
+											<div className="text-base text-gray-700">
+												{fakeUser.adresse}
+											</div>
 											<button
-												className="text-xs text-nude-dark-2 underline cursor-pointer"
+												className="text-sm text-nude-dark-2 underline flex items-center gap-1 cursor-pointer"
 												onClick={() => setShowAddressMenu((v) => !v)}
 											>
-												Ajouter une adresse
+												Modifier l'adresse{" "}
+												<FaChevronDown
+													className={`transition-transform ${showAddressMenu ? "rotate-180" : "rotate-0"}`}
+												/>
 											</button>
-										)}
-										{showAddressMenu && (
-											<div className="mt-2 p-3 border rounded-2xl bg-white shadow space-y-4 w-full max-w-lg">
-												{/* Civilité */}
-												<div className="flex gap-6 mb-2">
-													<label className="flex items-center gap-2 cursor-pointer">
-														<input
-															type="radio"
-															name="civility"
-															value="M."
-															checked={civility === "M."}
-															onChange={() => setCivility("M.")}
-															className="hidden"
-														/>
-														<span
-															className={`w-3 h-3 rounded-full border-2 border-nude-dark flex items-center justify-center ${civility === "M." ? "bg-nude-dark" : "bg-white"}`}
-														></span>
-														<span className="text-nude-dark text-sm">M.</span>
-													</label>
-													<label className="flex items-center gap-2 cursor-pointer">
-														<input
-															type="radio"
-															name="civility"
-															value="Mme"
-															checked={civility === "Mme"}
-															onChange={() => setCivility("Mme")}
-															className="hidden"
-														/>
-														<span
-															className={`w-3 h-3 rounded-full border-2 border-nude-dark flex items-center justify-center ${civility === "Mme" ? "bg-nude-dark" : "bg-white"}`}
-														></span>
-														<span className="text-nude-dark text-sm">Mme</span>
-													</label>
-												</div>
-												<input
-													type="text"
-													placeholder="Nom complet"
-													className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
-													required
-												/>
-												<input
-													type="text"
-													placeholder="Ligne d'adresse 1"
-													className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
-													required
-												/>
-												<input
-													type="text"
-													placeholder="Ligne d'adresse 2 (facultatif)"
-													className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
-												/>
-												<div className="flex gap-4">
+										</>
+									) : (
+										<button
+											className="text-xs text-nude-dark-2 underline cursor-pointer"
+											onClick={() => setShowAddressMenu((v) => !v)}
+										>
+											Ajouter une adresse
+										</button>
+									)}
+									{showAddressMenu && (
+										<div className="mt-2 p-3 border rounded-2xl bg-white shadow space-y-4 w-full max-w-lg">
+											{/* Civilité */}
+											<div className="flex gap-6 mb-2">
+												<label className="flex items-center gap-2 cursor-pointer">
 													<input
-														type="text"
-														placeholder="Code postal"
-														className="w-1/2 min-w-0 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
-														required
+														type="radio"
+														name="civility"
+														value="M."
+														checked={civility === "M."}
+														onChange={() => setCivility("M.")}
+														className="hidden"
 													/>
+													<span
+														className={`w-3 h-3 rounded-full border-2 border-nude-dark flex items-center justify-center ${civility === "M." ? "bg-nude-dark" : "bg-white"}`}
+													></span>
+													<span className="text-nude-dark text-sm">M.</span>
+												</label>
+												<label className="flex items-center gap-2 cursor-pointer">
 													<input
-														type="text"
-														placeholder="Ville"
-														className="w-1/2 min-w-0 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
-														required
+														type="radio"
+														name="civility"
+														value="Mme"
+														checked={civility === "Mme"}
+														onChange={() => setCivility("Mme")}
+														className="hidden"
 													/>
-												</div>
-												<div className="pt-2 text-right">
-													<button
-														type="button"
-														className="bg-logo hover:bg-nude-dark text-white font-semibold px-8 py-2 rounded-full shadow btn-hover transition-all duration-200 cursor-pointer"
-													>
-														Valider
-													</button>
-												</div>
+													<span
+														className={`w-3 h-3 rounded-full border-2 border-nude-dark flex items-center justify-center ${civility === "Mme" ? "bg-nude-dark" : "bg-white"}`}
+													></span>
+													<span className="text-nude-dark text-sm">Mme</span>
+												</label>
 											</div>
-										)}
-									</div>
+											<input
+												type="text"
+												placeholder="Nom complet"
+												className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
+												required
+											/>
+											<input
+												type="text"
+												placeholder="Ligne d'adresse 1"
+												className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
+												required
+											/>
+											<input
+												type="text"
+												placeholder="Ligne d'adresse 2 (facultatif)"
+												className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
+											/>
+											<div className="flex gap-4">
+												<input
+													type="text"
+													placeholder="Code postal"
+													className="w-1/2 min-w-0 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
+													required
+												/>
+												<input
+													type="text"
+													placeholder="Ville"
+													className="w-1/2 min-w-0 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
+													required
+												/>
+											</div>
+											<div className="pt-2 text-right">
+												<button
+													type="button"
+													className="bg-logo hover:bg-nude-dark text-white font-semibold px-8 py-2 rounded-full shadow btn-hover transition-all duration-200 cursor-pointer"
+												>
+													Valider
+												</button>
+											</div>
+										</div>
+									)}
 								</div>
 							</div>
 
 							{/* Livraison */}
-							<div className="bg-nude-light rounded-2xl shadow-lg p-6 mb-8 mt-8">
+							<div className="bg-[#d9c4b5]/25 rounded-2xl shadow-lg p-6 mb-8 mt-8">
 								<h2 className="text-2xl font-semibold text-nude-dark mb-6">
 									Livraison
 								</h2>
@@ -229,7 +231,7 @@ export default function CheckoutPage() {
 							</div>
 
 							{/* Paiement */}
-							<div className="bg-nude-light rounded-2xl shadow-lg p-6 mt-8">
+							<div className="bg-[#d9c4b5]/25 rounded-2xl shadow-lg p-6 mt-8 mb-6">
 								<h2 className="text-2xl font-semibold text-nude-dark mb-6">
 									Paiement
 								</h2>
@@ -372,8 +374,12 @@ export default function CheckoutPage() {
 									))}
 								</div>
 								<div className="flex justify-between text-gray-600">
-									<span>Sous-total</span>
-									<span>{subtotal.toFixed(2)}€</span>
+									<span>Sous-total HT</span>
+									<span>{subtotalHT.toFixed(2)}€</span>
+								</div>
+								<div className="flex justify-between text-gray-600">
+									<span>TVA (20%)</span>
+									<span>{tva.toFixed(2)}€</span>
 								</div>
 								<div className="flex justify-between text-gray-600">
 									<span>Frais de livraison</span>
@@ -389,18 +395,14 @@ export default function CheckoutPage() {
 								</div>
 								{livraison > 0 && (
 									<div className="text-sm text-green-600 bg-green-50 p-3 rounded-lg">
-										🎉 Plus que {(50 - subtotal).toFixed(2)}€ pour la livraison
-										gratuite !
+										🎉 Plus que {(50 - (subtotalHT + tva)).toFixed(2)}€ pour la
+										livraison gratuite !
 									</div>
 								)}
-								<div className="flex justify-between text-gray-600">
-									<span>TVA (20%)</span>
-									<span>{tva.toFixed(2)}€</span>
-								</div>
 								<div className="border-t border-gray-200 pt-4">
 									<div className="flex justify-between text-xl font-semibold text-logo">
-										<span>Total</span>
-										<span>{total.toFixed(2)}€</span>
+										<span>Total TTC</span>
+										<span>{totalTTC.toFixed(2)}€</span>
 									</div>
 								</div>
 							</div>
