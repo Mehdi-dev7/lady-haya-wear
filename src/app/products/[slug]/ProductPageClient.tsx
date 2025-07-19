@@ -5,6 +5,7 @@ import { useFavorites } from "@/lib/FavoritesContext";
 import { urlFor } from "@/lib/sanity";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
 	TbChevronUp,
@@ -37,8 +38,10 @@ export function ProductPageClient({
 	const [quantity, setQuantity] = useState(1);
 	const [isAddingToCart, setIsAddingToCart] = useState(false);
 	const [showSizeGuide, setShowSizeGuide] = useState(false);
+	const [showViewCart, setShowViewCart] = useState(false);
+	const router = useRouter();
 
-	const { addToCart } = useCart();
+	const { addToCart, cartItems } = useCart();
 	const { favorites, toggleFavorite } = useFavorites();
 
 	// Vérifier si le produit est dans les favoris
@@ -115,6 +118,7 @@ export function ProductPageClient({
 			});
 
 			setIsAddingToCart(false);
+			setShowViewCart(true);
 			// Réinitialiser la quantité à 1 après l'ajout
 			setQuantity(1);
 			// Notification de succès avec détails du produit
@@ -432,9 +436,7 @@ export function ProductPageClient({
 								>
 									<h2 className="text-lg font-medium">Guide des tailles</h2>
 									<TbChevronUp
-										className={`w-5 h-5 transition-transform duration-300 ${
-											showSizeGuide ? "rotate-180" : ""
-										}`}
+										className={`w-5 h-5 transition-transform duration-300 ${!showSizeGuide ? "rotate-180" : "rotate-0"}`}
 									/>
 								</button>
 
@@ -524,41 +526,63 @@ export function ProductPageClient({
 							</div>
 
 							{/* Boutons d'action */}
-							<div className="flex gap-4">
-								<button
-									onClick={handleAddToCart}
-									disabled={!selectedSize || isAddingToCart}
-									className="w-48 ring-2 ring-nude-dark text-nude-dark py-4 px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg hover:shadow-xl text-base"
-								>
-									{isAddingToCart
-										? "Ajout en cours..."
-										: selectedSize
-											? "Ajouter au panier"
-											: "Choisir taille"}
-								</button>
-								<button
-									onClick={handleToggleFavorite}
-									className="p-4 ring-2 ring-nude-dark text-nude-dark rounded-2xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer"
-								>
-									<svg
-										className={`w-5 h-5 transition-all duration-300 ${
-											isInFavorites ? "scale-110" : "scale-100"
-										}`}
-										fill={isInFavorites ? "currentColor" : "none"}
-										stroke={isInFavorites ? "currentColor" : "currentColor"}
-										style={{
-											color: isInFavorites ? "#ef4444" : "currentColor",
-										}}
-										viewBox="0 0 24 24"
+							<div className="flex flex-col gap-4">
+								<div className="flex gap-4 items-stretch">
+									<button
+										onClick={handleAddToCart}
+										disabled={!selectedSize || isAddingToCart}
+										className="w-48 ring-2 ring-nude-dark text-nude-dark py-4 px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg hover:shadow-xl text-base"
 									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth={2}
-											d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-										/>
-									</svg>
-								</button>
+										{isAddingToCart
+											? "Ajout en cours..."
+											: selectedSize
+												? "Ajouter au panier"
+												: "Choisir taille"}
+									</button>
+									<button
+										onClick={handleToggleFavorite}
+										className="w-48 p-4 ring-2 ring-nude-dark text-nude-dark rounded-2xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer flex items-center justify-center"
+									>
+										<svg
+											className={`w-5 h-5 transition-all duration-300 ${
+												isInFavorites ? "scale-110" : "scale-100"
+											}`}
+											fill={isInFavorites ? "currentColor" : "none"}
+											stroke={isInFavorites ? "currentColor" : "currentColor"}
+											style={{
+												color: isInFavorites ? "#ef4444" : "currentColor",
+											}}
+											viewBox="0 0 24 24"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth={2}
+												d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+											/>
+										</svg>
+									</button>
+									{/* Voir le panier en ligne sur desktop */}
+									{(showViewCart || (cartItems && cartItems.length > 0)) && (
+										<button
+											className="w-48 ring-2 ring-nude-dark text-nude-dark py-4 px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl text-base hidden lg:block"
+											onClick={() => router.push("/cart")}
+											type="button"
+										>
+											Voir le panier
+										</button>
+									)}
+								</div>
+								{/* Voir le panier en block sur mobile */}
+								{(showViewCart || (cartItems && cartItems.length > 0)) && (
+									<button
+										className="w-48 ring-2 ring-nude-dark text-nude-dark py-4 px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl text-base mt-2 block lg:hidden mx-auto"
+										onClick={() => router.push("/cart")}
+										type="button"
+									>
+										Voir le panier
+									</button>
+								)}
 							</div>
 						</div>
 
@@ -596,7 +620,6 @@ export function ProductPageClient({
 										<div className="font-semibold text-sm text-nude-dark">
 											Echange possible dans les 30 jours
 										</div>
-										
 									</div>
 								</div>
 

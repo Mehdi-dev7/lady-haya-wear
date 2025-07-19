@@ -2,15 +2,10 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import {
-	FaCcMastercard,
-	FaCcPaypal,
-	FaCcVisa,
-	FaChevronDown,
-	FaLock,
-} from "react-icons/fa";
-import { FiArrowLeft } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { FaCcMastercard, FaCcPaypal, FaCcVisa, FaLock } from "react-icons/fa";
+import { FiArrowLeft, FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const fakeUser = {
 	nom: "Dupont",
@@ -29,7 +24,59 @@ export default function CheckoutPage() {
 		cvc: "",
 	});
 	const [civility, setCivility] = useState("Mme");
+	const [user, setUser] = useState<any>(null);
+	const [address, setAddress] = useState<any>(null);
+	const [loading, setLoading] = useState(true);
 	const router = useRouter();
+	const [modalForm, setModalForm] = useState({
+		nom: address?.lastName || address?.nom || "",
+		prenom: address?.firstName || address?.prenom || "",
+		ligne1: address?.street || address?.ligne1 || "",
+		ligne2: address?.company || address?.ligne2 || "",
+		codePostal: address?.zipCode || address?.codePostal || "",
+		ville: address?.city || address?.ville || "",
+	});
+	const [adresses, setAdresses] = useState<any[]>([]);
+	const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
+		null
+	);
+	const [localAddresses, setLocalAddresses] = useState<any[]>([]);
+	const [showOtherAddresses, setShowOtherAddresses] = useState(false);
+
+	useEffect(() => {
+		async function fetchUserAndAddress() {
+			setLoading(true);
+			const userRes = await fetch("/api/user/account");
+			const userData = await userRes.json();
+			setUser(userData.user);
+			const addressRes = await fetch("/api/user/account/address");
+			const addressData = await addressRes.json();
+			setAddress(addressData.address);
+			setLoading(false);
+		}
+		fetchUserAndAddress();
+	}, []);
+
+	useEffect(() => {
+		async function fetchAddresses() {
+			setLoading(true);
+			const res = await fetch("/api/user/account/address?all=1");
+			const data = await res.json();
+			setAdresses(data.addresses || []);
+			// Sélectionner la principale par défaut
+			const main = (data.addresses || []).find((a: any) => a.isDefault);
+			setSelectedAddressId(main ? main.id : data.addresses?.[0]?.id || null);
+			setLoading(false);
+		}
+		fetchAddresses();
+	}, []);
+
+	if (loading)
+		return (
+			<div className="min-h-screen flex items-center justify-center">
+				Chargement...
+			</div>
+		);
 
 	// Simuler l'absence d'adresse pour la démo
 	const hasAddress = !!fakeUser.adresse;
@@ -88,116 +135,340 @@ export default function CheckoutPage() {
 							</h2>
 							<div className="flex flex-col gap-4 mb-4">
 								<div className="font-medium">
-									{fakeUser.prenom} {fakeUser.nom}
+									{user?.civility ? user.civility + " " : ""}
+									{user?.nom} {user?.prenom}
 								</div>
 								<div className="text-nude-dark font-semibold mb-2 text-base">
 									Adresse de livraison
 								</div>
-								<div
-									className={`border rounded-lg p-4 flex flex-col gap-2 bg-beige-light/60 w-full transition-all duration-300 ${showAddressMenu ? "max-w-lg w-full" : "max-w-sm"}`}
-								>
-									{hasAddress ? (
-										<>
-											<div className="text-base text-gray-700">
-												{fakeUser.adresse}
+								<div className="mb-4">
+									{adresses.length === 0 ? (
+										<div className="flex flex-col items-center gap-4">
+											<div className="text-nude-dark font-semibold text-base">
+												Aucune adresse enregistrée
 											</div>
 											<button
-												className="text-sm text-nude-dark-2 underline flex items-center gap-1 cursor-pointer"
-												onClick={() => setShowAddressMenu((v) => !v)}
+												className="bg-nude-dark text-white px-6 py-2 rounded-2xl font-semibold hover:bg-logo transition-all duration-200"
+												onClick={() => {
+													setModalForm({
+														nom: "",
+														prenom: "",
+														ligne1: "",
+														ligne2: "",
+														codePostal: "",
+														ville: "",
+													});
+													setCivility("Mme");
+													setShowAddressMenu(true);
+												}}
 											>
-												Modifier l'adresse{" "}
-												<FaChevronDown
-													className={`transition-transform ${showAddressMenu ? "rotate-180" : "rotate-0"}`}
-												/>
+												Ajouter une adresse
 											</button>
-										</>
+										</div>
 									) : (
-										<button
-											className="text-xs text-nude-dark-2 underline cursor-pointer"
-											onClick={() => setShowAddressMenu((v) => !v)}
-										>
-											Ajouter une adresse
-										</button>
-									)}
-									{showAddressMenu && (
-										<div className="mt-2 p-3 border rounded-2xl bg-white shadow space-y-4 w-full max-w-lg">
-											{/* Civilité */}
-											<div className="flex gap-6 mb-2">
-												<label className="flex items-center gap-2 cursor-pointer">
-													<input
-														type="radio"
-														name="civility"
-														value="M."
-														checked={civility === "M."}
-														onChange={() => setCivility("M.")}
-														className="hidden"
-													/>
-													<span
-														className={`w-3 h-3 rounded-full border-2 border-nude-dark flex items-center justify-center ${civility === "M." ? "bg-nude-dark" : "bg-white"}`}
-													></span>
-													<span className="text-nude-dark text-sm">M.</span>
-												</label>
-												<label className="flex items-center gap-2 cursor-pointer">
-													<input
-														type="radio"
-														name="civility"
-														value="Mme"
-														checked={civility === "Mme"}
-														onChange={() => setCivility("Mme")}
-														className="hidden"
-													/>
-													<span
-														className={`w-3 h-3 rounded-full border-2 border-nude-dark flex items-center justify-center ${civility === "Mme" ? "bg-nude-dark" : "bg-white"}`}
-													></span>
-													<span className="text-nude-dark text-sm">Mme</span>
-												</label>
-											</div>
-											<input
-												type="text"
-												placeholder="Nom complet"
-												className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
-												required
-											/>
-											<input
-												type="text"
-												placeholder="Ligne d'adresse 1"
-												className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
-												required
-											/>
-											<input
-												type="text"
-												placeholder="Ligne d'adresse 2 (facultatif)"
-												className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
-											/>
-											<div className="flex gap-4">
-												<input
-													type="text"
-													placeholder="Code postal"
-													className="w-1/2 min-w-0 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
-													required
-												/>
-												<input
-													type="text"
-													placeholder="Ville"
-													className="w-1/2 min-w-0 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
-													required
-												/>
-											</div>
-											<div className="pt-2 text-right">
+										<div className="flex flex-col gap-2">
+											{/* Affichage de l'adresse principale */}
+											{adresses
+												.filter((a) => a.isDefault)
+												.map((a) => (
+													<label
+														key={a.id}
+														className="flex items-center gap-3 cursor-pointer"
+													>
+														<input
+															type="radio"
+															name="selectedAddress"
+															checked={selectedAddressId === a.id}
+															onChange={() => setSelectedAddressId(a.id)}
+															className="sr-only"
+														/>
+														<span
+															className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedAddressId === a.id ? "bg-nude-dark" : "bg-white"}`}
+														/>
+														<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
+															<div className="text-logo font-semibold">
+																{a.lastName} {a.firstName}
+															</div>
+															<div className="text-nude-dark">{a.street}</div>
+															<div className="text-nude-dark">
+																{a.zipCode} {a.city}
+															</div>
+															<div className="text-xs text-gray-500 mt-1">
+																{a.civility === "MR"
+																	? "M."
+																	: a.civility === "MME"
+																		? "Mme"
+																		: ""}{" "}
+																(principale)
+															</div>
+														</div>
+													</label>
+												))}
+											{/* Lien pour afficher/masquer les autres adresses */}
+											{adresses.filter((a) => !a.isDefault).length > 0 && (
 												<button
 													type="button"
-													className="bg-logo hover:bg-nude-dark text-white font-semibold px-8 py-2 rounded-full shadow btn-hover transition-all duration-200 cursor-pointer"
+													className="flex items-center gap-1 text-nude-dark underline font-semibold  mt-2 mb-1 hover:text-logo cursor-pointer"
+													onClick={() => setShowOtherAddresses((v) => !v)}
 												>
-													Valider
+													{showOtherAddresses ? (
+														<FiChevronUp style={{ strokeWidth: 3 }} />
+													) : (
+														<FiChevronDown style={{ strokeWidth: 3 }} />
+													)}
+													<span>
+														{showOtherAddresses
+															? "Masquer les autres adresses"
+															: "Voir mes adresses"}
+													</span>
 												</button>
-											</div>
+											)}
+											{/* Affichage des autres adresses */}
+											{showOtherAddresses &&
+												adresses
+													.filter((a) => !a.isDefault)
+													.map((a) => (
+														<label
+															key={a.id}
+															className="flex items-center gap-3 cursor-pointer"
+														>
+															<input
+																type="radio"
+																name="selectedAddress"
+																checked={selectedAddressId === a.id}
+																onChange={() => setSelectedAddressId(a.id)}
+																className="sr-only"
+															/>
+															<span
+																className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedAddressId === a.id ? "bg-nude-dark" : "bg-white"}`}
+															/>
+															<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
+																<div className="text-logo font-semibold">
+																	{a.lastName} {a.firstName}
+																</div>
+																<div className="text-nude-dark">{a.street}</div>
+																<div className="text-nude-dark">
+																	{a.zipCode} {a.city}
+																</div>
+																<div className="text-xs text-gray-500 mt-1">
+																	{a.civility === "MR"
+																		? "M."
+																		: a.civility === "MME"
+																			? "Mme"
+																			: ""}
+																</div>
+															</div>
+														</label>
+													))}
 										</div>
 									)}
 								</div>
 							</div>
 
+							{/* Bouton-lien Ajouter une adresse */}
+							<button
+								className="text-nude-dark underline font-semibold hover:text-logo transition-colors flex items-center gap-1 cursor-pointer "
+								onClick={() => {
+									setModalForm({
+										nom: "",
+										prenom: "",
+										ligne1: "",
+										ligne2: "",
+										codePostal: "",
+										ville: "",
+									});
+									setCivility("Mme");
+									setShowAddressMenu(!showAddressMenu);
+								}}
+								type="button"
+							>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 16 16"
+									fill="none"
+									className="inline-block"
+									style={{ marginRight: "2px", verticalAlign: "middle" }}
+									aria-hidden="true"
+								>
+									<path
+										d="M8 3v10M3 8h10"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+									/>
+								</svg>
+								Ajouter une adresse
+							</button>
+
+							{/* Formulaire déroulant d'ajout d'adresse */}
+							{showAddressMenu && (
+								<form
+									className="bg-beige-light border border-nude-dark/30 rounded-lg p-4 mt-2 max-w-md animate-fade-in flex flex-col gap-3"
+									onSubmit={async (e) => {
+										e.preventDefault();
+										const res = await fetch("/api/user/account/address", {
+											method: "POST",
+											headers: { "Content-Type": "application/json" },
+											body: JSON.stringify({
+												civility,
+												lastName: modalForm.nom,
+												firstName: modalForm.prenom,
+												street: modalForm.ligne1,
+												company: modalForm.ligne2,
+												zipCode: modalForm.codePostal,
+												city: modalForm.ville,
+											}),
+										});
+										const data = await res.json();
+										if (!res.ok) {
+											toast.error(
+												data.error || "Erreur lors de l'ajout de l'adresse"
+											);
+											return;
+										}
+										toast.success("Adresse ajoutée avec succès !");
+										setShowAddressMenu(false);
+										// Recharge les adresses depuis la BDD
+										setLoading(true);
+										const res2 = await fetch("/api/user/account/address?all=1");
+										const data2 = await res2.json();
+										setAdresses(data2.addresses || []);
+										setLoading(false);
+									}}
+								>
+									<div className="flex gap-4">
+										<label className="flex items-center gap-1 cursor-pointer">
+											<input
+												type="radio"
+												name="civility"
+												value="Mme"
+												checked={civility === "Mme"}
+												onChange={() => setCivility("Mme")}
+												className="sr-only"
+											/>
+											<span
+												className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${civility === "Mme" ? "bg-nude-dark" : "bg-white"}`}
+											/>
+											Mme
+										</label>
+										<label className="flex items-center gap-1 cursor-pointer">
+											<input
+												type="radio"
+												name="civility"
+												value="M."
+												checked={civility === "M."}
+												onChange={() => setCivility("M.")}
+												className="sr-only"
+											/>
+											<span
+												className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${civility === "M." ? "bg-nude-dark" : "bg-white"}`}
+											/>
+											M.
+										</label>
+									</div>
+									<div className="flex gap-2">
+										<input
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+											placeholder="Nom"
+											value={modalForm.nom}
+											onChange={(e) =>
+												setModalForm((f) => ({ ...f, nom: e.target.value }))
+											}
+											required
+										/>
+										<input
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+											placeholder="Prénom"
+											value={modalForm.prenom}
+											onChange={(e) =>
+												setModalForm((f) => ({ ...f, prenom: e.target.value }))
+											}
+											required
+										/>
+									</div>
+									<input
+										className="border rounded px-2 py-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+										placeholder="N° et rue"
+										value={modalForm.ligne1}
+										onChange={(e) =>
+											setModalForm((f) => ({ ...f, ligne1: e.target.value }))
+										}
+										required
+									/>
+									<input
+										className="border rounded px-2 py-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+										placeholder="Complément (optionnel)"
+										value={modalForm.ligne2}
+										onChange={(e) =>
+											setModalForm((f) => ({ ...f, ligne2: e.target.value }))
+										}
+									/>
+									<div className="flex gap-2">
+										<input
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+											placeholder="Code postal"
+											value={modalForm.codePostal}
+											onChange={(e) =>
+												setModalForm((f) => ({
+													...f,
+													codePostal: e.target.value,
+												}))
+											}
+											required
+										/>
+										<input
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+											placeholder="Ville"
+											value={modalForm.ville}
+											onChange={(e) =>
+												setModalForm((f) => ({ ...f, ville: e.target.value }))
+											}
+											required
+										/>
+									</div>
+									<div className="flex gap-2 mt-2">
+										<button
+											type="submit"
+											className="bg-nude-dark text-white px-4 py-2 rounded-2xl font-semibold hover:bg-logo transition-all"
+										>
+											Enregistrer
+										</button>
+										<button
+											type="button"
+											className="text-nude-dark underline px-4 py-2"
+											onClick={() => setShowAddressMenu(false)}
+										>
+											Annuler
+										</button>
+									</div>
+								</form>
+							)}
+
+							{/* Affichage des adresses locales ajoutées */}
+							{localAddresses.length > 0 && (
+								<div className="mt-4 flex flex-col gap-2">
+									{localAddresses.map((addr) => (
+										<div key={addr.id} className="flex items-center gap-3">
+											<span
+												className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors bg-nude-dark`}
+											/>
+											<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
+												<div className="text-logo font-semibold">
+													{addr.lastName} {addr.firstName}
+												</div>
+												<div className="text-nude-dark">{addr.street}</div>
+												<div className="text-nude-dark">
+													{addr.zipCode} {addr.city}
+												</div>
+											</div>
+										</div>
+									))}
+								</div>
+							)}
+
 							{/* Livraison */}
-							<div className="bg-[#d9c4b5]/25 rounded-2xl shadow-lg p-6 mb-8 mt-8">
+							<div className="bg-[#d9c4b5]/25 rounded-2xl shadow-lg p-6 mb-8 mt-12">
 								<h2 className="text-2xl font-semibold text-nude-dark mb-6">
 									Livraison
 								</h2>
@@ -210,7 +481,7 @@ export default function CheckoutPage() {
 											checked={selectedDelivery === "domicile"}
 											onChange={() => setSelectedDelivery("domicile")}
 										/>
-										<span>À domicile (Chronopost)</span>
+										<span>À domicile (Colissimo)</span>
 									</label>
 									<label className="flex items-center gap-2 cursor-pointer">
 										<input
@@ -412,8 +683,8 @@ export default function CheckoutPage() {
 								className={`w-[80%] md:w-[60%] lg:w-full 2xl:w-[80%] py-3 px-6 rounded-2xl text-base md:text-lg font-semibold transition-all duration-300 text-center block mt-4 cursor-pointer
     ${selectedPayment === "paypal" ? "bg-[#0750B4] hover:bg-[#063a80] text-white" : "bg-nude-dark text-white hover:bg-rose-dark"}`}
 								onClick={() => {
-									if (!hasAddress) {
-										alert("Merci de renseigner votre adresse de livraison.");
+									if (!selectedAddressId) {
+										alert("Merci de sélectionner votre adresse de livraison.");
 										return;
 									}
 									if (!selectedPayment) {
