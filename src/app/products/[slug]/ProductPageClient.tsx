@@ -594,11 +594,9 @@ export function ProductPageClient({
 									<TbPackage className="w-6 h-6 text-orange-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
-											Satisfait ou remboursé
+											Echange possible dans les 30 jours
 										</div>
-										<div className="text-xs text-gray-600">
-											30 jours pour changer d'avis
-										</div>
+										
 									</div>
 								</div>
 

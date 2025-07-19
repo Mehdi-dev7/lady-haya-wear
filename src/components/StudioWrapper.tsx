@@ -11,8 +11,9 @@ interface StudioWrapperProps {
 export default function StudioWrapper({ children }: StudioWrapperProps) {
 	const pathname = usePathname();
 	const isStudio = pathname.startsWith("/studio");
+	const isCheckout = pathname.startsWith("/checkout");
 
-	if (isStudio) {
+	if (isStudio || isCheckout) {
 		return <>{children}</>;
 	}
 

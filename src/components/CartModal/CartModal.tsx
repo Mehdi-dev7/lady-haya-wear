@@ -160,6 +160,7 @@ export default function CartModal({ onClose }: CartModalProps) {
 							</Link>
 							<Link
 								href="/checkout"
+								onClick={onClose}
 								className="flex-1 rounded-xl py-3 px-4 border-2 border-nude-dark bg-nude-dark text-nude-light text-sm hover:bg-rose-dark hover:border-nude-dark hover:text-nude-dark transition-all duration-300 cursor-pointer text-center"
 							>
 								Commander
