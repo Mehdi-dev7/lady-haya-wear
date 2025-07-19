@@ -9,6 +9,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 type Adresse = {
+	civility: "M." | "Mme";
+	prenom: string;
 	nom: string;
 	ligne1: string;
 	ligne2: string;
@@ -26,6 +28,8 @@ type AdresseModalProps = {
 function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 	const [form, setForm] = useState<Adresse>(
 		initial || {
+			civility: "M.",
+			prenom: "",
 			nom: "",
 			ligne1: "",
 			ligne2: "",
@@ -37,6 +41,8 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 		if (open) {
 			setForm(
 				initial || {
+					civility: "M.",
+					prenom: "",
 					nom: "",
 					ligne1: "",
 					ligne2: "",
@@ -48,7 +54,8 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 	}, [initial, open]);
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setForm({ ...form, [e.target.name]: e.target.value });
+		const { name, value } = e.target;
+		setForm((prev) => ({ ...prev, [name]: value }));
 	};
 
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -72,11 +79,51 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 					{initial ? "Modifier l'adresse" : "Ajouter une adresse"}
 				</h2>
 				<form className="space-y-4" onSubmit={handleSubmit}>
+					{/* Civilité */}
+					<div className="flex gap-6 mb-2">
+						<label className="flex items-center gap-2 cursor-pointer">
+							<input
+								type="radio"
+								name="civility"
+								value="M."
+								checked={form.civility === "M."}
+								onChange={() => setForm({ ...form, civility: "M." })}
+								className="hidden"
+							/>
+							<span
+								className={`w-3 h-3 rounded-full border-2 border-nude-dark flex items-center justify-center ${form.civility === "M." ? "bg-nude-dark" : "bg-white"}`}
+							></span>
+							<span className="text-nude-dark text-sm">M.</span>
+						</label>
+						<label className="flex items-center gap-2 cursor-pointer">
+							<input
+								type="radio"
+								name="civility"
+								value="Mme"
+								checked={form.civility === "Mme"}
+								onChange={() => setForm({ ...form, civility: "Mme" })}
+								className="hidden"
+							/>
+							<span
+								className={`w-3 h-3 rounded-full border-2 border-nude-dark flex items-center justify-center ${form.civility === "Mme" ? "bg-nude-dark" : "bg-white"}`}
+							></span>
+							<span className="text-nude-dark text-sm">Mme</span>
+						</label>
+					</div>
 					<input
 						type="text"
 						name="nom"
-						placeholder="Nom complet"
-						value={form.nom}
+						placeholder="Nom"
+						value={form.nom || ""}
+						onChange={handleChange}
+						className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
+						required
+					/>
+					<input
+						type="text"
+						name="prenom"
+						placeholder="Prénom"
+						value={form.prenom || ""}
 						onChange={handleChange}
 						className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 						required
@@ -85,7 +132,7 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 						type="text"
 						name="ligne1"
 						placeholder="Ligne d'adresse 1"
-						value={form.ligne1}
+						value={form.ligne1 || ""}
 						onChange={handleChange}
 						className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 						required
@@ -94,7 +141,7 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 						type="text"
 						name="ligne2"
 						placeholder="Ligne d'adresse 2 (facultatif)"
-						value={form.ligne2}
+						value={form.ligne2 || ""}
 						onChange={handleChange}
 						className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 					/>
@@ -103,7 +150,7 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 							type="text"
 							name="codePostal"
 							placeholder="Code postal"
-							value={form.codePostal}
+							value={form.codePostal || ""}
 							onChange={handleChange}
 							className="w-1/2 min-w-0 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 							required
@@ -112,7 +159,7 @@ function AdresseModal({ open, onClose, onSave, initial }: AdresseModalProps) {
 							type="text"
 							name="ville"
 							placeholder="Ville"
-							value={form.ville}
+							value={form.ville || ""}
 							onChange={handleChange}
 							className="w-1/2 min-w-0 border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 							required
@@ -376,7 +423,14 @@ export default function AccountPage() {
 			.then((data) => {
 				if (data.address) {
 					setAdresse({
-						nom: data.address.firstName || "",
+						nom: data.address.lastName || "",
+						prenom: data.address.firstName || "",
+						civility:
+							data.address.civility === "MR"
+								? "M."
+								: data.address.civility === "MME"
+									? "Mme"
+									: fields.civility || "M.",
 						ligne1: data.address.street || "",
 						ligne2: data.address.company || "",
 						codePostal: data.address.zipCode || "",
@@ -384,7 +438,7 @@ export default function AccountPage() {
 					});
 				}
 			});
-	}, []);
+	}, [fields.civility]);
 
 	if (loading) return <Loader fullPage />;
 
@@ -507,12 +561,27 @@ export default function AccountPage() {
 			const res = await fetch("/api/user/account/address", {
 				method: "PATCH",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(a),
+				body: JSON.stringify({
+					nom: a.nom,
+					prenom: a.prenom,
+					civility: a.civility,
+					ligne1: a.ligne1,
+					ligne2: a.ligne2,
+					codePostal: a.codePostal,
+					ville: a.ville,
+				}),
 			});
 			if (res.ok) {
 				const data = await res.json();
 				setAdresse({
-					nom: data.address.firstName || "",
+					nom: data.address.lastName || "",
+					prenom: data.address.firstName || "",
+					civility:
+						data.address.civility === "MR"
+							? "M."
+							: data.address.civility === "MME"
+								? "Mme"
+								: "",
 					ligne1: data.address.street || "",
 					ligne2: data.address.company || "",
 					codePostal: data.address.zipCode || "",
@@ -544,7 +613,17 @@ export default function AccountPage() {
 					open={modalOpen}
 					onClose={() => setModalOpen(false)}
 					onSave={handleSaveAdresse}
-					initial={adresse}
+					initial={
+						adresse || {
+							nom: fields.nom || "",
+							prenom: fields.prenom || "",
+							civility: fields.civility || "M.",
+							ligne1: "",
+							ligne2: "",
+							codePostal: "",
+							ville: "",
+						}
+					}
 				/>
 				<PasswordModal
 					open={passwordModalOpen}
@@ -764,7 +843,9 @@ export default function AccountPage() {
 							</label>
 							{adresse ? (
 								<div className="bg-beige-light border border-nude-dark/30 rounded-lg p-4 flex flex-col gap-2 mb-2">
-									<div className="text-logo font-semibold">{adresse.nom}</div>
+									<div className="text-logo font-semibold">
+										{adresse.nom} {adresse.prenom}
+									</div>
 									<div className="text-nude-dark">{adresse.ligne1}</div>
 									{adresse.ligne2 && (
 										<div className="text-nude-dark">{adresse.ligne2}</div>

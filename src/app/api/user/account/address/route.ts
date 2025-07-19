@@ -18,6 +18,14 @@ export async function GET(request: NextRequest) {
 		const address = await prisma.address.findFirst({
 			where: { userId, type: "SHIPPING", isDefault: true },
 		});
+		if (address) {
+			address.civility =
+				address.civility === "MR"
+					? "M."
+					: address.civility === "MME"
+						? "Mme"
+						: "";
+		}
 		return NextResponse.json({ address });
 	} catch (error) {
 		console.error("Erreur get address:", error);
@@ -37,8 +45,8 @@ export async function PATCH(request: NextRequest) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
 		const body = await request.json();
-		const { nom, ligne1, ligne2, codePostal, ville } = body;
-		if (!nom || !ligne1 || !codePostal || !ville) {
+		const { nom, prenom, civility, ligne1, ligne2, codePostal, ville } = body;
+		if (!nom || !prenom || !civility || !ligne1 || !codePostal || !ville) {
 			return NextResponse.json(
 				{ error: "Champs requis manquants" },
 				{ status: 400 }
@@ -53,8 +61,9 @@ export async function PATCH(request: NextRequest) {
 			address = await prisma.address.update({
 				where: { id: existing.id },
 				data: {
-					firstName: nom,
-					lastName: "",
+					civility: civility === "M." ? "MR" : "MME",
+					firstName: prenom,
+					lastName: nom,
 					street: ligne1,
 					city: ville,
 					zipCode: codePostal,
@@ -68,8 +77,9 @@ export async function PATCH(request: NextRequest) {
 			address = await prisma.address.create({
 				data: {
 					userId,
-					firstName: nom,
-					lastName: "",
+					civility: civility === "M." ? "MR" : "MME",
+					firstName: prenom,
+					lastName: nom,
 					street: ligne1,
 					city: ville,
 					zipCode: codePostal,

@@ -31,10 +31,14 @@ export async function GET(request: NextRequest) {
 		// Construction de l'objet user pour le front
 		const userObj = user
 			? {
-					nom:
-						user.profile?.firstName || user.profile?.lastName
-							? `${user.profile?.firstName || ""} ${user.profile?.lastName || ""}`.trim()
-							: user.email,
+					nom: user.profile?.lastName || "",
+					prenom: user.profile?.firstName || "",
+					civility:
+						user.profile?.civility === "MR"
+							? "M."
+							: user.profile?.civility === "MME"
+								? "Mme"
+								: "",
 					email: user.email,
 					telephone: user.profile?.phone || "",
 				}
@@ -79,18 +83,21 @@ export async function PATCH(request: NextRequest) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
 		const body = await request.json();
-		const { nom, email, telephone } = body;
+		const { nom, prenom, civility, email, telephone } = body;
 		// Mettre à jour User
 		if (email) {
 			await prisma.user.update({ where: { id: userId }, data: { email } });
 		}
 		// Mettre à jour UserProfile
 		let profileData: any = {};
+		if (prenom) {
+			profileData.firstName = prenom;
+		}
 		if (nom) {
-			// On sépare nom en firstName/lastName si possible
-			const [firstName, ...rest] = nom.split(" ");
-			profileData.firstName = firstName;
-			profileData.lastName = rest.join(" ");
+			profileData.lastName = nom;
+		}
+		if (civility) {
+			profileData.civility = civility; // "MR" ou "MME"
 		}
 		if (telephone !== undefined) {
 			profileData.phone = telephone;
