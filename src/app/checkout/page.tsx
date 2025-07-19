@@ -369,7 +369,7 @@ export default function CheckoutPage() {
 									</div>
 									<div className="flex gap-2">
 										<input
-											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none"
 											placeholder="Nom"
 											value={modalForm.nom}
 											onChange={(e) =>
@@ -378,7 +378,7 @@ export default function CheckoutPage() {
 											required
 										/>
 										<input
-											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none"
 											placeholder="Prénom"
 											value={modalForm.prenom}
 											onChange={(e) =>
@@ -388,7 +388,7 @@ export default function CheckoutPage() {
 										/>
 									</div>
 									<input
-										className="border rounded px-2 py-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+										className="border rounded px-2 py-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none"
 										placeholder="N° et rue"
 										value={modalForm.ligne1}
 										onChange={(e) =>
@@ -397,7 +397,7 @@ export default function CheckoutPage() {
 										required
 									/>
 									<input
-										className="border rounded px-2 py-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+										className="border rounded px-2 py-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none"
 										placeholder="Complément (optionnel)"
 										value={modalForm.ligne2}
 										onChange={(e) =>
@@ -406,7 +406,7 @@ export default function CheckoutPage() {
 									/>
 									<div className="flex gap-2">
 										<input
-											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none"
 											placeholder="Code postal"
 											value={modalForm.codePostal}
 											onChange={(e) =>
@@ -418,7 +418,7 @@ export default function CheckoutPage() {
 											required
 										/>
 										<input
-											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-nude-dark focus:border-nude-dark"
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none"
 											placeholder="Ville"
 											value={modalForm.ville}
 											onChange={(e) =>
