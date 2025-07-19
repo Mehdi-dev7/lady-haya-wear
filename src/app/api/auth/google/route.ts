@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
 			access_type: "offline",
 			scope: ["profile", "email"],
 			include_granted_scopes: true,
+			prompt: "select_account", // Ajout pour forcer le choix du compte
 		});
 
 		// Rediriger vers Google OAuth

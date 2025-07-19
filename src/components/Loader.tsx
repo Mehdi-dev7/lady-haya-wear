@@ -4,12 +4,14 @@ const Loader: React.FC<{ size?: number; fullPage?: boolean }> = ({
 	size = 48,
 	fullPage = true,
 }) => {
+	// Taille SVG fixe, responsive via CSS
+	const svgSize = 72;
 	const bars = 12;
-	const barWidth = size * 0.08;
-	const barHeight = size * 0.28;
-	const center = size / 2;
+	const barWidth = svgSize * 0.08;
+	const barHeight = svgSize * 0.28;
+	const center = svgSize / 2;
 	const radius = center - barHeight / 2;
-	const color = "#f9c5d1"; // rose clair
+	const color = "#e89cae";
 
 	return (
 		<div
@@ -18,9 +20,9 @@ const Loader: React.FC<{ size?: number; fullPage?: boolean }> = ({
 				alignItems: "center",
 				justifyContent: "center",
 				width: "100%",
-				height: fullPage ? "100vh" : size * 2,
-				minHeight: fullPage ? "100vh" : size * 2,
-				background: "rgba(141, 103, 72, 0.95)", // nude foncé opaque
+				height: fullPage ? "100vh" : svgSize * 2,
+				minHeight: fullPage ? "100vh" : svgSize * 2,
+				background: "#f8ede4", 
 				position: fullPage ? "fixed" : "static",
 				top: 0,
 				left: 0,
@@ -28,13 +30,14 @@ const Loader: React.FC<{ size?: number; fullPage?: boolean }> = ({
 			}}
 		>
 			<svg
-				width={size}
-				height={size}
-				viewBox={`0 0 ${size} ${size}`}
+				className="w-12 h-12 lg:w-20 lg:h-20"
+				width={svgSize}
+				height={svgSize}
+				viewBox={`0 0 ${svgSize} ${svgSize}`}
 				style={{
 					display: "block",
 					opacity: 0.85,
-					animation: "fadeLoader 1.2s ease-in-out infinite alternate",
+					animation: "spinLoader 1s linear infinite",
 				}}
 				xmlns="http://www.w3.org/2000/svg"
 				aria-label="Chargement..."
@@ -55,19 +58,10 @@ const Loader: React.FC<{ size?: number; fullPage?: boolean }> = ({
 						/>
 					);
 				})}
-				<animateTransform
-					attributeName="transform"
-					type="rotate"
-					from={`0 ${center} ${center}`}
-					to={`360 ${center} ${center}`}
-					dur="1s"
-					repeatCount="indefinite"
-				/>
 			</svg>
 			<style>{`
-				@keyframes fadeLoader {
-					0% { opacity: 0.6; }
-					100% { opacity: 1; }
+				@keyframes spinLoader {
+					100% { transform: rotate(360deg); }
 				}
 			`}</style>
 		</div>

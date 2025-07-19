@@ -311,9 +311,12 @@ export default function AccountPage() {
 		email: "",
 		telephone: "",
 		password: "",
+		civility: "M.",
+		prenom: "",
 	});
 	const [editing, setEditing] = useState({
 		nom: fields.nom === "",
+		prenom: fields.prenom === "",
 		email: fields.email === "",
 		telephone: fields.telephone === "",
 		password: fields.password === "",
@@ -325,9 +328,13 @@ export default function AccountPage() {
 	const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	// Ajout d'un state pour les erreurs de validation
-	const [errors, setErrors] = useState({ nom: "", telephone: "" });
+	const [errors, setErrors] = useState({ nom: "", prenom: "", telephone: "" });
 	// Ajout d'un state pour les champs touchés
-	const [touched, setTouched] = useState({ nom: false, telephone: false });
+	const [touched, setTouched] = useState({
+		nom: false,
+		prenom: false,
+		telephone: false,
+	});
 	const [loading, setLoading] = useState(true);
 
 	const nomInputRef = useRef<HTMLInputElement>(null);
@@ -347,9 +354,12 @@ export default function AccountPage() {
 						nom: data.user.nom || "",
 						email: data.user.email || "",
 						telephone: data.user.telephone || "",
+						civility: data.user.civility || "M.",
+						prenom: data.user.prenom || "",
 					}));
 					setEditing({
 						nom: false,
+						prenom: false,
 						email: false,
 						telephone: false,
 						password: false,
@@ -416,6 +426,10 @@ export default function AccountPage() {
 			newValue = newValue.replace(/\s{2,}/g, " "); // pas de double espace
 			newErrors.nom = validateNom(newValue);
 		}
+		if (name === "prenom") {
+			newValue = newValue.replace(/\s{2,}/g, " "); // pas de double espace
+			newErrors.prenom = validateNom(newValue);
+		}
 		if (name === "telephone") {
 			newValue = formatTel(newValue);
 			newErrors.telephone = validateTel(newValue);
@@ -429,11 +443,13 @@ export default function AccountPage() {
 		const { name, value } = e.target;
 		let newValue = value.trim();
 		if (name === "nom") newValue = capitalize(newValue);
+		if (name === "prenom") newValue = capitalize(newValue);
 		if (name === "telephone") newValue = formatTel(newValue);
 		setFields({ ...fields, [name]: newValue });
 		// Revalider au blur
 		let newErrors = { ...errors };
 		if (name === "nom") newErrors.nom = validateNom(newValue);
+		if (name === "prenom") newErrors.prenom = validateNom(newValue);
 		if (name === "telephone") newErrors.telephone = validateTel(newValue);
 		setErrors(newErrors);
 		setEditing({ ...editing, [name]: false });
@@ -445,6 +461,7 @@ export default function AccountPage() {
 		setEditing({ ...editing, [field]: true });
 		setTimeout(() => {
 			if (field === "nom") nomInputRef.current?.focus();
+			if (field === "prenom") emailInputRef.current?.focus();
 			if (field === "email") emailInputRef.current?.focus();
 			if (field === "telephone") telInputRef.current?.focus();
 		}, 0);
@@ -453,9 +470,10 @@ export default function AccountPage() {
 	// Dans handleSave, marquer tous les champs comme touchés avant validation
 	const handleSave = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		setTouched({ nom: true, telephone: true });
+		setTouched({ nom: true, prenom: true, telephone: true });
 		setEditing({
 			nom: false,
+			prenom: false,
 			email: false,
 			telephone: false,
 			password: false,
@@ -468,6 +486,8 @@ export default function AccountPage() {
 					nom: fields.nom,
 					email: fields.email,
 					telephone: fields.telephone,
+					civility: fields.civility,
+					prenom: fields.prenom,
 				}),
 			});
 			if (res.ok) {
@@ -541,47 +561,123 @@ export default function AccountPage() {
 								{message}
 							</div>
 						)}
-						{/* Nom */}
+						{/* Nom & Prénom avec civilité */}
 						<div>
-							<label className="block text-lg font-semibold text-logo mb-2">
-								Nom & Prénom
-							</label>
-							<div className="flex gap-2 items-center">
-								<div className="flex flex-col flex-1">
+							{/* Civilité */}
+							<div className="flex gap-6 mb-4">
+								<label className="flex items-center gap-2 cursor-pointer">
 									<input
-										ref={nomInputRef}
-										type="text"
-										name="nom"
-										placeholder="Votre nom"
-										value={fields.nom}
-										onChange={handleChange}
-										onBlur={handleBlur}
-										disabled={!editing.nom}
-										maxLength={20}
-										className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
+										type="radio"
+										name="civility"
+										value="M."
+										checked={fields.civility === "M."}
+										onChange={() => setFields({ ...fields, civility: "M." })}
+										className="hidden"
 									/>
-									{touched.nom && errors.nom && (
-										<div className="text-xs text-red-500 mt-1">
-											{errors.nom}
-										</div>
+									<span
+										className={`w-3 h-3 rounded-full border-2 border-nude-dark flex items-center justify-center ${fields.civility === "M." ? "bg-nude-dark" : "bg-white"}`}
+									></span>
+									<span className="text-nude-dark text-sm">M.</span>
+								</label>
+								<label className="flex items-center gap-2 cursor-pointer">
+									<input
+										type="radio"
+										name="civility"
+										value="Mme"
+										checked={fields.civility === "Mme"}
+										onChange={() => setFields({ ...fields, civility: "Mme" })}
+										className="hidden"
+									/>
+									<span
+										className={`w-3 h-3 rounded-full border-2 border-nude-dark flex items-center justify-center ${fields.civility === "Mme" ? "bg-nude-dark" : "bg-white"}`}
+									></span>
+									<span className="text-nude-dark text-sm">Mme</span>
+								</label>
+							</div>
+							{/* Section nom */}
+							<div className="mb-2">
+								<label className="block text-lg font-semibold text-logo mb-2">
+									Nom
+								</label>
+								<div className="flex gap-2 items-center">
+									<div className="flex-1">
+										<input
+											ref={nomInputRef}
+											type="text"
+											name="nom"
+											placeholder="Votre nom"
+											value={fields.nom}
+											onChange={handleChange}
+											onBlur={handleBlur}
+											disabled={!editing.nom}
+											maxLength={20}
+											className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark w-full"
+										/>
+										{touched.nom && errors.nom && (
+											<div className="text-xs text-red-500 mt-1">
+												{errors.nom}
+											</div>
+										)}
+									</div>
+									{!editing.nom && (
+										<>
+											<button
+												type="button"
+												className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200 cursor-pointer"
+												onClick={() => handleEdit("nom")}
+											>
+												Modifier
+											</button>
+											<CiEdit
+												className="md:hidden text-2xl text-nude-dark cursor-pointer flex-shrink-0"
+												onClick={() => handleEdit("nom")}
+												title="Modifier"
+											/>
+										</>
 									)}
 								</div>
-								{!editing.nom && (
-									<>
-										<button
-											type="button"
-											className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200 cursor-pointer"
-											onClick={() => handleEdit("nom")}
-										>
-											Modifier
-										</button>
-										<CiEdit
-											className="md:hidden text-2xl text-nude-dark cursor-pointer flex-shrink-0"
-											onClick={() => handleEdit("nom")}
-											title="Modifier"
+							</div>
+							{/* Section prénom */}
+							<div className="mb-2">
+								<label className="block text-lg font-semibold text-logo mb-2">
+									Prénom
+								</label>
+								<div className="flex gap-2 items-center">
+									<div className="flex-1">
+										<input
+											type="text"
+											name="prenom"
+											placeholder="Votre prénom"
+											value={fields.prenom || ""}
+											onChange={handleChange}
+											onBlur={handleBlur}
+											disabled={!editing.prenom}
+											maxLength={20}
+											className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark w-full"
 										/>
-									</>
-								)}
+										{touched.prenom && errors.prenom && (
+											<div className="text-xs text-red-500 mt-1">
+												{errors.prenom}
+											</div>
+										)}
+									</div>
+									{!editing.prenom && (
+										<>
+											<button
+												type="button"
+												className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200 cursor-pointer"
+												onClick={() => handleEdit("prenom")}
+											>
+												Modifier
+											</button>
+											<CiEdit
+												className="md:hidden text-2xl text-nude-dark cursor-pointer flex-shrink-0"
+												onClick={() => handleEdit("prenom")}
+												title="Modifier"
+											/>
+										</>
+									)}
+								</div>
 							</div>
 						</div>
 						{/* Email */}
