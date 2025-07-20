@@ -3,57 +3,86 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { 
+	secureEmailSchema, 
+	secureNameSchema,
+	validatePasswordStrength,
+	sanitizeObject,
+	logSecurityEvent,
+	checkRateLimit
+} from "@/lib/security";
 
 const prisma = new PrismaClient();
 
 const registerSchema = z.object({
-	email: z
-		.string()
-		.min(1, "Email requis")
-		.email("Format d'email invalide")
-		.regex(
-			/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-			"Adresse email invalide"
-		),
-	password: z
-		.string()
-		.min(8, "Le mot de passe doit contenir au moins 8 caractères")
-		.regex(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-			"Le mot de passe doit contenir une maj et un chiffre"
-		),
-	firstName: z
-		.string()
-		.min(2, "Le prénom doit contenir au moins 2 lettres")
-		.max(50, "Le prénom ne peut pas dépasser 50 caractères")
-		.regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Le prénom ne peut contenir que des lettres")
-		.optional(),
-	lastName: z
-		.string()
-		.min(2, "Le nom doit contenir au moins 2 lettres")
-		.max(50, "Le nom ne peut pas dépasser 50 caractères")
-		.regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Le nom ne peut contenir que des lettres")
-		.optional(),
+	email: secureEmailSchema,
+	password: z.string().min(8, "Minimum 8 caractères"),
+	firstName: secureNameSchema.optional(),
+	lastName: secureNameSchema.optional(),
 });
 
 export async function POST(request: NextRequest) {
 	try {
-		const body = await request.json();
-		const { email, password, firstName, lastName } = registerSchema.parse(body);
+		// ===== RATE LIMITING =====
+		const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+		const identifier = `register-${ip}`;
+		
+		if (!checkRateLimit(identifier, 3, 60 * 60 * 1000)) { // 3 tentatives par heure
+			logSecurityEvent('REGISTER_RATE_LIMIT', { ip }, ip);
+			return NextResponse.json(
+				{ error: "Trop de tentatives. Réessayez dans 1 heure." },
+				{ status: 429 }
+			);
+		}
 
-		// Vérifier si l'utilisateur existe déjà
+		// ===== VALIDATION ET SANITISATION =====
+		const rawBody = await request.json();
+		const sanitizedBody = sanitizeObject(rawBody);
+		
+		const parsed = registerSchema.safeParse(sanitizedBody);
+		if (!parsed.success) {
+			logSecurityEvent('REGISTER_VALIDATION_ERROR', { 
+				errors: parsed.error.flatten(),
+				ip 
+			}, ip);
+			
+			return NextResponse.json(
+				{ error: "Données invalides" },
+				{ status: 400 }
+			);
+		}
+
+		const { email, password, firstName, lastName } = parsed.data;
+
+		// ===== VALIDATION MOT DE PASSE FORT =====
+		const passwordValidation = validatePasswordStrength(password);
+		if (!passwordValidation.valid) {
+			logSecurityEvent('REGISTER_WEAK_PASSWORD', { 
+				email,
+				errors: passwordValidation.errors,
+				ip 
+			}, ip);
+			
+			return NextResponse.json(
+				{ error: `Mot de passe faible: ${passwordValidation.errors.join(', ')}` },
+				{ status: 400 }
+			);
+		}
+
+		// ===== VÉRIFICATION UTILISATEUR EXISTANT =====
 		const existingUser = await prisma.user.findUnique({
 			where: { email },
 		});
 
 		if (existingUser) {
+			logSecurityEvent('REGISTER_EXISTING_USER', { email, ip }, ip);
 			return NextResponse.json(
 				{ error: "Un utilisateur avec cet email existe déjà" },
 				{ status: 400 }
 			);
 		}
 
-		// Hasher le mot de passe
+		// ===== HACHAGE SÉCURISÉ =====
 		const hashedPassword = await bcrypt.hash(password, 12);
 
 		// Créer l'utilisateur
@@ -99,6 +128,14 @@ export async function POST(request: NextRequest) {
 				emailError
 			);
 		}
+
+		// ===== LOG SUCCÈS =====
+		logSecurityEvent('REGISTER_SUCCESS', { 
+			email,
+			userId: user.id,
+			emailSent,
+			ip 
+		}, ip);
 
 		return NextResponse.json(
 			{

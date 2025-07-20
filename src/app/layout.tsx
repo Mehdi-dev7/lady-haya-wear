@@ -2,6 +2,7 @@ import StudioWrapper from "@/components/StudioWrapper";
 import { AuthProvider } from "@/lib/AuthContext";
 import { CartProvider } from "@/lib/CartContext";
 import { FavoritesProvider } from "@/lib/FavoritesContext";
+import { CSRFProtection } from "@/components/Security/CSRFProtection";
 import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,25 +28,27 @@ export default function RootLayout({
 				{/* <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1" /> */}
 			</head>
 			<body className="antialiased">
-				<CartProvider>
-					<FavoritesProvider>
-						<AuthProvider>
-							<StudioWrapper>{children}</StudioWrapper>
-							<ToastContainer
-								position="top-right"
-								autoClose={3000}
-								hideProgressBar={false}
-								newestOnTop={false}
-								closeOnClick
-								rtl={false}
-								pauseOnFocusLoss
-								draggable
-								pauseOnHover
-								theme="light"
-							/>
-						</AuthProvider>
-					</FavoritesProvider>
-				</CartProvider>
+				<CSRFProtection>
+					<CartProvider>
+						<FavoritesProvider>
+							<AuthProvider>
+								<StudioWrapper>{children}</StudioWrapper>
+								<ToastContainer
+									position="top-right"
+									autoClose={3000}
+									hideProgressBar={false}
+									newestOnTop={false}
+									closeOnClick
+									rtl={false}
+									pauseOnFocusLoss
+									draggable
+									pauseOnHover
+									theme="light"
+								/>
+							</AuthProvider>
+						</FavoritesProvider>
+					</CartProvider>
+				</CSRFProtection>
 			</body>
 		</html>
 	);
