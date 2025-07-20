@@ -1,5 +1,6 @@
 "use client";
 
+import { useCart } from "@/lib/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ const fakeUser = {
 };
 
 export default function CheckoutPage() {
+	const { cartItems, getCartTotal } = useCart();
 	const [showAddressMenu, setShowAddressMenu] = useState(false);
 	const [selectedDelivery, setSelectedDelivery] = useState("domicile");
 	const [selectedPayment, setSelectedPayment] = useState("");
@@ -78,21 +80,34 @@ export default function CheckoutPage() {
 			</div>
 		);
 
+	// Vérifier si le panier est vide
+	if (!cartItems || cartItems.length === 0) {
+		return (
+			<div className="min-h-screen bg-beige-light flex items-center justify-center">
+				<div className="text-center">
+					<div className="text-8xl mb-6">🛒</div>
+					<h2 className="text-3xl font-alex-brush text-logo mb-4">
+						Votre panier est vide
+					</h2>
+					<p className="text-nude-dark mb-8 max-w-md mx-auto">
+						Ajoutez des produits à votre panier pour finaliser votre commande.
+					</p>
+					<Link
+						href="/allProducts"
+						className="rounded-2xl bg-nude-dark text-white py-3 px-8 text-lg hover:bg-rose-dark transition-all duration-300"
+					>
+						Découvrir nos produits
+					</Link>
+				</div>
+			</div>
+		);
+	}
+
 	// Simuler l'absence d'adresse pour la démo
 	const hasAddress = !!fakeUser.adresse;
 
-	// Simuler le panier
-	const cart = [
-		{
-			id: 1,
-			name: "Robe longue soie",
-			price: 60,
-			img: "/assets/grid/img1.jpeg",
-		},
-		{ id: 2, name: "Kimono satin", price: 40, img: "/assets/grid/img2.jpeg" },
-	];
-	// Calculs panier
-	const subtotalHT = cart.reduce((acc, item) => acc + item.price, 0);
+	// Calculs panier avec les vraies données
+	const subtotalHT = getCartTotal();
 	const tva = subtotalHT * 0.2;
 	const livraison = subtotalHT + tva >= 50 ? 0 : 5.99;
 	const totalTTC = subtotalHT + tva + livraison;
@@ -304,7 +319,7 @@ export default function CheckoutPage() {
 							{/* Formulaire déroulant d'ajout d'adresse */}
 							{showAddressMenu && (
 								<form
-									className="bg-beige-light border border-nude-dark/30 rounded-lg p-4 mt-2 max-w-md animate-fade-in flex flex-col gap-3"
+									className="bg-beige-light border border-nude-dark/30 rounded-lg p-4 mt-2 w-full max-w-md animate-fade-in flex flex-col gap-3"
 									onSubmit={async (e) => {
 										e.preventDefault();
 										const res = await fetch("/api/user/account/address", {
@@ -367,9 +382,9 @@ export default function CheckoutPage() {
 											M.
 										</label>
 									</div>
-									<div className="flex gap-2">
+									<div className="flex flex-col sm:flex-row gap-2">
 										<input
-											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none"
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none min-w-0"
 											placeholder="Nom"
 											value={modalForm.nom}
 											onChange={(e) =>
@@ -378,7 +393,7 @@ export default function CheckoutPage() {
 											required
 										/>
 										<input
-											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none"
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none min-w-0"
 											placeholder="Prénom"
 											value={modalForm.prenom}
 											onChange={(e) =>
@@ -404,9 +419,9 @@ export default function CheckoutPage() {
 											setModalForm((f) => ({ ...f, ligne2: e.target.value }))
 										}
 									/>
-									<div className="flex gap-2">
+									<div className="flex flex-col sm:flex-row gap-2">
 										<input
-											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none"
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none min-w-0"
 											placeholder="Code postal"
 											value={modalForm.codePostal}
 											onChange={(e) =>
@@ -418,7 +433,7 @@ export default function CheckoutPage() {
 											required
 										/>
 										<input
-											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none"
+											className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-[#d9c4b5] focus:outline-none min-w-0"
 											placeholder="Ville"
 											value={modalForm.ville}
 											onChange={(e) =>
@@ -468,7 +483,7 @@ export default function CheckoutPage() {
 							)}
 
 							{/* Livraison */}
-							<div className="bg-[#d9c4b5]/25 rounded-2xl shadow-lg p-6 mb-8 mt-12">
+							<div className="bg-[#d9c4b5]/35 rounded-2xl shadow-lg p-6 mb-8 mt-12">
 								<h2 className="text-2xl font-semibold text-nude-dark mb-6">
 									Livraison
 								</h2>
@@ -480,7 +495,11 @@ export default function CheckoutPage() {
 											value="domicile"
 											checked={selectedDelivery === "domicile"}
 											onChange={() => setSelectedDelivery("domicile")}
+											className="sr-only"
 										/>
+										<span
+											className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedDelivery === "domicile" ? "bg-nude-dark" : "bg-white"}`}
+										></span>
 										<span>À domicile (Colissimo)</span>
 									</label>
 									<label className="flex items-center gap-2 cursor-pointer">
@@ -490,7 +509,11 @@ export default function CheckoutPage() {
 											value="relay"
 											checked={selectedDelivery === "relay"}
 											onChange={() => setSelectedDelivery("relay")}
+											className="sr-only"
 										/>
+										<span
+											className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedDelivery === "relay" ? "bg-nude-dark" : "bg-white"}`}
+										></span>
 										<span>Point relais (Mondial Relay)</span>
 									</label>
 									{selectedDelivery === "relay" && (
@@ -502,7 +525,7 @@ export default function CheckoutPage() {
 							</div>
 
 							{/* Paiement */}
-							<div className="bg-[#d9c4b5]/25 rounded-2xl shadow-lg p-6 mt-8 mb-6">
+							<div className="bg-[#d9c4b5]/35 rounded-2xl shadow-lg p-6 mt-8 mb-6">
 								<h2 className="text-2xl font-semibold text-nude-dark mb-6">
 									Paiement
 								</h2>
@@ -514,7 +537,11 @@ export default function CheckoutPage() {
 											value="cb"
 											checked={selectedPayment === "cb"}
 											onChange={() => setSelectedPayment("cb")}
+											className="sr-only"
 										/>
+										<span
+											className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedPayment === "cb" ? "bg-nude-dark" : "bg-white"}`}
+										></span>
 										<span className="flex items-center gap-1">
 											Carte bancaire
 											<FaCcVisa className="text-blue-600 text-lg" />
@@ -529,7 +556,7 @@ export default function CheckoutPage() {
 												pattern="[0-9]{16}"
 												maxLength={16}
 												placeholder="Numéro de carte"
-												className="border rounded px-2 py-1 w-full"
+												className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-[#b49982]"
 												value={cardInfo.number}
 												onChange={(e) => {
 													const val = e.target.value
@@ -545,7 +572,7 @@ export default function CheckoutPage() {
 												pattern="[A-Za-zÀ-ÿ\s]+"
 												maxLength={26}
 												placeholder="Nom sur la carte"
-												className="border rounded px-2 py-1 w-full"
+												className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-[#b49982]"
 												value={cardInfo.name}
 												onChange={(e) => {
 													const val = e.target.value
@@ -562,7 +589,7 @@ export default function CheckoutPage() {
 													pattern="[0-9]{2}/[0-9]{2}"
 													maxLength={5}
 													placeholder="MM/AA"
-													className="border rounded px-2 py-1 w-1/2"
+													className="border rounded px-2 py-1 w-1/2 focus:outline-none focus:ring-2 focus:ring-[#b49982]"
 													value={cardInfo.expiry}
 													onChange={(e) => {
 														let val = e.target.value.replace(/[^0-9]/g, "");
@@ -582,7 +609,7 @@ export default function CheckoutPage() {
 													pattern="[0-9]{3}"
 													maxLength={3}
 													placeholder="CVC"
-													className="border rounded px-2 py-1 w-1/2"
+													className="border rounded px-2 py-1 w-1/2 focus:outline-none focus:ring-2 focus:ring-[#b49982]"
 													value={cardInfo.cvc}
 													onChange={(e) => {
 														const val = e.target.value
@@ -602,7 +629,11 @@ export default function CheckoutPage() {
 											value="paypal"
 											checked={selectedPayment === "paypal"}
 											onChange={() => setSelectedPayment("paypal")}
+											className="sr-only"
 										/>
+										<span
+											className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedPayment === "paypal" ? "bg-nude-dark" : "bg-white"}`}
+										></span>
 										<span className="flex items-center gap-1">
 											Paypal <FaCcPaypal className="text-blue-500 text-lg" />
 										</span>
@@ -625,21 +656,25 @@ export default function CheckoutPage() {
 							{/* Détails des prix */}
 							<div className="space-y-4 mb-6">
 								<div className="flex flex-col gap-3 mb-4">
-									{cart.map((item) => (
+									{cartItems.map((item) => (
 										<div
 											key={item.id}
 											className="flex items-center gap-3 border-b pb-2 last:border-b-0 last:pb-0"
 										>
 											<img
-												src={item.img}
+												src={item.image}
 												alt={item.name}
 												className="w-12 h-12 object-cover rounded"
 											/>
 											<div className="flex-1">
-												<div className="text-sm font-medium">{item.name}</div>
+												<div className="text-base font-medium">{item.name}</div>
+												<div className="text-sm text-gray-500">
+													{item.color} - Taille {item.size} - Qté:{" "}
+													{item.quantity}
+												</div>
 											</div>
 											<div className="text-sm font-semibold">
-												{item.price.toFixed(2)} €
+												{(item.price * item.quantity).toFixed(2)} €
 											</div>
 										</div>
 									))}
@@ -680,8 +715,8 @@ export default function CheckoutPage() {
 
 							{/* Bouton commander */}
 							<button
-								className={`w-[80%] md:w-[60%] lg:w-full 2xl:w-[80%] py-3 px-6 rounded-2xl text-base md:text-lg font-semibold transition-all duration-300 text-center block mt-4 cursor-pointer
-    ${selectedPayment === "paypal" ? "bg-[#0750B4] hover:bg-[#063a80] text-white" : "bg-nude-dark text-white hover:bg-rose-dark"}`}
+								className={`w-[80%] md:w-[60%] lg:w-full 2xl:w-[80%] py-3 px-6 rounded-2xl text-base font-semibold transition-all duration-300 text-center block mt-4 cursor-pointer
+    ${selectedPayment === "paypal" ? "bg-[#0750B4] hover:bg-[#063a80] text-white" : "bg-nude-dark border-2 text-white hover:bg-rose-dark hover:text-nude-dark hover:border-nude-dark"}`}
 								onClick={() => {
 									if (!selectedAddressId) {
 										alert("Merci de sélectionner votre adresse de livraison.");
@@ -701,7 +736,7 @@ export default function CheckoutPage() {
 								{selectedPayment === "paypal" ? "Payer avec Paypal" : "Payer"}
 							</button>
 							<button
-								className="w-full mt-3 py-2 rounded-2xl border border-nude-dark text-nude-dark font-semibold bg-white hover:bg-beige-light transition cursor-pointer"
+								className="w-full mt-3 py-2 rounded-2xl ring-1 ring-nude-dark text-nude-dark font-semibold bg-nude-light hover:bg-nude-dark hover:text-nude-light hover:border-nude-light transition cursor-pointer"
 								onClick={() => router.push("/allProducts")}
 								type="button"
 							>

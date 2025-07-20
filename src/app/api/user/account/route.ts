@@ -97,7 +97,8 @@ export async function PATCH(request: NextRequest) {
 			profileData.lastName = nom;
 		}
 		if (civility) {
-			profileData.civility = civility; // "MR" ou "MME"
+			// Conversion des valeurs frontend vers Prisma
+			profileData.civility = civility === "M." ? "MR" : civility === "Mme" ? "MME" : null;
 		}
 		if (telephone !== undefined) {
 			profileData.phone = telephone;

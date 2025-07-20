@@ -476,18 +476,26 @@ export default function AccountPage() {
 		const { name, value } = e.target;
 		let newValue = value;
 		let newErrors = { ...errors };
+
 		if (name === "nom") {
+			// Empêcher les caractères non autorisés
+			newValue = newValue.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ' -]/g, "");
 			newValue = newValue.replace(/\s{2,}/g, " "); // pas de double espace
 			newErrors.nom = validateNom(newValue);
 		}
 		if (name === "prenom") {
+			// Empêcher les caractères non autorisés
+			newValue = newValue.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ' -]/g, "");
 			newValue = newValue.replace(/\s{2,}/g, " "); // pas de double espace
 			newErrors.prenom = validateNom(newValue);
 		}
 		if (name === "telephone") {
+			// Empêcher les caractères non numériques
+			newValue = newValue.replace(/[^\d\s]/g, "");
 			newValue = formatTel(newValue);
 			newErrors.telephone = validateTel(newValue);
 		}
+
 		setFields({ ...fields, [name]: newValue });
 		setErrors(newErrors);
 	};
@@ -499,12 +507,24 @@ export default function AccountPage() {
 		if (name === "nom") newValue = capitalize(newValue);
 		if (name === "prenom") newValue = capitalize(newValue);
 		if (name === "telephone") newValue = formatTel(newValue);
-		setFields({ ...fields, [name]: newValue });
+
 		// Revalider au blur
 		let newErrors = { ...errors };
 		if (name === "nom") newErrors.nom = validateNom(newValue);
 		if (name === "prenom") newErrors.prenom = validateNom(newValue);
 		if (name === "telephone") newErrors.telephone = validateTel(newValue);
+
+		// Si il y a une erreur, ne pas sortir de l'input et ne pas sauvegarder
+		if (newErrors[name as keyof typeof newErrors]) {
+			setErrors(newErrors);
+			setTouched({ ...touched, [name]: true });
+			// Garder le focus sur l'input
+			e.target.focus();
+			return;
+		}
+
+		// Si pas d'erreur, on peut sortir de l'input
+		setFields({ ...fields, [name]: newValue });
 		setErrors(newErrors);
 		setEditing({ ...editing, [name]: false });
 		setTouched({ ...touched, [name]: true });
@@ -524,6 +544,26 @@ export default function AccountPage() {
 	// Dans handleSave, marquer tous les champs comme touchés avant validation
 	const handleSave = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		// Valider tous les champs avant sauvegarde
+		const nomError = validateNom(fields.nom);
+		const prenomError = validateNom(fields.prenom);
+		const telephoneError = validateTel(fields.telephone);
+
+		const newErrors = {
+			nom: nomError,
+			prenom: prenomError,
+			telephone: telephoneError,
+		};
+
+		// Si il y a des erreurs, ne pas sauvegarder
+		if (nomError || prenomError || telephoneError) {
+			setErrors(newErrors);
+			setTouched({ nom: true, prenom: true, telephone: true });
+			toast.error("Veuillez corriger les erreurs avant de sauvegarder");
+			return;
+		}
+
 		setTouched({ nom: true, prenom: true, telephone: true });
 		setEditing({
 			nom: false,
