@@ -144,6 +144,10 @@ model Order {
   taxAmount       Float       @default(0)
   total           Float
   
+  // Code promo
+  promoCodeId     String?
+  promoDiscount   Float       @default(0)
+  
   // Adresses
   billingAddressId  String?
   shippingAddressId String?
@@ -160,6 +164,7 @@ model Order {
   items           OrderItem[]
   billingAddress  Address?    @relation("BillingAddress", fields: [billingAddressId], references: [id])
   shippingAddress Address?    @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  promoCode       PromoCode?  @relation(fields: [promoCodeId], references: [id])
 }
 
 model OrderItem {
@@ -174,6 +179,25 @@ model OrderItem {
   totalPrice  Float
   
   order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+// === CODES PROMO ===
+model PromoCode {
+  id          String   @id @default(cuid())
+  code        String   @unique // Code unique comme "NEWSLETTER20"
+  type        PromoType
+  value       Float    // Valeur de la réduction
+  minAmount   Float?   // Montant minimum pour appliquer
+  maxUses     Int?     // Nombre max d'utilisations
+  usedCount   Int      @default(0) // Nombre d'utilisations actuelles
+  validFrom   DateTime @default(now())
+  validUntil  DateTime
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  orders      Order[]  // Commandes qui ont utilisé ce code
 }
 
 // === ENUMS ===
@@ -195,4 +219,10 @@ enum OrderStatus {
 enum Civility {
   MR
   MME
+}
+
+enum PromoType {
+  PERCENTAGE    // Réduction en pourcentage
+  FIXED         // Réduction fixe en euros
+  FREE_SHIPPING // Livraison gratuite
 }

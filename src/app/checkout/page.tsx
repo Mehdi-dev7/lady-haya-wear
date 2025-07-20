@@ -45,6 +45,14 @@ export default function CheckoutPage() {
 	const [localAddresses, setLocalAddresses] = useState<any[]>([]);
 	const [showOtherAddresses, setShowOtherAddresses] = useState(false);
 
+	// États pour le code promo
+	const [promoCode, setPromoCode] = useState("");
+	const [promoDiscount, setPromoDiscount] = useState(0);
+	const [promoApplied, setPromoApplied] = useState(false);
+	const [promoLoading, setPromoLoading] = useState(false);
+	const [promoError, setPromoError] = useState("");
+	const [appliedPromoCode, setAppliedPromoCode] = useState<any>(null);
+
 	useEffect(() => {
 		async function fetchUserAndAddress() {
 			setLoading(true);
@@ -109,8 +117,55 @@ export default function CheckoutPage() {
 	// Calculs panier avec les vraies données
 	const subtotalHT = getCartTotal();
 	const tva = subtotalHT * 0.2;
-	const livraison = subtotalHT + tva >= 50 ? 0 : 5.99;
-	const totalTTC = subtotalHT + tva + livraison;
+
+	// Calcul des frais de livraison selon le mode choisi
+	let livraison = 0;
+	if (selectedDelivery === "chronopost") {
+		livraison = 8.9; // Frais fixes pour Chronopost
+	} else if (subtotalHT + tva >= 50) {
+		livraison = 0; // Livraison gratuite pour Colissimo et Mondial Relay
+	} else {
+		livraison = 5.99; // Frais standard
+	}
+
+	// Appliquer la réduction promo
+	const totalTTC = subtotalHT + tva + livraison - promoDiscount;
+
+	// Fonction pour appliquer un code promo
+	const applyPromoCode = async () => {
+		if (!promoCode.trim()) return;
+
+		setPromoLoading(true);
+		setPromoError("");
+
+		try {
+			const res = await fetch("/api/promo/validate", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					code: promoCode.trim(),
+					total: subtotalHT + tva,
+				}),
+			});
+
+			const data = await res.json();
+
+			if (data.valid) {
+				setPromoDiscount(data.discount);
+				setPromoApplied(true);
+				setAppliedPromoCode(data.promoCode);
+				toast.success(`Code promo ${data.promoCode.code} appliqué !`);
+			} else {
+				setPromoError(data.message || "Code promo invalide");
+				toast.error(data.message || "Code promo invalide");
+			}
+		} catch (error) {
+			setPromoError("Erreur lors de la validation");
+			toast.error("Erreur lors de la validation");
+		} finally {
+			setPromoLoading(false);
+		}
+	};
 
 	return (
 		<div className="min-h-screen bg-beige-light">
@@ -516,9 +571,28 @@ export default function CheckoutPage() {
 										></span>
 										<span>Point relais (Mondial Relay)</span>
 									</label>
+									<label className="flex items-center gap-2 cursor-pointer">
+										<input
+											type="radio"
+											name="delivery"
+											value="chronopost"
+											checked={selectedDelivery === "chronopost"}
+											onChange={() => setSelectedDelivery("chronopost")}
+											className="sr-only"
+										/>
+										<span
+											className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedDelivery === "chronopost" ? "bg-nude-dark" : "bg-white"}`}
+										></span>
+										<span>Livraison express (Chronopost)</span>
+									</label>
 									{selectedDelivery === "relay" && (
 										<div className="ml-6 mt-2 text-xs text-gray-500">
 											(Sélection du point relais à venir)
+										</div>
+									)}
+									{selectedDelivery === "chronopost" && (
+										<div className="ml-6 mt-2 text-xs text-blue-600">
+											Livraison en 24h - Frais supplémentaires de 8,90€
 										</div>
 									)}
 								</div>
@@ -699,7 +773,101 @@ export default function CheckoutPage() {
 										)}
 									</span>
 								</div>
-								{livraison > 0 && (
+
+								{/* Réduction promo */}
+								{promoApplied && promoDiscount > 0 && (
+									<div className="flex justify-between text-green-600">
+										<span>Réduction promo</span>
+										<span className="font-medium">
+											-{promoDiscount.toFixed(2)}€
+										</span>
+									</div>
+								)}
+
+								{/* Code promo */}
+								<div className="border-t border-gray-200 pt-4">
+									<div className="flex items-center gap-2 mb-2">
+										<span className="text-gray-600 text-sm">Code promo</span>
+										<span className="text-xs text-gray-400">(optionnel)</span>
+									</div>
+
+									{/* Code appliqué */}
+									{promoApplied && appliedPromoCode && (
+										<div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+											<div className="flex items-center justify-between">
+												<div>
+													<div className="text-sm font-medium text-green-800">
+														Code {appliedPromoCode.code} appliqué
+													</div>
+													<div className="text-xs text-green-600">
+														Réduction : {promoDiscount.toFixed(2)}€
+													</div>
+												</div>
+												<button
+													type="button"
+													onClick={() => {
+														setPromoApplied(false);
+														setPromoDiscount(0);
+														setAppliedPromoCode(null);
+														setPromoCode("");
+														setPromoError("");
+													}}
+													className="text-red-600 hover:text-red-800 text-sm"
+												>
+													Supprimer
+												</button>
+											</div>
+										</div>
+									)}
+
+									{/* Message d'erreur */}
+									{promoError && (
+										<div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+											<div className="text-sm text-red-800">{promoError}</div>
+										</div>
+									)}
+
+									{/* Formulaire code promo */}
+									{!promoApplied && (
+										<div className="flex gap-2">
+											<input
+												type="text"
+												placeholder="Entrez votre code"
+												value={promoCode}
+												onChange={(e) => {
+													setPromoCode(e.target.value.toUpperCase());
+													setPromoError("");
+												}}
+												onKeyPress={(e) => {
+													if (e.key === "Enter") {
+														e.preventDefault();
+														if (promoCode.trim() && !promoLoading) {
+															applyPromoCode();
+														}
+													}
+												}}
+												className="flex-1 border-2 border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#b49982]"
+												maxLength={20}
+												disabled={promoLoading}
+											/>
+											<button
+												type="button"
+												onClick={applyPromoCode}
+												disabled={!promoCode.trim() || promoLoading}
+												style={{
+													cursor:
+														!promoCode.trim() || promoLoading
+															? "not-allowed"
+															: "pointer",
+												}}
+												className="bg-nude-dark text-white px-4 py-2 rounded-lg text-sm font-medium border-2 hover:bg-rose-dark hover:text-nude-dark hover:border-nude-dark transition-colors duration-200 disabled:opacity-50"
+											>
+												{promoLoading ? "..." : "Appliquer"}
+											</button>
+										</div>
+									)}
+								</div>
+								{livraison > 0 && selectedDelivery !== "chronopost" && (
 									<div className="text-sm text-green-600 bg-green-50 p-3 rounded-lg">
 										🎉 Plus que {(50 - (subtotalHT + tva)).toFixed(2)}€ pour la
 										livraison gratuite !
