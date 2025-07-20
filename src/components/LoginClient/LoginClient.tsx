@@ -4,11 +4,13 @@ import { useAuth } from "@/lib/AuthContext";
 import {
 	getFieldValidation,
 	validateEmail,
+	validateLoginPassword,
 	validateRegisterForm,
 } from "@/lib/validation";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaInstagram } from "react-icons/fa";
+import { FaInstagram, FaRegEyeSlash } from "react-icons/fa";
+import { IoEyeSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 
 export default function Login() {
@@ -16,6 +18,16 @@ export default function Login() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showForgotPassword, setShowForgotPassword] = useState(false);
 	const [forgotEmail, setForgotEmail] = useState("");
+
+	// États pour l'affichage des mots de passe
+	const [showLoginPassword, setShowLoginPassword] = useState(false);
+	const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+
+	// États pour gérer les champs touchés (pour afficher les erreurs seulement après interaction)
+	const [touchedFields, setTouchedFields] = useState<{
+		[key: string]: boolean;
+	}>({});
+
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const callbackUrl = searchParams.get("callbackUrl") || "/";
@@ -42,11 +54,56 @@ export default function Login() {
 
 	// Validation en temps réel
 	const handleFieldValidation = (fieldName: string, value: string) => {
-		const validation = getFieldValidation(fieldName, value);
-		setValidationErrors((prev) => ({
-			...prev,
+		let validation;
+
+		// Utiliser la validation appropriée selon le contexte
+		if (fieldName === "password" || fieldName === "registerPassword") {
+			// Validation complète pour l'inscription, simple pour la connexion
+			if (fieldName === "registerPassword") {
+				validation = getFieldValidation("password", value); // Utiliser la validation complète
+			} else {
+				validation = validateLoginPassword(value); // Validation simple pour connexion
+			}
+		} else {
+			// Validation normale pour les autres champs
+			validation = getFieldValidation(fieldName, value);
+		}
+
+		const newErrors = {
+			...validationErrors,
 			[fieldName]: validation.isValid ? "" : validation.message,
+		};
+		setValidationErrors(newErrors);
+
+		// Retourner si le champ est valide pour la validation globale
+		return validation.isValid;
+	};
+
+	// Gestion des changements de champs avec validation immédiate
+	const handleFieldChange = (fieldName: string, value: string) => {
+		// Mettre à jour les données
+		if (fieldName === "email") {
+			setLoginData({ ...loginData, email: value });
+		} else if (fieldName === "password") {
+			setLoginData({ ...loginData, password: value });
+		} else if (fieldName === "firstName") {
+			setRegisterData({ ...registerData, firstName: value });
+		} else if (fieldName === "lastName") {
+			setRegisterData({ ...registerData, lastName: value });
+		} else if (fieldName === "registerEmail") {
+			setRegisterData({ ...registerData, email: value });
+		} else if (fieldName === "registerPassword") {
+			setRegisterData({ ...registerData, password: value });
+		}
+
+		// Marquer le champ comme touché dès qu'on commence à taper
+		setTouchedFields((prev) => ({
+			...prev,
+			[fieldName]: true,
 		}));
+
+		// Validation immédiate
+		handleFieldValidation(fieldName, value);
 	};
 
 	useEffect(() => {
@@ -125,17 +182,31 @@ export default function Login() {
 
 	const handleRegisterSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setIsLoading(true);
 
-		// Validation côté client
+		// Validation côté client AVANT soumission
 		const validation = validateRegisterForm(registerData);
 		if (!validation.isValid) {
 			setValidationErrors(validation.errors);
-			const firstError = Object.values(validation.errors)[0];
-			toast.error(firstError);
-			setIsLoading(false);
-			return;
+
+			// Afficher TOUTES les erreurs dans le toast
+			const errorMessages = Object.values(validation.errors).filter(
+				(msg) => msg !== ""
+			);
+			if (errorMessages.length > 0) {
+				toast.error(`Erreurs à corriger : ${errorMessages.join(", ")}`);
+			}
+			return; // Bloquer la soumission
 		}
+
+		// Vérifier qu'il n'y a plus d'erreurs de validation
+		if (
+			Object.keys(validationErrors).some((key) => validationErrors[key] !== "")
+		) {
+			toast.error("Veuillez corriger les erreurs avant de continuer");
+			return; // Bloquer la soumission
+		}
+
+		setIsLoading(true);
 
 		try {
 			const response = await fetch("/api/auth/register", {
@@ -208,6 +279,31 @@ export default function Login() {
 	return (
 		<>
 			<style jsx>{`
+				.error-message {
+					color: #dc2626;
+					font-size: 0.875rem;
+					margin-top: 0.5rem;
+					font-weight: 500;
+					text-align: left;
+					animation: fadeIn 0.3s ease-in;
+				}
+
+				.input-error {
+					border-color: #dc2626 !important;
+					box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+				}
+
+				@keyframes fadeIn {
+					from {
+						opacity: 0;
+						transform: translateY(-5px);
+					}
+					to {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
+
 				@media screen and (max-width: 650px) {
 					.login-section {
 						margin-top: 2rem;
@@ -389,33 +485,49 @@ export default function Login() {
 										placeholder="Email"
 										value={loginData.email}
 										onChange={(e) => {
-											setLoginData({ ...loginData, email: e.target.value });
-											handleFieldValidation("email", e.target.value);
+											handleFieldChange("email", e.target.value);
 										}}
 										required
 										className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
-											validationErrors.email
+											validationErrors.email && touchedFields.email
 												? "input-error border-red-500"
 												: "border-rose-medium focus:border-rose-dark-2"
 										}`}
 									/>
 									<i className="bx bxs-user absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
-									{validationErrors.email && (
-										<p className="error-message">{validationErrors.email}</p>
+									{validationErrors.email && touchedFields.email && (
+										<p className="error-message">⚠️ {validationErrors.email}</p>
 									)}
 								</div>
 								<div className="relative my-8">
-									<input
-										type="password"
-										placeholder="Mot de passe"
-										value={loginData.password}
-										onChange={(e) =>
-											setLoginData({ ...loginData, password: e.target.value })
-										}
-										required
-										className="w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border border-rose-medium outline-none text-base text-logo font-medium placeholder-nude-dark focus:border-rose-dark-2 focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300"
-									/>
-									<i className="bx bxs-lock absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
+									<div className="relative">
+										<input
+											type={showLoginPassword ? "text" : "password"}
+											placeholder="Mot de passe"
+											value={loginData.password}
+											onChange={(e) => {
+												handleFieldChange("password", e.target.value);
+											}}
+											required
+											className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
+												validationErrors.password && touchedFields.password
+													? "input-error border-red-500"
+													: "border-rose-medium focus:border-rose-dark-2"
+											}`}
+										/>
+										<button
+											type="button"
+											onClick={() => setShowLoginPassword(!showLoginPassword)}
+											className="absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark hover:text-logo transition-colors duration-300 cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
+										>
+											{showLoginPassword ? <FaRegEyeSlash /> : <IoEyeSharp />}
+										</button>
+									</div>
+									{validationErrors.password && touchedFields.password && (
+										<p className="error-message">
+											⚠️ {validationErrors.password}
+										</p>
+									)}
 								</div>
 								<div className="-mt-4 mb-4">
 									<button
@@ -428,7 +540,11 @@ export default function Login() {
 								</div>
 								<button
 									type="submit"
-									disabled={isLoading}
+									disabled={
+										isLoading ||
+										(validationErrors.email !== "" && touchedFields.email) ||
+										(validationErrors.password !== "" && touchedFields.password)
+									}
 									className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
 								>
 									{isLoading ? "Connexion..." : "Se connecter"}
@@ -532,21 +648,19 @@ export default function Login() {
 									placeholder="Prénom"
 									value={registerData.firstName}
 									onChange={(e) => {
-										setRegisterData({
-											...registerData,
-											firstName: e.target.value,
-										});
-										handleFieldValidation("firstName", e.target.value);
+										handleFieldChange("firstName", e.target.value);
 									}}
 									className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
-										validationErrors.firstName
+										validationErrors.firstName && touchedFields.firstName
 											? "input-error border-red-500"
 											: "border-rose-medium focus:border-rose-dark-2"
 									}`}
 								/>
 								<i className="bx bxs-user absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
-								{validationErrors.firstName && (
-									<p className="error-message">{validationErrors.firstName}</p>
+								{validationErrors.firstName && touchedFields.firstName && (
+									<p className="error-message">
+										⚠️ {validationErrors.firstName}
+									</p>
 								)}
 							</div>
 							<div className="relative my-6">
@@ -555,21 +669,19 @@ export default function Login() {
 									placeholder="Nom"
 									value={registerData.lastName}
 									onChange={(e) => {
-										setRegisterData({
-											...registerData,
-											lastName: e.target.value,
-										});
-										handleFieldValidation("lastName", e.target.value);
+										handleFieldChange("lastName", e.target.value);
 									}}
 									className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
-										validationErrors.lastName
+										validationErrors.lastName && touchedFields.lastName
 											? "input-error border-red-500"
 											: "border-rose-medium focus:border-rose-dark-2"
 									}`}
 								/>
 								<i className="bx bxs-user absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
-								{validationErrors.lastName && (
-									<p className="error-message">{validationErrors.lastName}</p>
+								{validationErrors.lastName && touchedFields.lastName && (
+									<p className="error-message">
+										⚠️ {validationErrors.lastName}
+									</p>
 								)}
 							</div>
 							<div className="relative my-6">
@@ -578,49 +690,63 @@ export default function Login() {
 									placeholder="Email"
 									value={registerData.email}
 									onChange={(e) => {
-										setRegisterData({ ...registerData, email: e.target.value });
-										handleFieldValidation("email", e.target.value);
+										handleFieldChange("registerEmail", e.target.value);
 									}}
 									required
 									className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
-										validationErrors.email
+										validationErrors.email && touchedFields.registerEmail
 											? "input-error border-red-500"
 											: "border-rose-medium focus:border-rose-dark-2"
 									}`}
 								/>
 								<i className="bx bxs-envelope absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
-								{validationErrors.email && (
-									<p className="error-message">{validationErrors.email}</p>
+								{validationErrors.email && touchedFields.registerEmail && (
+									<p className="error-message">⚠️ {validationErrors.email}</p>
 								)}
 							</div>
 							<div className="relative my-6">
-								<input
-									type="password"
-									placeholder="Mot de passe (min. 8 caractères)"
-									value={registerData.password}
-									onChange={(e) => {
-										setRegisterData({
-											...registerData,
-											password: e.target.value,
-										});
-										handleFieldValidation("password", e.target.value);
-									}}
-									required
-									minLength={8}
-									className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
-										validationErrors.password
-											? "input-error border-red-500"
-											: "border-rose-medium focus:border-rose-dark-2"
-									}`}
-								/>
-								<i className="bx bxs-lock absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark"></i>
-								{validationErrors.password && (
-									<p className="error-message">{validationErrors.password}</p>
-								)}
+								<div className="relative">
+									<input
+										type={showRegisterPassword ? "text" : "password"}
+										placeholder="Mot de passe"
+										value={registerData.password}
+										onChange={(e) => {
+											handleFieldChange("registerPassword", e.target.value);
+										}}
+										required
+										minLength={8}
+										className={`w-full py-3 px-5 pr-12 bg-rose-light-2 rounded-lg border outline-none text-base text-logo font-medium placeholder-nude-dark focus:ring-2 focus:ring-rose-dark-2 focus:ring-opacity-50 transition-all duration-300 ${
+											validationErrors.registerPassword &&
+											touchedFields.registerPassword
+												? "input-error border-red-500"
+												: "border-rose-medium focus:border-rose-dark-2"
+										}`}
+									/>
+									<button
+										type="button"
+										onClick={() =>
+											setShowRegisterPassword(!showRegisterPassword)
+										}
+										className="absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark hover:text-logo transition-colors duration-300 cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
+									>
+										{showRegisterPassword ? <FaRegEyeSlash /> : <IoEyeSharp />}
+									</button>
+								</div>
+								{validationErrors.registerPassword &&
+									touchedFields.registerPassword && (
+										<p className="error-message">
+											⚠️ {validationErrors.registerPassword}
+										</p>
+									)}
 							</div>
 							<button
 								type="submit"
-								disabled={isLoading}
+								disabled={
+									isLoading ||
+									Object.keys(validationErrors).some(
+										(key) => validationErrors[key] !== "" && touchedFields[key]
+									)
+								}
 								className="w-full h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								{isLoading ? "Inscription..." : "S'inscrire"}

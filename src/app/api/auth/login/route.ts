@@ -59,6 +59,12 @@ export async function POST(request: NextRequest) {
 			include: { profile: true },
 		});
 
+		console.log("🔍 DEBUG LOGIN - User trouvé:", user ? "OUI" : "NON");
+		if (user) {
+			console.log("🔍 DEBUG LOGIN - Email vérifié:", !!user.emailVerified);
+			console.log("🔍 DEBUG LOGIN - A un mot de passe:", !!user.password);
+		}
+
 		if (!user || !user.password) {
 			logSecurityEvent(
 				"LOGIN_FAILED",
@@ -123,7 +129,6 @@ export async function POST(request: NextRequest) {
 						? `${user.profile.firstName} ${user.profile.lastName}`
 						: user.email,
 				iat: Math.floor(Date.now() / 1000),
-				exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60, // 7 jours
 			},
 			process.env.NEXTAUTH_SECRET!,
 			{

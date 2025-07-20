@@ -10,9 +10,9 @@ export async function GET(request: NextRequest) {
 		const token = searchParams.get("token");
 
 		if (!token) {
-			return NextResponse.redirect(
-				new URL("/login?error=token_missing", request.url)
-			);
+					return NextResponse.redirect(
+			new URL("/login?error=token_missing", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
+		);
 		}
 
 		// Vérifier le token
@@ -21,9 +21,9 @@ export async function GET(request: NextRequest) {
 		});
 
 		if (!verificationToken) {
-			return NextResponse.redirect(
-				new URL("/login?error=token_invalid", request.url)
-			);
+					return NextResponse.redirect(
+			new URL("/login?error=token_invalid", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
+		);
 		}
 
 		// Vérifier si le token n'a pas expiré
@@ -32,29 +32,34 @@ export async function GET(request: NextRequest) {
 			await prisma.verificationToken.delete({
 				where: { token },
 			});
-			return NextResponse.redirect(
-				new URL("/login?error=token_expired", request.url)
-			);
+					return NextResponse.redirect(
+			new URL("/login?error=token_expired", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
+		);
 		}
 
 		// Marquer l'email comme vérifié
-		await prisma.user.update({
+		const updatedUser = await prisma.user.update({
 			where: { email: verificationToken.identifier },
 			data: { emailVerified: new Date() },
 		});
+
+		console.log("✅ EMAIL VÉRIFIÉ - User:", updatedUser.email, "Vérifié:", !!updatedUser.emailVerified);
 
 		// Supprimer le token de vérification
 		await prisma.verificationToken.delete({
 			where: { token },
 		});
 
-		return NextResponse.redirect(
-			new URL("/login?success=email_verified", request.url)
+		// Redirection avec remplacement de l'historique pour éviter les onglets multiples
+		const response = NextResponse.redirect(
+			new URL("/login?success=email_verified", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
 		);
+		response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+		return response;
 	} catch (error) {
 		console.error("Erreur lors de la vérification de l'email:", error);
 		return NextResponse.redirect(
-			new URL("/login?error=server_error", request.url)
+			new URL("/login?error=server_error", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
 		);
 	}
 }
@@ -118,9 +123,10 @@ export async function POST(request: NextRequest) {
 
 async function sendVerificationEmail(email: string, token: string) {
 	try {
-		const verificationUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify-email?token=${token}`;
+		const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+		const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}`;
 
-		const response = await fetch(`${process.env.NEXTAUTH_URL}/api/send-email`, {
+		const response = await fetch(`${baseUrl}/api/send-email`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

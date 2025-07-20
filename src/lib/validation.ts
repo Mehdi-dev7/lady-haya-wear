@@ -28,12 +28,39 @@ export const validatePassword = (
 			message: "Le mot de passe doit contenir au moins 8 caractères",
 		};
 	}
-	if (!PASSWORD_REGEX.test(password)) {
+
+	// Vérifications détaillées
+	const hasLowercase = /[a-z]/.test(password);
+	const hasUppercase = /[A-Z]/.test(password);
+	const hasNumber = /\d/.test(password);
+	const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+	if (!hasLowercase) {
 		return {
 			isValid: false,
-			message: "Le mot de passe doit contenir une maj et un chiffre",
+			message: "Le mot de passe doit contenir au moins une minuscule (a-z)",
 		};
 	}
+	if (!hasUppercase) {
+		return {
+			isValid: false,
+			message: "Le mot de passe doit contenir au moins une majuscule (A-Z)",
+		};
+	}
+	if (!hasNumber) {
+		return {
+			isValid: false,
+			message: "Le mot de passe doit contenir au moins un chiffre (0-9)",
+		};
+	}
+	if (!hasSpecialChar) {
+		return {
+			isValid: false,
+			message:
+				"Le mot de passe doit contenir au moins un caractère spécial (!@#$%^&*)",
+		};
+	}
+
 	return { isValid: true, message: "" };
 };
 
@@ -61,6 +88,16 @@ export const validateName = (
 			isValid: false,
 			message: `${fieldName} ne peut contenir que des lettres`,
 		};
+	}
+	return { isValid: true, message: "" };
+};
+
+// Validation simple du mot de passe pour la connexion
+export const validateLoginPassword = (
+	password: string
+): { isValid: boolean; message: string } => {
+	if (!password) {
+		return { isValid: false, message: "Mot de passe requis" };
 	}
 	return { isValid: true, message: "" };
 };
@@ -104,6 +141,7 @@ export const getFieldValidation = (fieldName: string, value: string) => {
 		case "email":
 			return validateEmail(value);
 		case "password":
+			// Validation complète du mot de passe pour l'inscription
 			return validatePassword(value);
 		case "firstName":
 			return validateName(value, "Le prénom");
