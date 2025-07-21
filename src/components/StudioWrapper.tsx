@@ -12,8 +12,10 @@ export default function StudioWrapper({ children }: StudioWrapperProps) {
 	const pathname = usePathname();
 	const isStudio = pathname.startsWith("/studio");
 	const isCheckout = pathname.startsWith("/checkout");
+	const isDashboard = pathname.startsWith("/dashboard");
+	const isAdminLogin = pathname.startsWith("/admin-login");
 
-	if (isStudio || isCheckout) {
+	if (isStudio || isCheckout || isDashboard || isAdminLogin) {
 		return <>{children}</>;
 	}
 

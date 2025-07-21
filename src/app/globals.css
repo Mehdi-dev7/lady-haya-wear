@@ -427,3 +427,10 @@ body {
 *::after {
 	box-sizing: inherit;
 }
+
+/* Variables CSS pour shadcn/ui - Simplifiées */
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
