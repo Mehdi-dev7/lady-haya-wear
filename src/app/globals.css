@@ -267,6 +267,9 @@ body.navbar-visible {
 	.hover\:bg-rose-light-2:hover {
 		background-color: var(--color-rose-light-2);
 	}
+	.hover\:bg-rose-light:hover {
+		background-color: var(--color-rose-light);
+	}
 	.hover\:bg-logo:hover {
 		background-color: var(--color-logo);
 	}
@@ -430,7 +433,7 @@ body {
 
 /* Variables CSS pour shadcn/ui - Simplifiées */
 @layer base {
-  :root {
-    --radius: 0.5rem;
-  }
+	:root {
+		--radius: 0.5rem;
+	}
 }
