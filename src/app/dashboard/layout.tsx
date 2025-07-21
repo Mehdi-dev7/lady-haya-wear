@@ -2,6 +2,8 @@
 
 import Sidebar from "@/components/Dashboard/Sidebar";
 import React, { useState } from "react";
+import { LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardLayout({
 	children,
@@ -12,6 +14,20 @@ export default function DashboardLayout({
 
 	const toggleSidebar = () => {
 		setIsSidebarCollapsed(!isSidebarCollapsed);
+	};
+
+	const handleLogout = async () => {
+		try {
+			const response = await fetch("/api/admin/logout", {
+				method: "POST",
+			});
+
+			if (response.ok) {
+				window.location.href = "/admin-login";
+			}
+		} catch (error) {
+			console.error("Erreur lors de la déconnexion:", error);
+		}
 	};
 
 	return (
@@ -39,11 +55,12 @@ export default function DashboardLayout({
 
 			{/* Contenu principal */}
 			<div className="flex-1 flex flex-col overflow-hidden h-full">
-				{/* Header mobile */}
-				<div className="md:hidden bg-white border-b border-gray-200 p-4">
+				{/* Header */}
+				<div className="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+					{/* Menu mobile */}
 					<button
 						onClick={toggleSidebar}
-						className="p-2 rounded-md text-nude-dark hover:text-nude-dark-2 hover:bg-rose-light-2"
+						className="md:hidden p-2 rounded-md text-nude-dark hover:text-nude-dark-2 hover:bg-rose-light-2"
 					>
 						<svg
 							className="h-6 w-6"
@@ -59,6 +76,22 @@ export default function DashboardLayout({
 							/>
 						</svg>
 					</button>
+
+					{/* Titre du dashboard */}
+					<div className="hidden md:block">
+						<h1 className="text-xl font-semibold text-nude-dark">Dashboard Admin</h1>
+					</div>
+
+					{/* Bouton de déconnexion */}
+					<Button
+						onClick={handleLogout}
+						variant="outline"
+						size="sm"
+						className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer"
+					>
+						<LogOut className="h-4 w-4" />
+						<span className="hidden sm:inline">Déconnexion</span>
+					</Button>
 				</div>
 
 				{/* Contenu */}

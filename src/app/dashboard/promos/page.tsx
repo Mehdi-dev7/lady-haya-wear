@@ -1,5 +1,6 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Toast } from "@/components/ui/toast";
@@ -286,6 +287,10 @@ export default function PromosPage() {
 			});
 		}
 	};
+
+	if (loading) {
+		return <Loader />;
+	}
 
 	return (
 		<div className="space-y-6">

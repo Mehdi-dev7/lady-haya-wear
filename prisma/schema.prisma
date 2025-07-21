@@ -138,6 +138,11 @@ model Order {
   orderNumber     String      @unique
   status          OrderStatus @default(PENDING)
   
+  // Informations client
+  customerEmail   String      // Email du client
+  customerName    String      // Nom du client
+  customerPhone   String?     // Téléphone du client
+  
   // Prix
   subtotal        Float
   shippingCost    Float       @default(0)
@@ -148,9 +153,16 @@ model Order {
   promoCodeId     String?
   promoDiscount   Float       @default(0)
   
+  // Paiement
+  paymentMethod   String?     // Méthode de paiement
+  paymentStatus   PaymentStatus @default(PENDING)
+  
   // Adresses
   billingAddressId  String?
   shippingAddressId String?
+  
+  // Notes
+  notes           String?     // Notes de commande
   
   // Dates
   createdAt       DateTime    @default(now())
@@ -180,6 +192,21 @@ model OrderItem {
   
   order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
+
+// === ADMINISTRATEURS ===
+model Admin {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  password        String   // Mot de passe hashé
+  name            String
+  role            AdminRole @default(ADMIN)
+  isActive        Boolean  @default(true)
+  lastLoginAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+
 
 // === CODES PROMO ===
 model PromoCode {
@@ -225,4 +252,18 @@ enum PromoType {
   PERCENTAGE    // Réduction en pourcentage
   FIXED         // Réduction fixe en euros
   FREE_SHIPPING // Livraison gratuite
+}
+
+enum AdminRole {
+  SUPER_ADMIN   // Administrateur principal
+  ADMIN         // Administrateur standard
+  MANAGER       // Manager
+}
+
+enum PaymentStatus {
+  PENDING       // En attente de paiement
+  PAID          // Payé
+  FAILED        // Échec du paiement
+  REFUNDED      // Remboursé
+  PARTIALLY_REFUNDED // Partiellement remboursé
 }

@@ -11,6 +11,7 @@ import {
 	Ticket,
 	Users,
 	X,
+	UserCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -42,6 +43,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 			icon: Ticket,
 			current: pathname === "/dashboard/promos",
 		},
+		{
+			name: "Administrateurs",
+			href: "/dashboard/admins",
+			icon: UserCheck,
+			current: pathname === "/dashboard/admins",
+		},
 	];
 
 	return (
@@ -54,7 +61,9 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 			{/* Header */}
 			<div className="flex items-center justify-between p-4 border-b border-rose-medium">
 				{!isCollapsed && (
-					<h2 className="text-lg lg:text-2xl font-semibold text-logo">Dashboard</h2>
+					<h2 className="text-lg lg:text-2xl font-semibold text-logo">
+						Dashboard
+					</h2>
 				)}
 				<Button
 					variant="ghost"
