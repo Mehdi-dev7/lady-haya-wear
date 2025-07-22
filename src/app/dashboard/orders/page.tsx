@@ -60,6 +60,20 @@ export default function OrdersPage() {
 	const [sortBy, setSortBy] = useState("");
 	const [sortByAmount, setSortByAmount] = useState("");
 	const [openStatusMenu, setOpenStatusMenu] = useState<string | null>(null);
+	const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
+
+	// Fonction pour basculer l'expansion d'une commande
+	const toggleOrderExpansion = (orderId: string) => {
+		setExpandedOrders((prev) => {
+			const newSet = new Set(prev);
+			if (newSet.has(orderId)) {
+				newSet.delete(orderId);
+			} else {
+				newSet.add(orderId);
+			}
+			return newSet;
+		});
+	};
 
 	// Fonction de chargement des commandes (sans recherche)
 	const fetchOrders = async (status: string, page: number) => {
@@ -542,38 +556,34 @@ export default function OrdersPage() {
 									order.paymentStatus
 								);
 								const StatusIcon = statusInfo.icon;
+								const isExpanded = expandedOrders.has(order.id);
 
 								return (
 									<div
 										key={order.id}
 										className="border rounded-lg p-3 hover:shadow-md transition-shadow"
 									>
-										<div className="flex justify-between items-start mb-3">
+										{/* En-tête compacte - toujours visible */}
+										<div className="flex justify-between items-center mb-2">
 											<div className="flex-1">
-												<div className="flex items-center gap-3 mb-2">
-													<h3 className="font-semibold text-lg">
+												<div className="flex items-center gap-3 mb-1">
+													<h3 className="font-semibold lg:text-lg text-sm">
 														{order.orderNumber}
 													</h3>
 													<span
 														className={`px-2 py-1 text-xs font-medium rounded-full ${statusInfo.color}`}
 													>
-														<StatusIcon className="h-3 w-3 inline mr-1" />
+														<StatusIcon className="lg:h-3 lg:w-3 h-2 w-2 inline mr-1" />
 														{statusInfo.label}
 													</span>
 												</div>
-												<p className="text-gray-600">{order.customerName}</p>
-												<p className="text-sm text-gray-500">
-													{order.customerEmail}
+												<p className="text-gray-600 font-medium lg:text-base text-sm">
+													{order.customerName}
 												</p>
-												{order.customerPhone && (
-													<p className="text-sm text-gray-500">
-														{order.customerPhone}
-													</p>
-												)}
 											</div>
 											<div className="text-right">
 												<div className="flex items-center justify-end gap-2 mb-1">
-													<p className="text-lg font-bold text-logo">
+													<p className="lg:text-lg text-md font-bold text-logo">
 														<Euro className="h-4 w-4 inline mr-1" />
 														{order.total.toFixed(2)}
 													</p>
@@ -589,32 +599,31 @@ export default function OrdersPage() {
 											</div>
 										</div>
 
-										{/* Produits */}
-										<div className="mb-3">
-											<p className="text-sm font-medium text-gray-700 mb-1">
-												Produits :
-											</p>
-											<div className="space-y-0.5">
-												{order.items.map((item) => (
-													<div
-														key={item.id}
-														className="flex justify-between text-sm"
-													>
-														<span>
-															{item.productName} x{item.quantity}
-															{item.colorName && ` (${item.colorName})`}
-															{item.sizeName && ` - ${item.sizeName}`}
-														</span>
-														<span className="font-medium">
-															€{item.totalPrice.toFixed(2)}
-														</span>
-													</div>
-												))}
-											</div>
-										</div>
+										{/* Bouton d'expansion et menu de statut */}
+										<div className="flex justify-between items-center">
+											{/* Bouton d'expansion */}
+											<button
+												onClick={() => toggleOrderExpansion(order.id)}
+												className="flex items-center gap-1 text-sm text-nude-dark hover:text-nude-dark-2 transition-colors underline cursor-pointer"
+											>
+												<span>
+													{isExpanded ? "Masquer" : "Voir"} les détails
+												</span>
+												<svg
+													className={`w-4 h-4 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+													fill="none"
+													stroke="currentColor"
+													viewBox="0 0 24 24"
+												>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														strokeWidth={2}
+														d="M19 9l-7 7-7-7"
+													/>
+												</svg>
+											</button>
 
-										{/* Actions et Notes */}
-										<div className="flex justify-between items-center mt-3">
 											{/* Menu déroulant personnalisé pour changer le statut */}
 											<div className="relative">
 												<button
@@ -624,7 +633,7 @@ export default function OrdersPage() {
 															openStatusMenu === order.id ? null : order.id
 														)
 													}
-													className="appearance-none px-4 py-2 text-sm border-2 border-nude-medium rounded-2xl focus:border-nude-dark focus:outline-none cursor-pointer bg-white hover:border-nude-dark transition-colors pr-10 flex items-center justify-between min-w-[180px]"
+													className="appearance-none px-3 py-1.5 lg:px-4 lg:py-2 text-xs lg:text-sm border-2 border-nude-medium rounded-2xl focus:border-nude-dark focus:outline-none cursor-pointer bg-white hover:border-nude-dark transition-colors pr-8 lg:pr-10 flex items-center justify-between min-w-[140px] lg:min-w-[180px]"
 													style={{
 														backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
 														backgroundPosition: "right 0.5rem center",
@@ -680,14 +689,57 @@ export default function OrdersPage() {
 													/>
 												)}
 											</div>
-
-											{/* Notes */}
-											{order.notes && (
-												<p className="text-sm text-gray-600 italic">
-													Note: {order.notes}
-												</p>
-											)}
 										</div>
+
+										{/* Contenu détaillé - visible seulement si expandé */}
+										{isExpanded && (
+											<div className=" pt-2 border-t border-gray-200">
+												{/* Informations client détaillées */}
+												<div className="mb-3">
+													<p className="text-sm text-gray-500 mb-1">
+														{order.customerEmail}
+													</p>
+													{order.customerPhone && (
+														<p className="text-sm text-gray-500">
+															{order.customerPhone}
+														</p>
+													)}
+												</div>
+
+												{/* Produits */}
+												<div className="mb-3">
+													<p className="text-sm font-medium text-gray-700 mb-1">
+														Produits :
+													</p>
+													<div className="space-y-0.5">
+														{order.items.map((item) => (
+															<div
+																key={item.id}
+																className="flex justify-between text-sm"
+															>
+																<span>
+																	{item.productName} x{item.quantity}
+																	{item.colorName && ` (${item.colorName})`}
+																	{item.sizeName && ` - ${item.sizeName}`}
+																</span>
+																<span className="font-medium">
+																	€{item.totalPrice.toFixed(2)}
+																</span>
+															</div>
+														))}
+													</div>
+												</div>
+
+												{/* Notes */}
+												{order.notes && (
+													<div className="mt-2">
+														<p className="text-sm text-gray-600 italic">
+															Note: {order.notes}
+														</p>
+													</div>
+												)}
+											</div>
+										)}
 									</div>
 								);
 							})}
