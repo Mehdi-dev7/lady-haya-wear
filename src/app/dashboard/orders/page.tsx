@@ -48,7 +48,8 @@ interface OrderStats {
 }
 
 export default function OrdersPage() {
-	const [orders, setOrders] = useState<Order[]>([]);
+	const [allOrders, setAllOrders] = useState<Order[]>([]); // Toutes les commandes
+	const [orders, setOrders] = useState<Order[]>([]); // Commandes filtrées
 	const [loading, setLoading] = useState(true);
 	const [stats, setStats] = useState<OrderStats>({});
 	const [selectedStatus, setSelectedStatus] = useState<string>("all");
@@ -60,15 +61,15 @@ export default function OrdersPage() {
 	const [sortByAmount, setSortByAmount] = useState("");
 	const [openStatusMenu, setOpenStatusMenu] = useState<string | null>(null);
 
-	// Charger les commandes
-	const loadOrders = async () => {
+	// Fonction de chargement des commandes (sans recherche)
+	const fetchOrders = async (status: string, page: number) => {
 		try {
 			setLoading(true);
 			const params = new URLSearchParams({
-				status: selectedStatus,
-				search: searchTerm,
-				page: currentPage.toString(),
-				limit: "10",
+				status,
+				search: "",
+				page: page.toString(),
+				limit: "50", // Charger plus de données pour le filtrage local
 			});
 
 			const response = await fetch(`/api/admin/orders?${params}`);
@@ -98,7 +99,7 @@ export default function OrdersPage() {
 					return orderA - orderB;
 				});
 
-				setOrders(sortedOrders);
+				setAllOrders(sortedOrders);
 				setStats(data.stats);
 				setTotalPages(data.pagination.totalPages);
 			} else {
@@ -112,9 +113,65 @@ export default function OrdersPage() {
 		}
 	};
 
+	// Appliquer les filtres localement (comme dans Filter.tsx)
 	useEffect(() => {
-		loadOrders();
-	}, [selectedStatus, searchTerm, currentPage]);
+		let filteredOrders = [...allOrders];
+
+		// Filtre par recherche (numéro de commande, nom client, email)
+		if (searchTerm) {
+			filteredOrders = filteredOrders.filter(
+				(order) =>
+					order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())
+			);
+		}
+
+		// Filtre par statut (déjà fait côté serveur, mais on peut refiltrer localement)
+		if (selectedStatus && selectedStatus !== "all") {
+			filteredOrders = filteredOrders.filter(
+				(order) => order.status === selectedStatus
+			);
+		}
+
+		// Tri local
+		if (sortBy) {
+			filteredOrders.sort((a, b) => {
+				switch (sortBy) {
+					case "newest":
+						return (
+							new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+						);
+					case "oldest":
+						return (
+							new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+						);
+					default:
+						return 0;
+				}
+			});
+		}
+
+		if (sortByAmount) {
+			filteredOrders.sort((a, b) => {
+				switch (sortByAmount) {
+					case "amount-asc":
+						return a.total - b.total;
+					case "amount-desc":
+						return b.total - a.total;
+					default:
+						return 0;
+				}
+			});
+		}
+
+		setOrders(filteredOrders);
+	}, [allOrders, searchTerm, selectedStatus, sortBy, sortByAmount]);
+
+	// Charger les données quand les filtres de base changent
+	useEffect(() => {
+		fetchOrders(selectedStatus, currentPage);
+	}, [selectedStatus, currentPage]);
 
 	// Réinitialiser tous les filtres
 	const clearAllFilters = () => {
@@ -122,6 +179,7 @@ export default function OrdersPage() {
 		setSelectedStatus("all");
 		setSortBy("");
 		setSortByAmount("");
+		setCurrentPage(1);
 	};
 
 	// Vérifier s'il y a des filtres actifs
@@ -139,7 +197,12 @@ export default function OrdersPage() {
 
 			if (response.ok) {
 				toast.success("Statut de la commande mis à jour");
-				loadOrders(); // Recharger les données
+				// Mettre à jour localement
+				setAllOrders((prevOrders) =>
+					prevOrders.map((order) =>
+						order.id === orderId ? { ...order, status: newStatus } : order
+					)
+				);
 			} else {
 				const data = await response.json();
 				toast.error(data.error || "Erreur lors de la mise à jour");
@@ -350,6 +413,11 @@ export default function OrdersPage() {
 							onChange={(e) => setSearchTerm(e.target.value)}
 							className="w-2/3 md:w-1/2 lg:w-1/3 pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors"
 						/>
+						{loading && (
+							<div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+								<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-nude-dark"></div>
+							</div>
+						)}
 					</div>
 
 					<div className="flex gap-2 lg:-ml-12">

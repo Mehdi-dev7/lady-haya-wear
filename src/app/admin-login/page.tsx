@@ -58,13 +58,11 @@ export default function AdminLoginPage() {
 		<div className="min-h-screen bg-beige-light flex items-center justify-center p-4">
 			<div className="w-full max-w-md">
 				{/* Logo et titre */}
-				<div className="flex flex-row items-center">
-					<div className="inline-flex items-center justify-center w-16 h-16 ml-20 bg-nude-dark rounded-full mb-6 shadow-lg">
-						<Lock className="h-8 w-8 text-beige-light" />
+				<div className="flex flex-col items-center justify-center">
+					<div className="inline-flex items-center justify-center lg:w-16 lg:h-16 w-12 h-12 bg-nude-dark rounded-full mb-4 shadow-lg">
+						<Lock className="lg:h-8 lg:w-8 h-6 w-6 text-beige-light" />
 					</div>
-					<h1 className="text-4xl font-alex-brush text-logo ml-6 mb-2">
-						Lady Haya
-					</h1>
+					<h1 className="text-4xl font-alex-brush text-logo mb-2">Lady Haya</h1>
 				</div>
 				<div className="flex flex-col items-center">
 					<p className="text-xl font-semibold text-nude-dark mb-1">

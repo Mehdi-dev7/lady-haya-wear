@@ -45,7 +45,7 @@ export default function DashboardLayout({
       `}
 			>
 				<div
-					className="fixed inset-0 bg-black bg-opacity-50"
+					className="fixed inset-0 bg-black/40 backdrop-blur-sm"
 					onClick={toggleSidebar}
 				/>
 				<div className="fixed left-0 top-0 h-full">
@@ -60,7 +60,7 @@ export default function DashboardLayout({
 					{/* Menu mobile */}
 					<button
 						onClick={toggleSidebar}
-						className="md:hidden p-2 rounded-md text-nude-dark hover:text-nude-dark-2 hover:bg-rose-light-2"
+						className="md:hidden p-2 rounded-md text-nude-dark hover:text-nude-dark-2 hover:bg-rose-light-2 cursor-pointer"
 					>
 						<svg
 							className="h-6 w-6"
