@@ -44,7 +44,7 @@ export default function Navbar() {
 	return (
 		<>
 			<div
-				className={`h-[68px] px-4 md:px-8 lg:px-8 xl:px-18 2xl:px-22 bg-rose-light fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+				className={`xl:h-[68px] h-[72px] px-4 md:px-8 lg:px-8 xl:px-18 2xl:px-22 bg-rose-light fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
 					isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
 				}`}
 			>

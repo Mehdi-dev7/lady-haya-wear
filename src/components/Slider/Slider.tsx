@@ -38,7 +38,7 @@ export default function Slider({ featuredCategories }: SliderProps) {
 						key={category._id}
 					>
 						{/* TEXT CONTAINER */}
-						<div className="h-1/3 lg:w-1/2 lg:h-full w-full flex flex-col items-center justify-center gap-3 lg:gap-8 2xl:gap-12 text-center  lg:pt-0">
+						<div className="h-1/3 lg:w-1/2 lg:h-full w-full flex flex-col items-center justify-center gap-3 lg:gap-8 2xl:gap-12 text-center mt-10 lg:mt-0 lg:pt-0">
 							<Image
 								src="/assets/logo-haya.png"
 								alt="logo"
@@ -86,7 +86,7 @@ export default function Slider({ featuredCategories }: SliderProps) {
 								<Link
 									href={`/collections/${category.slug?.current || category._id}`}
 								>
-									<button className="rounded-md py-2 px-2 md:px-3  text-nude-light text-base bg-logo cursor-pointer hover:bg-nude-dark-2 hover:scale-105 transition-all duration-300">
+									<button className="rounded-md py-2 px-2 md:px-3 mr-4 md:mr-0 text-nude-light text-base bg-logo cursor-pointer hover:bg-nude-dark-2 hover:scale-105 transition-all duration-300">
 										Voir la collection
 									</button>
 								</Link>

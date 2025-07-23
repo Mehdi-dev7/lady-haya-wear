@@ -4,7 +4,7 @@ import { FaTiktok } from "react-icons/fa6";
 
 export default function ContactRight() {
 	return (
-		<div className="flex flex-col items-center justify-center gap-8 w-full">
+		<div className="flex flex-col items-center justify-center gap-4 sm:gap-8 w-full">
 			<motion.div
 				initial={{ opacity: 0, y: -30 }}
 				whileInView={{ opacity: 1, y: 0 }}
@@ -26,7 +26,7 @@ export default function ContactRight() {
 				<h3 className="text-3xl font-alex-brush text-logo mb-4 text-center">
 					Email
 				</h3>
-				<div className="flex justify-center mb-8">
+				<div className="flex justify-center mb-4 sm:mb-8">
 					<a
 						href="mailto:contact@ladyhaya.fr"
 						className="flex items-center gap-3 p-3 bg-nude-dark rounded-full hover:scale-105 hover:shadow-lg transition-all duration-300"
@@ -46,7 +46,7 @@ export default function ContactRight() {
 				<h3 className="text-3xl font-alex-brush text-logo mb-6 text-center">
 					Suivez-nous
 				</h3>
-				<div className="flex gap-4 justify-center flex-wrap">
+				<div className="flex gap-4 justify-center flex-wrap mb-4">
 					
 					<a
 						href="https://instagram.com/lady.haya_wear"

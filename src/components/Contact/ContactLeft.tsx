@@ -13,7 +13,7 @@ export default function ContactLeft() {
 				viewport={{ amount: 0.3, once: true }}
 				transition={{ duration: 0.6 }}
 			>
-				<h2 className="text-3xl md:text-4xl font-alex-brush text-logo mb-6">
+				<h2 className="text-3xl md:text-4xl font-semibold font-balqis text-logo mb-6">
 					Formulaire de contact
 				</h2>
 				<p className="text-nude-dark text-lg leading-relaxed">

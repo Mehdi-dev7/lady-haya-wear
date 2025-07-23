@@ -466,7 +466,7 @@ export default function Login() {
 			`}</style>
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16 min-h-screen flex items-center justify-center login-section bg-[#fae4e4]/75">
 				<div
-					className={`login-container relative w-[850px] h-[550px] bg-beige-light rounded-[30px] shadow-lg overflow-hidden ${isActive ? "active" : ""}`}
+					className={`login-container md:mt-10 2xl:mt-0 relative w-[850px] h-[550px] bg-beige-light rounded-[30px] shadow-lg overflow-hidden ${isActive ? "active" : ""}`}
 				>
 					{/* Login Form */}
 					<div

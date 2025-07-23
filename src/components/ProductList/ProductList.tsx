@@ -67,7 +67,7 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 				</h2>
 			</div>
 			{featuredProducts.length > 0 ? (
-				<div className="flex gap-x-8 gap-y-16 justify-start flex-wrap">
+				<div className="flex gap-x-8 gap-y-8 sm:gap-y-16 justify-start flex-wrap">
 					{featuredProducts.map((product, index) => (
 						<Link
 							key={product._id}

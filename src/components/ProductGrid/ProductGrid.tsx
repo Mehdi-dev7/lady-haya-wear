@@ -96,7 +96,7 @@ export default function ProductGrid({
 			)}
 
 			{filteredProducts.length > 0 ? (
-				<div className="flex gap-x-6 gap-y-16 justify-start flex-wrap">
+				<div className="flex gap-x-6 gap-y-8 sm:gap-y-16 justify-start flex-wrap">
 					{filteredProducts.map((product, index) => (
 						<Link
 							key={product._id}
