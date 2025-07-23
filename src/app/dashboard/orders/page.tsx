@@ -305,14 +305,14 @@ export default function OrdersPage() {
 
 		return (
 			<div className="relative">
-				<label className="block text-sm font-medium text-nude-dark-2 mb-2">
+				<label className="block text-xs sm:text-sm font-medium text-nude-dark-2 mb-1 sm:mb-2">
 					{label}
 				</label>
 				<div className="relative">
 					<button
 						type="button"
 						onClick={() => setIsOpen(!isOpen)}
-						className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors bg-white cursor-pointer text-left flex items-center justify-between"
+						className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors bg-white cursor-pointer text-left flex items-center justify-between text-sm sm:text-base"
 					>
 						<span
 							className={selectedOption ? "text-nude-dark" : "text-gray-500"}
@@ -320,7 +320,7 @@ export default function OrdersPage() {
 							{selectedOption ? selectedOption.label : placeholder}
 						</span>
 						<FaChevronDown
-							className={`w-4 h-4 text-nude-dark transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+							className={`w-3 h-3 sm:w-4 sm:h-4 text-nude-dark transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
 						/>
 					</button>
 
@@ -335,7 +335,7 @@ export default function OrdersPage() {
 										onChange(option.value);
 										setIsOpen(false);
 									}}
-									className={`w-full px-4 py-3 text-left hover:bg-nude-light transition-colors first:rounded-t-2xl last:rounded-b-2xl ${
+									className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-nude-light transition-colors first:rounded-t-2xl last:rounded-b-2xl text-sm sm:text-base ${
 										value === option.value
 											? "bg-nude-medium text-nude-dark font-medium"
 											: "text-nude-dark hover:text-nude-dark-2"
@@ -364,14 +364,14 @@ export default function OrdersPage() {
 	}
 
 	return (
-		<div className="p-1 sm:p-6 space-y-3 sm:space-y-6">
+		<div className="p-1 sm:p-6 space-y-2 sm:space-y-6">
 			{/* En-tête */}
 			<div className="flex justify-between items-center">
 				<div>
-					<h1 className="text-2xl text-logo font-bold">
+					<h1 className="text-xl sm:text-2xl text-logo font-bold">
 						Gestion des Commandes
 					</h1>
-					<p className="text-nude-dark mt-1">
+					<p className="text-nude-dark mt-1 text-sm sm:text-base">
 						Suivi et gestion des commandes clients
 					</p>
 				</div>
@@ -381,78 +381,80 @@ export default function OrdersPage() {
 			<div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
 				{/* Commandes en préparation */}
 				<Card className="shadow-lg w-full sm:w-64">
-					<CardContent className="p-4">
+					<CardContent className="p-3 sm:p-4">
 						<div className="flex items-center justify-between">
 							<div>
-								<p className="text-sm text-nude-dark">
+								<p className="text-xs sm:text-sm text-nude-dark">
 									Commandes en préparation
 								</p>
-								<p className="text-2xl font-bold text-logo">
+								<p className="text-xl sm:text-2xl font-bold text-logo">
 									{(stats.PENDING || 0) +
 										(stats.CONFIRMED || 0) +
 										(stats.SHIPPED || 0)}
 								</p>
 							</div>
-							<Clock className="h-8 w-8 text-red-600" />
+							<Clock className="h-6 w-6 sm:h-8 sm:w-8 text-red-600" />
 						</div>
 					</CardContent>
 				</Card>
 
 				{/* Commandes en livraison */}
 				<Card className="shadow-lg w-full sm:w-64">
-					<CardContent className="p-4">
+					<CardContent className="p-3 sm:p-4">
 						<div className="flex items-center justify-between">
 							<div>
-								<p className="text-sm text-nude-dark">Commandes en livraison</p>
-								<p className="text-2xl font-bold text-logo">
+								<p className="text-xs sm:text-sm text-nude-dark">
+									Commandes en livraison
+								</p>
+								<p className="text-xl sm:text-2xl font-bold text-logo">
 									{(stats.CONFIRMED || 0) + (stats.SHIPPED || 0)}
 								</p>
 							</div>
-							<Truck className="h-8 w-8 text-orange-400" />
+							<Truck className="h-6 w-6 sm:h-8 sm:w-8 text-orange-400" />
 						</div>
 					</CardContent>
 				</Card>
 			</div>
 
 			{/* Filtres et recherche */}
-			<div className="mb-8">
+			<div className="mb-4 sm:mb-8">
 				{/* Barre de recherche principale */}
-				<div className="flex flex-col lg:flex-row gap-2 sm:gap-4 mb-4 sm:mb-6">
+				<div className="flex flex-col lg:flex-row gap-2 sm:gap-4 mb-3 sm:mb-6">
 					<div className="flex-1 relative">
-						<FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+						<FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
 						<input
 							type="text"
 							placeholder="Rechercher par numéro, client, email..."
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
-							className="w-full lg:w-1/3 pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors"
+							className="w-full lg:w-1/3 pl-8 sm:pl-10 pr-4 py-2 sm:py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors text-sm sm:text-base"
 						/>
 						{loading && (
 							<div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-								<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-nude-dark"></div>
+								<div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-nude-dark"></div>
 							</div>
 						)}
 					</div>
 
-					<div className="flex gap-2 lg:-ml-12">
+					<div className="flex gap-1 sm:gap-2 lg:-ml-12">
 						<button
 							onClick={() => setShowFilters(!showFilters)}
-							className={`flex items-center gap-2 px-2 py-1 rounded-2xl border-2 cursor-pointer transition-colors ${
+							className={`flex items-center gap-1 sm:gap-2 px-2 py-1 sm:px-2 sm:py-1 rounded-2xl border-2 cursor-pointer transition-colors text-xs sm:text-sm ${
 								showFilters
 									? "border-nude-dark bg-nude-medium text-nude-light"
 									: "border-nude-medium text-nude-dark hover:border-nude-medium"
 							}`}
 						>
-							<FaFilter />
+							<FaFilter className="text-xs sm:text-sm" />
 							Filtres
 						</button>
 
 						{hasActiveFilters && (
 							<button
 								onClick={clearAllFilters}
-								className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 border-red-300 text-red-300 hover:bg-red-300 hover:text-white transition-colors cursor-pointer"
+								className="flex items-center gap-1 sm:gap-2 px-2 py-1 sm:px-4 sm:py-3 rounded-2xl border-2 border-red-300 text-red-300 hover:bg-red-300 hover:text-white transition-colors cursor-pointer text-xs sm:text-sm"
 							>
-								<FaTimes />
+								<FaTimes className="text-xs sm:text-sm" />
 								Effacer
 							</button>
 						)}
@@ -461,8 +463,8 @@ export default function OrdersPage() {
 
 				{/* Panneau de filtres */}
 				{showFilters && (
-					<div className="bg-rose-light-2 rounded-2xl p-3 sm:p-6 shadow-lg border border-nude-light mb-4 sm:mb-6">
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+					<div className="bg-rose-light-2 rounded-2xl p-2 sm:p-6 shadow-lg border border-nude-light mb-3 sm:mb-6">
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
 							{/* Statut */}
 							<CustomSelect
 								value={selectedStatus}
@@ -510,24 +512,24 @@ export default function OrdersPage() {
 
 				{/* Indicateur de filtres actifs */}
 				{hasActiveFilters && (
-					<div className="flex flex-wrap gap-2 mb-4">
+					<div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4">
 						{searchTerm && (
-							<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
+							<span className="px-2 sm:px-3 py-1 bg-nude-light text-nude-dark rounded-full text-xs sm:text-sm">
 								Recherche : "{searchTerm}"
 							</span>
 						)}
 						{selectedStatus !== "all" && (
-							<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
+							<span className="px-2 sm:px-3 py-1 bg-nude-light text-nude-dark rounded-full text-xs sm:text-sm">
 								Statut : {selectedStatus}
 							</span>
 						)}
 						{sortBy && (
-							<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
+							<span className="px-2 sm:px-3 py-1 bg-nude-light text-nude-dark rounded-full text-xs sm:text-sm">
 								Tri : {sortBy}
 							</span>
 						)}
 						{sortByAmount && (
-							<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
+							<span className="px-2 sm:px-3 py-1 bg-nude-light text-nude-dark rounded-full text-xs sm:text-sm">
 								Tri montant : {sortByAmount}
 							</span>
 						)}
@@ -537,19 +539,21 @@ export default function OrdersPage() {
 
 			{/* Liste des commandes */}
 			<Card className="shadow-lg -mx-1 sm:mx-0">
-				<CardHeader>
-					<CardTitle className="text-nude-dark">
+				<CardHeader className="pb-2 sm:pb-6">
+					<CardTitle className="text-nude-dark text-base sm:text-lg">
 						Commandes ({orders.length})
 					</CardTitle>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="p-2 sm:p-6">
 					{orders.length === 0 ? (
-						<div className="text-center py-8">
-							<Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-							<p className="text-gray-500">Aucune commande trouvée</p>
+						<div className="text-center py-6 sm:py-8">
+							<Package className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+							<p className="text-gray-500 text-sm sm:text-base">
+								Aucune commande trouvée
+							</p>
 						</div>
 					) : (
-						<div className="space-y-4">
+						<div className="space-y-2 sm:space-y-4">
 							{orders.map((order) => {
 								const statusInfo = getStatusInfo(order.status);
 								const paymentStatusInfo = getPaymentStatusInfo(
@@ -561,39 +565,44 @@ export default function OrdersPage() {
 								return (
 									<div
 										key={order.id}
-										className="border rounded-lg p-3 hover:shadow-md transition-shadow"
+										className="border rounded-lg p-2 sm:p-3 hover:shadow-md transition-shadow"
 									>
 										{/* En-tête compacte - toujours visible */}
 										<div className="flex justify-between items-center mb-2">
-											<div className="flex-1">
-												<div className="flex items-center gap-3 mb-1">
-													<h3 className="font-semibold lg:text-lg text-sm">
+											<div className="flex-1 min-w-0">
+												<div className="flex items-center gap-2 sm:gap-3 mb-1">
+													<h3 className="font-semibold text-sm sm:text-lg truncate">
 														{order.orderNumber}
 													</h3>
 													<span
-														className={`px-2 py-1 text-xs font-medium rounded-full ${statusInfo.color}`}
+														className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full flex-shrink-0 ${statusInfo.color}`}
 													>
-														<StatusIcon className="lg:h-3 lg:w-3 h-2 w-2 inline mr-1" />
-														{statusInfo.label}
+														<StatusIcon className="h-2 w-2 sm:h-3 sm:w-3 inline mr-1" />
+														<span className="hidden sm:inline">
+															{statusInfo.label}
+														</span>
+														<span className="sm:hidden">
+															{statusInfo.label}
+														</span>
 													</span>
 												</div>
-												<p className="text-gray-600 font-medium lg:text-base text-sm">
+												<p className="text-gray-600 font-medium text-sm sm:text-base truncate">
 													{order.customerName}
 												</p>
 											</div>
-											<div className="text-right">
-												<div className="flex items-center justify-end gap-2 mb-1">
-													<p className="lg:text-lg text-md font-bold text-logo">
-														<Euro className="h-4 w-4 inline mr-1" />
+											<div className="text-right flex-shrink-0 ml-2">
+												<div className="flex items-center justify-end gap-1 sm:gap-2 mb-1">
+													<p className="text-sm sm:text-lg font-bold text-logo flex items-center">
 														{order.total.toFixed(2)}
+														<Euro className="h-3 w-3 sm:h-4 sm:w-4 ml-0.5 sm:ml-1" />
 													</p>
 													<span
-														className={`px-2 py-1 text-xs font-medium rounded-full ${paymentStatusInfo.color}`}
+														className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full ${paymentStatusInfo.color}`}
 													>
 														{paymentStatusInfo.label}
 													</span>
 												</div>
-												<p className="text-sm text-gray-500">
+												<p className="text-xs sm:text-sm text-gray-500">
 													{new Date(order.createdAt).toLocaleDateString()}
 												</p>
 											</div>
@@ -604,13 +613,13 @@ export default function OrdersPage() {
 											{/* Bouton d'expansion */}
 											<button
 												onClick={() => toggleOrderExpansion(order.id)}
-												className="flex items-center gap-1 text-sm text-nude-dark hover:text-nude-dark-2 transition-colors underline cursor-pointer"
+												className="flex items-center gap-1 text-xs sm:text-sm text-nude-dark hover:text-nude-dark-2 transition-colors underline cursor-pointer"
 											>
 												<span>
 													{isExpanded ? "Masquer" : "Voir"} les détails
 												</span>
 												<svg
-													className={`w-4 h-4 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+													className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform ${isExpanded ? "rotate-180" : ""}`}
 													fill="none"
 													stroke="currentColor"
 													viewBox="0 0 24 24"
@@ -633,7 +642,7 @@ export default function OrdersPage() {
 															openStatusMenu === order.id ? null : order.id
 														)
 													}
-													className="appearance-none px-3 py-1.5 lg:px-4 lg:py-2 text-xs lg:text-sm border-2 border-nude-medium rounded-2xl focus:border-nude-dark focus:outline-none cursor-pointer bg-white hover:border-nude-dark transition-colors pr-8 lg:pr-10 flex items-center justify-between min-w-[140px] lg:min-w-[180px]"
+													className="appearance-none px-2 py-1 sm:px-3 sm:py-1.5 lg:px-4 lg:py-2 text-sm lg:text-base border-2 border-nude-medium rounded-2xl focus:border-nude-dark focus:outline-none cursor-pointer bg-white hover:border-nude-dark transition-colors pr-6 sm:pr-8 lg:pr-10 flex items-center justify-between min-w-[160px] sm:min-w-[180px] lg:min-w-[200px]"
 													style={{
 														backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
 														backgroundPosition: "right 0.5rem center",
@@ -646,13 +655,18 @@ export default function OrdersPage() {
 															getStatusInfo(order.status).color.split(" ")[0]
 														}
 													>
-														{getStatusInfo(order.status).label}
+														<span className="hidden sm:inline">
+															{getStatusInfo(order.status).label}
+														</span>
+														<span className="sm:hidden text-xs">
+															{getStatusInfo(order.status).label}
+														</span>
 													</span>
 												</button>
 
 												{/* Menu déroulant personnalisé */}
 												{openStatusMenu === order.id && (
-													<div className="absolute z-50 w-full mt-2 bg-white border-2 border-nude-medium rounded-2xl shadow-lg">
+													<div className="absolute z-50 right-0 mt-2 bg-white border-2 border-nude-medium rounded-2xl shadow-lg min-w-[200px] w-auto">
 														{[
 															{ value: "PENDING", label: "En préparation" },
 															{
@@ -669,7 +683,7 @@ export default function OrdersPage() {
 																	updateOrderStatus(order.id, option.value);
 																	setOpenStatusMenu(null);
 																}}
-																className={`w-full px-4 py-3 text-left hover:bg-gray-100 transition-colors first:rounded-t-2xl last:rounded-b-2xl cursor-pointer ${
+																className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-gray-100 transition-colors first:rounded-t-2xl last:rounded-b-2xl cursor-pointer text-sm sm:text-base ${
 																	order.status === option.value
 																		? "bg-nude-medium text-beige-light font-medium"
 																		: "text-nude-dark hover:text-nude-dark-2 hover:bg-rose-light-2"
@@ -693,37 +707,37 @@ export default function OrdersPage() {
 
 										{/* Contenu détaillé - visible seulement si expandé */}
 										{isExpanded && (
-											<div className=" pt-2 border-t border-gray-200">
+											<div className="pt-2 border-t border-gray-200">
 												{/* Informations client détaillées */}
-												<div className="mb-3">
-													<p className="text-sm text-gray-500 mb-1">
+												<div className="mb-2 sm:mb-3">
+													<p className="text-xs sm:text-sm text-gray-500 mb-1">
 														{order.customerEmail}
 													</p>
 													{order.customerPhone && (
-														<p className="text-sm text-gray-500">
+														<p className="text-xs sm:text-sm text-gray-500">
 															{order.customerPhone}
 														</p>
 													)}
 												</div>
 
 												{/* Produits */}
-												<div className="mb-3">
-													<p className="text-sm font-medium text-gray-700 mb-1">
+												<div className="mb-2 sm:mb-3">
+													<p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
 														Produits :
 													</p>
 													<div className="space-y-0.5">
 														{order.items.map((item) => (
 															<div
 																key={item.id}
-																className="flex justify-between text-sm"
+																className="flex justify-between items-center text-xs sm:text-sm"
 															>
-																<span>
+																<span className="flex-1 min-w-0">
 																	{item.productName} x{item.quantity}
 																	{item.colorName && ` (${item.colorName})`}
 																	{item.sizeName && ` - ${item.sizeName}`}
 																</span>
-																<span className="font-medium">
-																	€{item.totalPrice.toFixed(2)}
+																<span className="font-medium flex-shrink-0 ml-2 flex items-center">
+																	{item.totalPrice.toFixed(2)}€
 																</span>
 															</div>
 														))}
@@ -733,7 +747,7 @@ export default function OrdersPage() {
 												{/* Notes */}
 												{order.notes && (
 													<div className="mt-2">
-														<p className="text-sm text-gray-600 italic">
+														<p className="text-xs sm:text-sm text-gray-600 italic">
 															Note: {order.notes}
 														</p>
 													</div>
@@ -755,10 +769,11 @@ export default function OrdersPage() {
 						variant="outline"
 						onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
 						disabled={currentPage === 1}
+						className="text-xs sm:text-sm px-2 py-1 sm:px-4 sm:py-2"
 					>
 						Précédent
 					</Button>
-					<span className="flex items-center px-4">
+					<span className="flex items-center px-2 sm:px-4 text-xs sm:text-sm">
 						Page {currentPage} sur {totalPages}
 					</span>
 					<Button
@@ -767,6 +782,7 @@ export default function OrdersPage() {
 							setCurrentPage(Math.min(totalPages, currentPage + 1))
 						}
 						disabled={currentPage === totalPages}
+						className="text-xs sm:text-sm px-2 py-1 sm:px-4 sm:py-2"
 					>
 						Suivant
 					</Button>
