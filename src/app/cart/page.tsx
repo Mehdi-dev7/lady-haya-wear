@@ -89,7 +89,7 @@ export default function CartPage() {
 									Articles ({cartItems.length})
 								</h2>
 
-								<div className="space-y-6">
+								<div className="space-y-4 sm:space-y-6">
 									{cartItems.map((item) => (
 										<div
 											key={item.id}
