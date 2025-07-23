@@ -364,7 +364,7 @@ export default function OrdersPage() {
 	}
 
 	return (
-		<div className="p-2 sm:p-6 space-y-4 sm:space-y-6">
+		<div className="p-1 sm:p-6 space-y-3 sm:space-y-6">
 			{/* En-tête */}
 			<div className="flex justify-between items-center">
 				<div>
@@ -378,7 +378,7 @@ export default function OrdersPage() {
 			</div>
 
 			{/* Statistiques */}
-			<div className="flex flex-col sm:flex-row gap-4">
+			<div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
 				{/* Commandes en préparation */}
 				<Card className="shadow-lg w-full sm:w-64">
 					<CardContent className="p-4">
@@ -417,7 +417,7 @@ export default function OrdersPage() {
 			{/* Filtres et recherche */}
 			<div className="mb-8">
 				{/* Barre de recherche principale */}
-				<div className="flex flex-col lg:flex-row gap-4 mb-6">
+				<div className="flex flex-col lg:flex-row gap-2 sm:gap-4 mb-4 sm:mb-6">
 					<div className="flex-1 relative">
 						<FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
 						<input
@@ -461,8 +461,8 @@ export default function OrdersPage() {
 
 				{/* Panneau de filtres */}
 				{showFilters && (
-					<div className="bg-rose-light-2 rounded-2xl p-4 sm:p-6 shadow-lg border border-nude-light mb-6">
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+					<div className="bg-rose-light-2 rounded-2xl p-3 sm:p-6 shadow-lg border border-nude-light mb-4 sm:mb-6">
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
 							{/* Statut */}
 							<CustomSelect
 								value={selectedStatus}
@@ -536,7 +536,7 @@ export default function OrdersPage() {
 			</div>
 
 			{/* Liste des commandes */}
-			<Card className="shadow-lg">
+			<Card className="shadow-lg -mx-1 sm:mx-0">
 				<CardHeader>
 					<CardTitle className="text-nude-dark">
 						Commandes ({orders.length})
