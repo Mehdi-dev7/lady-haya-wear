@@ -1,5 +1,6 @@
 "use client";
 
+import { useScrollLock } from "@/hooks/useScrollLock";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import { useFavorites } from "@/lib/FavoritesContext";
@@ -22,6 +23,9 @@ export default function NavbarIcons() {
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isCartOpen, setIsCartOpen] = useState(false);
 	const [isFavOpen, setIsFavOpen] = useState(false);
+
+	// Bloquer le scroll quand une modale est ouverte
+	useScrollLock(isCartOpen || isFavOpen);
 
 	// Vérifier si l'utilisateur est connecté
 	const isLoggedIn = !!user;

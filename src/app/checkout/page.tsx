@@ -196,7 +196,7 @@ export default function CheckoutPage() {
 
 			{/* Contenu principal */}
 			<main className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-12">
-				<div className="flex flex-col lg:flex-row gap-12 mt-8 lg:mt-4">
+				<div className="flex flex-col lg:flex-row gap-12 lg:mt-4">
 					{/* Colonne principale (infos, livraison, paiement) */}
 					<div className="w-full lg:w-[60%]">
 						<div className="bg-nude-light rounded-2xl shadow-lg p-6 mb-8">
@@ -253,7 +253,7 @@ export default function CheckoutPage() {
 															className="sr-only"
 														/>
 														<span
-															className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedAddressId === a.id ? "bg-nude-dark" : "bg-white"}`}
+															className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedAddressId === a.id ? "bg-nude-dark" : "bg-white"}`}
 														/>
 														<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
 															<div className="text-logo font-semibold">
@@ -310,7 +310,7 @@ export default function CheckoutPage() {
 																className="sr-only"
 															/>
 															<span
-																className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedAddressId === a.id ? "bg-nude-dark" : "bg-white"}`}
+																className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedAddressId === a.id ? "bg-nude-dark" : "bg-white"}`}
 															/>
 															<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
 																<div className="text-logo font-semibold">
@@ -408,7 +408,7 @@ export default function CheckoutPage() {
 									}}
 								>
 									<div className="flex gap-4">
-										<label className="flex items-center gap-1 cursor-pointer">
+										<label className="flex items-center gap-1 text-gray-700 cursor-pointer">
 											<input
 												type="radio"
 												name="civility"
@@ -418,11 +418,11 @@ export default function CheckoutPage() {
 												className="sr-only"
 											/>
 											<span
-												className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${civility === "Mme" ? "bg-nude-dark" : "bg-white"}`}
+												className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${civility === "Mme" ? "bg-nude-dark" : "bg-white"}`}
 											/>
 											Mme
 										</label>
-										<label className="flex items-center gap-1 cursor-pointer">
+										<label className="flex items-center gap-1 text-gray-700 cursor-pointer">
 											<input
 												type="radio"
 												name="civility"
@@ -432,7 +432,7 @@ export default function CheckoutPage() {
 												className="sr-only"
 											/>
 											<span
-												className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${civility === "M." ? "bg-nude-dark" : "bg-white"}`}
+												className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${civility === "M." ? "bg-nude-dark" : "bg-white"}`}
 											/>
 											M.
 										</label>
@@ -521,7 +521,7 @@ export default function CheckoutPage() {
 									{localAddresses.map((addr) => (
 										<div key={addr.id} className="flex items-center gap-3">
 											<span
-												className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors bg-nude-dark`}
+												className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors bg-nude-dark`}
 											/>
 											<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
 												<div className="text-logo font-semibold">
@@ -539,11 +539,11 @@ export default function CheckoutPage() {
 
 							{/* Livraison */}
 							<div className="bg-[#d9c4b5]/35 rounded-2xl shadow-lg p-6 mb-8 mt-12">
-								<h2 className="text-2xl font-semibold text-nude-dark mb-6">
+								<h2 className="text-xl sm:text-2xl font-semibold text-nude-dark mb-6">
 									Livraison
 								</h2>
-								<div className="flex flex-col gap-3">
-									<label className="flex items-center gap-2 cursor-pointer">
+								<div className="flex flex-col gap-2 sm:gap-3">
+									<label className="flex items-center gap-2 text-gray-700 cursor-pointer">
 										<input
 											type="radio"
 											name="delivery"
@@ -553,11 +553,11 @@ export default function CheckoutPage() {
 											className="sr-only"
 										/>
 										<span
-											className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedDelivery === "domicile" ? "bg-nude-dark" : "bg-white"}`}
+											className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedDelivery === "domicile" ? "bg-nude-dark" : "bg-white"}`}
 										></span>
 										<span>À domicile (Colissimo)</span>
 									</label>
-									<label className="flex items-center gap-2 cursor-pointer">
+									<label className="flex items-center gap-2 text-gray-700 cursor-pointer">
 										<input
 											type="radio"
 											name="delivery"
@@ -567,11 +567,11 @@ export default function CheckoutPage() {
 											className="sr-only"
 										/>
 										<span
-											className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedDelivery === "relay" ? "bg-nude-dark" : "bg-white"}`}
+											className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedDelivery === "relay" ? "bg-nude-dark" : "bg-white"}`}
 										></span>
 										<span>Point relais (Mondial Relay)</span>
 									</label>
-									<label className="flex items-center gap-2 cursor-pointer">
+									<label className="flex items-center gap-2 text-gray-700 cursor-pointer">
 										<input
 											type="radio"
 											name="delivery"
@@ -581,7 +581,7 @@ export default function CheckoutPage() {
 											className="sr-only"
 										/>
 										<span
-											className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedDelivery === "chronopost" ? "bg-nude-dark" : "bg-white"}`}
+											className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedDelivery === "chronopost" ? "bg-nude-dark" : "bg-white"}`}
 										></span>
 										<span>Livraison express (Chronopost)</span>
 									</label>
@@ -600,11 +600,11 @@ export default function CheckoutPage() {
 
 							{/* Paiement */}
 							<div className="bg-[#d9c4b5]/35 rounded-2xl shadow-lg p-6 mt-8 mb-6">
-								<h2 className="text-2xl font-semibold text-nude-dark mb-6">
+								<h2 className="text-xl sm:text-2xl font-semibold text-nude-dark mb-6">
 									Paiement
 								</h2>
-								<div className="flex flex-col gap-3">
-									<label className="flex items-center gap-2 cursor-pointer">
+								<div className="flex flex-col gap-2 sm:gap-3">
+									<label className="flex items-center gap-2 text-gray-700 cursor-pointer">
 										<input
 											type="radio"
 											name="payment"
@@ -614,7 +614,7 @@ export default function CheckoutPage() {
 											className="sr-only"
 										/>
 										<span
-											className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedPayment === "cb" ? "bg-nude-dark" : "bg-white"}`}
+											className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedPayment === "cb" ? "bg-nude-dark" : "bg-white"}`}
 										></span>
 										<span className="flex items-center gap-1">
 											Carte bancaire
@@ -696,7 +696,7 @@ export default function CheckoutPage() {
 											</div>
 										</div>
 									)}
-									<label className="flex items-center gap-2 cursor-pointer">
+									<label className="flex items-center gap-2 text-gray-700 cursor-pointer">
 										<input
 											type="radio"
 											name="payment"
@@ -706,7 +706,7 @@ export default function CheckoutPage() {
 											className="sr-only"
 										/>
 										<span
-											className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center transition-colors ${selectedPayment === "paypal" ? "bg-nude-dark" : "bg-white"}`}
+											className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedPayment === "paypal" ? "bg-nude-dark" : "bg-white"}`}
 										></span>
 										<span className="flex items-center gap-1">
 											Paypal <FaCcPaypal className="text-blue-500 text-lg" />
@@ -829,7 +829,7 @@ export default function CheckoutPage() {
 
 									{/* Formulaire code promo */}
 									{!promoApplied && (
-										<div className="flex gap-2">
+										<div className="flex flex-col sm:flex-row gap-2">
 											<input
 												type="text"
 												placeholder="Entrez votre code"
@@ -846,7 +846,7 @@ export default function CheckoutPage() {
 														}
 													}
 												}}
-												className="flex-1 border-2 border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#b49982]"
+												className="flex-1 max-w-xs md:max-w-sm border-2 border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#b49982]"
 												maxLength={20}
 												disabled={promoLoading}
 											/>
@@ -860,7 +860,7 @@ export default function CheckoutPage() {
 															? "not-allowed"
 															: "pointer",
 												}}
-												className="bg-nude-dark text-white px-4 py-2 rounded-lg text-sm font-medium border-2 hover:bg-rose-dark hover:text-nude-dark hover:border-nude-dark transition-colors duration-200 disabled:opacity-50"
+												className="bg-nude-dark text-white px-4 py-2 rounded-lg text-sm font-medium border-2 hover:bg-rose-dark hover:text-nude-dark hover:border-nude-dark transition-colors duration-200 disabled:opacity-50 whitespace-nowrap max-w-xs md:max-w-sm"
 											>
 												{promoLoading ? "..." : "Appliquer"}
 											</button>
@@ -881,35 +881,39 @@ export default function CheckoutPage() {
 								</div>
 							</div>
 
-							{/* Bouton commander */}
-							<button
-								className={`w-[80%] md:w-[60%] lg:w-full 2xl:w-[80%] py-3 px-6 rounded-2xl text-base font-semibold transition-all duration-300 text-center block mt-4 cursor-pointer
+							{/* Boutons d'action */}
+							<div className="flex flex-col sm:flex-row lg:flex-col gap-3 mt-4">
+								<button
+									className={`flex-1 max-w-xs sm:max-w-sm py-3 px-6 rounded-2xl text-base font-semibold transition-all duration-300 text-center cursor-pointer
     ${selectedPayment === "paypal" ? "bg-[#0750B4] hover:bg-[#063a80] text-white" : "bg-nude-dark border-2 text-white hover:bg-rose-dark hover:text-nude-dark hover:border-nude-dark"}`}
-								onClick={() => {
-									if (!selectedAddressId) {
-										alert("Merci de sélectionner votre adresse de livraison.");
-										return;
-									}
-									if (!selectedPayment) {
-										alert("Merci de choisir un mode de paiement.");
-										return;
-									}
-									if (selectedPayment === "paypal") {
-										alert("Redirection vers Paypal...");
-									} else {
-										alert("Paiement en cours...");
-									}
-								}}
-							>
-								{selectedPayment === "paypal" ? "Payer avec Paypal" : "Payer"}
-							</button>
-							<button
-								className="w-full mt-3 py-2 rounded-2xl ring-1 ring-nude-dark text-nude-dark font-semibold bg-nude-light hover:bg-nude-dark hover:text-nude-light hover:border-nude-light transition cursor-pointer"
-								onClick={() => router.push("/allProducts")}
-								type="button"
-							>
-								Continuer mes achats
-							</button>
+									onClick={() => {
+										if (!selectedAddressId) {
+											alert(
+												"Merci de sélectionner votre adresse de livraison."
+											);
+											return;
+										}
+										if (!selectedPayment) {
+											alert("Merci de choisir un mode de paiement.");
+											return;
+										}
+										if (selectedPayment === "paypal") {
+											alert("Redirection vers Paypal...");
+										} else {
+											alert("Paiement en cours...");
+										}
+									}}
+								>
+									{selectedPayment === "paypal" ? "Payer avec Paypal" : "Payer"}
+								</button>
+								<button
+									className="flex-1 max-w-xs sm:max-w-sm py-3 px-6 rounded-2xl ring-1 ring-nude-dark text-nude-dark font-semibold bg-nude-light hover:bg-nude-dark hover:text-nude-light hover:border-nude-light transition-all duration-300 text-center cursor-pointer"
+									onClick={() => router.push("/allProducts")}
+									type="button"
+								>
+									Continuer mes achats
+								</button>
+							</div>
 
 							{/* Informations supplémentaires */}
 							<div className="mt-6 space-y-3 text-sm text-gray-500">
