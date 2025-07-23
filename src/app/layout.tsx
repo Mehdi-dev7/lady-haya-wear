@@ -1,8 +1,8 @@
+import { CSRFProtection } from "@/components/Security/CSRFProtection";
 import StudioWrapper from "@/components/StudioWrapper";
 import { AuthProvider } from "@/lib/AuthContext";
 import { CartProvider } from "@/lib/CartContext";
 import { FavoritesProvider } from "@/lib/FavoritesContext";
-import { CSRFProtection } from "@/components/Security/CSRFProtection";
 import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,14 +25,19 @@ export default function RootLayout({
 	return (
 		<html lang="fr">
 			<head>
-				{/* <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1" /> */}
+				<meta
+					name="viewport"
+					content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1"
+				/>
 			</head>
 			<body className="antialiased">
 				<CSRFProtection>
 					<CartProvider>
 						<FavoritesProvider>
 							<AuthProvider>
-								<StudioWrapper>{children}</StudioWrapper>
+								<div className="container mx-auto px-4">
+									<StudioWrapper>{children}</StudioWrapper>
+								</div>
 								<ToastContainer
 									position="top-right"
 									autoClose={3000}
