@@ -50,7 +50,7 @@ export default function CategoryList({ categories }: CategoryListProps) {
 		<div className="relative px-4 py-8">
 			{/* Titre de section */}
 			<div className="text-center mb-8">
-				<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mb-4 mt-10">
+				<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mb-4 mt-2">
 					Nos Collections
 				</h2>
 				<p className="text-nude-dark-2 font-light text-lg lg:text-xl">
