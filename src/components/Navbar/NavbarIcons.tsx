@@ -63,7 +63,7 @@ export default function NavbarIcons() {
 	return (
 		<div className="flex items-center gap-4 xl:gap-6 relative">
 			<FaUser
-				className="text-xl md:text-2xl cursor-pointer text-logo"
+				className="text-xl cursor-pointer text-logo"
 				onClick={handleProfile}
 			/>
 			{isProfileOpen && isLoggedIn && (
@@ -112,7 +112,7 @@ export default function NavbarIcons() {
 			)}
 			<div className="relative cursor-pointer">
 				<FaHeart
-					className="text-xl md:text-2xl cursor-pointer text-logo"
+					className="text-xl cursor-pointer text-logo"
 					onClick={() => setIsFavOpen(true)}
 				/>
 				{favorites.length > 0 && (
@@ -123,7 +123,7 @@ export default function NavbarIcons() {
 			</div>
 			<div className="relative cursor-pointer">
 				<FaBagShopping
-					className="text-xl md:text-2xl mr-2 md:mr-0 cursor-pointer text-logo"
+					className="text-xl mr-2 md:mr-0 cursor-pointer text-logo"
 					data-cart-icon
 					onClick={(e) => {
 						e.stopPropagation();

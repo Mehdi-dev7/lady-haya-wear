@@ -35,9 +35,8 @@ export default function RootLayout({
 					<CartProvider>
 						<FavoritesProvider>
 							<AuthProvider>
-								<div className="container mx-auto px-4">
-									<StudioWrapper>{children}</StudioWrapper>
-								</div>
+								<StudioWrapper>{children}</StudioWrapper>
+
 								<ToastContainer
 									position="top-right"
 									autoClose={3000}
