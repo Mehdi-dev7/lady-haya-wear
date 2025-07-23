@@ -39,6 +39,8 @@ export function ProductPageClient({
 	const [isAddingToCart, setIsAddingToCart] = useState(false);
 	const [showSizeGuide, setShowSizeGuide] = useState(false);
 	const [showViewCart, setShowViewCart] = useState(false);
+	const [similarProductsScrollRef, setSimilarProductsScrollRef] =
+		useState<HTMLDivElement | null>(null);
 	const router = useRouter();
 
 	const { addToCart, cartItems } = useCart();
@@ -189,6 +191,23 @@ export function ProductPageClient({
 		}
 	};
 
+	// Fonctions pour le scroll horizontal des produits similaires
+	const scrollSimilarProducts = (direction: "left" | "right") => {
+		if (similarProductsScrollRef) {
+			const scrollAmount = 280; // Largeur d'un produit + gap
+			const currentScroll = similarProductsScrollRef.scrollLeft;
+			const newScroll =
+				direction === "left"
+					? currentScroll - scrollAmount
+					: currentScroll + scrollAmount;
+
+			similarProductsScrollRef.scrollTo({
+				left: newScroll,
+				behavior: "smooth",
+			});
+		}
+	};
+
 	return (
 		<div className="min-h-screen bg-beige-light">
 			{/* Navigation breadcrumb */}
@@ -309,7 +328,7 @@ export function ProductPageClient({
 									{product.originalPrice.toFixed(2)} €
 								</span>
 							)}
-							<div className="text-3xl font-semibold text-logo">
+							<div className="text-2xl md:text-3xl  font-semibold text-logo">
 								{product.price.toFixed(2)} €
 							</div>
 						</div>
@@ -347,7 +366,7 @@ export function ProductPageClient({
 													}}
 												>
 													<div
-														className={`w-12 h-12 rounded-full border-2 transition-colors ${
+														className={`w-10 h-10 md:w-12 md:h-12 rounded-full border-2 transition-colors ${
 															selectedColorIndex === index
 																? "border-nude-dark ring-2 ring-nude-dark"
 																: "border-gray-300 hover:border-red-400"
@@ -527,11 +546,12 @@ export function ProductPageClient({
 
 							{/* Boutons d'action */}
 							<div className="flex flex-col gap-4">
-								<div className="flex gap-4 items-stretch">
+								{/* Boutons principaux - Ajouter au panier et Favori côte à côte */}
+								<div className="flex gap-3 items-center justify-start sm:justify-center">
 									<button
 										onClick={handleAddToCart}
 										disabled={!selectedSize || isAddingToCart}
-										className="w-48 ring-2 ring-nude-dark text-nude-dark py-4 px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg hover:shadow-xl text-base"
+										className="w-38 md:w-48 ring-2 ring-nude-dark text-nude-dark py-3 md:py-4 px-2 md:px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg hover:shadow-xl text-sm md:text-base"
 									>
 										{isAddingToCart
 											? "Ajout en cours..."
@@ -541,7 +561,7 @@ export function ProductPageClient({
 									</button>
 									<button
 										onClick={handleToggleFavorite}
-										className="w-48 p-4 ring-2 ring-nude-dark text-nude-dark rounded-2xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer flex items-center justify-center"
+										className="w-18 md:w-28 py-3 md:py-4 px-2 md:px-4 ring-2 ring-nude-dark text-nude-dark rounded-2xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer flex items-center justify-center"
 									>
 										<svg
 											className={`w-5 h-5 transition-all duration-300 ${
@@ -562,21 +582,11 @@ export function ProductPageClient({
 											/>
 										</svg>
 									</button>
-									{/* Voir le panier en ligne sur desktop */}
-									{(showViewCart || (cartItems && cartItems.length > 0)) && (
-										<button
-											className="w-48 ring-2 ring-nude-dark text-nude-dark py-4 px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl text-base hidden lg:block"
-											onClick={() => router.push("/cart")}
-											type="button"
-										>
-											Voir le panier
-										</button>
-									)}
 								</div>
-								{/* Voir le panier en block sur mobile */}
+								{/* Voir le panier - en dessous */}
 								{(showViewCart || (cartItems && cartItems.length > 0)) && (
 									<button
-										className="w-48 ring-2 ring-nude-dark text-nude-dark py-4 px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl text-base mt-2 block lg:hidden mx-auto"
+										className="w-38 md:w-48 ring-2 ring-nude-dark text-nude-dark py-3 md:py-4 px-2 md:px-4 rounded-2xl font-medium hover:bg-rose-dark hover:text-white transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl text-sm md:text-base sm:mx-auto"
 										onClick={() => router.push("/cart")}
 										type="button"
 									>
@@ -659,7 +669,7 @@ export function ProductPageClient({
 						{prevProduct && (
 							<Link
 								href={`/products/${prevProduct.slug?.current || prevProduct._id}`}
-								className="flex items-center gap-4 group"
+								className="flex items-center gap-4 group hover:bg-rose-light-2 p-3 rounded-xl transition-all duration-300"
 							>
 								<div className="w-16 h-16 relative rounded-2xl overflow-hidden">
 									<Image
@@ -674,7 +684,22 @@ export function ProductPageClient({
 									/>
 								</div>
 								<div className="text-left">
-									<p className="text-sm text-gray-500">Précédent</p>
+									<p className="text-sm text-gray-500 flex items-center gap-2">
+										<svg
+											className="w-4 h-4"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth={2}
+												d="M15 19l-7-7 7-7"
+											/>
+										</svg>
+										Précédent
+									</p>
 									<p className="font-medium text-rose-dark-2 hover:text-nude-dark-2 transition-colors">
 										{prevProduct.name}
 									</p>
@@ -685,10 +710,25 @@ export function ProductPageClient({
 						{nextProduct && (
 							<Link
 								href={`/products/${nextProduct.slug?.current || nextProduct._id}`}
-								className="flex items-center gap-4 ml-auto"
+								className="flex items-center gap-4 ml-auto hover:bg-rose-light-2 p-3 rounded-xl transition-all duration-300"
 							>
 								<div className="text-right">
-									<p className="text-sm text-gray-500 ">Suivant</p>
+									<p className="text-sm text-gray-500 flex items-center gap-2 justify-end">
+										Suivant
+										<svg
+											className="w-4 h-4"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth={2}
+												d="M9 5l7 7-7 7"
+											/>
+										</svg>
+									</p>
 									<p className="font-medium text-rose-dark-2 hover:text-nude-dark-2 transition-colors">
 										{nextProduct.name}
 									</p>
@@ -723,8 +763,90 @@ export function ProductPageClient({
 						</p>
 					</div>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-[200px] md:max-w-[450px] lg:max-w-[1000px] mx-auto lg:mx-0">
-						{similarProducts.map((similarProduct) => (
+					{/* Slider mobile - visible uniquement sur mobile */}
+					<div className="md:hidden relative">
+						{/* Container du slider */}
+						<div
+							ref={setSimilarProductsScrollRef}
+							className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory justify-center"
+						>
+							{similarProducts.slice(0, 7).map((similarProduct) => (
+								<Link
+									key={similarProduct._id}
+									href={`/products/${similarProduct.slug?.current || similarProduct._id}`}
+									className="group flex-shrink-0 w-64 snap-start"
+								>
+									<div className="relative h-80 rounded-2xl overflow-hidden shadow-lg">
+										<Image
+											src={
+												urlFor(similarProduct.colors?.[0]?.mainImage)?.url() ||
+												"/assets/placeholder.jpg"
+											}
+											alt={similarProduct.name}
+											fill
+											sizes="256px"
+											className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
+										/>
+										{/* Overlay avec dégradé pour le nom et prix */}
+										<div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white/90 via-white/60 to-transparent p-4 pb-2 flex flex-col justify-end">
+											<h3 className="font-medium text-nude-dark text-sm mb-1 line-clamp-1 drop-shadow-sm">
+												{similarProduct.name}
+											</h3>
+											<p className="text-lg font-semibold text-logo drop-shadow-sm">
+												{similarProduct.price.toFixed(2)} €
+											</p>
+										</div>
+									</div>
+								</Link>
+							))}
+						</div>
+
+						{/* Boutons de navigation - sous l'image */}
+						<div className="flex justify-center items-center gap-2 mt-4">
+							<button
+								onClick={() => scrollSimilarProducts("left")}
+								className="w-8 h-8 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-rose-light-2 hover:scale-110 transition-all duration-300 cursor-pointer"
+								aria-label="Produits précédents"
+							>
+								<svg
+									className="w-4 h-4 text-nude-dark"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M15 19l-7-7 7-7"
+									/>
+								</svg>
+							</button>
+							<button
+								onClick={() => scrollSimilarProducts("right")}
+								className="w-8 h-8 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-rose-light-2 hover:scale-110 transition-all duration-300 cursor-pointer"
+								aria-label="Produits suivants"
+							>
+								<svg
+									className="w-4 h-4 text-nude-dark"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M9 5l7 7-7 7"
+									/>
+								</svg>
+							</button>
+						</div>
+					</div>
+
+					{/* Grid desktop - visible uniquement sur desktop */}
+					<div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-[450px] lg:max-w-[1000px] mx-auto lg:mx-0">
+						{similarProducts.slice(0, 7).map((similarProduct) => (
 							<Link
 								key={similarProduct._id}
 								href={`/products/${similarProduct.slug?.current || similarProduct._id}`}
