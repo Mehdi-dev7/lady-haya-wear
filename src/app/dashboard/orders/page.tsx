@@ -364,7 +364,7 @@ export default function OrdersPage() {
 	}
 
 	return (
-		<div className="p-6 space-y-6">
+		<div className="p-2 sm:p-6 space-y-4 sm:space-y-6">
 			{/* En-tête */}
 			<div className="flex justify-between items-center">
 				<div>
@@ -378,9 +378,9 @@ export default function OrdersPage() {
 			</div>
 
 			{/* Statistiques */}
-			<div className="flex gap-4">
+			<div className="flex flex-col sm:flex-row gap-4">
 				{/* Commandes en préparation */}
-				<Card className="shadow-lg w-64">
+				<Card className="shadow-lg w-full sm:w-64">
 					<CardContent className="p-4">
 						<div className="flex items-center justify-between">
 							<div>
@@ -399,7 +399,7 @@ export default function OrdersPage() {
 				</Card>
 
 				{/* Commandes en livraison */}
-				<Card className="shadow-lg w-64">
+				<Card className="shadow-lg w-full sm:w-64">
 					<CardContent className="p-4">
 						<div className="flex items-center justify-between">
 							<div>
@@ -425,7 +425,7 @@ export default function OrdersPage() {
 							placeholder="Rechercher par numéro, client, email..."
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
-							className="w-2/3 md:w-1/2 lg:w-1/3 pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors"
+							className="w-full lg:w-1/3 pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors"
 						/>
 						{loading && (
 							<div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -461,7 +461,7 @@ export default function OrdersPage() {
 
 				{/* Panneau de filtres */}
 				{showFilters && (
-					<div className="bg-rose-light-2 rounded-2xl p-6 shadow-lg border border-nude-light mb-6">
+					<div className="bg-rose-light-2 rounded-2xl p-4 sm:p-6 shadow-lg border border-nude-light mb-6">
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 							{/* Statut */}
 							<CustomSelect

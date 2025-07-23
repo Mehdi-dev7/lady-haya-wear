@@ -1,9 +1,10 @@
 "use client";
 
 import Sidebar from "@/components/Dashboard/Sidebar";
-import React, { useState } from "react";
-import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function DashboardLayout({
 	children,
@@ -11,10 +12,16 @@ export default function DashboardLayout({
 	children: React.ReactNode;
 }) {
 	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+	const pathname = usePathname();
 
 	const toggleSidebar = () => {
 		setIsSidebarCollapsed(!isSidebarCollapsed);
 	};
+
+	// Fermer la sidebar sur mobile lors du changement de route
+	useEffect(() => {
+		setIsSidebarCollapsed(true);
+	}, [pathname]);
 
 	const handleLogout = async () => {
 		try {
@@ -79,7 +86,9 @@ export default function DashboardLayout({
 
 					{/* Titre du dashboard */}
 					<div className="hidden md:block">
-						<h1 className="text-xl font-semibold text-nude-dark">Dashboard Admin</h1>
+						<h1 className="text-xl font-semibold text-nude-dark">
+							Dashboard Admin
+						</h1>
 					</div>
 
 					{/* Bouton de déconnexion */}
