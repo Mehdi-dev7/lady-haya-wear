@@ -26,7 +26,10 @@ export default function CartPage() {
 	};
 
 	// Calculs panier
-	const subtotalHT = cartItems.reduce((acc, item) => acc + item.price, 0);
+	const subtotalHT = cartItems.reduce(
+		(acc, item) => acc + item.price * item.quantity,
+		0
+	);
 	const tva = subtotalHT * 0.2;
 	const livraison = subtotalHT + tva >= 50 ? 0 : 5.99;
 	const totalTTC = subtotalHT + tva + livraison;
