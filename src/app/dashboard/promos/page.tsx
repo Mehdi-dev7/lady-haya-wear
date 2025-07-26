@@ -320,7 +320,7 @@ export default function PromosPage() {
 				</div>
 			</div>
 
-			{/* Statistiques des promotions */}
+			{/* Statistiques dynamiques basées sur les vraies données */}
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 				<Card>
 					<CardContent className="p-4 sm:p-5 bg-[#d9c4b5]/45 border border-rose-medium">
@@ -363,14 +363,16 @@ export default function PromosPage() {
 						<div className="flex items-center justify-between">
 							<div>
 								<p className="text-sm font-medium text-gray-600">
-									Économies générées
+									Total des promotions
 								</p>
 								<p className="text-xl sm:text-2xl font-bold text-gray-900">
-									€1,250
+									{promos.length}
 								</p>
 							</div>
 							<div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
-								<span className="text-purple-600 font-bold text-sm">€</span>
+								<span className="text-purple-600 font-bold text-sm">
+									{promos.length}
+								</span>
 							</div>
 						</div>
 					</CardContent>
