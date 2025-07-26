@@ -4,7 +4,7 @@ import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -170,17 +170,22 @@ export default function AdminsPage() {
 
 	return (
 		<div className="p-6 space-y-6">
-			<div className="flex justify-between items-center">
-				<h1 className="text-2xl text-logo font-bold">
+			<div>
+				<h1 className="text-xl sm:text-2xl text-logo font-bold">
 					Gestion des Administrateurs
 				</h1>
 				{admins.length < 3 && !showAddForm && !editingAdmin && (
-					<Button
-						onClick={() => setShowAddForm(true)}
-						className="bg-nude-dark text-beige-light hover:bg-nude-dark-2 cursor-pointer hover:scale-102 transition-all duration-300"
-					>
-						Ajouter un administrateur
-					</Button>
+					<div className="flex justify-end mt-4">
+						<Button
+							onClick={() => setShowAddForm(true)}
+							className="flex items-center space-x-1 sm:space-x-2 bg-nude-dark text-beige-light hover:bg-nude-dark-2 cursor-pointer hover:scale-102 transition-all duration-300 px-2 py-1 sm:px-4 sm:py-2 mt-3 sm:mt-0"
+						>
+							<Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+							<span className="text-sm sm:text-base">
+								Ajouter un administrateur
+							</span>
+						</Button>
+					</div>
 				)}
 			</div>
 
@@ -277,63 +282,90 @@ export default function AdminsPage() {
 
 			{/* Liste des admins */}
 			<Card className="shadow-lg">
-				<CardHeader>
-					<CardTitle className="text-nude-dark">
+				<CardHeader className="pb-2 sm:pb-6">
+					<CardTitle className="text-nude-dark text-lg sm:text-xl">
 						Administrateurs ({admins.length}/3)
 					</CardTitle>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="p-2 sm:p-6">
 					{admins.length === 0 ? (
-						<p className="text-gray-500">Aucun administrateur trouvé</p>
+						<div className="text-center py-6 sm:py-8">
+							<p className="text-gray-500">Aucun administrateur trouvé</p>
+						</div>
 					) : (
-						<div className="space-y-4">
+						<div className="space-y-2 sm:space-y-4">
 							{admins.map((admin) => (
-								<div key={admin.id} className="border rounded-lg p-4">
-									<div className="flex justify-between items-start">
-										<div className="flex-1">
-											<div className="flex items-center gap-2 mb-2">
-												<h3 className="font-semibold">{admin.name}</h3>
-												<span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
-													{getRoleLabel(admin.role)}
-												</span>
-												{admin.isActive ? (
-													<span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
-														Actif
+								<div
+									key={admin.id}
+									className="border rounded-lg p-2 sm:p-4 hover:bg-gray-50 transition-colors"
+								>
+									{/* En-tête mobile - Nom et statuts */}
+									<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+										{/* Informations principales */}
+										<div className="flex-1 min-w-0">
+											{/* Nom et badges */}
+											<div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+												<h3 className="font-semibold text-base sm:text-lg truncate">
+													{admin.name}
+												</h3>
+												<div className="flex flex-wrap gap-1 sm:gap-2">
+													<span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+														{getRoleLabel(admin.role)}
 													</span>
-												) : (
-													<span className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded">
-														Inactif
-													</span>
-												)}
+													{admin.isActive ? (
+														<span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+															Actif
+														</span>
+													) : (
+														<span className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">
+															Inactif
+														</span>
+													)}
+												</div>
 											</div>
-											<p className="text-gray-600">{admin.email}</p>
-											<p className="text-sm text-gray-500">
-												Créé le {new Date(admin.createdAt).toLocaleDateString()}
+
+											{/* Email */}
+											<p className="text-gray-600 text-sm sm:text-base truncate">
+												{admin.email}
 											</p>
-											{admin.lastLoginAt && (
-												<p className="text-sm text-gray-500">
-													Dernière connexion:{" "}
-													{new Date(admin.lastLoginAt).toLocaleString()}
-												</p>
-											)}
 										</div>
-										<div className="flex items-center space-x-2">
+
+										{/* Actions */}
+										<div className="flex items-center justify-end gap-1 sm:gap-2">
 											<Button
 												variant="outline"
 												size="sm"
-												className="text-green-600 hover:text-green-700 cursor-pointer"
+												className="text-green-600 hover:text-green-700 cursor-pointer h-8 w-8 sm:h-9 sm:w-9 p-0"
 												onClick={() => startEdit(admin)}
 											>
-												<Edit className="h-4 w-4" />
+												<Edit className="h-3 w-3 sm:h-4 sm:w-4" />
 											</Button>
 											<Button
 												variant="outline"
 												size="sm"
-												className="text-red-600 hover:text-red-700 cursor-pointer"
+												className="text-red-600 hover:text-red-700 cursor-pointer h-8 w-8 sm:h-9 sm:w-9 p-0"
 												onClick={() => handleDeleteAdmin(admin.id)}
 											>
-												<Trash2 className="h-4 w-4" />
+												<Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
 											</Button>
+										</div>
+									</div>
+
+									{/* Informations détaillées */}
+									<div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-100">
+										<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 text-xs sm:text-sm">
+											{/* Date de création */}
+											<div className="text-gray-500">
+												Créé le {new Date(admin.createdAt).toLocaleDateString()}
+											</div>
+
+											{/* Dernière connexion */}
+											{admin.lastLoginAt && (
+												<div className="text-gray-500">
+													Dernière connexion:{" "}
+													{new Date(admin.lastLoginAt).toLocaleString()}
+												</div>
+											)}
 										</div>
 									</div>
 								</div>
