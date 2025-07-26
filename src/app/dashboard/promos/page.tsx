@@ -295,35 +295,41 @@ export default function PromosPage() {
 	return (
 		<div className="space-y-6">
 			{/* En-tête */}
-			<div className="flex justify-between items-center">
-				<div>
-					<h1 className="text-3xl font-bold text-logo">Promotions</h1>
-					<p className="text-nude-dark mt-2">
-						Gérez vos codes de réduction et promotions
-					</p>
+			<div>
+				<div className="flex justify-between items-start">
+					<div>
+						<h1 className="text-xl sm:text-2xl font-bold text-logo">
+							Promotions
+						</h1>
+						<p className="text-nude-dark mt-1 text-sm sm:text-base">
+							Gérez vos codes de réduction et promotions
+						</p>
+					</div>
 				</div>
-				<Button
-					onClick={() => {
-						resetForm();
-						setIsModalOpen(true);
-					}}
-					className="flex items-center space-x-2 bg-nude-dark text-beige-light hover:bg-nude-dark-2 cursor-pointer hover:scale-102 transition-all duration-300"
-				>
-					<Plus className="h-4 w-4" />
-					<span>Nouvelle promotion</span>
-				</Button>
+				<div className="flex justify-end mt-4">
+					<Button
+						onClick={() => {
+							resetForm();
+							setIsModalOpen(true);
+						}}
+						className="flex items-center space-x-1 sm:space-x-2 bg-nude-dark text-beige-light hover:bg-nude-dark-2 cursor-pointer hover:scale-102 transition-all duration-300 px-2 py-1 sm:px-4 sm:py-2"
+					>
+						<Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+						<span className="text-sm sm:text-base">Nouvelle promotion</span>
+					</Button>
+				</div>
 			</div>
 
 			{/* Statistiques des promotions */}
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 				<Card>
-					<CardContent className="p-6 bg-[#d9c4b5]/45 border border-rose-medium">
+					<CardContent className="p-4 sm:p-5 bg-[#d9c4b5]/45 border border-rose-medium">
 						<div className="flex items-center justify-between">
 							<div>
 								<p className="text-sm font-medium text-gray-600">
 									Promotions actives
 								</p>
-								<p className="text-2xl font-bold text-gray-900">
+								<p className="text-xl sm:text-2xl font-bold text-gray-900">
 									{promos.filter((p) => p.status === "Active").length}
 								</p>
 							</div>
@@ -333,13 +339,13 @@ export default function PromosPage() {
 				</Card>
 
 				<Card>
-					<CardContent className="p-6 bg-[#d9c4b5]/45 border border-rose-medium">
+					<CardContent className="p-4 sm:p-5 bg-[#d9c4b5]/45 border border-rose-medium">
 						<div className="flex items-center justify-between">
 							<div>
 								<p className="text-sm font-medium text-gray-600">
 									Utilisations totales
 								</p>
-								<p className="text-2xl font-bold text-gray-900">
+								<p className="text-xl sm:text-2xl font-bold text-gray-900">
 									{promos.reduce((total, p) => total + p.usage, 0)}
 								</p>
 							</div>
@@ -353,13 +359,15 @@ export default function PromosPage() {
 				</Card>
 
 				<Card>
-					<CardContent className="p-6 bg-[#d9c4b5]/45 border border-rose-medium">
+					<CardContent className="p-4 sm:p-5 bg-[#d9c4b5]/45 border border-rose-medium">
 						<div className="flex items-center justify-between">
 							<div>
 								<p className="text-sm font-medium text-gray-600">
 									Économies générées
 								</p>
-								<p className="text-2xl font-bold text-gray-900">€1,250</p>
+								<p className="text-xl sm:text-2xl font-bold text-gray-900">
+									€1,250
+								</p>
 							</div>
 							<div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
 								<span className="text-purple-600 font-bold text-sm">€</span>
@@ -371,79 +379,95 @@ export default function PromosPage() {
 
 			{/* Liste des promotions */}
 			<Card>
-				<CardHeader>
-					<CardTitle>Codes de réduction</CardTitle>
+				<CardHeader className="pb-2 sm:pb-6">
+					<CardTitle className="text-nude-dark text-base sm:text-lg">
+						Codes de réduction
+					</CardTitle>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="p-2 sm:p-6">
 					{loading ? (
-						<div className="text-center py-8">
+						<div className="text-center py-6 sm:py-8">
 							<div className="text-gray-500">Chargement des codes promo...</div>
 						</div>
 					) : (
-						<div className="space-y-4">
+						<div className="space-y-2 sm:space-y-4">
 							{promos.map((promo) => (
 								<div
 									key={promo.id}
-									className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
+									className="border border-gray-200 rounded-lg p-2 sm:p-4 hover:bg-gray-50 transition-colors"
 								>
-									<div className="flex items-center justify-between">
-										<div className="flex items-center space-x-4">
-											<div className="flex items-center space-x-2">
-												<span className="font-mono font-bold text-lg text-blue-600">
+									{/* En-tête mobile - Code et réduction */}
+									<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+										{/* Code et réduction */}
+										<div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+											{/* Code */}
+											<div className="flex items-center gap-2">
+												<span className="font-mono font-bold text-base sm:text-lg text-blue-600">
 													{promo.code}
 												</span>
 												<Button
 													variant="ghost"
 													size="sm"
 													onClick={() => copyToClipboard(promo.code)}
-													className="h-6 w-6 p-0"
+													className="h-6 w-6 p-0 hover:bg-blue-50"
 												>
 													<Copy className="h-3 w-3" />
 												</Button>
 											</div>
-											<div className="flex items-center space-x-2">
-												<span className="text-lg font-bold text-green-600">
+
+											{/* Réduction */}
+											<div className="flex items-center gap-2">
+												<span className="text-base sm:text-lg font-bold text-green-600">
 													-{promo.discount}
 												</span>
-												<span className="text-sm text-gray-500">
+												<span className="text-xs sm:text-sm text-gray-500">
 													({promo.type})
 												</span>
 											</div>
 										</div>
 
-										<div className="flex items-center space-x-4">
-											<div className="text-right">
-												<div className="text-sm text-gray-600">
-													{promo.usage}/{promo.maxUsage} utilisations
-												</div>
-												<div className="text-xs text-gray-500">
-													{promo.validFrom} - {promo.validTo}
-												</div>
-											</div>
-
+										{/* Statut et actions */}
+										<div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4">
+											{/* Statut */}
 											<span
 												className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(promo.status)}`}
 											>
 												{promo.status}
 											</span>
 
-											<div className="flex items-center space-x-2">
+											{/* Actions */}
+											<div className="flex items-center gap-1 sm:gap-2">
 												<Button
 													variant="outline"
 													size="sm"
-													className="text-green-600 hover:text-green-700 cursor-pointer"
+													className="text-green-600 hover:text-green-700 cursor-pointer h-8 w-8 sm:h-9 sm:w-9 p-0"
 													onClick={() => handleEditPromo(promo.id)}
 												>
-													<Edit className="h-3 w-3" />
+													<Edit className="h-3 w-3 sm:h-4 sm:w-4" />
 												</Button>
 												<Button
 													variant="outline"
 													size="sm"
-													className="text-red-600 hover:text-red-700 cursor-pointer"
+													className="text-red-600 hover:text-red-700 cursor-pointer h-8 w-8 sm:h-9 sm:w-9 p-0"
 													onClick={() => handleDeletePromo(promo.id)}
 												>
-													<Trash2 className="h-3 w-3" />
+													<Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
 												</Button>
+											</div>
+										</div>
+									</div>
+
+									{/* Informations détaillées */}
+									<div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-100">
+										<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 text-xs sm:text-sm">
+											{/* Utilisations */}
+											<div className="text-gray-600">
+												{promo.usage}/{promo.maxUsage || "∞"} utilisations
+											</div>
+
+											{/* Dates */}
+											<div className="text-gray-500">
+												{promo.validFrom} - {promo.validTo}
 											</div>
 										</div>
 									</div>

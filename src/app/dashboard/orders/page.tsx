@@ -211,8 +211,14 @@ export default function OrdersPage() {
 
 			if (response.ok) {
 				toast.success("Statut de la commande mis à jour");
-				// Mettre à jour localement
+				// Mettre à jour localement dans allOrders
 				setAllOrders((prevOrders) =>
+					prevOrders.map((order) =>
+						order.id === orderId ? { ...order, status: newStatus } : order
+					)
+				);
+				// Mettre à jour localement dans orders (commandes filtrées)
+				setOrders((prevOrders) =>
 					prevOrders.map((order) =>
 						order.id === orderId ? { ...order, status: newStatus } : order
 					)
@@ -377,7 +383,7 @@ export default function OrdersPage() {
 				</div>
 			</div>
 
-			{/* Statistiques */}
+			{/* Statistiques dynamiques basées sur les commandes filtrées */}
 			<div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
 				{/* Commandes en préparation */}
 				<Card className="shadow-lg w-full sm:w-64">
@@ -388,9 +394,7 @@ export default function OrdersPage() {
 									Commandes en préparation
 								</p>
 								<p className="text-xl sm:text-2xl font-bold text-logo">
-									{(stats.PENDING || 0) +
-										(stats.CONFIRMED || 0) +
-										(stats.SHIPPED || 0)}
+									{orders.filter((order) => order.status === "PENDING").length}
 								</p>
 							</div>
 							<Clock className="h-6 w-6 sm:h-8 sm:w-8 text-red-600" />
@@ -407,10 +411,33 @@ export default function OrdersPage() {
 									Commandes en livraison
 								</p>
 								<p className="text-xl sm:text-2xl font-bold text-logo">
-									{(stats.CONFIRMED || 0) + (stats.SHIPPED || 0)}
+									{
+										orders.filter(
+											(order) =>
+												order.status === "CONFIRMED" ||
+												order.status === "SHIPPED"
+										).length
+									}
 								</p>
 							</div>
 							<Truck className="h-6 w-6 sm:h-8 sm:w-8 text-orange-400" />
+						</div>
+					</CardContent>
+				</Card>
+
+				{/* Total des commandes affichées */}
+				<Card className="shadow-lg w-full sm:w-64">
+					<CardContent className="p-3 sm:p-4">
+						<div className="flex items-center justify-between">
+							<div>
+								<p className="text-xs sm:text-sm text-nude-dark">
+									Total affiché
+								</p>
+								<p className="text-xl sm:text-2xl font-bold text-logo">
+									{orders.length}
+								</p>
+							</div>
+							<Package className="h-6 w-6 sm:h-8 sm:w-8 text-nude-dark" />
 						</div>
 					</CardContent>
 				</Card>
@@ -571,13 +598,13 @@ export default function OrdersPage() {
 										<div className="flex justify-between items-center mb-2">
 											<div className="flex-1 min-w-0">
 												<div className="flex items-center gap-2 sm:gap-3 mb-1">
-													<h3 className="font-semibold text-sm sm:text-lg truncate">
+													<h3 className="font-semibold text-sm sm:text-lg flex-shrink-0">
 														{order.orderNumber}
 													</h3>
 													<span
-														className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full flex-shrink-0 ${statusInfo.color}`}
+														className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full flex-shrink-0 truncate ${statusInfo.color}`}
 													>
-														<StatusIcon className="h-2 w-2 sm:h-3 sm:w-3 inline mr-1" />
+														<StatusIcon className="h-2 w-2 sm:h-3 sm:w-3 inline mr-1 flex-shrink-0" />
 														<span className="hidden sm:inline">
 															{statusInfo.label}
 														</span>
@@ -591,7 +618,10 @@ export default function OrdersPage() {
 												</p>
 											</div>
 											<div className="text-right flex-shrink-0 ml-2">
-												<div className="flex items-center justify-end gap-1 sm:gap-2 mb-1">
+												<p className="text-xs sm:text-sm text-gray-500 mb-1">
+													{new Date(order.createdAt).toLocaleDateString()}
+												</p>
+												<div className="flex items-center justify-end gap-1 sm:gap-2">
 													<p className="text-sm sm:text-lg font-bold text-logo flex items-center">
 														{order.total.toFixed(2)}
 														<Euro className="h-3 w-3 sm:h-4 sm:w-4 ml-0.5 sm:ml-1" />
@@ -602,9 +632,6 @@ export default function OrdersPage() {
 														{paymentStatusInfo.label}
 													</span>
 												</div>
-												<p className="text-xs sm:text-sm text-gray-500">
-													{new Date(order.createdAt).toLocaleDateString()}
-												</p>
 											</div>
 										</div>
 
