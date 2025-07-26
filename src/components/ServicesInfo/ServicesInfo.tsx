@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
 	TbCreditCard,
 	TbHeadset,
@@ -12,10 +13,10 @@ export default function ServicesInfo() {
 	return (
 		<section className="bg-rose-light-2 border-t border-nude-light py-8 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">
 			<div className="max-w-7xl mx-auto">
-				{/* Grille des services avec scroll horizontal sur mobile/tablette */}
-				<div className="flex lg:grid lg:grid-cols-5 gap-4 overflow-x-auto lg:overflow-x-visible scrollbar-hide">
+				{/* Grille des services en colonnes sur mobile, grille sur desktop */}
+				<div className="grid grid-cols-2 lg:grid-cols-5 gap-4 relative">
 					{/* Livraison gratuite */}
-					<div className="flex items-center gap-3 p-3 relative flex-shrink-0 lg:flex-shrink">
+					<div className="flex items-center gap-3 p-3 relative border-r border-nude-dark lg:border-r-0">
 						<TbTruckDelivery className="w-5 h-5 text-green-500 flex-shrink-0" />
 						<div>
 							<div className="font-medium text-sm text-nude-dark">
@@ -23,12 +24,14 @@ export default function ServicesInfo() {
 							</div>
 							<div className="text-xs text-gray-500">Dès 60€</div>
 						</div>
-						{/* Trait de séparation à droite */}
-						<div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-8 bg-nude-dark"></div>
+						{/* Trait de séparation à droite - visible à partir de md */}
+						<div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-8 bg-nude-dark hidden md:block"></div>
 					</div>
 
-					{/* Paiement sécurisé */}
-					<div className="flex items-center gap-3 p-3 relative flex-shrink-0 lg:flex-shrink">
+					<Link
+						href="/services/paiement-securise"
+						className="flex items-center gap-3 p-3 relative hover:bg-rose-light/50 transition-colors"
+					>
 						<TbCreditCard className="w-5 h-5 text-blue-500 flex-shrink-0" />
 						<div>
 							<div className="font-medium text-sm text-nude-dark">
@@ -36,25 +39,30 @@ export default function ServicesInfo() {
 							</div>
 							<div className="text-xs text-gray-500">CB, PayPal</div>
 						</div>
-						{/* Trait de séparation à droite */}
-						<div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-8 bg-nude-dark"></div>
-					</div>
+						{/* Trait de séparation à droite - visible à partir de md */}
+						<div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-8 bg-nude-dark hidden md:block"></div>
+					</Link>
 
 					{/* Satisfait ou remboursé */}
-					<div className="flex items-center gap-3 p-3 relative flex-shrink-0 lg:flex-shrink">
+					<Link
+						href="/services/retours"
+						className="flex items-center gap-3 p-3 relative border-r border-nude-dark lg:border-r-0 hover:bg-rose-light/50 transition-colors"
+					>
 						<TbPackage className="w-5 h-5 text-orange-500 flex-shrink-0" />
 						<div>
 							<div className="font-medium text-sm text-nude-dark">
-								Satisfait ou remboursé
+								Retours possibles
 							</div>
-							<div className="text-xs text-gray-500">30 jours</div>
+							<div className="text-xs text-gray-500">sous 15 jours</div>
 						</div>
-						{/* Trait de séparation à droite */}
-						<div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-8 bg-nude-dark"></div>
-					</div>
+						{/* Trait de séparation à droite - visible à partir de md */}
+						<div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-8 bg-nude-dark hidden md:block"></div>
+					</Link>
 
-					{/* Service client */}
-					<div className="flex items-center gap-3 p-3 relative flex-shrink-0 lg:flex-shrink">
+					<Link
+						href="/services/service-client"
+						className="flex items-center gap-3 p-3 relative hover:bg-rose-light/50 transition-colors"
+					>
 						<TbHeadset className="w-5 h-5 text-purple-500 flex-shrink-0" />
 						<div>
 							<div className="font-medium text-sm text-nude-dark">
@@ -62,12 +70,14 @@ export default function ServicesInfo() {
 							</div>
 							<div className="text-xs text-gray-500">Support 7j/7</div>
 						</div>
-						{/* Trait de séparation à droite */}
-						<div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-8 bg-nude-dark"></div>
-					</div>
+						{/* Trait de séparation à droite - visible à partir de md */}
+						<div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-8 bg-nude-dark hidden md:block"></div>
+					</Link>
 
-					{/* Envoi rapide */}
-					<div className="flex items-center gap-3 p-3 flex-shrink-0 lg:flex-shrink">
+					<Link
+						href="/services/envoi-rapide"
+						className="flex items-center gap-3 p-3 hover:bg-rose-light/50 transition-colors"
+					>
 						<TbPackageExport className="w-5 h-5 text-red-500 flex-shrink-0" />
 						<div>
 							<div className="font-medium text-sm text-nude-dark">
@@ -75,7 +85,7 @@ export default function ServicesInfo() {
 							</div>
 							<div className="text-xs text-gray-500">24-48h</div>
 						</div>
-					</div>
+					</Link>
 				</div>
 			</div>
 		</section>
