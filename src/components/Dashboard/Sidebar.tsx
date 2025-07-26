@@ -7,11 +7,12 @@ import {
 	Home,
 	Menu,
 	Package,
+	Palette,
 	ShoppingCart,
 	Ticket,
+	UserCheck,
 	Users,
 	X,
-	UserCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -48,6 +49,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 			href: "/dashboard/admins",
 			icon: UserCheck,
 			current: pathname === "/dashboard/admins",
+		},
+		{
+			name: "Studio",
+			href: "/studio",
+			icon: Palette,
+			current: pathname === "/studio",
 		},
 	];
 
@@ -134,27 +141,32 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 
 			{/* Navigation */}
 			<nav className="flex-1 p-4 space-y-2">
-				{navigation.map((item) => {
+				{navigation.map((item, index) => {
 					const Icon = item.icon;
 					return (
-						<Link
-							key={item.name}
-							href={item.href}
-							className={cn(
-								"flex items-center px-3 py-2 text-sm lg:text-base font-medium rounded-md transition-colors",
-								item.current
-									? "bg-rose-medium text-logo"
-									: "text-nude-dark hover:bg-rose-medium hover:text-logo"
-							)}
-						>
-							<Icon
+						<div key={item.name}>
+							<Link
+								href={item.href}
 								className={cn(
-									"h-5 w-5",
-									isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
+									"flex items-center px-3 py-2 text-sm lg:text-base font-medium rounded-md transition-colors",
+									item.current
+										? "bg-rose-medium text-logo"
+										: "text-nude-dark hover:bg-rose-medium hover:text-logo"
 								)}
-							/>
-							{!isCollapsed && <span>{item.name}</span>}
-						</Link>
+							>
+								<Icon
+									className={cn(
+										"h-5 w-5",
+										isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
+									)}
+								/>
+								{!isCollapsed && <span>{item.name}</span>}
+							</Link>
+							{/* Trait sous "Administrateurs" */}
+							{item.name === "Administrateurs" && !isCollapsed && (
+								<div className="border-b border-rose-medium my-2"></div>
+							)}
+						</div>
 					);
 				})}
 			</nav>

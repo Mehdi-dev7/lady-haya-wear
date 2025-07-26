@@ -1,5 +1,6 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import { useCart } from "@/lib/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -81,12 +82,7 @@ export default function CheckoutPage() {
 		fetchAddresses();
 	}, []);
 
-	if (loading)
-		return (
-			<div className="min-h-screen flex items-center justify-center">
-				Chargement...
-			</div>
-		);
+	if (loading) return <Loader />;
 
 	// Vérifier si le panier est vide
 	if (!cartItems || cartItems.length === 0) {

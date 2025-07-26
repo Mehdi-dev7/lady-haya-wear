@@ -169,7 +169,7 @@ export default function AdminsPage() {
 	}
 
 	return (
-		<div className="p-6 space-y-6">
+		<div className="p-1 sm:p-6 space-y-2 sm:space-y-6">
 			<div>
 				<h1 className="text-xl sm:text-2xl text-logo font-bold">
 					Gestion des Administrateurs
