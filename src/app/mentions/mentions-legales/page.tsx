@@ -4,10 +4,10 @@ export default function MentionsLegalesPage() {
 			<div className="max-w-4xl mx-auto">
 				{/* En-tête */}
 				<div className="text-center mb-12">
-					<h1 className="text-4xl sm:text-5xl font-alex-brush text-logo mb-4">
+					<h1 className="text-4xl sm:text-5xl font-alex-brush text-logo mb-4 mt-8">
 						Mentions Légales
 					</h1>
-					<p className="text-nude-dark text-lg">
+					<p className="text-nude-dark text-base lg:text-lg">
 						Informations légales de Lady Haya Wear
 					</p>
 				</div>

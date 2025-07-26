@@ -4,10 +4,10 @@ export default function PolitiqueConfidentialitePage() {
 			<div className="max-w-4xl mx-auto">
 				{/* En-tête */}
 				<div className="text-center mb-12">
-					<h1 className="text-4xl sm:text-5xl font-alex-brush text-logo mb-4">
+					<h1 className="text-4xl sm:text-5xl font-alex-brush text-logo mb-4 mt-8">
 						Politique de Confidentialité
 					</h1>
-					<p className="text-nude-dark text-lg">
+					<p className="text-nude-dark text-base lg:text-lg">
 						Protection de vos données personnelles
 					</p>
 				</div>
@@ -137,7 +137,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Destinataires */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-xl lg:text-2xl font-balqis text-logo mb-4">
 							Destinataires des Données
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -153,7 +153,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Durée de conservation */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-xl lg:text-2xl font-balqis text-logo mb-4">
 							Durée de Conservation
 						</h2>
 						<div className="space-y-3 text-nude-dark">

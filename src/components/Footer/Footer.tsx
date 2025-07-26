@@ -5,8 +5,6 @@ import {
 	FaInstagram,
 	FaMapMarkerAlt,
 	FaPhone,
-	FaSnapchat,
-	FaTwitter,
 } from "react-icons/fa";
 import { FaTiktok } from "react-icons/fa6";
 
@@ -47,7 +45,6 @@ export default function Footer() {
 							Suivez-nous
 						</h3>
 						<div className="flex gap-4">
-							
 							<a
 								href="https://instagram.com/lady.haya_wear"
 								target="_blank"
@@ -64,7 +61,6 @@ export default function Footer() {
 							>
 								<FaTiktok className="text-xl" />
 							</a>
-							
 						</div>
 					</div>
 
@@ -116,19 +112,19 @@ export default function Footer() {
 					</div>
 					<div className="flex flex-wrap justify-center items-center text-sm gap-4">
 						<Link
-							href="/mentions-legales"
+							href="/mentions/mentions-legales"
 							className="hover:text-nude-medium transition-colors duration-300"
 						>
 							Mentions légales
 						</Link>
 						<Link
-							href="/politique-confidentialite"
+							href="/mentions/politique-confidentialite"
 							className="hover:text-nude-medium transition-colors duration-300"
 						>
 							Politique de confidentialité
 						</Link>
 						<Link
-							href="/conditions-vente"
+							href="/mentions/conditions-vente"
 							className="hover:text-nude-medium transition-colors duration-300"
 						>
 							Conditions de vente
