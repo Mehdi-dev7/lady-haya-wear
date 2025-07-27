@@ -251,15 +251,15 @@ export default function OrdersPage() {
 
 			if (response.ok) {
 				const updatedOrder = await response.json();
-				// Mettre à jour localement
+				// Mettre à jour localement avec les données complètes de la réponse
 				setAllOrders((prevOrders) =>
 					prevOrders.map((order) =>
-						order.id === orderId ? { ...order, ...data } : order
+						order.id === orderId ? { ...order, ...updatedOrder.order } : order
 					)
 				);
 				setOrders((prevOrders) =>
 					prevOrders.map((order) =>
-						order.id === orderId ? { ...order, ...data } : order
+						order.id === orderId ? { ...order, ...updatedOrder.order } : order
 					)
 				);
 				return updatedOrder;
@@ -774,27 +774,20 @@ export default function OrdersPage() {
 												</div>
 
 												{/* Informations de suivi */}
-												{(order.trackingNumber || order.carrier) && (
-													<div className="mb-2 sm:mb-3">
-														<p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
-															Suivi de livraison :
-														</p>
-														<div className="space-y-1">
-															{order.carrier && (
-																<div className="flex justify-between text-xs sm:text-sm">
-																	<span>Transporteur :</span>
-																	<span className="font-medium capitalize">
+												<div className="mb-2 sm:mb-3">
+													<p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
+														Suivi de livraison :{" "}
+														{order.trackingNumber || order.carrier ? (
+															<span className="font-normal text-gray-600">
+																{order.carrier && (
+																	<span className="capitalize">
 																		{order.carrier.replace("-", " ")}
 																	</span>
-																</div>
-															)}
-															{order.trackingNumber && (
-																<div className="flex justify-between items-center text-xs sm:text-sm">
-																	<span>Numéro de suivi :</span>
-																	<div className="flex items-center gap-1">
-																		<span className="font-medium">
-																			{order.trackingNumber}
-																		</span>
+																)}
+																{order.carrier && order.trackingNumber && " - "}
+																{order.trackingNumber && (
+																	<span>
+																		{order.trackingNumber}
 																		{getTrackingUrl(
 																			order.carrier || "",
 																			order.trackingNumber
@@ -806,17 +799,21 @@ export default function OrdersPage() {
 																				)}
 																				target="_blank"
 																				rel="noopener noreferrer"
-																				className="text-blue-600 hover:text-blue-800"
+																				className="text-blue-600 hover:text-blue-800 ml-1"
 																			>
-																				<ExternalLink className="w-3 h-3" />
+																				<ExternalLink className="w-3 h-3 inline" />
 																			</a>
 																		)}
-																	</div>
-																</div>
-															)}
-														</div>
-													</div>
-												)}
+																	</span>
+																)}
+															</span>
+														) : (
+															<span className="font-normal text-gray-500 italic">
+																Aucune information disponible
+															</span>
+														)}
+													</p>
+												</div>
 
 												{/* Notes */}
 												{order.notes && (

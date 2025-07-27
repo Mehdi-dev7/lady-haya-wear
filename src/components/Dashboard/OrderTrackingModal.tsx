@@ -59,12 +59,14 @@ export default function OrderTrackingModal({
 		options,
 		placeholder,
 		label,
+		disabled = false,
 	}: {
 		value: string;
 		onChange: (value: string) => void;
 		options: { value: string; label: string }[];
 		placeholder: string;
 		label: string;
+		disabled?: boolean;
 	}) {
 		const [isOpen, setIsOpen] = useState(false);
 
@@ -72,22 +74,41 @@ export default function OrderTrackingModal({
 
 		return (
 			<div className="relative">
-				<label className="block text-sm font-medium text-nude-dark mb-2">
+				<label
+					className={`block text-sm font-medium mb-2 ${
+						disabled ? "text-gray-400" : "text-nude-dark"
+					}`}
+				>
 					{label}
 				</label>
 				<div className="relative">
 					<button
 						type="button"
-						onClick={() => setIsOpen(!isOpen)}
-						className="w-full px-3 py-2 rounded-xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors bg-white cursor-pointer text-left flex items-center justify-between"
+						onClick={() => !disabled && setIsOpen(!isOpen)}
+						className={`w-full px-3 py-2 rounded-xl border-2 transition-colors bg-white text-left flex items-center justify-between ${
+							disabled
+								? "border-gray-200 text-gray-400 cursor-not-allowed"
+								: "border-nude-medium focus:border-nude-dark focus:outline-none cursor-pointer"
+						}`}
+						disabled={disabled}
 					>
 						<span
-							className={selectedOption ? "text-nude-dark" : "text-gray-500"}
+							className={
+								selectedOption
+									? disabled
+										? "text-gray-400"
+										: "text-nude-dark"
+									: disabled
+										? "text-gray-400"
+										: "text-gray-500"
+							}
 						>
 							{selectedOption ? selectedOption.label : placeholder}
 						</span>
 						<FaChevronDown
-							className={`w-4 h-4 text-nude-dark transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+							className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""} ${
+								disabled ? "text-gray-400" : "text-nude-dark"
+							}`}
 						/>
 					</button>
 
@@ -185,7 +206,10 @@ export default function OrderTrackingModal({
 						{/* Statut */}
 						<CustomSelect
 							value={formData.status}
-							onChange={(value) => setFormData({ ...formData, status: value })}
+							onChange={(value) => {
+								// Si on passe de PENDING à SHIPPED, on peut activer les champs de suivi
+								setFormData({ ...formData, status: value });
+							}}
 							options={STATUS_OPTIONS}
 							placeholder="Sélectionner un statut"
 							label="Statut de la commande"
@@ -201,11 +225,18 @@ export default function OrderTrackingModal({
 							]}
 							placeholder="Sélectionner un transporteur"
 							label="Transporteur"
+							disabled={formData.status === "PENDING"}
 						/>
 
 						{/* Numéro de suivi */}
 						<div>
-							<label className="block text-sm font-medium text-nude-dark mb-2">
+							<label
+								className={`block text-sm font-medium mb-2 ${
+									formData.status === "PENDING"
+										? "text-gray-400"
+										: "text-nude-dark"
+								}`}
+							>
 								Numéro de suivi
 							</label>
 							<input
@@ -214,8 +245,17 @@ export default function OrderTrackingModal({
 								onChange={(e) =>
 									setFormData({ ...formData, trackingNumber: e.target.value })
 								}
-								placeholder="Ex: 1A2B3C4D5E6F"
-								className="w-full px-3 py-2 rounded-xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors"
+								placeholder={
+									formData.status === "PENDING"
+										? "Disponible après expédition"
+										: "Ex: 1A2B3C4D5E6F"
+								}
+								className={`w-full px-3 py-2 rounded-xl border-2 transition-colors ${
+									formData.status === "PENDING"
+										? "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
+										: "border-nude-medium focus:border-nude-dark focus:outline-none"
+								}`}
+								disabled={formData.status === "PENDING"}
 							/>
 						</div>
 
