@@ -164,10 +164,13 @@ model Order {
   // Notes
   notes           String?     // Notes de commande
   
+  // Suivi de livraison
+  trackingNumber  String?     // Numéro de suivi du colis
+  carrier         String?     // Transporteur (Colissimo, Chronopost, etc.)
+  
   // Dates
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
-  confirmedAt     DateTime?
   shippedAt       DateTime?
   deliveredAt     DateTime?
   
@@ -235,8 +238,6 @@ enum AddressType {
 
 enum OrderStatus {
   PENDING
-  CONFIRMED
-  PROCESSING
   SHIPPED
   DELIVERED
   CANCELLED

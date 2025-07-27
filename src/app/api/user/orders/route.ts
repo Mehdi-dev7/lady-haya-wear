@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
+import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
@@ -10,15 +10,12 @@ export async function GET(request: NextRequest) {
 		const token = request.cookies.get("auth-token")?.value;
 
 		if (!token) {
-			return NextResponse.json(
-				{ error: "Non autorisé" },
-				{ status: 401 }
-			);
+			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 		}
 
 		// Vérifier le token JWT
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
-		
+
 		// Récupérer l'utilisateur
 		const user = await prisma.user.findUnique({
 			where: { id: decoded.userId },
@@ -68,7 +65,7 @@ export async function GET(request: NextRequest) {
 			paymentStatus: order.paymentStatus,
 			notes: order.notes,
 			createdAt: order.createdAt,
-			confirmedAt: order.confirmedAt,
+
 			shippedAt: order.shippedAt,
 			deliveredAt: order.deliveredAt,
 			items: order.items.map((item) => ({
@@ -121,11 +118,7 @@ export async function GET(request: NextRequest) {
 
 		// Séparer les commandes en cours et l'historique
 		const currentOrders = formattedOrders.filter(
-			(order) =>
-				order.status === "PENDING" ||
-				order.status === "CONFIRMED" ||
-				order.status === "PROCESSING" ||
-				order.status === "SHIPPED"
+			(order) => order.status === "PENDING" || order.status === "SHIPPED"
 		);
 
 		const historicalOrders = formattedOrders.filter(

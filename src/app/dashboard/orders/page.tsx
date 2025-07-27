@@ -1,11 +1,18 @@
 "use client";
 
+import OrderTrackingModal from "@/components/Dashboard/OrderTrackingModal";
 import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, Euro, Package, Truck, XCircle } from "lucide-react";
+import { Clock, ExternalLink, Package, Truck, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaFilter, FaSearch, FaTimes } from "react-icons/fa";
+import {
+	FaChevronDown,
+	FaEdit,
+	FaFilter,
+	FaSearch,
+	FaTimes,
+} from "react-icons/fa";
 import { toast } from "react-toastify";
 
 interface OrderItem {
@@ -32,8 +39,9 @@ interface Order {
 	paymentMethod?: string;
 	paymentStatus: string;
 	notes?: string;
+	trackingNumber?: string;
+	carrier?: string;
 	createdAt: string;
-	confirmedAt?: string;
 	shippedAt?: string;
 	deliveredAt?: string;
 	items: OrderItem[];
@@ -59,8 +67,8 @@ export default function OrdersPage() {
 	const [showFilters, setShowFilters] = useState(false);
 	const [sortBy, setSortBy] = useState("");
 	const [sortByAmount, setSortByAmount] = useState("");
-	const [openStatusMenu, setOpenStatusMenu] = useState<string | null>(null);
 	const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
+	const [trackingModal, setTrackingModal] = useState<Order | null>(null);
 
 	// Fonction pour basculer l'expansion d'une commande
 	const toggleOrderExpansion = (orderId: string) => {
@@ -94,8 +102,7 @@ export default function OrdersPage() {
 				const sortedOrders = data.orders.sort((a: Order, b: Order) => {
 					const statusOrder = {
 						PENDING: 1, // En préparation
-						CONFIRMED: 2, // En cours de livraison
-						SHIPPED: 2, // En cours de livraison (même priorité)
+						SHIPPED: 2, // En livraison
 						DELIVERED: 3, // Livré
 						CANCELLED: 4, // Annulé
 					};
@@ -233,6 +240,61 @@ export default function OrdersPage() {
 		}
 	};
 
+	// Mettre à jour les informations de suivi
+	const updateOrderTracking = async (orderId: string, data: any) => {
+		try {
+			const response = await fetch(`/api/admin/orders/${orderId}`, {
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(data),
+			});
+
+			if (response.ok) {
+				const updatedOrder = await response.json();
+				// Mettre à jour localement
+				setAllOrders((prevOrders) =>
+					prevOrders.map((order) =>
+						order.id === orderId ? { ...order, ...data } : order
+					)
+				);
+				setOrders((prevOrders) =>
+					prevOrders.map((order) =>
+						order.id === orderId ? { ...order, ...data } : order
+					)
+				);
+				return updatedOrder;
+			} else {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Erreur lors de la mise à jour");
+			}
+		} catch (error) {
+			console.error("Erreur lors de la mise à jour:", error);
+			throw error;
+		}
+	};
+
+	// Obtenir le lien de suivi
+	const getTrackingUrl = (carrier: string, trackingNumber: string) => {
+		if (!trackingNumber || !carrier) return "";
+
+		switch (carrier) {
+			case "colissimo":
+				return `https://www.laposte.fr/outils/suivre-vos-envois?code=${trackingNumber}`;
+			case "chronopost":
+				return `https://www.chronopost.fr/tracking-colis?listeNumerosLT=${trackingNumber}`;
+			case "mondial-relay":
+				return `https://www.mondialrelay.fr/suivi-de-colis?numeroExpedition=${trackingNumber}`;
+			case "dpd":
+				return `https://www.dpd.fr/tracer/${trackingNumber}`;
+			case "ups":
+				return `https://www.ups.com/track?tracknum=${trackingNumber}`;
+			case "fedex":
+				return `https://www.fedex.com/fr-fr/tracking.html?tracknumbers=${trackingNumber}`;
+			default:
+				return "";
+		}
+	};
+
 	// Obtenir l'icône et la couleur selon le statut
 	const getStatusInfo = (status: string) => {
 		switch (status) {
@@ -242,17 +304,11 @@ export default function OrdersPage() {
 					color: "text-red-600 bg-rose-light-2",
 					label: "En préparation",
 				};
-			case "CONFIRMED":
-				return {
-					icon: Truck,
-					color: "text-orange-400 bg-orange-100",
-					label: "Livraison en cours",
-				};
 			case "SHIPPED":
 				return {
 					icon: Truck,
 					color: "text-orange-400 bg-orange-100",
-					label: "Livraison en cours",
+					label: "En livraison",
 				};
 			case "DELIVERED":
 				return {
@@ -371,6 +427,12 @@ export default function OrdersPage() {
 
 	return (
 		<div className="p-1 sm:p-6 space-y-2 sm:space-y-6">
+			{/* Modal de suivi */}
+			<OrderTrackingModal
+				order={trackingModal}
+				onClose={() => setTrackingModal(null)}
+				onUpdate={updateOrderTracking}
+			/>
 			{/* En-tête */}
 			<div className="flex justify-between items-center">
 				<div>
@@ -411,13 +473,7 @@ export default function OrdersPage() {
 									Commandes en livraison
 								</p>
 								<p className="text-xl sm:text-2xl font-bold text-logo">
-									{
-										orders.filter(
-											(order) =>
-												order.status === "CONFIRMED" ||
-												order.status === "SHIPPED"
-										).length
-									}
+									{orders.filter((order) => order.status === "SHIPPED").length}
 								</p>
 							</div>
 							<Truck className="h-6 w-6 sm:h-8 sm:w-8 text-orange-400" />
@@ -595,12 +651,17 @@ export default function OrdersPage() {
 										className="border rounded-lg p-2 sm:p-3 hover:shadow-md transition-shadow"
 									>
 										{/* En-tête compacte - toujours visible */}
-										<div className="flex justify-between items-center mb-2">
+										<div className="flex justify-between items-start mb-2">
 											<div className="flex-1 min-w-0">
-												<div className="flex items-center gap-2 sm:gap-3 mb-1">
-													<h3 className="font-semibold text-sm sm:text-lg flex-shrink-0">
-														{order.orderNumber}
-													</h3>
+												<h3 className="font-semibold text-sm sm:text-lg mb-1">
+													{order.orderNumber}
+												</h3>
+												<p className="text-gray-600 font-medium text-sm sm:text-base truncate">
+													{order.customerName}
+												</p>
+											</div>
+											<div className="text-right flex-shrink-0 ml-2">
+												<div className="flex items-center justify-end gap-2 mb-1">
 													<span
 														className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full flex-shrink-0 truncate ${statusInfo.color}`}
 													>
@@ -612,123 +673,64 @@ export default function OrdersPage() {
 															{statusInfo.label}
 														</span>
 													</span>
+													{order.trackingNumber && (
+														<span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 flex-shrink-0">
+															📦 Suivi
+														</span>
+													)}
 												</div>
-												<p className="text-gray-600 font-medium text-sm sm:text-base truncate">
-													{order.customerName}
-												</p>
-											</div>
-											<div className="text-right flex-shrink-0 ml-2">
-												<p className="text-xs sm:text-sm text-gray-500 mb-1">
+												<p className="text-xs sm:text-sm text-gray-500">
 													{new Date(order.createdAt).toLocaleDateString()}
 												</p>
-												<div className="flex items-center justify-end gap-1 sm:gap-2">
-													<p className="text-sm sm:text-lg font-bold text-logo flex items-center">
-														{order.total.toFixed(2)}
-														<Euro className="h-3 w-3 sm:h-4 sm:w-4 ml-0.5 sm:ml-1" />
-													</p>
-													<span
-														className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full ${paymentStatusInfo.color}`}
-													>
-														{paymentStatusInfo.label}
-													</span>
-												</div>
 											</div>
 										</div>
 
 										{/* Bouton d'expansion et menu de statut */}
 										<div className="flex justify-between items-center">
-											{/* Bouton d'expansion */}
-											<button
-												onClick={() => toggleOrderExpansion(order.id)}
-												className="flex items-center gap-1 text-xs sm:text-sm text-nude-dark hover:text-nude-dark-2 transition-colors underline cursor-pointer"
-											>
-												<span>
-													{isExpanded ? "Masquer" : "Voir"} les détails
-												</span>
-												<svg
-													className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform ${isExpanded ? "rotate-180" : ""}`}
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M19 9l-7 7-7-7"
-													/>
-												</svg>
-											</button>
-
-											{/* Menu déroulant personnalisé pour changer le statut */}
-											<div className="relative">
+											<div className="flex items-center gap-2">
+												{/* Bouton d'expansion */}
 												<button
-													type="button"
-													onClick={() =>
-														setOpenStatusMenu(
-															openStatusMenu === order.id ? null : order.id
-														)
-													}
-													className="appearance-none px-2 py-1 sm:px-3 sm:py-1.5 lg:px-4 lg:py-2 text-sm lg:text-base border-2 border-nude-medium rounded-2xl focus:border-nude-dark focus:outline-none cursor-pointer bg-white hover:border-nude-dark transition-colors pr-6 sm:pr-8 lg:pr-10 flex items-center justify-between min-w-[160px] sm:min-w-[180px] lg:min-w-[200px]"
-													style={{
-														backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-														backgroundPosition: "right 0.5rem center",
-														backgroundRepeat: "no-repeat",
-														backgroundSize: "1.5em 1.5em",
-													}}
+													onClick={() => toggleOrderExpansion(order.id)}
+													className="flex items-center gap-1 text-xs sm:text-sm text-nude-dark hover:text-nude-dark-2 transition-colors underline cursor-pointer"
 												>
-													<span
-														className={
-															getStatusInfo(order.status).color.split(" ")[0]
-														}
-													>
-														<span className="hidden sm:inline">
-															{getStatusInfo(order.status).label}
-														</span>
-														<span className="sm:hidden text-xs">
-															{getStatusInfo(order.status).label}
-														</span>
+													<span>
+														{isExpanded ? "Masquer" : "Voir"} les détails
 													</span>
+													<svg
+														className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+														fill="none"
+														stroke="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path
+															strokeLinecap="round"
+															strokeLinejoin="round"
+															strokeWidth={2}
+															d="M19 9l-7 7-7-7"
+														/>
+													</svg>
 												</button>
 
-												{/* Menu déroulant personnalisé */}
-												{openStatusMenu === order.id && (
-													<div className="absolute z-50 right-0 mt-2 bg-white border-2 border-nude-medium rounded-2xl shadow-lg min-w-[200px] w-auto">
-														{[
-															{ value: "PENDING", label: "En préparation" },
-															{
-																value: "CONFIRMED",
-																label: "En cours de livraison",
-															},
-															{ value: "DELIVERED", label: "Livré" },
-															{ value: "CANCELLED", label: "Annulé" },
-														].map((option) => (
-															<button
-																key={option.value}
-																type="button"
-																onClick={() => {
-																	updateOrderStatus(order.id, option.value);
-																	setOpenStatusMenu(null);
-																}}
-																className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-gray-100 transition-colors first:rounded-t-2xl last:rounded-b-2xl cursor-pointer text-sm sm:text-base ${
-																	order.status === option.value
-																		? "bg-nude-medium text-beige-light font-medium"
-																		: "text-nude-dark hover:text-nude-dark-2 hover:bg-rose-light-2"
-																}`}
-															>
-																{option.label}
-															</button>
-														))}
-													</div>
-												)}
+												{/* Bouton de suivi */}
+												<button
+													onClick={() => setTrackingModal(order)}
+													className="flex items-center gap-1 text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors underline cursor-pointer"
+												>
+													<FaEdit className="w-3 h-3" />
+													<span className="hidden sm:inline">Suivi</span>
+												</button>
+											</div>
 
-												{/* Overlay pour fermer le menu en cliquant ailleurs */}
-												{openStatusMenu === order.id && (
-													<div
-														className="fixed inset-0 z-40"
-														onClick={() => setOpenStatusMenu(null)}
-													/>
-												)}
+											{/* Prix et statut de paiement */}
+											<div className="flex items-center gap-2">
+												<p className="text-sm sm:text-lg font-bold text-logo">
+													{order.total.toFixed(2)}€
+												</p>
+												<span
+													className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full ${paymentStatusInfo.color}`}
+												>
+													{paymentStatusInfo.label}
+												</span>
 											</div>
 										</div>
 
@@ -770,6 +772,51 @@ export default function OrdersPage() {
 														))}
 													</div>
 												</div>
+
+												{/* Informations de suivi */}
+												{(order.trackingNumber || order.carrier) && (
+													<div className="mb-2 sm:mb-3">
+														<p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
+															Suivi de livraison :
+														</p>
+														<div className="space-y-1">
+															{order.carrier && (
+																<div className="flex justify-between text-xs sm:text-sm">
+																	<span>Transporteur :</span>
+																	<span className="font-medium capitalize">
+																		{order.carrier.replace("-", " ")}
+																	</span>
+																</div>
+															)}
+															{order.trackingNumber && (
+																<div className="flex justify-between items-center text-xs sm:text-sm">
+																	<span>Numéro de suivi :</span>
+																	<div className="flex items-center gap-1">
+																		<span className="font-medium">
+																			{order.trackingNumber}
+																		</span>
+																		{getTrackingUrl(
+																			order.carrier || "",
+																			order.trackingNumber
+																		) && (
+																			<a
+																				href={getTrackingUrl(
+																					order.carrier || "",
+																					order.trackingNumber
+																				)}
+																				target="_blank"
+																				rel="noopener noreferrer"
+																				className="text-blue-600 hover:text-blue-800"
+																			>
+																				<ExternalLink className="w-3 h-3" />
+																			</a>
+																		)}
+																	</div>
+																</div>
+															)}
+														</div>
+													</div>
+												)}
 
 												{/* Notes */}
 												{order.notes && (

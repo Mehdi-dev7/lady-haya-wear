@@ -882,25 +882,85 @@ export default function CheckoutPage() {
 								<button
 									className={`flex-1 max-w-xs sm:max-w-sm py-3 px-6 rounded-2xl text-base font-semibold transition-all duration-300 text-center cursor-pointer
     ${selectedPayment === "paypal" ? "bg-[#0750B4] hover:bg-[#063a80] text-white" : "bg-nude-dark border-2 text-white hover:bg-rose-dark hover:text-nude-dark hover:border-nude-dark"}`}
-									onClick={() => {
+									onClick={async () => {
 										if (!selectedAddressId) {
-											alert(
+											toast.error(
 												"Merci de sélectionner votre adresse de livraison."
 											);
 											return;
 										}
 										if (!selectedPayment) {
-											alert("Merci de choisir un mode de paiement.");
+											toast.error("Merci de choisir un mode de paiement.");
 											return;
 										}
-										if (selectedPayment === "paypal") {
-											alert("Redirection vers Paypal...");
-										} else {
-											alert("Paiement en cours...");
+
+										// Simuler le processus de paiement
+										setLoading(true);
+
+										try {
+											// Simuler un délai de traitement du paiement
+											await new Promise((resolve) => setTimeout(resolve, 2000));
+
+											// Créer la commande via l'API
+											const orderData = {
+												cartItems,
+												selectedAddressId,
+												selectedDelivery,
+												selectedPayment,
+												promoCodeId: appliedPromoCode?.id || null,
+												promoDiscount,
+												subtotal: subtotalHT,
+												shippingCost: livraison,
+												taxAmount: tva,
+												total: totalTTC,
+											};
+
+											const response = await fetch("/api/orders", {
+												method: "POST",
+												headers: {
+													"Content-Type": "application/json",
+												},
+												body: JSON.stringify(orderData),
+											});
+
+											const result = await response.json();
+
+											if (response.ok) {
+												toast.success(
+													`Commande #${result.orderNumber} confirmée ! Vous allez recevoir un email de confirmation.`
+												);
+
+												// Rediriger vers une page de confirmation
+												setTimeout(() => {
+													router.push(
+														`/orders?success=true&orderNumber=${result.orderNumber}`
+													);
+												}, 2000);
+											} else {
+												toast.error(
+													result.error ||
+														"Erreur lors de la création de la commande"
+												);
+											}
+										} catch (error) {
+											console.error("Erreur lors du paiement:", error);
+											toast.error("Erreur lors du traitement du paiement");
+										} finally {
+											setLoading(false);
 										}
 									}}
+									disabled={loading}
 								>
-									{selectedPayment === "paypal" ? "Payer avec Paypal" : "Payer"}
+									{loading ? (
+										<div className="flex items-center justify-center gap-2">
+											<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+											Traitement...
+										</div>
+									) : selectedPayment === "paypal" ? (
+										"Payer avec Paypal"
+									) : (
+										"Payer"
+									)}
 								</button>
 								<button
 									className="flex-1 max-w-xs sm:max-w-sm py-3 px-6 rounded-2xl ring-1 ring-nude-dark text-nude-dark font-semibold bg-nude-light hover:bg-nude-dark hover:text-nude-light hover:border-nude-light transition-all duration-300 text-center cursor-pointer"
