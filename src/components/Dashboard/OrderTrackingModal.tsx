@@ -277,14 +277,14 @@ export default function OrderTrackingModal({
 								type="button"
 								variant="outline"
 								onClick={onClose}
-								className="flex-1"
+								className="flex-1 cursor-pointer"
 								disabled={loading}
 							>
 								Annuler
 							</Button>
 							<Button
 								type="submit"
-								className="flex-1 bg-rose-dark-2 hover:bg-rose-dark"
+								className="flex-1 bg-rose-dark-2 hover:bg-rose-dark cursor-pointer"
 								disabled={loading}
 							>
 								{loading ? "Mise à jour..." : "Enregistrer"}
