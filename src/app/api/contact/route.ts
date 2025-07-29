@@ -1,47 +1,61 @@
 import { sendContactEmail } from "@/lib/brevo";
-import { NextRequest, NextResponse } from "next/server";
-import { 
-	secureNameSchema, 
-	secureEmailSchema, 
-	secureMessageSchema, 
-	sanitizeObject,
+import {
+	checkRateLimit,
 	logSecurityEvent,
-	checkRateLimit
+	sanitizeObject,
+	secureEmailSchema,
+	secureMessageSchema,
+	secureNameSchema,
 } from "@/lib/security";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 const contactSchema = z.object({
-	name: secureNameSchema,
+	nom: secureNameSchema,
 	email: secureEmailSchema,
 	message: secureMessageSchema,
-	commande: z.string().optional().transform(val => val ? val.replace(/[<>]/g, '') : ''),
+	commande: z
+		.string()
+		.optional()
+		.transform((val) => (val ? val.replace(/[<>]/g, "") : "")),
 });
 
 export async function POST(req: NextRequest) {
+	let ip = "unknown";
 	try {
 		// ===== RATE LIMITING =====
-		const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+		ip =
+			req.headers.get("x-forwarded-for") ||
+			req.headers.get("x-real-ip") ||
+			"unknown";
 		const identifier = `contact-${ip}`;
-		
-		if (!checkRateLimit(identifier, 3, 60 * 1000)) { // 3 tentatives par minute
-			logSecurityEvent('CONTACT_RATE_LIMIT', { ip }, ip);
+
+		if (!checkRateLimit(identifier, 3, 60 * 1000)) {
+			// 3 tentatives par minute
+			logSecurityEvent("CONTACT_RATE_LIMIT", { ip }, ip);
 			return NextResponse.json(
-				{ success: false, error: "Trop de tentatives. Réessayez dans 1 minute." },
+				{
+					success: false,
+					error: "Trop de tentatives. Réessayez dans 1 minute.",
+				},
 				{ status: 429 }
 			);
 		}
 
-		// ===== VALIDATION ET SANITISATION =====
 		const rawData = await req.json();
 		const sanitizedData = sanitizeObject(rawData);
-		
+
 		const parsed = contactSchema.safeParse(sanitizedData);
 		if (!parsed.success) {
-			logSecurityEvent('CONTACT_VALIDATION_ERROR', { 
-				errors: parsed.error.flatten(),
-				ip 
-			}, ip);
-			
+			logSecurityEvent(
+				"CONTACT_VALIDATION_ERROR",
+				{
+					errors: parsed.error.flatten(),
+					ip,
+				},
+				ip
+			);
+
 			return NextResponse.json(
 				{ success: false, errors: parsed.error.flatten() },
 				{ status: 400 }
@@ -49,20 +63,32 @@ export async function POST(req: NextRequest) {
 		}
 
 		// ===== ENVOI SÉCURISÉ =====
-		await sendContactEmail(parsed.data);
-		
-		logSecurityEvent('CONTACT_SUCCESS', { 
+		await sendContactEmail({
+			name: parsed.data.nom,
 			email: parsed.data.email,
-			hasCommande: !!parsed.data.commande 
-		}, ip);
-		
+			message: parsed.data.message,
+		});
+
+		logSecurityEvent(
+			"CONTACT_SUCCESS",
+			{
+				email: parsed.data.email,
+				hasCommande: !!parsed.data.commande,
+			},
+			ip
+		);
+
 		return NextResponse.json({ success: true });
 	} catch (error: any) {
-		logSecurityEvent('CONTACT_ERROR', { 
-			error: error.message,
-			ip 
-		}, ip);
-		
+		logSecurityEvent(
+			"CONTACT_ERROR",
+			{
+				error: error.message,
+				ip,
+			},
+			ip
+		);
+
 		return NextResponse.json(
 			{ success: false, error: "Erreur serveur" },
 			{ status: 500 }

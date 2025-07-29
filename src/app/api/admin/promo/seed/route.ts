@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, PromoType } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -9,7 +9,7 @@ export async function POST() {
 		const testCodes = [
 			{
 				code: "NEWSLETTER20",
-				type: "PERCENTAGE",
+				type: PromoType.PERCENTAGE,
 				value: 20,
 				minAmount: 30,
 				maxUses: 100,
@@ -19,7 +19,7 @@ export async function POST() {
 			},
 			{
 				code: "WELCOME10",
-				type: "FIXED",
+				type: PromoType.FIXED,
 				value: 10,
 				minAmount: 50,
 				maxUses: 50,
@@ -29,7 +29,7 @@ export async function POST() {
 			},
 			{
 				code: "FREESHIP",
-				type: "FREE_SHIPPING",
+				type: PromoType.FREE_SHIPPING,
 				value: 0,
 				minAmount: 25,
 				maxUses: 200,
@@ -39,7 +39,7 @@ export async function POST() {
 			},
 			{
 				code: "FLASH50",
-				type: "PERCENTAGE",
+				type: PromoType.PERCENTAGE,
 				value: 50,
 				minAmount: 100,
 				maxUses: 10,

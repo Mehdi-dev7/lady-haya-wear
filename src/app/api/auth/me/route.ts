@@ -25,7 +25,6 @@ export async function GET(request: NextRequest) {
 			user: {
 				id: user.id,
 				email: user.email,
-				name: user.name,
 				profile: {
 					firstName: user.profile?.firstName || "",
 					lastName: user.profile?.lastName || "",

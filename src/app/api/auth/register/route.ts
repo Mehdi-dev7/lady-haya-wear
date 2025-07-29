@@ -1,16 +1,16 @@
+import {
+	checkRateLimit,
+	logSecurityEvent,
+	sanitizeObject,
+	secureEmailSchema,
+	secureNameSchema,
+	validatePasswordStrength,
+} from "@/lib/security";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { 
-	secureEmailSchema, 
-	secureNameSchema,
-	validatePasswordStrength,
-	sanitizeObject,
-	logSecurityEvent,
-	checkRateLimit
-} from "@/lib/security";
 
 const prisma = new PrismaClient();
 
@@ -24,11 +24,15 @@ const registerSchema = z.object({
 export async function POST(request: NextRequest) {
 	try {
 		// ===== RATE LIMITING =====
-		const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+		const ip =
+			request.headers.get("x-forwarded-for") ||
+			request.headers.get("x-real-ip") ||
+			"unknown";
 		const identifier = `register-${ip}`;
-		
-		if (!checkRateLimit(identifier, 3, 60 * 60 * 1000)) { // 3 tentatives par heure
-			logSecurityEvent('REGISTER_RATE_LIMIT', { ip }, ip);
+
+		if (!checkRateLimit(identifier, 3, 60 * 60 * 1000)) {
+			// 3 tentatives par heure
+			logSecurityEvent("REGISTER_RATE_LIMIT", { ip }, ip);
 			return NextResponse.json(
 				{ error: "Trop de tentatives. Réessayez dans 1 heure." },
 				{ status: 429 }
@@ -38,18 +42,19 @@ export async function POST(request: NextRequest) {
 		// ===== VALIDATION ET SANITISATION =====
 		const rawBody = await request.json();
 		const sanitizedBody = sanitizeObject(rawBody);
-		
+
 		const parsed = registerSchema.safeParse(sanitizedBody);
 		if (!parsed.success) {
-			logSecurityEvent('REGISTER_VALIDATION_ERROR', { 
-				errors: parsed.error.flatten(),
-				ip 
-			}, ip);
-			
-			return NextResponse.json(
-				{ error: "Données invalides" },
-				{ status: 400 }
+			logSecurityEvent(
+				"REGISTER_VALIDATION_ERROR",
+				{
+					errors: parsed.error.flatten(),
+					ip,
+				},
+				ip
 			);
+
+			return NextResponse.json({ error: "Données invalides" }, { status: 400 });
 		}
 
 		const { email, password, firstName, lastName } = parsed.data;
@@ -57,14 +62,20 @@ export async function POST(request: NextRequest) {
 		// ===== VALIDATION MOT DE PASSE FORT =====
 		const passwordValidation = validatePasswordStrength(password);
 		if (!passwordValidation.valid) {
-			logSecurityEvent('REGISTER_WEAK_PASSWORD', { 
-				email,
-				errors: passwordValidation.errors,
-				ip 
-			}, ip);
-			
+			logSecurityEvent(
+				"REGISTER_WEAK_PASSWORD",
+				{
+					email,
+					errors: passwordValidation.errors,
+					ip,
+				},
+				ip
+			);
+
 			return NextResponse.json(
-				{ error: `Mot de passe faible: ${passwordValidation.errors.join(', ')}` },
+				{
+					error: `Mot de passe faible: ${passwordValidation.errors.join(", ")}`,
+				},
 				{ status: 400 }
 			);
 		}
@@ -75,7 +86,7 @@ export async function POST(request: NextRequest) {
 		});
 
 		if (existingUser) {
-			logSecurityEvent('REGISTER_EXISTING_USER', { email, ip }, ip);
+			logSecurityEvent("REGISTER_EXISTING_USER", { email, ip }, ip);
 			return NextResponse.json(
 				{ error: "Un utilisateur avec cet email existe déjà" },
 				{ status: 400 }
@@ -130,12 +141,16 @@ export async function POST(request: NextRequest) {
 		}
 
 		// ===== LOG SUCCÈS =====
-		logSecurityEvent('REGISTER_SUCCESS', { 
-			email,
-			userId: user.id,
-			emailSent,
-			ip 
-		}, ip);
+		logSecurityEvent(
+			"REGISTER_SUCCESS",
+			{
+				email,
+				userId: user.id,
+				emailSent,
+				ip,
+			},
+			ip
+		);
 
 		return NextResponse.json(
 			{

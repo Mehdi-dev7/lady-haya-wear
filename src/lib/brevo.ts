@@ -55,22 +55,22 @@ export async function sendOrderConfirmationEmail(
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
           .banner { background: linear-gradient(135deg, #f8ede4 0%, #e8d5c5 100%); padding: 30px; text-align: center; }
-          .logo { font-family: 'Alex Brush', cursive; font-size: 36px; color: #d9c4b5; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+          .logo { font-family: 'Brush Script MT', 'Alex Brush', cursive; font-size: 36px; color: #8a5f3d; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
           .container { max-width: 600px; margin: 0 auto; background: #fff; }
           .content { padding: 30px; }
           .order-details { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
           .item { border-bottom: 1px solid #eee; padding: 10px 0; }
           .item:last-child { border-bottom: none; }
-          .total { font-size: 1.2em; font-weight: bold; color: #d9c4b5; margin-top: 20px; }
+          .total { font-size: 1.2em; font-weight: bold; color: #8a5f3d; margin-top: 20px; }
           .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
-          .button { display: inline-block; background: #d9c4b5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+          .button { display: inline-block; background: #8a5f3d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
         </style>
       </head>
       <body>
         <div class="container">
           <div class="banner">
             <h1 class="logo">Lady Haya</h1>
-            <p style="color: #b49982; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
+            <p style="color: #8a5f3d; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
           </div>
           
           <div class="content">
@@ -137,7 +137,6 @@ export async function sendOrderConfirmationEmail(
 			{
 				name: `facture-${orderData.orderNumber}.pdf`,
 				content: pdfBuffer.toString("base64"),
-				contentType: "application/pdf",
 			},
 		];
 	}
@@ -145,7 +144,7 @@ export async function sendOrderConfirmationEmail(
 	try {
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de confirmation envoyé avec succès:", response);
-		return { success: true, messageId: response.messageId };
+		return { success: true, messageId: response.body?.messageId || "sent" };
 	} catch (error) {
 		console.error("Erreur lors de l'envoi de l'email de confirmation:", error);
 		throw error;
@@ -177,7 +176,7 @@ export async function sendWelcomeEmail(email: string, customerName: string) {
 	try {
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de bienvenue envoyé:", response);
-		return { success: true, messageId: response.messageId };
+		return { success: true, messageId: response.body?.messageId || "sent" };
 	} catch (error) {
 		console.error("Erreur lors de l'envoi de l'email de bienvenue:", error);
 		throw error;
@@ -217,7 +216,7 @@ export async function sendPasswordResetEmail(
 	try {
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de récupération envoyé:", response);
-		return { success: true, messageId: response.messageId };
+		return { success: true, messageId: response.body?.messageId || "sent" };
 	} catch (error) {
 		console.error("Erreur lors de l'envoi de l'email de récupération:", error);
 		throw error;
@@ -243,7 +242,7 @@ export async function sendCustomEmail(emailData: EmailData) {
 	try {
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email personnalisé envoyé:", response);
-		return { success: true, messageId: response.messageId };
+		return { success: true, messageId: response.body?.messageId || "sent" };
 	} catch (error) {
 		console.error("Erreur lors de l'envoi de l'email personnalisé:", error);
 		throw error;
@@ -283,7 +282,7 @@ export async function sendContactEmail(contactData: {
 	try {
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de contact envoyé:", response);
-		return { success: true, messageId: response.messageId };
+		return { success: true, messageId: response.body?.messageId || "sent" };
 	} catch (error) {
 		console.error("Erreur lors de l'envoi de l'email de contact:", error);
 		throw error;
@@ -310,7 +309,7 @@ export async function sendOrderStatusUpdateEmail(
 							<style>
 								body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
 								.banner { background: linear-gradient(135deg, #f8ede4 0%, #e8d5c5 100%); padding: 30px; text-align: center; }
-								.logo { font-family: 'Alex Brush', cursive; font-size: 36px; color: #d9c4b5; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+								.logo { font-family: 'Brush Script MT', 'Alex Brush', cursive; font-size: 36px; color: #8a5f3d; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
 								.container { max-width: 600px; margin: 0 auto; background: #fff; }
 								.content { padding: 30px; }
 								.status-card { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin: 20px 0; }
@@ -321,7 +320,7 @@ export async function sendOrderStatusUpdateEmail(
 							<div class="container">
 								<div class="banner">
 									<h1 class="logo">Lady Haya</h1>
-									<p style="color: #b49982; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
+									<p style="color: #8a5f3d; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
 								</div>
 								
 								<div class="content">
@@ -358,7 +357,7 @@ export async function sendOrderStatusUpdateEmail(
 							<style>
 								body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
 								.banner { background: linear-gradient(135deg, #f8ede4 0%, #e8d5c5 100%); padding: 30px; text-align: center; }
-								.logo { font-family: 'Alex Brush', cursive; font-size: 36px; color: #d9c4b5; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+								.logo { font-family: 'Brush Script MT', 'Alex Brush', cursive; font-size: 36px; color: #8a5f3d; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
 								.container { max-width: 600px; margin: 0 auto; background: #fff; }
 								.content { padding: 30px; }
 								.tracking-card { background: #e8f5e8; border: 1px solid #4caf50; border-radius: 8px; padding: 20px; margin: 20px 0; }
@@ -370,7 +369,7 @@ export async function sendOrderStatusUpdateEmail(
 							<div class="container">
 								<div class="banner">
 									<h1 class="logo">Lady Haya</h1>
-									<p style="color: #b49982; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
+									<p style="color: #8a5f3d; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
 								</div>
 								
 								<div class="content">
@@ -420,7 +419,7 @@ export async function sendOrderStatusUpdateEmail(
 							<style>
 								body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
 								.banner { background: linear-gradient(135deg, #f8ede4 0%, #e8d5c5 100%); padding: 30px; text-align: center; }
-								.logo { font-family: 'Alex Brush', cursive; font-size: 36px; color: #d9c4b5; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+								.logo { font-family: 'Brush Script MT', 'Alex Brush', cursive; font-size: 36px; color: #8a5f3d; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
 								.container { max-width: 600px; margin: 0 auto; background: #fff; }
 								.content { padding: 30px; }
 								.delivery-card { background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 20px; margin: 20px 0; }
@@ -432,7 +431,7 @@ export async function sendOrderStatusUpdateEmail(
 							<div class="container">
 								<div class="banner">
 									<h1 class="logo">Lady Haya</h1>
-									<p style="color: #b49982; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
+									<p style="color: #8a5f3d; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
 								</div>
 								
 								<div class="content">
@@ -492,7 +491,7 @@ export async function sendOrderStatusUpdateEmail(
 			`Email de mise à jour de statut (${orderData.status}) envoyé:`,
 			response
 		);
-		return { success: true, messageId: response.messageId };
+		return { success: true, messageId: response.body?.messageId || "sent" };
 	} catch (error) {
 		console.error(
 			"Erreur lors de l'envoi de l'email de mise à jour de statut:",

@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 	try {
 		// ===== RATE LIMITING =====
 		const ip =
-			request.ip || request.headers.get("x-forwarded-for") || "unknown";
+			request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
 		const identifier = `login-${ip}`;
 
 		if (!checkRateLimit(identifier, 5, 15 * 60 * 1000)) {

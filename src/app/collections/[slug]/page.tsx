@@ -6,12 +6,13 @@ import { notFound } from "next/navigation";
 import ProductGrid from "@/components/ProductGrid/ProductGrid";
 
 type Props = {
-	params: { slug: string };
-	searchParams: { [key: string]: string | string[] | undefined };
+	params: Promise<{ slug: string }>;
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export default async function CollectionPage({ params, searchParams }: Props) {
 	const resolvedParams = await params;
+	const resolvedSearchParams = await searchParams;
 	const category = await getCategoryBySlug(resolvedParams.slug);
 
 	if (!category) {
