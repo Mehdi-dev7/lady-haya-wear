@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
 				orderDate: order.createdAt.toLocaleDateString("fr-FR"),
 				customerName: order.customerName,
 				customerEmail: order.customerEmail,
-				customerPhone: order.customerPhone,
+				customerPhone: order.customerPhone || undefined,
 				shippingAddress: order.shippingAddress!,
 				items: order.items.map((item) => ({
 					name: item.productName,
