@@ -6,8 +6,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-interface Product {
+import { Product } from "@/lib/sanity";
+
+// Type pour les produits avec catégorie résolue
+interface FeaturedProduct {
 	_id: string;
+	_type: "product";
 	name: string;
 	slug: { current: string };
 	shortDescription: string;
@@ -20,16 +24,21 @@ interface Product {
 	};
 	featured: boolean;
 	isNew: boolean;
+	_createdAt: string;
+	_updatedAt: string;
+	price?: number;
+	originalPrice?: number;
+	colors?: any[];
 }
 
 export default function FeaturedProducts() {
-	const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+	const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
 
 	useEffect(() => {
 		const fetchFeaturedProducts = async () => {
 			try {
 				const products = await getFeaturedProducts();
-				setFeaturedProducts(products);
+				setFeaturedProducts(products as unknown as FeaturedProduct[]);
 			} catch (error) {
 				console.error(
 					"Erreur lors du chargement des produits vedettes:",

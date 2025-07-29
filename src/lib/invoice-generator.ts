@@ -40,7 +40,7 @@ export function generateInvoicePDF(invoiceData: InvoiceData): jsPDF {
 	const textColor = [51, 51, 51]; // #333333
 
 	// En-tête
-	doc.setFillColor(...primaryColor);
+	doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
 	doc.rect(0, 0, 210, 40, "F");
 
 	// Logo/Titre
@@ -55,7 +55,7 @@ export function generateInvoicePDF(invoiceData: InvoiceData): jsPDF {
 	doc.text("Votre boutique de vêtements et accessoires", 20, 35);
 
 	// Informations de facturation - déplacées vers la gauche pour plus d'espace
-	doc.setTextColor(...textColor);
+	doc.setTextColor(textColor[0], textColor[1], textColor[2]);
 	doc.setFontSize(12);
 	doc.setFont("helvetica", "bold");
 	doc.text("FACTURE", 120, 20);
@@ -106,7 +106,7 @@ export function generateInvoicePDF(invoiceData: InvoiceData): jsPDF {
 	doc.text("Articles commandés:", 20, 150);
 
 	// En-tête du tableau
-	doc.setFillColor(...secondaryColor);
+	doc.setFillColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
 	doc.rect(20, 155, 170, 10, "F");
 	doc.setTextColor(255, 255, 255);
 	doc.setFontSize(9);
@@ -118,7 +118,7 @@ export function generateInvoicePDF(invoiceData: InvoiceData): jsPDF {
 
 	// Contenu du tableau
 	let yPosition = 170;
-	doc.setTextColor(...textColor);
+	doc.setTextColor(textColor[0], textColor[1], textColor[2]);
 	doc.setFont("helvetica", "normal");
 
 	invoiceData.items.forEach((item, index) => {
@@ -171,18 +171,18 @@ export function generateInvoicePDF(invoiceData: InvoiceData): jsPDF {
 		doc.text("Réduction promo:", 120, yPosition);
 		doc.text(`-${invoiceData.promoDiscount.toFixed(2)}€`, 160, yPosition);
 		yPosition += 8;
-		doc.setTextColor(...textColor);
+		doc.setTextColor(textColor[0], textColor[1], textColor[2]);
 	}
 
 	// Ligne de séparation
-	doc.setDrawColor(...secondaryColor);
+	doc.setDrawColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
 	doc.line(120, yPosition, 190, yPosition);
 	yPosition += 8;
 
 	// Total
 	doc.setFontSize(12);
 	doc.setFont("helvetica", "bold");
-	doc.setTextColor(...primaryColor);
+	doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
 	doc.text("Total TTC:", 120, yPosition);
 	doc.text(`${invoiceData.total.toFixed(2)}€`, 160, yPosition);
 
@@ -190,7 +190,7 @@ export function generateInvoicePDF(invoiceData: InvoiceData): jsPDF {
 	yPosition += 15;
 	doc.setFontSize(10);
 	doc.setFont("helvetica", "normal");
-	doc.setTextColor(...textColor);
+	doc.setTextColor(textColor[0], textColor[1], textColor[2]);
 	const paymentMethod =
 		invoiceData.paymentMethod === "cb"
 			? "Carte bancaire"

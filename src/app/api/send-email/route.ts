@@ -47,22 +47,25 @@ export async function POST(request: NextRequest) {
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 
 		return NextResponse.json(
-			{ message: "Email envoyé avec succès", messageId: response.messageId },
+			{
+				message: "Email envoyé avec succès",
+				messageId: response.body?.messageId || "sent",
+			},
 			{ status: 200 }
 		);
 	} catch (error: any) {
 		console.error("Erreur lors de l'envoi de l'email:", error);
-		
+
 		// Détails de l'erreur pour le debug
 		if (error.response) {
 			console.error("Status:", error.statusCode);
 			console.error("Response body:", error.body);
 		}
-		
+
 		return NextResponse.json(
-			{ 
+			{
 				error: "Erreur lors de l'envoi de l'email",
-				details: error.message || "Erreur inconnue"
+				details: error.message || "Erreur inconnue",
 			},
 			{ status: 500 }
 		);

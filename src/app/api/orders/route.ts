@@ -134,14 +134,22 @@ export async function POST(request: NextRequest) {
 				customerName: order.customerName,
 				customerEmail: order.customerEmail,
 				customerPhone: order.customerPhone || undefined,
-				shippingAddress: order.shippingAddress!,
+				shippingAddress: {
+					...order.shippingAddress!,
+					civility:
+						order.shippingAddress?.civility === "MR"
+							? "MR"
+							: order.shippingAddress?.civility === "MME"
+								? "MME"
+								: undefined,
+				},
 				items: order.items.map((item) => ({
 					name: item.productName,
 					quantity: item.quantity,
 					unitPrice: item.unitPrice,
 					totalPrice: item.totalPrice,
-					colorName: item.colorName,
-					sizeName: item.sizeName,
+					colorName: item.colorName || undefined,
+					sizeName: item.sizeName || undefined,
 				})),
 				subtotal: order.subtotal,
 				taxAmount: order.taxAmount,
