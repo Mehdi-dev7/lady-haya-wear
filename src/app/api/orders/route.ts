@@ -1,8 +1,7 @@
-import { authOptions } from "@/lib/AuthContext";
 import { sendCustomEmail, sendOrderConfirmationEmail } from "@/lib/brevo";
 import { generateInvoicePDFAsBuffer } from "@/lib/invoice-generator";
 import { PrismaClient } from "@prisma/client";
-import { getServerSession } from "next-auth";
+import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -17,8 +16,24 @@ function generateOrderNumber(): string {
 // POST - Créer une nouvelle commande et envoyer les emails
 export async function POST(request: NextRequest) {
 	try {
-		const session = await getServerSession(authOptions);
-		if (!session?.user?.email) {
+		// Vérifier l'authentification avec le token JWT personnalisé
+		const token = request.cookies.get("auth-token")?.value;
+
+		if (!token) {
+			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+		}
+
+		// Vérifier le token JWT
+		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
+		const user = await prisma.user.findUnique({
+			where: { id: decoded.userId },
+			include: {
+				profile: true,
+				addresses: true,
+			},
+		});
+
+		if (!user) {
 			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 		}
 
@@ -35,22 +50,6 @@ export async function POST(request: NextRequest) {
 			taxAmount,
 			total,
 		} = body;
-
-		// Récupérer les informations utilisateur
-		const user = await prisma.user.findUnique({
-			where: { email: session.user.email },
-			include: {
-				profile: true,
-				addresses: true,
-			},
-		});
-
-		if (!user) {
-			return NextResponse.json(
-				{ error: "Utilisateur non trouvé" },
-				{ status: 404 }
-			);
-		}
 
 		// Récupérer l'adresse de livraison
 		const shippingAddress = user.addresses.find(
@@ -69,7 +68,7 @@ export async function POST(request: NextRequest) {
 			data: {
 				userId: user.id,
 				orderNumber,
-				status: "PENDING",
+				status: "PROCESSING",
 				customerEmail: user.email,
 				customerName:
 					`${user.profile?.firstName || ""} ${user.profile?.lastName || ""}`.trim(),
@@ -266,13 +265,17 @@ export async function POST(request: NextRequest) {
 // GET - Récupérer les commandes de l'utilisateur
 export async function GET(request: NextRequest) {
 	try {
-		const session = await getServerSession(authOptions);
-		if (!session?.user?.email) {
+		// Vérifier l'authentification avec le token JWT personnalisé
+		const token = request.cookies.get("auth-token")?.value;
+
+		if (!token) {
 			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 		}
 
+		// Vérifier le token JWT
+		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
 		const user = await prisma.user.findUnique({
-			where: { email: session.user.email },
+			where: { id: decoded.userId },
 		});
 
 		if (!user) {

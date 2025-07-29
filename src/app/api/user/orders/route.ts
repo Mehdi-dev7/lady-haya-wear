@@ -118,7 +118,11 @@ export async function GET(request: NextRequest) {
 
 		// Séparer les commandes en cours et l'historique
 		const currentOrders = formattedOrders.filter(
-			(order) => order.status === "PENDING" || order.status === "SHIPPED"
+			(order) =>
+				order.status === "PENDING" ||
+				order.status === "PROCESSING" ||
+				order.status === "CONFIRMED" ||
+				order.status === "SHIPPED"
 		);
 
 		const historicalOrders = formattedOrders.filter(

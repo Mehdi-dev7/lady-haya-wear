@@ -269,7 +269,7 @@ export default function CartPage() {
 								{/* Bouton commander */}
 								<Link
 									href="/checkout"
-									className="w-[80%] md:w-[60%] lg:w-full 2xl:w-[80%] bg-nude-dark text-white py-3 px-6 rounded-2xl text-base md:text-lg font-semibold hover:bg-rose-dark transition-all duration-300 text-center block"
+									className="w-[80%] md:w-[60%] lg:w-full 2xl:w-[80%] bg-nude-dark text-white py-3 px-6 rounded-2xl text-base md:text-lg font-semibold hover:bg-rose-dark transition-all duration-300 text-center block hover:text-nude-dark hover:border-nude-dark hover:border-2"
 								>
 									Passer la commande
 								</Link>

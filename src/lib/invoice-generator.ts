@@ -54,17 +54,17 @@ export function generateInvoicePDF(invoiceData: InvoiceData): jsPDF {
 	doc.setFont("helvetica", "normal");
 	doc.text("Votre boutique de vêtements et accessoires", 20, 35);
 
-	// Informations de facturation
+	// Informations de facturation - déplacées vers la gauche pour plus d'espace
 	doc.setTextColor(...textColor);
 	doc.setFontSize(12);
 	doc.setFont("helvetica", "bold");
-	doc.text("FACTURE", 150, 25);
+	doc.text("FACTURE", 120, 20);
 
-	// Numéro de commande et date
+	// Numéro de commande et date - repositionnés dans le header
 	doc.setFontSize(10);
 	doc.setFont("helvetica", "normal");
-	doc.text(`Commande: #${invoiceData.orderNumber}`, 150, 35);
-	doc.text(`Date: ${invoiceData.orderDate}`, 150, 42);
+	doc.text(`Commande: #${invoiceData.orderNumber}`, 120, 30);
+	doc.text(`Date: ${invoiceData.orderDate}`, 120, 37);
 
 	// Informations client
 	doc.setFontSize(12);

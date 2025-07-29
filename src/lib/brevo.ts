@@ -53,8 +53,9 @@ export async function sendOrderConfirmationEmail(
     <html>
       <head>
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .header { background: linear-gradient(135deg, #d9c4b5 0%, #b49982 100%); padding: 30px; text-align: center; color: white; }
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+          .banner { background: linear-gradient(135deg, #f8ede4 0%, #e8d5c5 100%); padding: 30px; text-align: center; }
+          .logo { font-family: 'Alex Brush', cursive; font-size: 36px; color: #d9c4b5; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
           .container { max-width: 600px; margin: 0 auto; background: #fff; }
           .content { padding: 30px; }
           .order-details { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
@@ -67,9 +68,9 @@ export async function sendOrderConfirmationEmail(
       </head>
       <body>
         <div class="container">
-          <div class="header">
-            <h1>🎉 Merci pour votre commande !</h1>
-            <p>Votre commande a été confirmée avec succès</p>
+          <div class="banner">
+            <h1 class="logo">Lady Haya</h1>
+            <p style="color: #b49982; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
           </div>
           
           <div class="content">
@@ -304,159 +305,162 @@ export async function sendOrderStatusUpdateEmail(
 		case "PENDING":
 			subject = `Votre commande #${orderData.orderNumber} est en cours de préparation - Lady Haya Wear`;
 			htmlContent = `
-				<html>
-					<head>
-						<style>
-							body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-							.header { background: linear-gradient(135deg, #d9c4b5 0%, #b49982 100%); padding: 30px; text-align: center; color: white; }
-							.container { max-width: 600px; margin: 0 auto; background: #fff; }
-							.content { padding: 30px; }
-							.status-card { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin: 20px 0; }
-							.footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
-						</style>
-					</head>
-					<body>
-						<div class="container">
-							<div class="header">
-								<h1>🛍️ Préparation en cours</h1>
-								<p>Votre commande est en cours de préparation</p>
-							</div>
-							
-							<div class="content">
-								<h2>Bonjour ${orderData.customerName},</h2>
-								<p>Nous vous informons que votre commande est actuellement en cours de préparation dans nos entrepôts.</p>
-								
-								<div class="status-card">
-									<h3>📋 Détails de votre commande</h3>
-									<p><strong>Numéro de commande :</strong> #${orderData.orderNumber}</p>
-									<p><strong>Statut actuel :</strong> En cours de préparation</p>
+					<html>
+						<head>
+							<style>
+								body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+								.banner { background: linear-gradient(135deg, #f8ede4 0%, #e8d5c5 100%); padding: 30px; text-align: center; }
+								.logo { font-family: 'Alex Brush', cursive; font-size: 36px; color: #d9c4b5; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+								.container { max-width: 600px; margin: 0 auto; background: #fff; }
+								.content { padding: 30px; }
+								.status-card { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin: 20px 0; }
+								.footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
+							</style>
+						</head>
+						<body>
+							<div class="container">
+								<div class="banner">
+									<h1 class="logo">Lady Haya</h1>
+									<p style="color: #b49982; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
 								</div>
 								
-								<p>Notre équipe s'occupe de préparer votre commande avec soin. Vous recevrez un email dès que votre colis sera expédié avec le numéro de suivi.</p>
+								<div class="content">
+									<h2>Bonjour ${orderData.customerName},</h2>
+									<p>Nous vous informons que votre commande est actuellement en cours de préparation dans nos entrepôts.</p>
+									
+									<div class="status-card">
+										<h3>📋 Détails de votre commande</h3>
+										<p><strong>Numéro de commande :</strong> #${orderData.orderNumber}</p>
+										<p><strong>Statut actuel :</strong> En cours de préparation</p>
+									</div>
+									
+									<p>Notre équipe s'occupe de préparer votre commande avec soin. Vous recevrez un email dès que votre colis sera expédié avec le numéro de suivi.</p>
+									
+									<p>Merci de votre patience !</p>
+									
+									<p>Cordialement,<br>L'équipe Lady Haya Wear</p>
+								</div>
 								
-								<p>Merci de votre patience !</p>
-								
-								<p>Cordialement,<br>L'équipe Lady Haya Wear</p>
+								<div class="footer">
+									<p>Lady Haya Wear - Votre boutique de mode en ligne</p>
+								</div>
 							</div>
-							
-							<div class="footer">
-								<p>Lady Haya Wear - Votre boutique de mode en ligne</p>
-							</div>
-						</div>
-					</body>
-				</html>
-			`;
+						</body>
+					</html>
+				`;
 			break;
 
 		case "SHIPPED":
 			subject = `Votre commande #${orderData.orderNumber} a été expédiée - Lady Haya Wear`;
 			htmlContent = `
-				<html>
-					<head>
-						<style>
-							body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-							.header { background: linear-gradient(135deg, #d9c4b5 0%, #b49982 100%); padding: 30px; text-align: center; color: white; }
-							.container { max-width: 600px; margin: 0 auto; background: #fff; }
-							.content { padding: 30px; }
-							.tracking-card { background: #e8f5e8; border: 1px solid #4caf50; border-radius: 8px; padding: 20px; margin: 20px 0; }
-							.tracking-button { display: inline-block; background: #4caf50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 10px 0; }
-							.footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
-						</style>
-					</head>
-					<body>
-						<div class="container">
-							<div class="header">
-								<h1>🚚 Votre commande est en route !</h1>
-								<p>Votre colis a été expédié</p>
-							</div>
-							
-							<div class="content">
-								<h2>Bonjour ${orderData.customerName},</h2>
-								<p>Excellente nouvelle ! Votre commande a été expédiée et est maintenant en route vers vous.</p>
-								
-								<div class="tracking-card">
-									<h3>📦 Informations de suivi</h3>
-									<p><strong>Numéro de commande :</strong> #${orderData.orderNumber}</p>
-									${orderData.trackingNumber ? `<p><strong>Numéro de suivi :</strong> ${orderData.trackingNumber}</p>` : ""}
-									${orderData.carrier ? `<p><strong>Transporteur :</strong> ${orderData.carrier.replace("-", " ").toUpperCase()}</p>` : ""}
-									${
-										orderData.trackingUrl
-											? `
-									<p><strong>Suivre votre colis :</strong></p>
-									<a href="${orderData.trackingUrl}" class="tracking-button" target="_blank">
-										🔍 Suivre mon colis
-									</a>
-									`
-											: ""
-									}
+					<html>
+						<head>
+							<style>
+								body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+								.banner { background: linear-gradient(135deg, #f8ede4 0%, #e8d5c5 100%); padding: 30px; text-align: center; }
+								.logo { font-family: 'Alex Brush', cursive; font-size: 36px; color: #d9c4b5; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+								.container { max-width: 600px; margin: 0 auto; background: #fff; }
+								.content { padding: 30px; }
+								.tracking-card { background: #e8f5e8; border: 1px solid #4caf50; border-radius: 8px; padding: 20px; margin: 20px 0; }
+								.tracking-button { display: inline-block; background: #4caf50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 10px 0; }
+								.footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
+							</style>
+						</head>
+						<body>
+							<div class="container">
+								<div class="banner">
+									<h1 class="logo">Lady Haya</h1>
+									<p style="color: #b49982; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
 								</div>
 								
-								<p><strong>Livraison estimée :</strong> 2-5 jours ouvrés</p>
+								<div class="content">
+									<h2>Bonjour ${orderData.customerName},</h2>
+									<p>Excellente nouvelle ! Votre commande a été expédiée et est maintenant en route vers vous.</p>
+									
+									<div class="tracking-card">
+										<h3>📦 Informations de suivi</h3>
+										<p><strong>Numéro de commande :</strong> #${orderData.orderNumber}</p>
+										${orderData.trackingNumber ? `<p><strong>Numéro de suivi :</strong> ${orderData.trackingNumber}</p>` : ""}
+										${orderData.carrier ? `<p><strong>Transporteur :</strong> ${orderData.carrier.replace("-", " ").toUpperCase()}</p>` : ""}
+										${
+											orderData.trackingUrl
+												? `
+										<p><strong>Suivre votre colis :</strong></p>
+										<a href="${orderData.trackingUrl}" class="tracking-button" target="_blank">
+											🔍 Suivre mon colis
+										</a>
+										`
+												: ""
+										}
+									</div>
+									
+									<p><strong>Livraison estimée :</strong> 2-5 jours ouvrés</p>
+									
+									<p>Vous pouvez suivre l'évolution de votre colis en utilisant le lien ci-dessus ou en vous connectant à votre espace client.</p>
+									
+									<p>Merci de votre confiance !</p>
+									
+									<p>Cordialement,<br>L'équipe Lady Haya Wear</p>
+								</div>
 								
-								<p>Vous pouvez suivre l'évolution de votre colis en utilisant le lien ci-dessus ou en vous connectant à votre espace client.</p>
-								
-								<p>Merci de votre confiance !</p>
-								
-								<p>Cordialement,<br>L'équipe Lady Haya Wear</p>
+								<div class="footer">
+									<p>Lady Haya Wear - Votre boutique de mode en ligne</p>
+								</div>
 							</div>
-							
-							<div class="footer">
-								<p>Lady Haya Wear - Votre boutique de mode en ligne</p>
-							</div>
-						</div>
-					</body>
-				</html>
-			`;
+						</body>
+					</html>
+				`;
 			break;
 
 		case "DELIVERED":
 			subject = `Votre commande #${orderData.orderNumber} a été livrée - Lady Haya Wear`;
 			htmlContent = `
-				<html>
-					<head>
-						<style>
-							body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-							.header { background: linear-gradient(135deg, #d9c4b5 0%, #b49982 100%); padding: 30px; text-align: center; color: white; }
-							.container { max-width: 600px; margin: 0 auto; background: #fff; }
-							.content { padding: 30px; }
-							.delivery-card { background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 20px; margin: 20px 0; }
-							.review-button { display: inline-block; background: #d9c4b5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 10px 0; }
-							.footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
-						</style>
-					</head>
-					<body>
-						<div class="container">
-							<div class="header">
-								<h1>🎉 Livraison réussie !</h1>
-								<p>Votre commande a été livrée</p>
-							</div>
-							
-							<div class="content">
-								<h2>Bonjour ${orderData.customerName},</h2>
-								<p>Parfait ! Votre commande a été livrée avec succès.</p>
-								
-								<div class="delivery-card">
-									<h3>✅ Confirmation de livraison</h3>
-									<p><strong>Numéro de commande :</strong> #${orderData.orderNumber}</p>
-									<p><strong>Statut :</strong> Livrée</p>
+					<html>
+						<head>
+							<style>
+								body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+								.banner { background: linear-gradient(135deg, #f8ede4 0%, #e8d5c5 100%); padding: 30px; text-align: center; }
+								.logo { font-family: 'Alex Brush', cursive; font-size: 36px; color: #d9c4b5; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+								.container { max-width: 600px; margin: 0 auto; background: #fff; }
+								.content { padding: 30px; }
+								.delivery-card { background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 20px; margin: 20px 0; }
+								.review-button { display: inline-block; background: #d9c4b5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 10px 0; }
+								.footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
+							</style>
+						</head>
+						<body>
+							<div class="container">
+								<div class="banner">
+									<h1 class="logo">Lady Haya</h1>
+									<p style="color: #b49982; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
 								</div>
 								
-								<p>Nous espérons que vous êtes satisfait(e) de votre achat !</p>
+								<div class="content">
+									<h2>Bonjour ${orderData.customerName},</h2>
+									<p>Parfait ! Votre commande a été livrée avec succès.</p>
+									
+									<div class="delivery-card">
+										<h3>✅ Confirmation de livraison</h3>
+										<p><strong>Numéro de commande :</strong> #${orderData.orderNumber}</p>
+										<p><strong>Statut :</strong> Livrée</p>
+									</div>
+									
+									<p>Nous espérons que vous êtes satisfait(e) de votre achat !</p>
+									
+									<p>N'hésitez pas à nous faire part de votre expérience en nous contactant si vous avez des questions ou des suggestions.</p>
+									
+									<p>Merci de votre confiance et à bientôt !</p>
+									
+									<p>Cordialement,<br>L'équipe Lady Haya Wear</p>
+								</div>
 								
-								<p>N'hésitez pas à nous faire part de votre expérience en nous contactant si vous avez des questions ou des suggestions.</p>
-								
-								<p>Merci de votre confiance et à bientôt !</p>
-								
-								<p>Cordialement,<br>L'équipe Lady Haya Wear</p>
+								<div class="footer">
+									<p>Lady Haya Wear - Votre boutique de mode en ligne</p>
+								</div>
 							</div>
-							
-							<div class="footer">
-								<p>Lady Haya Wear - Votre boutique de mode en ligne</p>
-							</div>
-						</div>
-					</body>
-				</html>
-			`;
+						</body>
+					</html>
+				`;
 			break;
 
 		default:
