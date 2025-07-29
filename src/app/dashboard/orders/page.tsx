@@ -49,7 +49,7 @@ interface Order {
 
 interface OrderStats {
 	PENDING?: number;
-	CONFIRMED?: number;
+	PROCESSING?: number;
 	SHIPPED?: number;
 	DELIVERED?: number;
 	CANCELLED?: number;
@@ -304,6 +304,12 @@ export default function OrdersPage() {
 					color: "text-red-600 bg-rose-light-2",
 					label: "En préparation",
 				};
+			case "PROCESSING":
+				return {
+					icon: Clock,
+					color: "text-blue-600 bg-blue-100",
+					label: "En traitement",
+				};
 			case "SHIPPED":
 				return {
 					icon: Truck,
@@ -555,8 +561,8 @@ export default function OrdersPage() {
 								options={[
 									{ value: "all", label: "Tous les statuts" },
 									{ value: "PENDING", label: "En préparation" },
-									{ value: "CONFIRMED", label: "Livraison en cours" },
-									{ value: "SHIPPED", label: "Livraison en cours" },
+									{ value: "PROCESSING", label: "En traitement" },
+									{ value: "SHIPPED", label: "En livraison" },
 									{ value: "DELIVERED", label: "Livré" },
 									{ value: "CANCELLED", label: "Annulé" },
 								]}

@@ -185,10 +185,11 @@ export default function OrdersFilter({
 
 	const statusOptions = [
 		{ value: "", label: "Tous les statuts" },
-		{ value: "Livrée", label: "Livrée" },
-		{ value: "En cours", label: "En cours" },
-		{ value: "En préparation", label: "En préparation" },
-		{ value: "Annulée", label: "Annulée" },
+		{ value: "PENDING", label: "En préparation" },
+		{ value: "PROCESSING", label: "En traitement" },
+		{ value: "SHIPPED", label: "En livraison" },
+		{ value: "DELIVERED", label: "Livré" },
+		{ value: "CANCELLED", label: "Annulé" },
 	];
 
 	// Réinitialiser tous les filtres

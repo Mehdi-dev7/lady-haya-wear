@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 			data: {
 				userId: user.id,
 				orderNumber,
-				status: "PROCESSING",
+				status: "PENDING",
 				customerEmail: user.email,
 				customerName:
 					`${user.profile?.firstName || ""} ${user.profile?.lastName || ""}`.trim(),

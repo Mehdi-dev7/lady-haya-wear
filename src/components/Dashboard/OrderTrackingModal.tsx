@@ -33,9 +33,10 @@ const CARRIERS = [
 
 const STATUS_OPTIONS = [
 	{ value: "PENDING", label: "En préparation" },
-	{ value: "SHIPPED", label: "Expédiée" },
-	{ value: "DELIVERED", label: "Livrée" },
-	{ value: "CANCELLED", label: "Annulée" },
+	{ value: "PROCESSING", label: "En traitement" },
+	{ value: "SHIPPED", label: "En livraison" },
+	{ value: "DELIVERED", label: "Livré" },
+	{ value: "CANCELLED", label: "Annulé" },
 ];
 
 export default function OrderTrackingModal({
