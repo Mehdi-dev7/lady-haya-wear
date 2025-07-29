@@ -16,7 +16,7 @@ const fakeUser = {
 };
 
 export default function CheckoutPage() {
-	const { cartItems, getCartTotal } = useCart();
+	const { cartItems, getCartTotal, clearCart } = useCart();
 	const [showAddressMenu, setShowAddressMenu] = useState(false);
 	const [selectedDelivery, setSelectedDelivery] = useState("domicile");
 	const [selectedPayment, setSelectedPayment] = useState("");
@@ -929,6 +929,7 @@ export default function CheckoutPage() {
 												toast.success(
 													`Commande #${result.orderNumber} confirmée ! Vous allez recevoir un email de confirmation.`
 												);
+												clearCart(); // Vider le panier après la commande réussie
 
 												// Rediriger vers une page de confirmation
 												setTimeout(() => {
