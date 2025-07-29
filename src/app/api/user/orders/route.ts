@@ -121,7 +121,6 @@ export async function GET(request: NextRequest) {
 			(order) =>
 				order.status === "PENDING" ||
 				order.status === "PROCESSING" ||
-				order.status === "CONFIRMED" ||
 				order.status === "SHIPPED"
 		);
 
