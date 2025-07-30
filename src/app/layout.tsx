@@ -48,6 +48,13 @@ export default function RootLayout({
 									draggable
 									pauseOnHover
 									theme="light"
+									toastClassName="!z-[99999] !fixed !top-4 !right-4 md:!top-4 md:!right-4"
+									toastStyle={{
+										zIndex: 99999,
+										position: "fixed",
+										top: "1rem",
+										right: "1rem",
+									}}
 								/>
 							</AuthProvider>
 						</FavoritesProvider>
