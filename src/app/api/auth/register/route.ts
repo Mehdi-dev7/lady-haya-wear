@@ -83,14 +83,35 @@ export async function POST(request: NextRequest) {
 		// ===== VÉRIFICATION UTILISATEUR EXISTANT =====
 		const existingUser = await prisma.user.findUnique({
 			where: { email },
+			include: {
+				verificationTokens: true,
+			},
 		});
 
 		if (existingUser) {
-			logSecurityEvent("REGISTER_EXISTING_USER", { email, ip }, ip);
-			return NextResponse.json(
-				{ error: "Un utilisateur avec cet email existe déjà" },
-				{ status: 400 }
-			);
+			// Vérifier si l'utilisateur a un email vérifié
+			const hasVerifiedEmail = await prisma.verificationToken.findFirst({
+				where: {
+					identifier: email,
+					expires: {
+						gt: new Date(),
+					},
+				},
+			});
+
+			// Si l'utilisateur existe mais n'a pas d'email vérifié, le supprimer
+			if (!hasVerifiedEmail) {
+				await prisma.user.delete({
+					where: { email },
+				});
+				console.log(`Utilisateur non vérifié supprimé: ${email}`);
+			} else {
+				logSecurityEvent("REGISTER_EXISTING_USER", { email, ip }, ip);
+				return NextResponse.json(
+					{ error: "Un utilisateur avec cet email existe déjà" },
+					{ status: 400 }
+				);
+			}
 		}
 
 		// ===== HACHAGE SÉCURISÉ =====
@@ -113,6 +134,16 @@ export async function POST(request: NextRequest) {
 			},
 			include: {
 				profile: true,
+			},
+		});
+
+		// Nettoyer les tokens expirés pour cet email
+		await prisma.verificationToken.deleteMany({
+			where: {
+				identifier: email,
+				expires: {
+					lt: new Date(),
+				},
 			},
 		});
 
