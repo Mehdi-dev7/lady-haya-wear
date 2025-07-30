@@ -83,13 +83,10 @@ export async function POST(request: NextRequest) {
 		// ===== VÉRIFICATION UTILISATEUR EXISTANT =====
 		const existingUser = await prisma.user.findUnique({
 			where: { email },
-			include: {
-				verificationTokens: true,
-			},
 		});
 
 		if (existingUser) {
-			// Vérifier si l'utilisateur a un email vérifié
+			// Vérifier si l'utilisateur a un email vérifié (token valide)
 			const hasVerifiedEmail = await prisma.verificationToken.findFirst({
 				where: {
 					identifier: email,
