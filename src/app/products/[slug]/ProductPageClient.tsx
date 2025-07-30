@@ -662,14 +662,14 @@ export function ProductPageClient({
 				</div>
 			</section>
 
-			{/* Navigation entre produits - Mobile (après les images) */}
+			{/* Navigation entre produits */}
 			{(prevProduct || nextProduct) && (
-				<section className="block md:hidden px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-8 bg-white/50">
+				<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-8 bg-white/50">
 					<div className="flex justify-between items-center">
 						{prevProduct && (
 							<Link
 								href={`/products/${prevProduct.slug?.current || prevProduct._id}`}
-								className="flex items-center gap-4 group hover:bg-rose-light-2 p-3 rounded-xl transition-all duration-300"
+								className="flex flex-col items-center gap-2 group hover:bg-rose-light-2 p-3 rounded-xl transition-all duration-300"
 							>
 								<div className="w-16 h-16 relative rounded-2xl overflow-hidden">
 									<Image
@@ -683,10 +683,10 @@ export function ProductPageClient({
 										className="object-cover rounded-2xl"
 									/>
 								</div>
-								<div className="text-left">
-									<p className="text-base text-gray-500 flex items-center gap-2">
+								<div className="text-center">
+									<p className="text-sm md:text-base text-gray-500 flex items-center gap-1 justify-center">
 										<svg
-											className="w-4 h-4"
+											className="w-3 h-3"
 											fill="none"
 											stroke="currentColor"
 											viewBox="0 0 24 24"
@@ -700,7 +700,7 @@ export function ProductPageClient({
 										</svg>
 										Précédent
 									</p>
-									<p className="text-sm text-rose-dark-2 hover:text-nude-dark-2 transition-colors">
+									<p className="text-xs md:text-sm text-rose-dark-2 hover:text-nude-dark-2 transition-colors line-clamp-2">
 										{prevProduct.name}
 									</p>
 								</div>
@@ -710,29 +710,8 @@ export function ProductPageClient({
 						{nextProduct && (
 							<Link
 								href={`/products/${nextProduct.slug?.current || nextProduct._id}`}
-								className="flex items-center gap-4 ml-auto hover:bg-rose-light-2 p-3 rounded-xl transition-all duration-300"
+								className="flex flex-col items-center gap-2 group hover:bg-rose-light-2 p-3 rounded-xl transition-all duration-300"
 							>
-								<div className="text-right">
-									<p className="text-base text-gray-500 flex items-center gap-2 justify-end">
-										Suivant
-										<svg
-											className="w-4 h-4"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M9 5l7 7-7 7"
-											/>
-										</svg>
-									</p>
-									<p className="text-sm text-rose-dark-2 hover:text-nude-dark-2 transition-colors">
-										{nextProduct.name}
-									</p>
-								</div>
 								<div className="w-16 h-16 relative rounded-2xl overflow-hidden">
 									<Image
 										src={
@@ -745,67 +724,11 @@ export function ProductPageClient({
 										className="object-cover rounded-2xl"
 									/>
 								</div>
-							</Link>
-						)}
-					</div>
-				</section>
-			)}
-
-			{/* Navigation entre produits - Desktop (position originale) */}
-			{(prevProduct || nextProduct) && (
-				<section className="hidden md:block px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-8 bg-white/50">
-					<div className="flex justify-between items-center">
-						{prevProduct && (
-							<Link
-								href={`/products/${prevProduct.slug?.current || prevProduct._id}`}
-								className="flex items-center gap-4 group hover:bg-rose-light-2 p-3 rounded-xl transition-all duration-300"
-							>
-								<div className="w-16 h-16 relative rounded-2xl overflow-hidden">
-									<Image
-										src={
-											urlFor(prevProduct.colors?.[0]?.mainImage)?.url() ||
-											"/assets/placeholder.jpg"
-										}
-										alt={prevProduct.name}
-										fill
-										sizes="64px"
-										className="object-cover rounded-2xl"
-									/>
-								</div>
-								<div className="text-left">
-									<p className="text-base text-gray-500 flex items-center gap-2">
-										<svg
-											className="w-4 h-4"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M15 19l-7-7 7-7"
-											/>
-										</svg>
-										Précédent
-									</p>
-									<p className="text-sm text-rose-dark-2 hover:text-nude-dark-2 transition-colors">
-										{prevProduct.name}
-									</p>
-								</div>
-							</Link>
-						)}
-
-						{nextProduct && (
-							<Link
-								href={`/products/${nextProduct.slug?.current || nextProduct._id}`}
-								className="flex items-center gap-4 ml-auto hover:bg-rose-light-2 p-3 rounded-xl transition-all duration-300"
-							>
-								<div className="text-right">
-									<p className="text-base text-gray-500 flex items-center gap-2 justify-end">
+								<div className="text-center">
+									<p className="text-sm md:text-base text-gray-500 flex items-center gap-1 justify-center">
 										Suivant
 										<svg
-											className="w-4 h-4"
+											className="w-3 h-3"
 											fill="none"
 											stroke="currentColor"
 											viewBox="0 0 24 24"
@@ -818,21 +741,9 @@ export function ProductPageClient({
 											/>
 										</svg>
 									</p>
-									<p className="text-sm text-rose-dark-2 hover:text-nude-dark-2 transition-colors">
+									<p className="text-xs md:text-sm text-rose-dark-2 hover:text-nude-dark-2 transition-colors line-clamp-2">
 										{nextProduct.name}
 									</p>
-								</div>
-								<div className="w-16 h-16 relative rounded-2xl overflow-hidden">
-									<Image
-										src={
-											urlFor(nextProduct.colors?.[0]?.mainImage)?.url() ||
-											"/assets/placeholder.jpg"
-										}
-										alt={nextProduct.name}
-										fill
-										sizes="64px"
-										className="object-cover rounded-2xl"
-									/>
 								</div>
 							</Link>
 						)}

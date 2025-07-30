@@ -21,12 +21,12 @@ export function Toast({ message, type, onClose }: ToastProps) {
 
 	return (
 		<div
-			className={`fixed top-4 right-4 z-[99999] transform transition-all duration-300 md:right-4 md:left-auto ${
-				isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
-			} md:min-w-[300px] left-4 right-4 md:min-w-[300px] md:top-4 top-16`}
+			className={`fixed top-0 left-0 right-0 z-[99999] transform transition-all duration-300 ${
+				isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+			} w-full`}
 		>
 			<div
-				className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg w-full md:min-w-[300px] ${
+				className={`flex items-center gap-3 px-4 py-3 shadow-lg w-full ${
 					type === "success"
 						? "bg-green-500 text-white"
 						: "bg-red-500 text-white"
