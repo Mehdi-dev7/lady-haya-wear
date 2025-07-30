@@ -21,12 +21,12 @@ export function Toast({ message, type, onClose }: ToastProps) {
 
 	return (
 		<div
-			className={`fixed top-0 left-0 right-0 z-[99999] transform transition-all duration-300 ${
+			className={`fixed top-0 md:top-2 left-0 md:left-1/2 md:transform md:-translate-x-1/2 z-[99999] transition-all duration-300 w-full md:w-auto ${
 				isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
-			} w-full`}
+			}`}
 		>
 			<div
-				className={`flex items-center gap-3 px-4 py-3 shadow-lg w-full ${
+				className={`flex items-center gap-3 px-4 md:px-6 py-3 md:py-4 shadow-lg md:rounded-lg w-full md:max-w-md md:min-w-[320px] ${
 					type === "success"
 						? "bg-green-500 text-white"
 						: "bg-red-500 text-white"
@@ -37,7 +37,9 @@ export function Toast({ message, type, onClose }: ToastProps) {
 				) : (
 					<XCircle className="h-5 w-5 flex-shrink-0" />
 				)}
-				<span className="flex-1">{message}</span>
+				<span className="flex-1 text-sm leading-relaxed whitespace-pre-line">
+					{message}
+				</span>
 				<button
 					onClick={() => {
 						setIsVisible(false);

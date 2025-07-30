@@ -200,9 +200,6 @@ async function sendVerificationEmail(email: string, token: string) {
 				subject: "Vérification de votre compte Lady Haya Wear",
 				html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="text-align: center; margin-bottom: 30px;">
-              <img src="${process.env.NEXTAUTH_URL}/assets/logo-haya.png" alt="Lady Haya Wear" style="height: 60px;">
-            </div>
             
             <h2 style="color: #8B4A47; text-align: center; margin-bottom: 30px;">
               Bienvenue chez Lady Haya Wear !

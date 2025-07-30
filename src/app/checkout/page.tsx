@@ -941,7 +941,7 @@ export default function CheckoutPage() {
 
 											if (response.ok) {
 												toast.success(
-													`Commande #${result.orderNumber} confirmée ! Vous allez recevoir un email de confirmation.`
+													`Commande #${result.orderNumber} confirmée !\nVous allez recevoir un email de confirmation.`
 												);
 												clearCart(); // Vider le panier après la commande réussie
 

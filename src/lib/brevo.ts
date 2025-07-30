@@ -63,7 +63,7 @@ export async function sendOrderConfirmationEmail(
           .item:last-child { border-bottom: none; }
           .total { font-size: 1.2em; font-weight: bold; color: #8a5f3d; margin-top: 20px; }
           .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
-          .button { display: inline-block; background: #8a5f3d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+          .button { display: inline-block; background: #8a5f3d; color: white !important; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
         </style>
       </head>
       <body>

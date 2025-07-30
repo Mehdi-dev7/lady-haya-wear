@@ -40,6 +40,50 @@ export async function GET(request: NextRequest) {
 	}
 }
 
+export async function POST(request: NextRequest) {
+	try {
+		const token = request.cookies.get("auth-token")?.value;
+		if (!token) {
+			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+		}
+		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
+		const userId = decoded.userId;
+		if (!userId) {
+			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+		}
+		const body = await request.json();
+		const { civility, lastName, firstName, street, company, zipCode, city } =
+			body;
+		if (!lastName || !firstName || !street || !zipCode || !city) {
+			return NextResponse.json(
+				{ error: "Champs requis manquants" },
+				{ status: 400 }
+			);
+		}
+
+		// Créer une nouvelle adresse
+		const address = await prisma.address.create({
+			data: {
+				userId,
+				civility: civility === "M." ? "MR" : "MME",
+				firstName,
+				lastName,
+				street,
+				city,
+				zipCode,
+				company: company || null,
+				type: "SHIPPING",
+				isDefault: false, // Nouvelle adresse n'est pas principale par défaut
+				country: "France",
+			},
+		});
+		return NextResponse.json({ success: true, address });
+	} catch (error) {
+		console.error("Erreur create address:", error);
+		return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+	}
+}
+
 export async function PATCH(request: NextRequest) {
 	try {
 		const token = request.cookies.get("auth-token")?.value;
