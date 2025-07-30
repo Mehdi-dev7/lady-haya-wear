@@ -15,10 +15,25 @@ export async function GET(request: NextRequest) {
 		if (!userId) {
 			return NextResponse.json({ address: null }, { status: 401 });
 		}
-		const address = await prisma.address.findFirst({
-			where: { userId, type: "SHIPPING", isDefault: true },
-		});
-		return NextResponse.json({ address });
+
+		// Vérifier si on veut toutes les adresses
+		const { searchParams } = new URL(request.url);
+		const all = searchParams.get("all");
+
+		if (all === "1") {
+			// Retourner toutes les adresses
+			const addresses = await prisma.address.findMany({
+				where: { userId, type: "SHIPPING" },
+				orderBy: [{ isDefault: "desc" }],
+			});
+			return NextResponse.json({ addresses });
+		} else {
+			// Retourner seulement l'adresse principale
+			const address = await prisma.address.findFirst({
+				where: { userId, type: "SHIPPING", isDefault: true },
+			});
+			return NextResponse.json({ address });
+		}
 	} catch (error) {
 		console.error("Erreur get address:", error);
 		return NextResponse.json({ address: null }, { status: 500 });

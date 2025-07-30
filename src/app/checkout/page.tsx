@@ -57,13 +57,21 @@ export default function CheckoutPage() {
 	useEffect(() => {
 		async function fetchUserAndAddress() {
 			setLoading(true);
-			const userRes = await fetch("/api/user/account");
-			const userData = await userRes.json();
-			setUser(userData.user);
-			const addressRes = await fetch("/api/user/account/address");
-			const addressData = await addressRes.json();
-			setAddress(addressData.address);
-			setLoading(false);
+			try {
+				const userRes = await fetch("/api/user/account");
+				const userData = await userRes.json();
+				console.log("Utilisateur récupéré:", userData);
+				setUser(userData.user);
+
+				const addressRes = await fetch("/api/user/account/address");
+				const addressData = await addressRes.json();
+				console.log("Adresse principale récupérée:", addressData);
+				setAddress(addressData.address);
+			} catch (error) {
+				console.error("Erreur lors de la récupération des données:", error);
+			} finally {
+				setLoading(false);
+			}
 		}
 		fetchUserAndAddress();
 	}, []);
@@ -71,13 +79,19 @@ export default function CheckoutPage() {
 	useEffect(() => {
 		async function fetchAddresses() {
 			setLoading(true);
-			const res = await fetch("/api/user/account/address?all=1");
-			const data = await res.json();
-			setAdresses(data.addresses || []);
-			// Sélectionner la principale par défaut
-			const main = (data.addresses || []).find((a: any) => a.isDefault);
-			setSelectedAddressId(main ? main.id : data.addresses?.[0]?.id || null);
-			setLoading(false);
+			try {
+				const res = await fetch("/api/user/account/address?all=1");
+				const data = await res.json();
+				console.log("Adresses récupérées:", data);
+				setAdresses(data.addresses || []);
+				// Sélectionner la principale par défaut
+				const main = (data.addresses || []).find((a: any) => a.isDefault);
+				setSelectedAddressId(main ? main.id : data.addresses?.[0]?.id || null);
+			} catch (error) {
+				console.error("Erreur lors de la récupération des adresses:", error);
+			} finally {
+				setLoading(false);
+			}
 		}
 		fetchAddresses();
 	}, []);
@@ -107,8 +121,8 @@ export default function CheckoutPage() {
 		);
 	}
 
-	// Simuler l'absence d'adresse pour la démo
-	const hasAddress = !!fakeUser.adresse;
+	// Vérifier si l'utilisateur a des adresses
+	const hasAddress = adresses && adresses.length > 0;
 
 	// Calculs panier avec les vraies données
 	const subtotalHT = getCartTotal();
