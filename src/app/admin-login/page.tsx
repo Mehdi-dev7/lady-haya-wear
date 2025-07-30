@@ -3,7 +3,9 @@
 import Loader from "@/components/Loader";
 import { AlertCircle, Eye, EyeOff, Lock } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function AdminLoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +15,30 @@ export default function AdminLoginPage() {
 	});
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState("");
+	const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+	const router = useRouter();
+
+	// Vérifier si l'admin est déjà connecté
+	useEffect(() => {
+		const checkAuth = async () => {
+			try {
+				const response = await fetch("/api/admin/auth");
+				if (response.ok) {
+					// Admin déjà connecté, rediriger
+					router.push("/dashboard");
+				}
+			} catch (error) {
+				console.error(
+					"Erreur lors de la vérification d'authentification:",
+					error
+				);
+			} finally {
+				setIsCheckingAuth(false);
+			}
+		};
+
+		checkAuth();
+	}, [router]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -32,12 +58,20 @@ export default function AdminLoginPage() {
 
 			if (response.ok) {
 				// Connexion réussie
-				window.location.href = "/dashboard";
+				toast.success("Connexion réussie !");
+				// Attendre un peu pour que le toast s'affiche
+				setTimeout(() => {
+					router.push("/dashboard");
+				}, 1000);
 			} else {
-				setError(data.error || "Identifiants incorrects");
+				const errorMessage = data.error || "Identifiants incorrects";
+				setError(errorMessage);
+				toast.error(errorMessage);
 			}
 		} catch (err) {
-			setError("Erreur de connexion");
+			const errorMessage = "Erreur de connexion";
+			setError(errorMessage);
+			toast.error(errorMessage);
 		} finally {
 			setIsLoading(false);
 		}
@@ -50,7 +84,7 @@ export default function AdminLoginPage() {
 		});
 	};
 
-	if (isLoading) {
+	if (isLoading || isCheckingAuth) {
 		return <Loader />;
 	}
 
