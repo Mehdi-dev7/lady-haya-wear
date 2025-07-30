@@ -16,7 +16,7 @@ export default function PolitiqueConfidentialitePage() {
 				<div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 space-y-8">
 					{/* Introduction */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Introduction
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -35,7 +35,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Responsable du traitement */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Responsable du Traitement
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -50,7 +50,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Données collectées */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Données Collectées
 						</h2>
 						<div className="space-y-4 text-nude-dark">
@@ -93,7 +93,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Finalités du traitement */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Finalités du Traitement
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -111,7 +111,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Base légale */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Base Légale</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Base Légale</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>Le traitement de vos données est fondé sur :</p>
 							<ul className="list-disc list-inside space-y-2 ml-4">
@@ -137,7 +137,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Destinataires */}
 					<section>
-						<h2 className="text-xl lg:text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-xl lg:text-2xl font-balqis font-semibold text-logo mb-4">
 							Destinataires des Données
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -153,7 +153,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Durée de conservation */}
 					<section>
-						<h2 className="text-xl lg:text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-xl lg:text-2xl font-balqis font-semibold text-logo mb-4">
 							Durée de Conservation
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -178,7 +178,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Vos droits */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Vos Droits</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Vos Droits</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>Conformément au RGPD, vous disposez des droits suivants :</p>
 							<ul className="list-disc list-inside space-y-2 ml-4">
@@ -212,7 +212,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Cookies */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Cookies</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Cookies</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>Notre site utilise des cookies pour :</p>
 							<ul className="list-disc list-inside space-y-2 ml-4">
@@ -230,7 +230,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Sécurité */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Sécurité</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Sécurité</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>
 								Nous mettons en œuvre des mesures techniques et
@@ -243,7 +243,7 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Contact */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Contact</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Contact</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>
 								Pour toute question concernant cette politique de

@@ -2,25 +2,25 @@ import Link from "next/link";
 
 export default function RetoursPage() {
 	return (
-		<div className="min-h-screen bg-rose-light-2 py-16 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">
-			<div className="max-w-4xl mx-auto">
+		<div className="min-h-screen bg-rose-light-2 py-8 md:py-16 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">
+			<div className="w-full max-w-4xl mx-auto">
 				{/* Header */}
-				<div className="text-center mb-12">
-					<h1 className="text-4xl lg:text-5xl font-alex-brush text-logo mb-4 mt-8">
+				<div className="text-center mb-8 md:mb-12">
+					<h1 className="text-3xl md:text-4xl lg:text-5xl font-alex-brush text-logo mb-3 md:mb-4 mt-12 md:mt-8">
 						Retours & Échanges
 					</h1>
-					<p className="text-lg text-nude-dark-2">
+					<p className="text-sm md:text-lg text-nude-dark-2">
 						Votre satisfaction est notre priorité
 					</p>
 				</div>
 
 				{/* Contenu principal */}
-				<div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-					<h2 className="text-2xl font-balqis text-logo mb-6">
+				<div className="bg-white rounded-2xl shadow-lg p-4 md:p-8 mb-6 md:mb-8">
+					<h2 className="text-xl md:text-2xl font-balqis font-semibold text-logo mb-4 md:mb-6">
 						Comment procéder aux retours ?
 					</h2>
 
-					<div className="space-y-6">
+					<div className="space-y-4 md:space-y-6">
 						<div className="border-l-4 border-nude-dark pl-6">
 							<h3 className="text-lg lg:text-xl font-semibold text-nude-dark mb-2">
 								1. Délai de retour

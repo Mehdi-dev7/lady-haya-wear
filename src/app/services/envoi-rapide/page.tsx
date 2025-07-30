@@ -2,60 +2,62 @@ import Link from "next/link";
 
 export default function EnvoiRapidePage() {
 	return (
-		<div className="min-h-screen bg-rose-light-2 py-16 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">
-			<div className="max-w-4xl mx-auto">
+		<div className="min-h-screen bg-rose-light-2 py-8 md:py-16 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">
+			<div className="w-full max-w-4xl mx-auto">
 				{/* Header */}
-				<div className="text-center mb-12">
-					<h1 className="text-4xl lg:text-5xl font-alex-brush text-logo mb-4 mt-8">
+				<div className="text-center mb-8 md:mb-12">
+					<h1 className="text-3xl md:text-4xl lg:text-5xl font-alex-brush text-logo mb-3 md:mb-4 mt-12 md:mt-8">
 						Envoi Rapide
 					</h1>
-					<p className="text-base lg:text-lg text-nude-dark-2">
+					<p className="text-sm md:text-base lg:text-lg text-nude-dark-2">
 						Livraison en 24-48h avec nos partenaires de confiance
 					</p>
 				</div>
 
 				{/* Contenu principal */}
-				<div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-					<h2 className="text-2xl font-balqis text-logo mb-6">
+				<div className="bg-white rounded-2xl shadow-lg p-4 md:p-8 mb-6 md:mb-8">
+					<h2 className="text-xl md:text-2xl font-balqis font-semibold text-logo mb-4 md:mb-6">
 						Nos options de livraison
 					</h2>
 
-					<div className="space-y-6">
-						<div className="border-l-4 border-nude-dark pl-6">
-							<h3 className="text-lg lg:text-xl font-semibold text-nude-dark mb-2">
+					<div className="space-y-4 md:space-y-6">
+						<div className="border-l-4 border-nude-dark pl-4 md:pl-6">
+							<h3 className="text-base md:text-lg lg:text-xl font-semibold text-nude-dark mb-2">
 								Livraison gratuite dès 60€
 							</h3>
-							<p className="text-gray-700">
+							<p className="text-gray-700 text-sm md:text-base">
 								Profitez de la livraison gratuite sur toutes vos commandes à
 								partir de 60€ d'achat. Une offre valable sur tous nos modes de
 								livraison.
 							</p>
 						</div>
 
-						<div className="border-l-4 border-nude-dark pl-6">
-							<h3 className="text-lg lg:text-xl font-semibold text-nude-dark mb-2">
+						<div className="border-l-4 border-nude-dark pl-4 md:pl-6">
+							<h3 className="text-base md:text-lg lg:text-xl font-semibold text-nude-dark mb-2">
 								Modes de livraison disponibles
 							</h3>
-							<div className="space-y-6">
+							<div className="space-y-4 md:space-y-6">
 								{/* Mondial Relay */}
-								<div className="bg-rose-light rounded-lg p-6">
-									<div className="flex items-start justify-between mb-4">
+								<div className="bg-rose-light rounded-lg p-4 md:p-6">
+									<div className="flex items-start justify-between mb-3 md:mb-4">
 										<div>
-											<h4 className="font-semibold text-nude-dark text-base lg:text-lg mb-2">
+											<h4 className="font-semibold text-nude-dark text-sm md:text-base lg:text-lg mb-2">
 												Mondial Relay - Point Relais
 											</h4>
-											<p className="text-gray-700 text-sm mb-3">
+											<p className="text-gray-700 text-xs md:text-sm mb-3">
 												Livraison en point relais partout en France
 											</p>
 										</div>
 										<div className="text-right">
-											<div className="text-xl lg:text-2xl font-bold text-logo">
+											<div className="text-lg md:text-xl lg:text-2xl font-bold text-logo">
 												Gratuit
 											</div>
-											<div className="text-sm text-gray-500">dès 60€</div>
+											<div className="text-xs md:text-sm text-gray-500">
+												dès 60€
+											</div>
 										</div>
 									</div>
-									<div className="space-y-2 text-sm text-gray-700">
+									<div className="space-y-1 md:space-y-2 text-xs md:text-sm text-gray-700">
 										<div className="flex items-center gap-2">
 											<span className="w-2 h-2 bg-green-500 rounded-full"></span>
 											<strong>Délai :</strong> 24-48h
@@ -76,24 +78,26 @@ export default function EnvoiRapidePage() {
 								</div>
 
 								{/* Colissimo */}
-								<div className="bg-beige-light rounded-lg p-6">
-									<div className="flex items-start justify-between mb-4">
+								<div className="bg-beige-light rounded-lg p-4 md:p-6">
+									<div className="flex items-start justify-between mb-3 md:mb-4">
 										<div>
-											<h4 className="font-semibold text-nude-dark text-base lg:text-lg mb-2">
+											<h4 className="font-semibold text-nude-dark text-sm md:text-base lg:text-lg mb-2">
 												Colissimo - Domicile
 											</h4>
-											<p className="text-gray-700 text-sm mb-3">
+											<p className="text-gray-700 text-xs md:text-sm mb-3">
 												Livraison à domicile avec signature
 											</p>
 										</div>
 										<div className="text-right">
-											<div className="text-xl lg:text-2xl font-bold text-logo">
+											<div className="text-lg md:text-xl lg:text-2xl font-bold text-logo">
 												Gratuit
 											</div>
-											<div className="text-sm text-gray-500">dès 60€</div>
+											<div className="text-xs md:text-sm text-gray-500">
+												dès 60€
+											</div>
 										</div>
 									</div>
-									<div className="space-y-2 text-sm text-gray-700">
+									<div className="space-y-1 md:space-y-2 text-xs md:text-sm text-gray-700">
 										<div className="flex items-center gap-2">
 											<span className="w-2 h-2 bg-green-500 rounded-full"></span>
 											<strong>Délai :</strong> 24-48h
@@ -114,24 +118,26 @@ export default function EnvoiRapidePage() {
 								</div>
 
 								{/* Chronopost Express */}
-								<div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-6 border-2 border-blue-200">
-									<div className="flex items-start justify-between mb-4">
+								<div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 md:p-6 border-2 border-blue-200">
+									<div className="flex items-start justify-between mb-3 md:mb-4">
 										<div>
-											<h4 className="font-semibold text-nude-dark text-base lg:text-lg mb-2">
+											<h4 className="font-semibold text-nude-dark text-sm md:text-base lg:text-lg mb-2">
 												Chronopost Express
 											</h4>
-											<p className="text-gray-700 text-sm mb-3">
+											<p className="text-gray-700 text-xs md:text-sm mb-3">
 												Livraison express en 24h garantie
 											</p>
 										</div>
 										<div className="text-right">
-											<div className="text-xl lg:text-2xl font-bold text-blue-600">
+											<div className="text-lg md:text-xl lg:text-2xl font-bold text-blue-600">
 												+8€
 											</div>
-											<div className="text-sm text-gray-500">supplément</div>
+											<div className="text-xs md:text-sm text-gray-500">
+												supplément
+											</div>
 										</div>
 									</div>
-									<div className="space-y-2 text-sm text-gray-700">
+									<div className="space-y-1 md:space-y-2 text-xs md:text-sm text-gray-700">
 										<div className="flex items-center gap-2">
 											<span className="w-2 h-2 bg-blue-500 rounded-full"></span>
 											<strong>Délai :</strong> 24h garantie
@@ -159,34 +165,36 @@ export default function EnvoiRapidePage() {
 							</h3>
 							<div className="space-y-3">
 								<div className="flex items-center gap-3">
-									<div className="w-8 h-8 bg-logo text-white rounded-full flex items-center justify-center text-sm font-semibold">
+									<div className="w-7 h-7 md:w-8 md:h-8 bg-logo text-white rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">
 										1
 									</div>
-									<p className="text-gray-700">
+									<p className="text-gray-700 text-sm md:text-base">
 										Votre commande est préparée et expédiée sous 24h
 									</p>
 								</div>
 								<div className="flex items-center gap-3">
-									<div className="w-8 h-8 bg-logo text-white rounded-full flex items-center justify-center text-sm font-semibold">
+									<div className="w-7 h-7 md:w-8 md:h-8 bg-logo text-white rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">
 										2
 									</div>
-									<p className="text-gray-700">
+									<p className="text-gray-700 text-sm md:text-base">
 										Vous recevez un email avec le numéro de suivi
 									</p>
 								</div>
 								<div className="flex items-center gap-3">
-									<div className="w-8 h-8 bg-logo text-white rounded-full flex items-center justify-center text-sm font-semibold">
+									<div className="w-7 h-7 md:w-8 md:h-8 bg-logo text-white rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">
 										3
 									</div>
-									<p className="text-gray-700">
+									<p className="text-gray-700 text-sm md:text-base">
 										Suivez votre colis en temps réel
 									</p>
 								</div>
 								<div className="flex items-center gap-3">
-									<div className="w-8 h-8 bg-logo text-white rounded-full flex items-center justify-center text-sm font-semibold">
+									<div className="w-7 h-7 md:w-8 md:h-8 bg-logo text-white rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">
 										4
 									</div>
-									<p className="text-gray-700">Réception de votre commande</p>
+									<p className="text-gray-700 text-sm md:text-base">
+										Réception de votre commande
+									</p>
 								</div>
 							</div>
 						</div>

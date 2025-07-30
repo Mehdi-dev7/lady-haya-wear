@@ -16,7 +16,7 @@ export default function ConditionsVentePage() {
 				<div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 space-y-8">
 					{/* Préambule */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Préambule</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Préambule</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>
 								Les présentes Conditions Générales de Vente (CGV) s'appliquent à
@@ -38,7 +38,7 @@ export default function ConditionsVentePage() {
 
 					{/* Produits */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Produits</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Produits</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>
 								Lady Haya Wear propose une collection de vêtements élégants pour
@@ -55,7 +55,7 @@ export default function ConditionsVentePage() {
 
 					{/* Commandes */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Commandes</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Commandes</h2>
 						<div className="space-y-4 text-nude-dark">
 							<div>
 								<h3 className="text-lg font-semibold text-logo mb-2">
@@ -89,7 +89,7 @@ export default function ConditionsVentePage() {
 
 					{/* Paiement */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Paiement</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Paiement</h2>
 						<div className="space-y-4 text-nude-dark">
 							<div>
 								<h3 className="text-lg font-semibold text-logo mb-2">
@@ -125,7 +125,7 @@ export default function ConditionsVentePage() {
 
 					{/* Livraison */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Livraison</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Livraison</h2>
 						<div className="space-y-4 text-nude-dark">
 							<div>
 								<h3 className="text-lg font-semibold text-logo mb-2">
@@ -183,7 +183,7 @@ export default function ConditionsVentePage() {
 
 					{/* Retours et remboursements */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Retours et Remboursements
 						</h2>
 						<div className="space-y-4 text-nude-dark">
@@ -229,7 +229,7 @@ export default function ConditionsVentePage() {
 
 					{/* Garanties */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Garanties</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Garanties</h2>
 						<div className="space-y-4 text-nude-dark">
 							<div>
 								<h3 className="text-lg font-semibold text-logo mb-2">
@@ -254,7 +254,7 @@ export default function ConditionsVentePage() {
 
 					{/* Protection des données */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Protection des Données
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -268,7 +268,7 @@ export default function ConditionsVentePage() {
 
 					{/* Droit applicable */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Droit Applicable
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -281,7 +281,7 @@ export default function ConditionsVentePage() {
 
 					{/* Contact */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Contact</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Contact</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>Pour toute question concernant ces conditions de vente :</p>
 							<p>

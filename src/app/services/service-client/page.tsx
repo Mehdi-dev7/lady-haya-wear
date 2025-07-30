@@ -2,67 +2,67 @@ import Link from "next/link";
 
 export default function ServiceClientPage() {
 	return (
-		<div className="min-h-screen bg-rose-light-2 py-16 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">
-			<div className="max-w-4xl mx-auto">
+		<div className="min-h-screen bg-rose-light-2 py-8 md:py-16 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">
+			<div className="w-full max-w-4xl mx-auto">
 				{/* Header */}
-				<div className="text-center mb-12">
-					<h1 className="text-4xl lg:text-5xl font-alex-brush text-logo mb-4 mt-8">
+				<div className="text-center mb-8 md:mb-12">
+					<h1 className="text-3xl md:text-4xl lg:text-5xl font-alex-brush text-logo mb-3 md:mb-4 mt-12 md:mt-8">
 						Service Client
 					</h1>
-					<p className="text-base lg:text-lg text-nude-dark-2">
+					<p className="text-sm md:text-base lg:text-lg text-nude-dark-2">
 						Notre équipe est là pour vous accompagner 7j/7
 					</p>
 				</div>
 
 				{/* Contenu principal */}
-				<div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-					<h2 className="text-2xl font-balqis text-logo mb-6">
+				<div className="bg-white rounded-2xl shadow-lg p-4 md:p-8 mb-6 md:mb-8">
+					<h2 className="text-xl md:text-2xl font-balqis font-semibold text-logo mb-4 md:mb-6">
 						Comment nous contacter ?
 					</h2>
 
-					<div className="space-y-6">
-						<div className="border-l-4 border-nude-dark pl-6">
-							<h3 className="text-lg lg:text-xl font-semibold text-nude-dark mb-2">
+					<div className="space-y-4 md:space-y-6">
+						<div className="border-l-4 border-nude-dark pl-4 md:pl-6">
+							<h3 className="text-base md:text-lg lg:text-xl font-semibold text-nude-dark mb-2">
 								Horaires d'ouverture
 							</h3>
-							<p className="text-gray-700">
+							<p className="text-gray-700 text-sm md:text-base">
 								Notre service client est disponible{" "}
 								<strong>7 jours sur 7</strong> pour répondre à toutes vos
 								questions et vous accompagner dans vos achats.
 							</p>
 						</div>
 
-						<div className="border-l-4 border-nude-dark pl-6">
-							<h3 className="text-lg lg:text-xl font-semibold text-nude-dark mb-2">
+						<div className="border-l-4 border-nude-dark pl-4 md:pl-6">
+							<h3 className="text-base md:text-lg lg:text-xl font-semibold text-nude-dark mb-2">
 								Moyens de contact
 							</h3>
-							<div className="grid md:grid-cols-2 gap-6">
-								<div className="bg-rose-light rounded-lg p-6">
-									<h4 className="font-semibold text-nude-dark mb-3 text-lg">
+							<div className="grid md:grid-cols-2 gap-4 md:gap-6">
+								<div className="bg-rose-light rounded-lg p-4 md:p-6">
+									<h4 className="font-semibold text-nude-dark mb-3 text-base md:text-lg">
 										Formulaire de contact
 									</h4>
-									<p className="text-gray-700 mb-4">
+									<p className="text-gray-700 mb-4 text-sm md:text-base">
 										Remplissez notre formulaire en ligne pour nous poser vos
 										questions ou signaler un problème.
 									</p>
 									<Link
 										href="/contact"
-										className="inline-block bg-logo text-nude-light px-6 py-2 rounded-md hover:bg-nude-dark-2 transition-colors"
+										className="inline-block bg-logo text-nude-light px-4 md:px-6 py-2 rounded-md hover:bg-nude-dark-2 transition-colors text-sm md:text-base"
 									>
 										Nous contacter
 									</Link>
 								</div>
 
-								<div className="bg-beige-light rounded-lg p-6">
-									<h4 className="font-semibold text-nude-dark mb-3 text-lg">
+								<div className="bg-beige-light rounded-lg p-4 md:p-6">
+									<h4 className="font-semibold text-nude-dark mb-3 text-base md:text-lg">
 										Email
 									</h4>
-									<p className="text-gray-700 mb-4">
+									<p className="text-gray-700 mb-4 text-sm md:text-base">
 										Envoyez-nous un email directement à notre équipe support.
 									</p>
 									<a
 										href="mailto:contact@ladyhaya.com"
-										className="inline-block bg-logo text-nude-light px-6 py-2 rounded-md hover:bg-nude-dark-2 transition-colors"
+										className="inline-block bg-logo text-nude-light px-4 md:px-6 py-2 rounded-md hover:bg-nude-dark-2 transition-colors text-sm md:text-base"
 									>
 										contact@ladyhaya.com
 									</a>
@@ -153,19 +153,19 @@ export default function ServiceClientPage() {
 							</h3>
 							<div className="space-y-3">
 								<div className="flex items-center gap-3">
-									<div className="w-4 h-4 bg-green-500 rounded-full"></div>
+									<div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0"></div>
 									<p className="text-gray-700">
 										<strong>Email :</strong> Réponse sous 24h maximum
 									</p>
 								</div>
 								<div className="flex items-center gap-3">
-									<div className="w-4 h-4 bg-green-500 rounded-full"></div>
+									<div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0"></div>
 									<p className="text-gray-700">
 										<strong>Formulaire :</strong> Réponse sous 24h maximum
 									</p>
 								</div>
 								<div className="flex items-center gap-3">
-									<div className="w-4 h-4 bg-orange-500 rounded-full"></div>
+									<div className="w-4 h-4 bg-orange-500 rounded-full flex-shrink-0"></div>
 									<p className="text-gray-700">
 										<strong>Week-ends et jours fériés :</strong> Réponse le jour
 										ouvré suivant

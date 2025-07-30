@@ -228,7 +228,7 @@ export default function CheckoutPage() {
 												Aucune adresse enregistrée
 											</div>
 											<button
-												className="bg-nude-dark text-white px-6 py-2 rounded-2xl font-semibold hover:bg-logo transition-all duration-200"
+												className="bg-nude-dark text-white px-6 py-2 rounded-2xl font-semibold hover:bg-logo transition-all duration-200 cursor-pointer"
 												onClick={() => {
 													setModalForm({
 														nom: "",
@@ -347,7 +347,7 @@ export default function CheckoutPage() {
 
 							{/* Bouton-lien Ajouter une adresse */}
 							<button
-								className="text-nude-dark underline font-semibold hover:text-logo transition-colors flex items-center gap-1 cursor-pointer "
+								className="text-nude-dark underline font-semibold hover:text-logo transition-colors flex items-center gap-1 cursor-pointer"
 								onClick={() => {
 									setModalForm({
 										nom: "",
@@ -510,13 +510,13 @@ export default function CheckoutPage() {
 									<div className="flex gap-2 mt-2">
 										<button
 											type="submit"
-											className="bg-nude-dark text-white px-4 py-2 rounded-2xl font-semibold hover:bg-logo transition-all"
+											className="bg-nude-dark text-white px-4 py-2 rounded-2xl font-semibold hover:bg-logo transition-all cursor-pointer"
 										>
 											Enregistrer
 										</button>
 										<button
 											type="button"
-											className="text-nude-dark underline px-4 py-2"
+											className="text-nude-dark underline px-4 py-2 cursor-pointer"
 											onClick={() => setShowAddressMenu(false)}
 										>
 											Annuler
@@ -941,7 +941,17 @@ export default function CheckoutPage() {
 
 											if (response.ok) {
 												toast.success(
-													`Commande #${result.orderNumber} confirmée !\nVous allez recevoir un email de confirmation.`
+													<div>
+														<div className="font-semibold">
+															Commande #{result.orderNumber} confirmée !
+														</div>
+														<div className="text-sm opacity-90">
+															Vous allez recevoir un email de confirmation.
+														</div>
+														<div className="text-sm opacity-90">
+															Redirection vers vos commandes...
+														</div>
+													</div>
 												);
 												clearCart(); // Vider le panier après la commande réussie
 

@@ -16,7 +16,7 @@ export default function MentionsLegalesPage() {
 				<div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 space-y-8">
 					{/* Éditeur */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Éditeur</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Éditeur</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>
 								<strong>Raison sociale :</strong> Lady Haya Wear
@@ -53,7 +53,7 @@ export default function MentionsLegalesPage() {
 
 					{/* Hébergement */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Hébergement</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Hébergement</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>
 								<strong>Hébergeur :</strong> Vercel Inc.
@@ -70,7 +70,7 @@ export default function MentionsLegalesPage() {
 
 					{/* Propriété intellectuelle */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Propriété Intellectuelle
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -91,7 +91,7 @@ export default function MentionsLegalesPage() {
 
 					{/* Responsabilité */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Responsabilité
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -111,7 +111,7 @@ export default function MentionsLegalesPage() {
 
 					{/* Liens hypertextes */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Liens Hypertextes
 						</h2>
 						<div className="space-y-3 text-nude-dark">
@@ -126,7 +126,7 @@ export default function MentionsLegalesPage() {
 
 					{/* Cookies */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">Cookies</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Cookies</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>
 								Le site peut-être amené à vous demander l'acceptation des
@@ -140,7 +140,7 @@ export default function MentionsLegalesPage() {
 
 					{/* Droit applicable */}
 					<section>
-						<h2 className="text-2xl font-balqis text-logo mb-4">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
 							Droit Applicable
 						</h2>
 						<div className="space-y-3 text-nude-dark">
