@@ -145,8 +145,15 @@ export async function sendOrderConfirmationEmail(
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de confirmation envoyé avec succès:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
-	} catch (error) {
+	} catch (error: any) {
 		console.error("Erreur lors de l'envoi de l'email de confirmation:", error);
+		
+		// Gestion spécifique des erreurs 401
+		if (error.response?.status === 401) {
+			console.error("Erreur d'authentification Brevo - Vérifiez votre API key");
+			throw new Error("Erreur d'authentification avec Brevo. Vérifiez la configuration.");
+		}
+		
 		throw error;
 	}
 }
