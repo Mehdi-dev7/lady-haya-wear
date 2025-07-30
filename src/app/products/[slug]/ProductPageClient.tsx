@@ -611,7 +611,10 @@ export function ProductPageClient({
 								</div>
 
 								{/* Paiement sécurisé */}
-								<div className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100">
+								<Link
+									href="/services/paiement-securise"
+									className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+								>
 									<TbCreditCard className="w-6 h-6 text-blue-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
@@ -621,20 +624,26 @@ export function ProductPageClient({
 											CB, PayPal, Apple Pay
 										</div>
 									</div>
-								</div>
+								</Link>
 
 								{/* Satisfait ou remboursé */}
-								<div className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100">
+								<Link
+									href="/services/retours"
+									className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+								>
 									<TbPackage className="w-6 h-6 text-orange-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
 											Echange possible dans les 30 jours
 										</div>
 									</div>
-								</div>
+								</Link>
 
 								{/* Service client */}
-								<div className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100">
+								<Link
+									href="/services/service-client"
+									className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+								>
 									<TbHeadset className="w-6 h-6 text-purple-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
@@ -642,10 +651,13 @@ export function ProductPageClient({
 										</div>
 										<div className="text-xs text-gray-600">Support 7j/7</div>
 									</div>
-								</div>
+								</Link>
 
 								{/* Envoi rapide */}
-								<div className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100">
+								<Link
+									href="/services/envoi-rapide"
+									className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+								>
 									<TbPackageExport className="w-6 h-6 text-red-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
@@ -655,7 +667,7 @@ export function ProductPageClient({
 											Livraison en 24-48h
 										</div>
 									</div>
-								</div>
+								</Link>
 							</div>
 						</div>
 					</div>
