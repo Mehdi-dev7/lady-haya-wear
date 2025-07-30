@@ -463,6 +463,19 @@ export default function Login() {
 				.input-valid {
 					border-color: #059669 !important;
 				}
+
+				/* Amélioration du centrage de l'œil sur mobile */
+				@media (max-width: 768px) {
+					.eye-button {
+						display: flex !important;
+						align-items: center !important;
+						justify-content: center !important;
+						width: 24px !important;
+						height: 24px !important;
+						top: 50% !important;
+						transform: translateY(-50%) !important;
+					}
+				}
 			`}</style>
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16 min-h-screen flex items-center justify-center login-section bg-[#fae4e4]/75">
 				<div
@@ -518,9 +531,9 @@ export default function Login() {
 										<button
 											type="button"
 											onClick={() => setShowLoginPassword(!showLoginPassword)}
-											className="absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark hover:text-logo transition-colors duration-300 cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
+											className="absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark hover:text-logo transition-colors duration-300 cursor-pointer bg-transparent border-none p-0 flex items-center justify-center w-6 h-6 eye-button"
 										>
-											{showLoginPassword ? <FaRegEyeSlash /> : <IoEyeSharp />}
+											{showLoginPassword ? <IoEyeSharp /> : <FaRegEyeSlash />}
 										</button>
 									</div>
 									{validationErrors.password && touchedFields.password && (
@@ -727,9 +740,9 @@ export default function Login() {
 										onClick={() =>
 											setShowRegisterPassword(!showRegisterPassword)
 										}
-										className="absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark hover:text-logo transition-colors duration-300 cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
+										className="absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-nude-dark hover:text-logo transition-colors duration-300 cursor-pointer bg-transparent border-none p-0 flex items-center justify-center w-6 h-6 eye-button"
 									>
-										{showRegisterPassword ? <FaRegEyeSlash /> : <IoEyeSharp />}
+										{showRegisterPassword ? <IoEyeSharp /> : <FaRegEyeSlash />}
 									</button>
 								</div>
 								{validationErrors.registerPassword &&
