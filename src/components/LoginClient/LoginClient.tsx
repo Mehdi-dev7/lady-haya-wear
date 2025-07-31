@@ -18,6 +18,8 @@ export default function Login() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showForgotPassword, setShowForgotPassword] = useState(false);
 	const [forgotEmail, setForgotEmail] = useState("");
+	const [showEmailVerificationModal, setShowEmailVerificationModal] =
+		useState(false);
 
 	// États pour l'affichage des mots de passe
 	const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -220,9 +222,6 @@ export default function Login() {
 			const data = await response.json();
 
 			if (response.ok) {
-				toast.success(
-					"Inscription réussie ! Vérifiez votre email pour activer votre compte."
-				);
 				setRegisterData({
 					email: "",
 					password: "",
@@ -230,7 +229,7 @@ export default function Login() {
 					lastName: "",
 				});
 				setValidationErrors({});
-				setIsActive(false);
+				setShowEmailVerificationModal(true);
 			} else {
 				toast.error(data.error || "Erreur lors de l'inscription");
 			}
@@ -278,6 +277,83 @@ export default function Login() {
 
 	return (
 		<>
+			{/* Modale de vérification email */}
+			{showEmailVerificationModal && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2 sm:p-4 modal-overlay">
+					<div className="bg-nude-light rounded-2xl shadow-lg w-full max-w-sm sm:max-w-md md:max-w-lg animate-fade-in-up modal-content">
+						<div className="p-4 sm:p-6 border-b border-gray-200">
+							<div className="flex justify-between items-center">
+								<h2 className="text-lg sm:text-xl md:text-2xl font-bold text-logo text-center flex-1 pr-2">
+									Inscription réussie !
+								</h2>
+								<button
+									onClick={() => {
+										setShowEmailVerificationModal(false);
+										setIsActive(false);
+									}}
+									className="text-gray-400 hover:text-gray-600 transition-colors duration-300 flex-shrink-0 modal-close-btn"
+								>
+									<svg
+										className="w-5 h-5 sm:w-6 sm:h-6"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M6 18L18 6M6 6l12 12"
+										/>
+									</svg>
+								</button>
+							</div>
+						</div>
+						<div className="p-4 sm:p-6">
+							<div className="text-center mb-4 sm:mb-6">
+								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 modal-icon">
+									<svg
+										className="w-6 h-6 sm:w-8 sm:h-8 text-green-600"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+										/>
+									</svg>
+								</div>
+								<h3 className="text-base sm:text-lg font-semibold text-nude-dark mb-2 modal-title">
+									Vérifiez votre email
+								</h3>
+								<p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 modal-description">
+									Un email de confirmation a été envoyé à votre adresse email.
+									Cliquez sur le lien dans l'email pour activer votre compte.
+								</p>
+								<p className="text-xs text-gray-500 italic modal-spam-note">
+									💡 Pensez à vérifier vos spams si vous ne recevez pas l'email
+									dans les prochaines minutes.
+								</p>
+							</div>
+							<div className="flex gap-3">
+								<button
+									onClick={() => {
+										setShowEmailVerificationModal(false);
+										setIsActive(false);
+									}}
+									className="flex-1 h-10 sm:h-11 bg-rose-medium rounded-lg shadow-md border-none cursor-pointer text-sm sm:text-base text-white font-semibold hover:bg-rose-dark-2 transition-all duration-300 hover:scale-105 modal-button"
+								>
+									Compris
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
+
 			<style jsx>{`
 				.error-message {
 					color: #dc2626;
@@ -474,6 +550,90 @@ export default function Login() {
 						height: 24px !important;
 						top: 50% !important;
 						transform: translateY(-50%) !important;
+					}
+				}
+
+				/* Animation pour la modale */
+				@keyframes fade-in-up {
+					from {
+						opacity: 0;
+						transform: translateY(20px);
+					}
+					to {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
+
+				.animate-fade-in-up {
+					animation: fade-in-up 0.3s ease-out;
+				}
+
+				/* Styles responsifs pour la modale */
+				@media (max-width: 640px) {
+					.modal-overlay {
+						padding: 0.5rem;
+					}
+
+					.modal-content {
+						max-height: 90vh;
+						overflow-y: auto;
+					}
+
+					.modal-icon {
+						margin-bottom: 0.75rem;
+					}
+
+					.modal-title {
+						font-size: 1rem;
+						line-height: 1.4;
+					}
+
+					.modal-description {
+						font-size: 0.75rem;
+						line-height: 1.4;
+						margin-bottom: 0.75rem;
+					}
+
+					.modal-spam-note {
+						font-size: 0.6875rem;
+						line-height: 1.3;
+					}
+
+					.modal-button {
+						height: 2.5rem;
+						font-size: 0.875rem;
+					}
+
+					.modal-close-btn {
+						padding: 0.25rem;
+						margin-left: 0.5rem;
+					}
+				}
+
+				@media (max-width: 480px) {
+					.modal-content {
+						margin: 0.5rem;
+						border-radius: 1rem;
+					}
+
+					.modal-overlay {
+						padding: 0.25rem;
+					}
+				}
+
+				/* Amélioration de l'accessibilité tactile */
+				@media (hover: none) and (pointer: coarse) {
+					.modal-close-btn {
+						min-width: 44px;
+						min-height: 44px;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+					}
+
+					.modal-button {
+						min-height: 44px;
 					}
 				}
 			`}</style>
