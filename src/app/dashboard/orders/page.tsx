@@ -45,6 +45,26 @@ interface Order {
 	shippedAt?: string;
 	deliveredAt?: string;
 	items: OrderItem[];
+	shippingAddress?: {
+		id: string;
+		firstName: string;
+		lastName: string;
+		street: string;
+		company?: string;
+		zipCode: string;
+		city: string;
+		civility: string;
+	};
+	billingAddress?: {
+		id: string;
+		firstName: string;
+		lastName: string;
+		street: string;
+		company?: string;
+		zipCode: string;
+		city: string;
+		civility: string;
+	};
 }
 
 interface OrderStats {
@@ -57,7 +77,8 @@ interface OrderStats {
 
 export default function OrdersPage() {
 	const [allOrders, setAllOrders] = useState<Order[]>([]); // Toutes les commandes
-	const [orders, setOrders] = useState<Order[]>([]); // Commandes filtrées
+	const [orders, setOrders] = useState<Order[]>([]); // Commandes filtrées (moins de 3 mois)
+	const [historicalOrders, setHistoricalOrders] = useState<Order[]>([]); // Commandes de plus de 3 mois
 	const [loading, setLoading] = useState(true);
 	const [stats, setStats] = useState<OrderStats>({});
 	const [selectedStatus, setSelectedStatus] = useState<string>("all");
@@ -68,6 +89,10 @@ export default function OrdersPage() {
 	const [sortBy, setSortBy] = useState("");
 	const [sortByAmount, setSortByAmount] = useState("");
 	const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
+	const [expandedHistoricalOrders, setExpandedHistoricalOrders] = useState<
+		Set<string>
+	>(new Set());
+	const [showHistoricalOrders, setShowHistoricalOrders] = useState(false);
 	const [trackingModal, setTrackingModal] = useState<Order | null>(null);
 
 	// Fonction pour basculer l'expansion d'une commande
@@ -81,6 +106,34 @@ export default function OrdersPage() {
 			}
 			return newSet;
 		});
+	};
+
+	// Fonction pour basculer l'expansion d'une commande historique
+	const toggleHistoricalOrderExpansion = (orderId: string) => {
+		setExpandedHistoricalOrders((prev) => {
+			const newSet = new Set(prev);
+			if (newSet.has(orderId)) {
+				newSet.delete(orderId);
+			} else {
+				newSet.add(orderId);
+			}
+			return newSet;
+		});
+	};
+
+	// Fonction pour séparer les commandes récentes et historiques
+	const separateOrdersByDate = (orders: Order[]) => {
+		const threeMonthsAgo = new Date();
+		threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+		const recentOrders = orders.filter(
+			(order) => new Date(order.createdAt) >= threeMonthsAgo
+		);
+		const historicalOrders = orders.filter(
+			(order) => new Date(order.createdAt) < threeMonthsAgo
+		);
+
+		return { recentOrders, historicalOrders };
 	};
 
 	// Fonction de chargement des commandes (sans recherche)
@@ -121,6 +174,12 @@ export default function OrdersPage() {
 				});
 
 				setAllOrders(sortedOrders);
+
+				// Séparer les commandes récentes et historiques
+				const { recentOrders, historicalOrders } =
+					separateOrdersByDate(sortedOrders);
+				setHistoricalOrders(historicalOrders);
+
 				setStats(data.stats);
 				setTotalPages(data.pagination.totalPages);
 			} else {
@@ -136,57 +195,76 @@ export default function OrdersPage() {
 
 	// Appliquer les filtres localement (comme dans Filter.tsx)
 	useEffect(() => {
-		let filteredOrders = [...allOrders];
+		// Séparer les commandes récentes et historiques
+		const { recentOrders, historicalOrders } = separateOrdersByDate(allOrders);
 
-		// Filtre par recherche (numéro de commande, nom client, email)
-		if (searchTerm) {
-			filteredOrders = filteredOrders.filter(
-				(order) =>
-					order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())
-			);
-		}
+		// Fonction pour appliquer les filtres
+		const applyFilters = (orders: Order[]) => {
+			let filteredOrders = [...orders];
 
-		// Filtre par statut (déjà fait côté serveur, mais on peut refiltrer localement)
-		if (selectedStatus && selectedStatus !== "all") {
-			filteredOrders = filteredOrders.filter(
-				(order) => order.status === selectedStatus
-			);
-		}
+			// Filtre par recherche (numéro de commande, nom client, email)
+			if (searchTerm) {
+				filteredOrders = filteredOrders.filter(
+					(order) =>
+						order.orderNumber
+							.toLowerCase()
+							.includes(searchTerm.toLowerCase()) ||
+						order.customerName
+							.toLowerCase()
+							.includes(searchTerm.toLowerCase()) ||
+						order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())
+				);
+			}
 
-		// Tri local
-		if (sortBy) {
-			filteredOrders.sort((a, b) => {
-				switch (sortBy) {
-					case "newest":
-						return (
-							new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-						);
-					case "oldest":
-						return (
-							new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-						);
-					default:
-						return 0;
-				}
-			});
-		}
+			// Filtre par statut
+			if (selectedStatus && selectedStatus !== "all") {
+				filteredOrders = filteredOrders.filter(
+					(order) => order.status === selectedStatus
+				);
+			}
 
-		if (sortByAmount) {
-			filteredOrders.sort((a, b) => {
-				switch (sortByAmount) {
-					case "amount-asc":
-						return a.total - b.total;
-					case "amount-desc":
-						return b.total - a.total;
-					default:
-						return 0;
-				}
-			});
-		}
+			// Tri local
+			if (sortBy) {
+				filteredOrders.sort((a, b) => {
+					switch (sortBy) {
+						case "newest":
+							return (
+								new Date(b.createdAt).getTime() -
+								new Date(a.createdAt).getTime()
+							);
+						case "oldest":
+							return (
+								new Date(a.createdAt).getTime() -
+								new Date(b.createdAt).getTime()
+							);
+						default:
+							return 0;
+					}
+				});
+			}
 
-		setOrders(filteredOrders);
+			if (sortByAmount) {
+				filteredOrders.sort((a, b) => {
+					switch (sortByAmount) {
+						case "amount-asc":
+							return a.total - b.total;
+						case "amount-desc":
+							return b.total - a.total;
+						default:
+							return 0;
+					}
+				});
+			}
+
+			return filteredOrders;
+		};
+
+		// Appliquer les filtres aux deux ensembles
+		const filteredRecentOrders = applyFilters(recentOrders);
+		const filteredHistoricalOrders = applyFilters(historicalOrders);
+
+		setOrders(filteredRecentOrders);
+		setHistoricalOrders(filteredHistoricalOrders);
 	}, [allOrders, searchTerm, selectedStatus, sortBy, sortByAmount]);
 
 	// Charger les données quand les filtres de base changent
@@ -630,7 +708,7 @@ export default function OrdersPage() {
 			<Card className="shadow-lg -mx-1 sm:mx-0">
 				<CardHeader className="pb-2 sm:pb-6">
 					<CardTitle className="text-nude-dark text-base sm:text-lg">
-						Commandes ({orders.length})
+						Commandes récentes ({orders.length})
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="p-2 sm:p-6">
@@ -638,7 +716,7 @@ export default function OrdersPage() {
 						<div className="text-center py-6 sm:py-8">
 							<Package className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
 							<p className="text-gray-500 text-sm sm:text-base">
-								Aucune commande trouvée
+								Aucune commande récente trouvée
 							</p>
 						</div>
 					) : (
@@ -748,6 +826,281 @@ export default function OrdersPage() {
 													<p className="text-xs sm:text-sm text-gray-500 mb-1">
 														{order.customerEmail}
 													</p>
+													{/* Adresse de livraison */}
+													{order.shippingAddress && (
+														<div className="text-xs sm:text-sm text-gray-500 mb-1">
+															<p>
+																{order.shippingAddress.civility === "MR"
+																	? "M."
+																	: "Mme"}{" "}
+																{order.shippingAddress.firstName}{" "}
+																{order.shippingAddress.lastName}
+															</p>
+															<p>{order.shippingAddress.street}</p>
+															{order.shippingAddress.company && (
+																<p>{order.shippingAddress.company}</p>
+															)}
+															<p>
+																{order.shippingAddress.zipCode}{" "}
+																{order.shippingAddress.city}
+															</p>
+														</div>
+													)}
+													{order.customerPhone && (
+														<p className="text-xs sm:text-sm text-gray-500">
+															{order.customerPhone}
+														</p>
+													)}
+												</div>
+
+												{/* Produits */}
+												<div className="mb-2 sm:mb-3">
+													<p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
+														Produits :
+													</p>
+													<div className="space-y-0.5">
+														{order.items.map((item) => (
+															<div
+																key={item.id}
+																className="flex justify-between items-center text-xs sm:text-sm"
+															>
+																<span className="flex-1 min-w-0">
+																	{item.productName} x{item.quantity}
+																	{item.colorName && ` (${item.colorName})`}
+																	{item.sizeName && ` - ${item.sizeName}`}
+																</span>
+																<span className="font-medium flex-shrink-0 ml-2 flex items-center">
+																	{item.totalPrice.toFixed(2)}€
+																</span>
+															</div>
+														))}
+													</div>
+												</div>
+
+												{/* Informations de suivi */}
+												<div className="mb-2 sm:mb-3">
+													<p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
+														Suivi de livraison :{" "}
+														{order.trackingNumber || order.carrier ? (
+															<span className="font-normal text-gray-600">
+																{order.carrier && (
+																	<span className="capitalize">
+																		{order.carrier.replace("-", " ")}
+																	</span>
+																)}
+																{order.carrier && order.trackingNumber && " - "}
+																{order.trackingNumber && (
+																	<span>
+																		{order.trackingNumber}
+																		{getTrackingUrl(
+																			order.carrier || "",
+																			order.trackingNumber
+																		) && (
+																			<a
+																				href={getTrackingUrl(
+																					order.carrier || "",
+																					order.trackingNumber
+																				)}
+																				target="_blank"
+																				rel="noopener noreferrer"
+																				className="text-blue-600 hover:text-blue-800 ml-1"
+																			>
+																				<ExternalLink className="w-3 h-3 inline" />
+																			</a>
+																		)}
+																	</span>
+																)}
+															</span>
+														) : (
+															<span className="font-normal text-gray-500 italic">
+																Aucune information disponible
+															</span>
+														)}
+													</p>
+												</div>
+
+												{/* Notes */}
+												{order.notes && (
+													<div className="mt-2">
+														<p className="text-xs sm:text-sm text-gray-600 italic">
+															Note: {order.notes}
+														</p>
+													</div>
+												)}
+											</div>
+										)}
+									</div>
+								);
+							})}
+						</div>
+					)}
+				</CardContent>
+			</Card>
+
+			{/* Historique des commandes */}
+			<Card className="shadow-lg -mx-1 sm:mx-0">
+				<CardHeader className="pb-2 sm:pb-6">
+					<CardTitle className="text-nude-dark text-base sm:text-lg">
+						Historique des commandes ({historicalOrders.length})
+					</CardTitle>
+					<p className="text-xs sm:text-sm text-gray-500 mt-1">
+						Commandes de plus de 3 mois
+					</p>
+				</CardHeader>
+				<CardContent className="p-2 sm:p-6">
+					{/* Bouton pour afficher/masquer l'historique */}
+					<button
+						onClick={() => setShowHistoricalOrders(!showHistoricalOrders)}
+						className="flex items-center gap-2 text-nude-dark hover:text-nude-dark-2 transition-colors cursor-pointer mb-4"
+					>
+						<svg
+							className={`w-4 h-4 transition-transform ${showHistoricalOrders ? "rotate-180" : ""}`}
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M19 9l-7 7-7-7"
+							/>
+						</svg>
+						<span className="text-sm sm:text-base">
+							{showHistoricalOrders ? "Masquer" : "Afficher"} l'historique
+						</span>
+					</button>
+
+					{/* Contenu de l'historique */}
+					{showHistoricalOrders && (
+						<div className="space-y-2 sm:space-y-4">
+							{historicalOrders.map((order) => {
+								const statusInfo = getStatusInfo(order.status);
+								const paymentStatusInfo = getPaymentStatusInfo(
+									order.paymentStatus
+								);
+								const StatusIcon = statusInfo.icon;
+								const isExpanded = expandedHistoricalOrders.has(order.id);
+
+								return (
+									<div
+										key={order.id}
+										className="border rounded-lg p-2 sm:p-3 hover:shadow-md transition-shadow bg-gray-50"
+									>
+										{/* En-tête compacte - toujours visible */}
+										<div className="flex justify-between items-start mb-2">
+											<div className="flex-1 min-w-0">
+												<h3 className="font-semibold text-sm sm:text-lg mb-1">
+													{order.orderNumber}
+												</h3>
+												<p className="text-gray-600 font-medium text-sm sm:text-base truncate">
+													{order.customerName}
+												</p>
+											</div>
+											<div className="text-right flex-shrink-0 ml-2">
+												<div className="flex items-center justify-end gap-2 mb-1">
+													<span
+														className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full flex-shrink-0 truncate ${statusInfo.color}`}
+													>
+														<StatusIcon className="h-2 w-2 sm:h-3 sm:w-3 inline mr-1 flex-shrink-0" />
+														<span className="hidden sm:inline">
+															{statusInfo.label}
+														</span>
+														<span className="sm:hidden">
+															{statusInfo.label}
+														</span>
+													</span>
+													{order.trackingNumber && (
+														<span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 flex-shrink-0">
+															📦 Suivi
+														</span>
+													)}
+												</div>
+												<p className="text-xs sm:text-sm text-gray-500">
+													{new Date(order.createdAt).toLocaleDateString()}
+												</p>
+											</div>
+										</div>
+
+										{/* Bouton d'expansion et menu de statut */}
+										<div className="flex justify-between items-center">
+											<div className="flex items-center gap-2">
+												{/* Bouton d'expansion */}
+												<button
+													onClick={() =>
+														toggleHistoricalOrderExpansion(order.id)
+													}
+													className="flex items-center gap-1 text-xs sm:text-sm text-nude-dark hover:text-nude-dark-2 transition-colors underline cursor-pointer"
+												>
+													<span>
+														{isExpanded ? "Masquer" : "Voir"} les détails
+													</span>
+													<svg
+														className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+														fill="none"
+														stroke="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path
+															strokeLinecap="round"
+															strokeLinejoin="round"
+															strokeWidth={2}
+															d="M19 9l-7 7-7-7"
+														/>
+													</svg>
+												</button>
+
+												{/* Bouton de suivi */}
+												<button
+													onClick={() => setTrackingModal(order)}
+													className="flex items-center gap-1 text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors underline cursor-pointer"
+												>
+													<FaEdit className="w-3 h-3" />
+													<span className="hidden sm:inline">Suivi</span>
+												</button>
+											</div>
+
+											{/* Prix et statut de paiement */}
+											<div className="flex items-center gap-2">
+												<p className="text-sm sm:text-lg font-bold text-logo">
+													{order.total.toFixed(2)}€
+												</p>
+												<span
+													className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full ${paymentStatusInfo.color}`}
+												>
+													{paymentStatusInfo.label}
+												</span>
+											</div>
+										</div>
+
+										{/* Contenu détaillé - visible seulement si expandé */}
+										{isExpanded && (
+											<div className="pt-2 border-t border-gray-200">
+												{/* Informations client détaillées */}
+												<div className="mb-2 sm:mb-3">
+													<p className="text-xs sm:text-sm text-gray-500 mb-1">
+														{order.customerEmail}
+													</p>
+													{/* Adresse de livraison */}
+													{order.shippingAddress && (
+														<div className="text-xs sm:text-sm text-gray-500 mb-1">
+															<p>
+																{order.shippingAddress.civility === "MR"
+																	? "M."
+																	: "Mme"}{" "}
+																{order.shippingAddress.firstName}{" "}
+																{order.shippingAddress.lastName}
+															</p>
+															<p>{order.shippingAddress.street}</p>
+															{order.shippingAddress.company && (
+																<p>{order.shippingAddress.company}</p>
+															)}
+															<p>
+																{order.shippingAddress.zipCode}{" "}
+																{order.shippingAddress.city}
+															</p>
+														</div>
+													)}
 													{order.customerPhone && (
 														<p className="text-xs sm:text-sm text-gray-500">
 															{order.customerPhone}

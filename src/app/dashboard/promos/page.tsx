@@ -25,6 +25,7 @@ export default function PromosPage() {
 		validFrom: "",
 		validTo: "",
 		maxUsage: "",
+		minAmount: "",
 	});
 
 	// Fermeture de la modale au clic extérieur
@@ -159,6 +160,7 @@ export default function PromosPage() {
 					validFrom: promoData.validFrom,
 					validTo: promoData.validTo,
 					maxUsage: promoData.maxUsage,
+					minAmount: promoData.minAmount || "",
 				});
 
 				setEditingId(id);
@@ -187,6 +189,7 @@ export default function PromosPage() {
 			validFrom: "",
 			validTo: "",
 			maxUsage: "",
+			minAmount: "",
 		});
 		setIsEditing(false);
 		setEditingId(null);
@@ -230,6 +233,7 @@ export default function PromosPage() {
 				validFrom: newPromo.validFrom,
 				validTo: newPromo.validTo,
 				maxUsage: newPromo.maxUsage ? parseInt(newPromo.maxUsage) : null,
+				minAmount: newPromo.minAmount ? parseFloat(newPromo.minAmount) : null,
 			};
 
 			let response;
@@ -482,222 +486,250 @@ export default function PromosPage() {
 
 			{/* Modal pour créer une nouvelle promotion */}
 			{isModalOpen && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
 					<div
 						ref={modalRef}
-						className="bg-nude-light rounded-2xl shadow-lg p-4 sm:p-8 w-11/12 max-w-xs sm:max-w-lg relative animate-fade-in-up"
+						className="bg-nude-light rounded-2xl shadow-lg w-11/12 max-w-md sm:max-w-lg max-h-[90vh] flex flex-col animate-fade-in-up"
 					>
-						<button
-							className="absolute top-4 right-4 text-logo text-2xl font-bold hover:text-nude-dark cursor-pointer"
-							onClick={() => setIsModalOpen(false)}
-							type="button"
-						>
-							×
-						</button>
-						<h2 className="text-2xl font-bold text-logo mb-6 text-center">
-							{isEditing ? "Modifier la promotion" : "Nouvelle promotion"}
-						</h2>
+						{/* En-tête de la modale */}
+						<div className="p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
+							<button
+								className="absolute top-4 right-4 text-logo text-2xl font-bold hover:text-nude-dark cursor-pointer"
+								onClick={() => setIsModalOpen(false)}
+								type="button"
+							>
+								×
+							</button>
+							<h2 className="text-xl sm:text-2xl font-bold text-logo text-center pr-8">
+								{isEditing ? "Modifier la promotion" : "Nouvelle promotion"}
+							</h2>
+						</div>
 
-						<form
-							className="space-y-4"
-							onSubmit={(e) => {
-								e.preventDefault();
-								handleCreatePromo();
-							}}
-						>
-							{/* Code de promotion */}
-							<div>
-								<label className="block text-sm font-medium text-nude-dark mb-2">
-									Code de promotion *
-								</label>
-								<input
-									type="text"
-									value={newPromo.code}
-									onChange={(e) =>
-										setNewPromo({ ...newPromo, code: e.target.value })
-									}
-									className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
-									placeholder="Ex: ETE2024"
-								/>
-							</div>
-
-							{/* Type de réduction */}
-							<div>
-								<label className="block text-sm font-medium text-nude-dark mb-2">
-									Type de réduction *
-								</label>
-								<div className="relative" ref={typeMenuRef}>
-									<button
-										type="button"
-										onClick={() => setIsTypeMenuOpen(!isTypeMenuOpen)}
-										className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-pointer text-left flex items-center justify-between"
-									>
-										<span className="text-nude-dark">
-											{newPromo.type === "Pourcentage"
-												? "Pourcentage (%)"
-												: "Montant fixe (€)"}
-										</span>
-										<svg
-											className={`w-5 h-5 text-nude-dark transition-transform duration-200 ${isTypeMenuOpen ? "rotate-180" : ""}`}
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M19 9l-7 7-7-7"
-											/>
-										</svg>
-									</button>
-
-									{/* Menu déroulant */}
-									{isTypeMenuOpen && (
-										<div className="absolute z-50 w-full mt-2 bg-white border-2 border-nude-medium rounded-2xl shadow-lg">
-											<button
-												type="button"
-												onClick={() => {
-													setNewPromo({ ...newPromo, type: "Pourcentage" });
-													setIsTypeMenuOpen(false);
-												}}
-												className={`w-full px-4 py-3 text-left hover:bg-rose-light-2 transition-colors first:rounded-t-2xl last:rounded-b-2xl ${
-													newPromo.type === "Pourcentage"
-														? "bg-nude-medium text-black font-medium"
-														: "text-black"
-												}`}
-											>
-												Pourcentage (%)
-											</button>
-											<button
-												type="button"
-												onClick={() => {
-													setNewPromo({ ...newPromo, type: "Montant fixe" });
-													setIsTypeMenuOpen(false);
-												}}
-												className={`w-full px-4 py-3 text-left hover:bg-rose-light-2 transition-colors first:rounded-t-2xl last:rounded-b-2xl ${
-													newPromo.type === "Montant fixe"
-														? "bg-nude-medium text-black font-medium"
-														: "text-black"
-												}`}
-											>
-												Montant fixe (€)
-											</button>
-										</div>
-									)}
-
-									{/* Overlay pour fermer le menu en cliquant ailleurs */}
-									{isTypeMenuOpen && (
-										<div
-											className="fixed inset-0 z-40"
-											onClick={() => setIsTypeMenuOpen(false)}
-										/>
-									)}
+						{/* Contenu scrollable */}
+						<div className="flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-hide">
+							<form
+								className="space-y-4"
+								onSubmit={(e) => {
+									e.preventDefault();
+									handleCreatePromo();
+								}}
+							>
+								{/* Code de promotion */}
+								<div>
+									<label className="block text-sm font-medium text-nude-dark mb-2">
+										Code de promotion *
+									</label>
+									<input
+										type="text"
+										value={newPromo.code}
+										onChange={(e) =>
+											setNewPromo({ ...newPromo, code: e.target.value })
+										}
+										className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
+										placeholder="Ex: ETE2024"
+									/>
 								</div>
-							</div>
 
-							{/* Montant */}
-							<div>
-								<label className="block text-sm font-medium text-nude-dark mb-2">
-									Montant de la réduction *
-								</label>
-								<input
-									type="number"
-									value={newPromo.discount}
-									onChange={(e) =>
-										setNewPromo({ ...newPromo, discount: e.target.value })
-									}
-									className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
-									placeholder={
-										newPromo.type === "Pourcentage" ? "Ex: 20" : "Ex: 10"
-									}
-									min="0"
-									step={newPromo.type === "Pourcentage" ? "1" : "0.01"}
-								/>
-							</div>
+								{/* Type de réduction */}
+								<div>
+									<label className="block text-sm font-medium text-nude-dark mb-2">
+										Type de réduction *
+									</label>
+									<div className="relative" ref={typeMenuRef}>
+										<button
+											type="button"
+											onClick={() => setIsTypeMenuOpen(!isTypeMenuOpen)}
+											className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-pointer text-left flex items-center justify-between"
+										>
+											<span className="text-nude-dark">
+												{newPromo.type === "Pourcentage"
+													? "Pourcentage (%)"
+													: "Montant fixe (€)"}
+											</span>
+											<svg
+												className={`w-5 h-5 text-nude-dark transition-transform duration-200 ${isTypeMenuOpen ? "rotate-180" : ""}`}
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M19 9l-7 7-7-7"
+												/>
+											</svg>
+										</button>
 
-							{/* Date de début */}
-							<div>
-								<label className="block text-sm font-medium text-nude-dark mb-2">
-									Date de début *
-								</label>
-								<input
-									type="date"
-									value={newPromo.validFrom}
-									min={new Date().toISOString().split("T")[0]}
-									onChange={(e) =>
-										setNewPromo({ ...newPromo, validFrom: e.target.value })
-									}
-									className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
-								/>
-								{newPromo.validFrom &&
-									newPromo.validFrom <
-										new Date().toISOString().split("T")[0] && (
-										<p className="text-red-500 text-sm mt-1">
-											La date de début ne peut pas être dans le passé
-										</p>
-									)}
-							</div>
+										{/* Menu déroulant */}
+										{isTypeMenuOpen && (
+											<div className="absolute z-50 w-full mt-2 bg-white border-2 border-nude-medium rounded-2xl shadow-lg">
+												<button
+													type="button"
+													onClick={() => {
+														setNewPromo({ ...newPromo, type: "Pourcentage" });
+														setIsTypeMenuOpen(false);
+													}}
+													className={`w-full px-4 py-3 text-left hover:bg-rose-light-2 transition-colors first:rounded-t-2xl last:rounded-b-2xl ${
+														newPromo.type === "Pourcentage"
+															? "bg-nude-medium text-black font-medium"
+															: "text-black"
+													}`}
+												>
+													Pourcentage (%)
+												</button>
+												<button
+													type="button"
+													onClick={() => {
+														setNewPromo({ ...newPromo, type: "Montant fixe" });
+														setIsTypeMenuOpen(false);
+													}}
+													className={`w-full px-4 py-3 text-left hover:bg-rose-light-2 transition-colors first:rounded-t-2xl last:rounded-b-2xl ${
+														newPromo.type === "Montant fixe"
+															? "bg-nude-medium text-black font-medium"
+															: "text-black"
+													}`}
+												>
+													Montant fixe (€)
+												</button>
+											</div>
+										)}
 
-							{/* Date de fin */}
-							<div>
-								<label className="block text-sm font-medium text-nude-dark mb-2">
-									Date de fin *
-								</label>
-								<input
-									type="date"
-									value={newPromo.validTo}
-									min={newPromo.validFrom || undefined}
-									onChange={(e) =>
-										setNewPromo({ ...newPromo, validTo: e.target.value })
-									}
-									className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
-								/>
-								{newPromo.validFrom &&
-									newPromo.validTo &&
-									newPromo.validTo < newPromo.validFrom && (
-										<p className="text-red-500 text-sm mt-1">
-											La date de fin ne peut pas être antérieure à la date de
-											début
-										</p>
-									)}
-							</div>
+										{/* Overlay pour fermer le menu en cliquant ailleurs */}
+										{isTypeMenuOpen && (
+											<div
+												className="fixed inset-0 z-40"
+												onClick={() => setIsTypeMenuOpen(false)}
+											/>
+										)}
+									</div>
+								</div>
 
-							{/* Nombre maximum d'utilisations */}
-							<div>
-								<label className="block text-sm font-medium text-nude-dark mb-2">
-									Nombre maximum d'utilisations
-								</label>
-								<input
-									type="number"
-									value={newPromo.maxUsage}
-									onChange={(e) =>
-										setNewPromo({ ...newPromo, maxUsage: e.target.value })
-									}
-									className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
-									placeholder="Ex: 100"
-									min="1"
-								/>
-							</div>
+								{/* Montant */}
+								<div>
+									<label className="block text-sm font-medium text-nude-dark mb-2">
+										Montant de la réduction *
+									</label>
+									<input
+										type="number"
+										value={newPromo.discount}
+										onChange={(e) =>
+											setNewPromo({ ...newPromo, discount: e.target.value })
+										}
+										className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
+										placeholder={
+											newPromo.type === "Pourcentage" ? "Ex: 20" : "Ex: 10"
+										}
+										min="0"
+										step={newPromo.type === "Pourcentage" ? "1" : "0.01"}
+									/>
+								</div>
 
-							{/* Boutons */}
-							<div className="flex gap-3 mt-6">
-								<Button
-									type="button"
-									onClick={() => setIsModalOpen(false)}
-									variant="outline"
-									className="flex-1 cursor-pointer"
-								>
-									Annuler
-								</Button>
-								<Button
-									type="submit"
-									className="flex-1 bg-nude-dark text-beige-light hover:bg-nude-dark-2 cursor-pointer"
-								>
-									{isEditing ? "Modifier" : "Créer"}
-								</Button>
-							</div>
-						</form>
+								{/* Date de début */}
+								<div>
+									<label className="block text-sm font-medium text-nude-dark mb-2">
+										Date de début *
+									</label>
+									<input
+										type="date"
+										value={newPromo.validFrom}
+										min={new Date().toISOString().split("T")[0]}
+										onChange={(e) =>
+											setNewPromo({ ...newPromo, validFrom: e.target.value })
+										}
+										className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
+									/>
+									{newPromo.validFrom &&
+										newPromo.validFrom <
+											new Date().toISOString().split("T")[0] && (
+											<p className="text-red-500 text-sm mt-1">
+												La date de début ne peut pas être dans le passé
+											</p>
+										)}
+								</div>
+
+								{/* Date de fin */}
+								<div>
+									<label className="block text-sm font-medium text-nude-dark mb-2">
+										Date de fin *
+									</label>
+									<input
+										type="date"
+										value={newPromo.validTo}
+										min={newPromo.validFrom || undefined}
+										onChange={(e) =>
+											setNewPromo({ ...newPromo, validTo: e.target.value })
+										}
+										className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
+									/>
+									{newPromo.validFrom &&
+										newPromo.validTo &&
+										newPromo.validTo < newPromo.validFrom && (
+											<p className="text-red-500 text-sm mt-1">
+												La date de fin ne peut pas être antérieure à la date de
+												début
+											</p>
+										)}
+								</div>
+
+								{/* Nombre maximum d'utilisations */}
+								<div>
+									<label className="block text-sm font-medium text-nude-dark mb-2">
+										Nombre maximum d'utilisations
+									</label>
+									<input
+										type="number"
+										value={newPromo.maxUsage}
+										onChange={(e) =>
+											setNewPromo({ ...newPromo, maxUsage: e.target.value })
+										}
+										className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
+										placeholder="Ex: 100"
+										min="1"
+									/>
+								</div>
+
+								{/* Montant minimum d'achat */}
+								<div>
+									<label className="block text-sm font-medium text-nude-dark mb-2">
+										Montant minimum d'achat (optionnel)
+									</label>
+									<input
+										type="number"
+										value={newPromo.minAmount}
+										onChange={(e) =>
+											setNewPromo({ ...newPromo, minAmount: e.target.value })
+										}
+										className="w-full px-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors cursor-text"
+										placeholder="Ex: 100 (promo applicable à partir de 100€)"
+										min="0"
+										step="0.01"
+									/>
+									<p className="text-xs text-gray-500 mt-1">
+										La promotion ne s'appliquera que si le montant du panier est
+										supérieur ou égal à cette valeur
+									</p>
+								</div>
+
+								{/* Boutons */}
+								<div className="flex gap-3 mt-6">
+									<Button
+										type="button"
+										onClick={() => setIsModalOpen(false)}
+										variant="outline"
+										className="flex-1 cursor-pointer"
+									>
+										Annuler
+									</Button>
+									<Button
+										type="submit"
+										className="flex-1 bg-nude-dark text-beige-light hover:bg-nude-dark-2 cursor-pointer"
+									>
+										{isEditing ? "Modifier" : "Créer"}
+									</Button>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			)}

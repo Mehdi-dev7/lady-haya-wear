@@ -677,13 +677,28 @@ export default function CheckoutPage() {
 													value={cardInfo.expiry}
 													onChange={(e) => {
 														let val = e.target.value.replace(/[^0-9]/g, "");
-														if (val.length > 2)
+														// Si on a au moins 2 chiffres, ajouter le "/"
+														if (val.length >= 2) {
 															val = val.slice(0, 2) + "/" + val.slice(2, 4);
-														else val = val.slice(0, 2);
+														}
 														setCardInfo({
 															...cardInfo,
 															expiry: val.slice(0, 5),
 														});
+													}}
+													onKeyDown={(e) => {
+														// Permettre la suppression du "/" avec la touche Backspace
+														if (
+															e.key === "Backspace" &&
+															cardInfo.expiry.endsWith("/")
+														) {
+															e.preventDefault();
+															const newValue = cardInfo.expiry.slice(0, -1);
+															setCardInfo({
+																...cardInfo,
+																expiry: newValue,
+															});
+														}
 													}}
 													autoComplete="cc-exp"
 												/>
