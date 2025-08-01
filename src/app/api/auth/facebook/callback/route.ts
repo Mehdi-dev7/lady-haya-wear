@@ -15,20 +15,20 @@ export async function GET(request: NextRequest) {
 		if (error) {
 			console.error("Erreur Facebook OAuth:", error);
 			return NextResponse.redirect(
-			process.env.NODE_ENV === "production"
-				? "https://lady-haya-wear.vercel.app/login?error=facebook_auth_failed"
-				: "http://localhost:3000/login?error=facebook_auth_failed"
-		);
+				process.env.NODE_ENV === "production"
+					? "https://lady-haya-wear.vercel.app/login?error=facebook_auth_failed"
+					: "http://localhost:3000/login?error=facebook_auth_failed"
+			);
 		}
 
 		// Vérifier le code d'autorisation
 		if (!code) {
 			console.error("Code d'autorisation manquant");
 			return NextResponse.redirect(
-			process.env.NODE_ENV === "production"
-				? "https://lady-haya-wear.vercel.app/login?error=facebook_code_missing"
-				: "http://localhost:3000/login?error=facebook_code_missing"
-		);
+				process.env.NODE_ENV === "production"
+					? "https://lady-haya-wear.vercel.app/login?error=facebook_code_missing"
+					: "http://localhost:3000/login?error=facebook_code_missing"
+			);
 		}
 
 		// Vérifier le state pour la sécurité
@@ -38,10 +38,10 @@ export async function GET(request: NextRequest) {
 		if (!storedState || state !== storedState) {
 			console.error("State invalide");
 			return NextResponse.redirect(
-			process.env.NODE_ENV === "production"
-				? "https://lady-haya-wear.vercel.app/login?error=facebook_state_invalid"
-				: "http://localhost:3000/login?error=facebook_state_invalid"
-		);
+				process.env.NODE_ENV === "production"
+					? "https://lady-haya-wear.vercel.app/login?error=facebook_state_invalid"
+					: "http://localhost:3000/login?error=facebook_state_invalid"
+			);
 		}
 
 		// Échanger le code contre un token d'accès
@@ -102,20 +102,20 @@ export async function GET(request: NextRequest) {
 		if (!userData.email) {
 			console.error("Email non fourni par Facebook");
 			return NextResponse.redirect(
-			process.env.NODE_ENV === "production"
-				? "https://lady-haya-wear.vercel.app/login?error=facebook_email_missing"
-				: "http://localhost:3000/login?error=facebook_email_missing"
-		);
+				process.env.NODE_ENV === "production"
+					? "https://lady-haya-wear.vercel.app/login?error=facebook_email_missing"
+					: "http://localhost:3000/login?error=facebook_email_missing"
+			);
 		}
 
-				// Récupérer les informations Instagram si disponibles
+		// Récupérer les informations Instagram si disponibles
 		let instagramData = null;
 		try {
 			// Essayer de récupérer les pages Facebook liées à Instagram
 			const pagesResponse = await fetch(
 				`https://graph.facebook.com/v18.0/me/accounts?fields=instagram_business_account&access_token=${accessToken}`
 			);
-			
+
 			if (pagesResponse.ok) {
 				const pagesResult = await pagesResponse.json();
 				if (pagesResult.data && pagesResult.data.length > 0) {
@@ -152,36 +152,25 @@ export async function GET(request: NextRequest) {
 				: null,
 		};
 
-		// Créer ou mettre à jour l'utilisateur et créer une session
-		try {
-			const sessionResponse = await fetch(
-				process.env.NODE_ENV === "production"
-					? "https://lady-haya-wear.vercel.app/api/auth/facebook/session"
-					: "http://localhost:3000/api/auth/facebook/session",
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(user),
-				}
-			);
-
-			if (!sessionResponse.ok) {
-				console.error("Erreur lors de la création de session:", await sessionResponse.text());
-			}
-		} catch (error) {
-			console.error("Erreur lors de la création de session:", error);
-		}
-
 		console.log("Utilisateur Facebook connecté:", user);
 
-		// Rediriger vers la page de succès
+		// Créer un token de session simple
+		const sessionToken = Buffer.from(JSON.stringify(user)).toString("base64");
+
+		// Rediriger vers la page de succès avec le cookie de session
 		const response = NextResponse.redirect(
 			process.env.NODE_ENV === "production"
 				? "https://lady-haya-wear.vercel.app/account?success=facebook_login"
 				: "http://localhost:3000/account?success=facebook_login"
 		);
+
+		// Définir le cookie de session
+		response.cookies.set("auth-token", sessionToken, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "lax",
+			maxAge: 7 * 24 * 60 * 60, // 7 jours
+		});
 
 		// Nettoyer le cookie de state
 		response.cookies.delete("fb_state");
