@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
 		const tokenData = await tokenResponse.json();
 		const accessToken = tokenData.access_token;
 
-		// Récupérer les informations de l'utilisateur
+		// Récupérer les informations de l'utilisateur Facebook
 		const userResponse = await fetch(
 			`https://graph.facebook.com/v18.0/me?fields=id,name,email,picture&access_token=${accessToken}`
 		);
@@ -84,14 +84,46 @@ export async function GET(request: NextRequest) {
 			return NextResponse.redirect("/login?error=facebook_email_missing");
 		}
 
+		// Récupérer les informations Instagram si disponibles
+		let instagramData = null;
+		try {
+			const instagramResponse = await fetch(
+				`https://graph.facebook.com/v18.0/me/accounts?fields=instagram_business_account&access_token=${accessToken}`
+			);
+
+			if (instagramResponse.ok) {
+				const instagramResult = await instagramResponse.json();
+				if (instagramResult.data && instagramResult.data.length > 0) {
+					const instagramAccount =
+						instagramResult.data[0].instagram_business_account;
+					if (instagramAccount) {
+						const instagramUserResponse = await fetch(
+							`https://graph.facebook.com/v18.0/${instagramAccount.id}?fields=id,username,account_type&access_token=${accessToken}`
+						);
+						if (instagramUserResponse.ok) {
+							instagramData = await instagramUserResponse.json();
+						}
+					}
+				}
+			}
+		} catch (error) {
+			console.log("Instagram non connecté ou non disponible");
+		}
+
 		// Créer ou mettre à jour l'utilisateur dans votre base de données
-		// Ici vous devrez intégrer avec votre système d'authentification existant
 		const user = {
 			id: userData.id,
 			name: userData.name,
 			email: userData.email,
 			picture: userData.picture?.data?.url,
 			provider: "facebook",
+			instagram: instagramData
+				? {
+						id: instagramData.id,
+						username: instagramData.username,
+						accountType: instagramData.account_type,
+					}
+				: null,
 		};
 
 		// TODO: Intégrer avec votre système d'authentification

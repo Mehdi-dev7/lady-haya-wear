@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 			`client_id=${FACEBOOK_APP_ID}` +
 			`&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
 			`&state=${state}` +
-			`&scope=email,public_profile`;
+			`&scope=email,public_profile,instagram_basic`;
 
 		// Stocker le state dans un cookie sécurisé
 		const response = NextResponse.redirect(authUrl);
