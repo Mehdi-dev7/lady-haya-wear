@@ -249,11 +249,11 @@ export async function GET(request: NextRequest) {
 				"base64"
 			);
 
-			// Rediriger vers la page de succès avec le cookie de session
+			// Rediriger vers l'accueil avec le cookie de session
 			const response = NextResponse.redirect(
 				process.env.NODE_ENV === "production"
-					? "https://lady-haya-wear.vercel.app/account?success=facebook_login"
-					: "http://localhost:3000/account?success=facebook_login"
+					? "https://lady-haya-wear.vercel.app/?success=facebook_login"
+					: "http://localhost:3000/?success=facebook_login"
 			);
 
 			// Définir le cookie de session
