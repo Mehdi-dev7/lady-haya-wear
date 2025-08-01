@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
 					code: code,
 					redirect_uri:
 						process.env.NODE_ENV === "production"
-							? "https://ladyhaya-wear.fr/api/auth/facebook/callback"
+							? "https://lady-haya-wear.vercel.app/api/auth/facebook/callback"
 							: "http://localhost:3000/api/auth/facebook/callback",
 				}),
 			}

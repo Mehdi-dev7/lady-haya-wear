@@ -4,7 +4,7 @@ const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
 const REDIRECT_URI =
 	process.env.NODE_ENV === "production"
-		? "https://ladyhaya-wear.fr/api/auth/facebook/callback"
+		? "https://lady-haya-wear.vercel.app/api/auth/facebook/callback"
 		: "http://localhost:3000/api/auth/facebook/callback";
 
 export async function GET(request: NextRequest) {
