@@ -111,7 +111,9 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Base légale */}
 					<section>
-						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Base Légale</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
+							Base Légale
+						</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>Le traitement de vos données est fondé sur :</p>
 							<ul className="list-disc list-inside space-y-2 ml-4">
@@ -178,7 +180,9 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Vos droits */}
 					<section>
-						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Vos Droits</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
+							Vos Droits
+						</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>Conformément au RGPD, vous disposez des droits suivants :</p>
 							<ul className="list-disc list-inside space-y-2 ml-4">
@@ -212,7 +216,9 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Cookies */}
 					<section>
-						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Cookies</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
+							Cookies
+						</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>Notre site utilise des cookies pour :</p>
 							<ul className="list-disc list-inside space-y-2 ml-4">
@@ -230,7 +236,9 @@ export default function PolitiqueConfidentialitePage() {
 
 					{/* Sécurité */}
 					<section>
-						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Sécurité</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
+							Sécurité
+						</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>
 								Nous mettons en œuvre des mesures techniques et
@@ -241,9 +249,45 @@ export default function PolitiqueConfidentialitePage() {
 						</div>
 					</section>
 
+					{/* Suppression des données */}
+					<section id="suppression-donnees">
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
+							Suppression des Données
+						</h2>
+						<div className="space-y-3 text-nude-dark">
+							<p>
+								Vous pouvez demander la suppression de vos données personnelles
+								à tout moment :
+							</p>
+							<ul className="list-disc list-inside space-y-2 ml-4">
+								<li>
+									<strong>Via votre compte :</strong> Connectez-vous et allez
+									dans "Mon compte" → "Supprimer mon compte"
+								</li>
+								<li>
+									<strong>Par email :</strong> Envoyez votre demande à
+									contact@ladyhaya-wear.fr
+								</li>
+								<li>
+									<strong>Par téléphone :</strong> Appelez le +33 1 23 45 67 89
+								</li>
+							</ul>
+							<p className="mt-4">
+								<strong>Délai de traitement :</strong> Votre demande sera
+								traitée dans un délai maximum de 30 jours.
+							</p>
+							<p>
+								<strong>Confirmation :</strong> Vous recevrez une confirmation
+								de suppression par email.
+							</p>
+						</div>
+					</section>
+
 					{/* Contact */}
 					<section>
-						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">Contact</h2>
+						<h2 className="text-2xl font-balqis font-semibold text-logo mb-4">
+							Contact
+						</h2>
 						<div className="space-y-3 text-nude-dark">
 							<p>
 								Pour toute question concernant cette politique de
