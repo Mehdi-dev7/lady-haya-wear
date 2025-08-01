@@ -264,6 +264,9 @@ export async function GET(request: NextRequest) {
 				maxAge: 7 * 24 * 60 * 60, // 7 jours
 			});
 
+			// Nettoyer le cookie de state
+			response.cookies.delete("fb_state");
+
 			return response;
 		} catch (dbError) {
 			console.error("Erreur lors de la sauvegarde en BDD:", dbError);
@@ -273,11 +276,6 @@ export async function GET(request: NextRequest) {
 					: "http://localhost:3000/login?error=facebook_db_error"
 			);
 		}
-
-		// Nettoyer le cookie de state
-		response.cookies.delete("fb_state");
-
-		return response;
 	} catch (error) {
 		console.error("Erreur lors du callback Facebook:", error);
 		return NextResponse.redirect(
