@@ -912,42 +912,43 @@ export default function AccountPage() {
 							)}
 						</div>
 						{/* Mot de passe */}
-						{!providers.includes("google") && (
-							<div>
-								<label className="block text-lg font-semibold text-logo mb-2">
-									Mot de passe
-								</label>
-								<div className="flex gap-2 items-center">
-									<div className="flex-1">
-										<input
-											type="password"
-											name="password"
-											placeholder="********"
-											value={fields.password}
-											onChange={handleChange}
-											disabled={!editing.password}
-											className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark pr-10"
-										/>
-									</div>
-									{!editing.password && (
-										<>
-											<button
-												type="button"
-												className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200 cursor-pointer"
-												onClick={() => setPasswordModalOpen(true)}
-											>
-												Modifier
-											</button>
-											<CiEdit
-												className="md:hidden text-2xl text-nude-dark cursor-pointer flex-shrink-0"
-												onClick={() => setPasswordModalOpen(true)}
-												title="Modifier"
+						{!providers.includes("google") &&
+							!providers.includes("facebook") && (
+								<div>
+									<label className="block text-lg font-semibold text-logo mb-2">
+										Mot de passe
+									</label>
+									<div className="flex gap-2 items-center">
+										<div className="flex-1">
+											<input
+												type="password"
+												name="password"
+												placeholder="********"
+												value={fields.password}
+												onChange={handleChange}
+												disabled={!editing.password}
+												className="w-full border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark pr-10"
 											/>
-										</>
-									)}
+										</div>
+										{!editing.password && (
+											<>
+												<button
+													type="button"
+													className="hidden md:inline-block bg-nude-dark hover:bg-logo text-white font-semibold px-4 py-2 rounded shadow btn-hover transition-all duration-200 cursor-pointer"
+													onClick={() => setPasswordModalOpen(true)}
+												>
+													Modifier
+												</button>
+												<CiEdit
+													className="md:hidden text-2xl text-nude-dark cursor-pointer flex-shrink-0"
+													onClick={() => setPasswordModalOpen(true)}
+													title="Modifier"
+												/>
+											</>
+										)}
+									</div>
 								</div>
-							</div>
-						)}
+							)}
 						{/* DEBUG providers */}
 						{/* <div className="text-xs text-nude-dark mb-2">
 							providers: {JSON.stringify(providers)}

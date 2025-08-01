@@ -15,20 +15,26 @@ export async function GET(request: NextRequest) {
 		// Essayer de décoder le token Facebook (base64)
 		try {
 			const decodedData = JSON.parse(Buffer.from(token, "base64").toString());
-			
-			// Si c'est un token Facebook, retourner les données utilisateur
-			if (decodedData.provider === "facebook") {
-				return NextResponse.json({
-					user: {
-						id: decodedData.id,
-						email: decodedData.email,
-						name: decodedData.name,
-						profile: {
-							firstName: decodedData.name.split(" ")[0],
-							lastName: decodedData.name.split(" ").slice(1).join(" "),
-						},
-					},
+
+			// Si c'est un token Facebook avec userId, récupérer depuis la BDD
+			if (decodedData.provider === "facebook" && decodedData.userId) {
+				const dbUser = await prisma.user.findUnique({
+					where: { id: decodedData.userId },
+					include: { profile: true },
 				});
+
+				if (dbUser) {
+					return NextResponse.json({
+						user: {
+							id: dbUser.id,
+							email: dbUser.email,
+							profile: {
+								firstName: dbUser.profile?.firstName || "",
+								lastName: dbUser.profile?.lastName || "",
+							},
+						},
+					});
+				}
 			}
 		} catch (facebookError) {
 			// Si ce n'est pas un token Facebook, essayer JWT

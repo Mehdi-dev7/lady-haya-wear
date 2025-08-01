@@ -1,14 +1,14 @@
+import {
+	logSecurityEvent,
+	sanitizeObject,
+	secureEmailSchema,
+	secureNameSchema,
+	securePhoneSchema,
+} from "@/lib/security";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { 
-	secureNameSchema, 
-	secureEmailSchema, 
-	securePhoneSchema,
-	sanitizeObject,
-	logSecurityEvent
-} from "@/lib/security";
 
 const prisma = new PrismaClient();
 
@@ -18,8 +18,32 @@ export async function GET(request: NextRequest) {
 		if (!token) {
 			return NextResponse.json({ providers: [], user: null }, { status: 401 });
 		}
-		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
-		const userId = decoded.userId;
+
+		let userId: string | null = null;
+
+		// Essayer de décoder le token Facebook (base64)
+		try {
+			const decodedData = JSON.parse(Buffer.from(token, "base64").toString());
+			if (decodedData.provider === "facebook" && decodedData.userId) {
+				userId = decodedData.userId;
+			}
+		} catch (facebookError) {
+			// Si ce n'est pas un token Facebook, essayer JWT
+		}
+
+		// Si pas de userId Facebook, essayer JWT
+		if (!userId) {
+			try {
+				const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
+				userId = decoded.userId;
+			} catch (jwtError) {
+				return NextResponse.json(
+					{ providers: [], user: null },
+					{ status: 401 }
+				);
+			}
+		}
+
 		if (!userId) {
 			return NextResponse.json({ providers: [], user: null }, { status: 401 });
 		}
@@ -65,9 +89,29 @@ export async function PATCH(request: NextRequest) {
 		if (!token) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
-		
-		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
-		const userId = decoded.userId;
+
+		let userId: string | null = null;
+
+		// Essayer de décoder le token Facebook (base64)
+		try {
+			const decodedData = JSON.parse(Buffer.from(token, "base64").toString());
+			if (decodedData.provider === "facebook" && decodedData.userId) {
+				userId = decodedData.userId;
+			}
+		} catch (facebookError) {
+			// Si ce n'est pas un token Facebook, essayer JWT
+		}
+
+		// Si pas de userId Facebook, essayer JWT
+		if (!userId) {
+			try {
+				const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
+				userId = decoded.userId;
+			} catch (jwtError) {
+				return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+			}
+		}
+
 		if (!userId) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
@@ -75,7 +119,7 @@ export async function PATCH(request: NextRequest) {
 		// ===== VALIDATION ET SANITISATION =====
 		const rawBody = await request.json();
 		const sanitizedBody = sanitizeObject(rawBody);
-		
+
 		const updateSchema = z.object({
 			nom: secureNameSchema.optional(),
 			prenom: secureNameSchema.optional(),
@@ -86,15 +130,12 @@ export async function PATCH(request: NextRequest) {
 
 		const parsed = updateSchema.safeParse(sanitizedBody);
 		if (!parsed.success) {
-			logSecurityEvent('ACCOUNT_UPDATE_VALIDATION_ERROR', { 
+			logSecurityEvent("ACCOUNT_UPDATE_VALIDATION_ERROR", {
 				userId,
-				errors: parsed.error.flatten()
+				errors: parsed.error.flatten(),
 			});
-			
-			return NextResponse.json(
-				{ error: "Données invalides" },
-				{ status: 400 }
-			);
+
+			return NextResponse.json({ error: "Données invalides" }, { status: 400 });
 		}
 
 		const { nom, prenom, civility, email, telephone } = parsed.data;
@@ -102,18 +143,18 @@ export async function PATCH(request: NextRequest) {
 		// ===== VÉRIFICATION EMAIL UNIQUE =====
 		if (email) {
 			const existingUser = await prisma.user.findFirst({
-				where: { 
+				where: {
 					email,
-					id: { not: userId }
-				}
+					id: { not: userId },
+				},
 			});
-			
+
 			if (existingUser) {
-				logSecurityEvent('ACCOUNT_UPDATE_EMAIL_CONFLICT', { 
+				logSecurityEvent("ACCOUNT_UPDATE_EMAIL_CONFLICT", {
 					userId,
-					attemptedEmail: email
+					attemptedEmail: email,
 				});
-				
+
 				return NextResponse.json(
 					{ error: "Cet email est déjà utilisé" },
 					{ status: 400 }
@@ -123,9 +164,9 @@ export async function PATCH(request: NextRequest) {
 
 		// ===== MISE À JOUR SÉCURISÉE =====
 		if (email) {
-			await prisma.user.update({ 
-				where: { id: userId }, 
-				data: { email } 
+			await prisma.user.update({
+				where: { id: userId },
+				data: { email },
 			});
 		}
 
@@ -153,18 +194,18 @@ export async function PATCH(request: NextRequest) {
 		}
 
 		// ===== LOG SUCCÈS =====
-		logSecurityEvent('ACCOUNT_UPDATE_SUCCESS', { 
+		logSecurityEvent("ACCOUNT_UPDATE_SUCCESS", {
 			userId,
-			updatedFields: Object.keys(profileData)
+			updatedFields: Object.keys(profileData),
 		});
 
 		return NextResponse.json({ success: true });
 	} catch (error) {
 		console.error("Erreur update account:", error);
-		logSecurityEvent('ACCOUNT_UPDATE_ERROR', { 
-			error: error instanceof Error ? error.message : 'Unknown error'
+		logSecurityEvent("ACCOUNT_UPDATE_ERROR", {
+			error: error instanceof Error ? error.message : "Unknown error",
 		});
-		
+
 		return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
 	}
 }

@@ -1,5 +1,8 @@
+import { PrismaClient } from "@prisma/client";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+
+const prisma = new PrismaClient();
 
 const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
@@ -154,23 +157,122 @@ export async function GET(request: NextRequest) {
 
 		console.log("Utilisateur Facebook connecté:", user);
 
-		// Créer un token de session simple
-		const sessionToken = Buffer.from(JSON.stringify(user)).toString("base64");
+		// Sauvegarder ou mettre à jour l'utilisateur en BDD
+		try {
+			// Vérifier si l'utilisateur existe déjà
+			let dbUser = await prisma.user.findUnique({
+				where: { email: user.email },
+				include: { profile: true, accounts: true },
+			});
 
-		// Rediriger vers la page de succès avec le cookie de session
-		const response = NextResponse.redirect(
-			process.env.NODE_ENV === "production"
-				? "https://lady-haya-wear.vercel.app/account?success=facebook_login"
-				: "http://localhost:3000/account?success=facebook_login"
-		);
+			if (!dbUser) {
+				// Créer un nouvel utilisateur
+				dbUser = await prisma.user.create({
+					data: {
+						email: user.email,
+						emailVerified: new Date(),
+						profile: {
+							create: {
+								firstName: user.name.split(" ")[0],
+								lastName: user.name.split(" ").slice(1).join(" "),
+							},
+						},
+						accounts: {
+							create: {
+								type: "oauth",
+								provider: "facebook",
+								providerAccountId: user.id,
+								access_token: accessToken,
+								token_type: "bearer",
+								scope: "email,public_profile",
+							},
+						},
+					},
+					include: { profile: true, accounts: true },
+				});
+				console.log("Nouvel utilisateur Facebook créé:", dbUser.id);
+			} else {
+				// Mettre à jour l'utilisateur existant
+				dbUser = await prisma.user.update({
+					where: { id: dbUser.id },
+					data: {
+						emailVerified: new Date(),
+						profile: {
+							upsert: {
+								create: {
+									firstName: user.name.split(" ")[0],
+									lastName: user.name.split(" ").slice(1).join(" "),
+								},
+								update: {
+									firstName: user.name.split(" ")[0],
+									lastName: user.name.split(" ").slice(1).join(" "),
+								},
+							},
+						},
+						accounts: {
+							upsert: {
+								where: {
+									provider_providerAccountId: {
+										provider: "facebook",
+										providerAccountId: user.id,
+									},
+								},
+								create: {
+									type: "oauth",
+									provider: "facebook",
+									providerAccountId: user.id,
+									access_token: accessToken,
+									token_type: "bearer",
+									scope: "email,public_profile",
+								},
+								update: {
+									access_token: accessToken,
+									token_type: "bearer",
+									scope: "email,public_profile",
+								},
+							},
+						},
+					},
+					include: { profile: true, accounts: true },
+				});
+				console.log("Utilisateur Facebook mis à jour:", dbUser.id);
+			}
 
-		// Définir le cookie de session
-		response.cookies.set("auth-token", sessionToken, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === "production",
-			sameSite: "lax",
-			maxAge: 7 * 24 * 60 * 60, // 7 jours
-		});
+			// Créer un token de session avec l'ID de l'utilisateur en BDD
+			const sessionData = {
+				userId: dbUser.id,
+				email: dbUser.email,
+				name: user.name,
+				provider: "facebook",
+			};
+			const sessionToken = Buffer.from(JSON.stringify(sessionData)).toString(
+				"base64"
+			);
+
+			// Rediriger vers la page de succès avec le cookie de session
+			const response = NextResponse.redirect(
+				process.env.NODE_ENV === "production"
+					? "https://lady-haya-wear.vercel.app/account?success=facebook_login"
+					: "http://localhost:3000/account?success=facebook_login"
+			);
+
+			// Définir le cookie de session
+			response.cookies.set("auth-token", sessionToken, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === "production",
+				sameSite: "lax",
+				maxAge: 7 * 24 * 60 * 60, // 7 jours
+			});
+
+			return response;
+		} catch (dbError) {
+			console.error("Erreur lors de la sauvegarde en BDD:", dbError);
+			return NextResponse.redirect(
+				process.env.NODE_ENV === "production"
+					? "https://lady-haya-wear.vercel.app/login?error=facebook_db_error"
+					: "http://localhost:3000/login?error=facebook_db_error"
+			);
+		}
 
 		// Nettoyer le cookie de state
 		response.cookies.delete("fb_state");
