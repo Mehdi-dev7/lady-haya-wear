@@ -84,24 +84,26 @@ export async function GET(request: NextRequest) {
 			return NextResponse.redirect("/login?error=facebook_email_missing");
 		}
 
-		// Récupérer les informations Instagram si disponibles
+				// Récupérer les informations Instagram si disponibles
 		let instagramData = null;
 		try {
-			const instagramResponse = await fetch(
+			// Essayer de récupérer les pages Facebook liées à Instagram
+			const pagesResponse = await fetch(
 				`https://graph.facebook.com/v18.0/me/accounts?fields=instagram_business_account&access_token=${accessToken}`
 			);
-
-			if (instagramResponse.ok) {
-				const instagramResult = await instagramResponse.json();
-				if (instagramResult.data && instagramResult.data.length > 0) {
-					const instagramAccount =
-						instagramResult.data[0].instagram_business_account;
-					if (instagramAccount) {
-						const instagramUserResponse = await fetch(
-							`https://graph.facebook.com/v18.0/${instagramAccount.id}?fields=id,username,account_type&access_token=${accessToken}`
-						);
-						if (instagramUserResponse.ok) {
-							instagramData = await instagramUserResponse.json();
+			
+			if (pagesResponse.ok) {
+				const pagesResult = await pagesResponse.json();
+				if (pagesResult.data && pagesResult.data.length > 0) {
+					for (const page of pagesResult.data) {
+						if (page.instagram_business_account) {
+							const instagramUserResponse = await fetch(
+								`https://graph.facebook.com/v18.0/${page.instagram_business_account.id}?fields=id,username,account_type&access_token=${accessToken}`
+							);
+							if (instagramUserResponse.ok) {
+								instagramData = await instagramUserResponse.json();
+								break;
+							}
 						}
 					}
 				}
