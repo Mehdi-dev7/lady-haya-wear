@@ -32,6 +32,10 @@ export async function GET(request: NextRequest) {
 		return response;
 	} catch (error) {
 		console.error("Erreur lors de l'initialisation de l'auth Facebook:", error);
-		return NextResponse.redirect("/login?error=facebook_init_failed");
+		return NextResponse.redirect(
+			process.env.NODE_ENV === "production"
+				? "https://lady-haya-wear.vercel.app/login?error=facebook_init_failed"
+				: "http://localhost:3000/login?error=facebook_init_failed"
+		);
 	}
 }

@@ -14,13 +14,21 @@ export async function GET(request: NextRequest) {
 		// Vérifier s'il y a une erreur
 		if (error) {
 			console.error("Erreur Facebook OAuth:", error);
-			return NextResponse.redirect("/login?error=facebook_auth_failed");
+			return NextResponse.redirect(
+			process.env.NODE_ENV === "production"
+				? "https://lady-haya-wear.vercel.app/login?error=facebook_auth_failed"
+				: "http://localhost:3000/login?error=facebook_auth_failed"
+		);
 		}
 
 		// Vérifier le code d'autorisation
 		if (!code) {
 			console.error("Code d'autorisation manquant");
-			return NextResponse.redirect("/login?error=facebook_code_missing");
+			return NextResponse.redirect(
+			process.env.NODE_ENV === "production"
+				? "https://lady-haya-wear.vercel.app/login?error=facebook_code_missing"
+				: "http://localhost:3000/login?error=facebook_code_missing"
+		);
 		}
 
 		// Vérifier le state pour la sécurité
@@ -29,7 +37,11 @@ export async function GET(request: NextRequest) {
 
 		if (!storedState || state !== storedState) {
 			console.error("State invalide");
-			return NextResponse.redirect("/login?error=facebook_state_invalid");
+			return NextResponse.redirect(
+			process.env.NODE_ENV === "production"
+				? "https://lady-haya-wear.vercel.app/login?error=facebook_state_invalid"
+				: "http://localhost:3000/login?error=facebook_state_invalid"
+		);
 		}
 
 		// Échanger le code contre un token d'accès
@@ -57,7 +69,11 @@ export async function GET(request: NextRequest) {
 				"Erreur lors de l'échange du token:",
 				await tokenResponse.text()
 			);
-			return NextResponse.redirect("/login?error=facebook_token_failed");
+			return NextResponse.redirect(
+				process.env.NODE_ENV === "production"
+					? "https://lady-haya-wear.vercel.app/login?error=facebook_token_failed"
+					: "http://localhost:3000/login?error=facebook_token_failed"
+			);
 		}
 
 		const tokenData = await tokenResponse.json();
@@ -73,7 +89,11 @@ export async function GET(request: NextRequest) {
 				"Erreur lors de la récupération des données utilisateur:",
 				await userResponse.text()
 			);
-			return NextResponse.redirect("/login?error=facebook_user_data_failed");
+			return NextResponse.redirect(
+				process.env.NODE_ENV === "production"
+					? "https://lady-haya-wear.vercel.app/login?error=facebook_user_data_failed"
+					: "http://localhost:3000/login?error=facebook_user_data_failed"
+			);
 		}
 
 		const userData = await userResponse.json();
@@ -81,7 +101,11 @@ export async function GET(request: NextRequest) {
 		// Vérifier que l'email est présent
 		if (!userData.email) {
 			console.error("Email non fourni par Facebook");
-			return NextResponse.redirect("/login?error=facebook_email_missing");
+			return NextResponse.redirect(
+			process.env.NODE_ENV === "production"
+				? "https://lady-haya-wear.vercel.app/login?error=facebook_email_missing"
+				: "http://localhost:3000/login?error=facebook_email_missing"
+		);
 		}
 
 				// Récupérer les informations Instagram si disponibles
@@ -136,7 +160,11 @@ export async function GET(request: NextRequest) {
 		console.log("Utilisateur Facebook connecté:", user);
 
 		// Rediriger vers la page de succès
-		const response = NextResponse.redirect("/account?success=facebook_login");
+		const response = NextResponse.redirect(
+			process.env.NODE_ENV === "production"
+				? "https://lady-haya-wear.vercel.app/account?success=facebook_login"
+				: "http://localhost:3000/account?success=facebook_login"
+		);
 
 		// Nettoyer le cookie de state
 		response.cookies.delete("fb_state");
@@ -144,6 +172,10 @@ export async function GET(request: NextRequest) {
 		return response;
 	} catch (error) {
 		console.error("Erreur lors du callback Facebook:", error);
-		return NextResponse.redirect("/login?error=facebook_callback_failed");
+		return NextResponse.redirect(
+			process.env.NODE_ENV === "production"
+				? "https://lady-haya-wear.vercel.app/login?error=facebook_callback_failed"
+				: "http://localhost:3000/login?error=facebook_callback_failed"
+		);
 	}
 }
