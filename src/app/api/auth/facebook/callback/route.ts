@@ -152,10 +152,27 @@ export async function GET(request: NextRequest) {
 				: null,
 		};
 
-		// TODO: Intégrer avec votre système d'authentification
-		// - Vérifier si l'utilisateur existe déjà
-		// - Créer ou mettre à jour l'utilisateur
-		// - Créer une session
+		// Créer ou mettre à jour l'utilisateur et créer une session
+		try {
+			const sessionResponse = await fetch(
+				process.env.NODE_ENV === "production"
+					? "https://lady-haya-wear.vercel.app/api/auth/facebook/session"
+					: "http://localhost:3000/api/auth/facebook/session",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(user),
+				}
+			);
+
+			if (!sessionResponse.ok) {
+				console.error("Erreur lors de la création de session:", await sessionResponse.text());
+			}
+		} catch (error) {
+			console.error("Erreur lors de la création de session:", error);
+		}
 
 		console.log("Utilisateur Facebook connecté:", user);
 

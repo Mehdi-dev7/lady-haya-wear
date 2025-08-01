@@ -12,7 +12,29 @@ export async function GET(request: NextRequest) {
 			return NextResponse.json({ user: null }, { status: 401 });
 		}
 
-		// Vérifier le token JWT
+		// Essayer de décoder le token Facebook (base64)
+		try {
+			const decodedData = JSON.parse(Buffer.from(token, "base64").toString());
+			
+			// Si c'est un token Facebook, retourner les données utilisateur
+			if (decodedData.provider === "facebook") {
+				return NextResponse.json({
+					user: {
+						id: decodedData.id,
+						email: decodedData.email,
+						name: decodedData.name,
+						profile: {
+							firstName: decodedData.name.split(" ")[0],
+							lastName: decodedData.name.split(" ").slice(1).join(" "),
+						},
+					},
+				});
+			}
+		} catch (facebookError) {
+			// Si ce n'est pas un token Facebook, essayer JWT
+		}
+
+		// Vérifier le token JWT (pour les utilisateurs normaux)
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
 		const user = await prisma.user.findUnique({
 			where: { id: decoded.userId },
