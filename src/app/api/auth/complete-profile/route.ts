@@ -123,7 +123,19 @@ export async function POST(request: NextRequest) {
 				{ expiresIn: "7d" }
 			);
 
-			const response = NextResponse.json({ success: true, updated: true });
+			const response = NextResponse.json({
+				success: true,
+				updated: true,
+				user: {
+					id: updatedUser.id,
+					email: updatedUser.email,
+					name: `${updatedUser.profile?.firstName} ${updatedUser.profile?.lastName}`.trim(),
+					profile: {
+						firstName: updatedUser.profile?.firstName || "",
+						lastName: updatedUser.profile?.lastName || "",
+					},
+				},
+			});
 			response.cookies.set("auth-token", token, {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === "production",
@@ -175,7 +187,19 @@ export async function POST(request: NextRequest) {
 		);
 
 		// Rediriger vers la page d'accueil avec le cookie de session
-		const response = NextResponse.json({ success: true, created: true });
+		const response = NextResponse.json({
+			success: true,
+			created: true,
+			user: {
+				id: user.id,
+				email: user.email,
+				name: `${user.profile?.firstName} ${user.profile?.lastName}`.trim(),
+				profile: {
+					firstName: user.profile?.firstName || "",
+					lastName: user.profile?.lastName || "",
+				},
+			},
+		});
 		response.cookies.set("auth-token", token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
