@@ -219,30 +219,28 @@ export async function GET(request: NextRequest) {
 			});
 		}
 
-		// Créer le token JWT avec des informations plus claires
-		const displayName = user.profile?.firstName
-			? `${user.profile.firstName} ${user.profile.lastName || ""}`.trim()
-			: formatUsername(userData.username || "Utilisateur");
-
-		const token = jwt.sign(
+		// Créer un token temporaire pour les informations Instagram
+		const tempToken = jwt.sign(
 			{
-				userId: user.id,
-				email: user.email,
-				name: displayName,
-				provider: "instagram",
+				instagramId: userData.id,
 				instagramUsername: userData.username,
+				accountType: userData.account_type,
+				provider: "instagram",
+				temporary: true,
 			},
 			process.env.NEXTAUTH_SECRET!,
-			{ expiresIn: "7d" }
+			{ expiresIn: "10m" } // Token temporaire de 10 minutes
 		);
 
-		// Rediriger vers la page d'accueil avec le cookie de session
-		const response = NextResponse.redirect(new URL("/", request.url));
-		response.cookies.set("auth-token", token, {
+		// Rediriger vers un formulaire de complétion des informations
+		const response = NextResponse.redirect(
+			new URL("/complete-profile?provider=instagram", request.url)
+		);
+		response.cookies.set("temp-auth-token", tempToken, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
 			sameSite: "lax",
-			maxAge: 7 * 24 * 60 * 60, // 7 jours
+			maxAge: 600, // 10 minutes
 		});
 
 		// Nettoyer le cookie de state
