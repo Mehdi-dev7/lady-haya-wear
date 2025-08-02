@@ -7,7 +7,9 @@
 		"build": "prisma generate && next build",
 		"start": "next start",
 		"lint": "next lint",
-		"db:seed": "npx tsx prisma/seed.ts"
+		"db:seed": "npx tsx prisma/seed.ts",
+		"test:instagram": "node scripts/test-instagram-auth.js",
+		"test:social": "node scripts/test-social-auth.js"
 	},
 	"dependencies": {
 		"@getbrevo/brevo": "^3.0.1",

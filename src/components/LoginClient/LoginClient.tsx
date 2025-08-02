@@ -132,6 +132,54 @@ export default function Login() {
 				case "google_auth_failed":
 					toast.error("Erreur lors de l'authentification Google");
 					break;
+				case "instagram_auth_failed":
+					toast.error("Erreur lors de l'authentification Instagram");
+					break;
+				case "instagram_code_missing":
+					toast.error("Code d'autorisation Instagram manquant");
+					break;
+				case "instagram_state_invalid":
+					toast.error(
+						"Erreur de sécurité lors de l'authentification Instagram"
+					);
+					break;
+				case "instagram_token_failed":
+					toast.error("Erreur lors de l'obtention du token Instagram");
+					break;
+				case "instagram_user_data_failed":
+					toast.error(
+						"Erreur lors de la récupération des données utilisateur Instagram"
+					);
+					break;
+				case "instagram_callback_failed":
+					toast.error("Erreur lors de la connexion Instagram");
+					break;
+				case "facebook_auth_failed":
+					toast.error("Erreur lors de l'authentification Facebook");
+					break;
+				case "facebook_code_missing":
+					toast.error("Code d'autorisation Facebook manquant");
+					break;
+				case "facebook_state_invalid":
+					toast.error("Erreur de sécurité lors de l'authentification Facebook");
+					break;
+				case "facebook_token_failed":
+					toast.error("Erreur lors de l'obtention du token Facebook");
+					break;
+				case "facebook_user_data_failed":
+					toast.error(
+						"Erreur lors de la récupération des données utilisateur Facebook"
+					);
+					break;
+				case "facebook_email_missing":
+					toast.error("Email non fourni par Facebook");
+					break;
+				case "facebook_db_error":
+					toast.error("Erreur lors de la sauvegarde des données");
+					break;
+				case "facebook_callback_failed":
+					toast.error("Erreur lors de la connexion Facebook");
+					break;
 				default:
 					toast.error("Erreur lors de la connexion");
 			}

@@ -8,8 +8,8 @@ export default function InstagramLoginButton() {
 	const handleInstagramLogin = async () => {
 		setIsLoading(true);
 		try {
-			// Rediriger vers notre route d'authentification Facebook avec permission Instagram
-			window.location.href = "/api/auth/facebook";
+			// Rediriger vers notre route d'authentification Instagram
+			window.location.href = "/api/auth/instagram";
 		} catch (error) {
 			console.error("Erreur lors de la connexion Instagram:", error);
 			setIsLoading(false);
