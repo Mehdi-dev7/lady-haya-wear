@@ -84,8 +84,16 @@ export async function GET(request: NextRequest) {
 
 		const userData = await userResponse.json();
 
+		console.log("Données Instagram reçues:", userData);
+
 		// Créer un email unique basé sur l'ID Instagram
 		const instagramEmail = `instagram_${userData.id}@lady-haya-wear.com`;
+
+		// Formater le nom d'utilisateur pour un meilleur affichage
+		const formatUsername = (username: string) => {
+			// Capitaliser la première lettre
+			return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
+		};
 
 		// Vérifier si l'utilisateur existe déjà via l'Account Instagram
 		let user = await prisma.user.findFirst({
@@ -108,8 +116,8 @@ export async function GET(request: NextRequest) {
 					emailVerified: new Date(), // L'email Instagram est considéré comme vérifié
 					profile: {
 						create: {
-							firstName: userData.username || "",
-							lastName: "",
+							firstName: formatUsername(userData.username || "Utilisateur"),
+							lastName: "Instagram",
 						},
 					},
 				},
@@ -155,14 +163,18 @@ export async function GET(request: NextRequest) {
 			});
 		}
 
-		// Créer le token JWT
+		// Créer le token JWT avec des informations plus claires
+		const displayName = user.profile?.firstName
+			? `${user.profile.firstName} ${user.profile.lastName || ""}`.trim()
+			: formatUsername(userData.username || "Utilisateur");
+
 		const token = jwt.sign(
 			{
 				userId: user.id,
 				email: user.email,
-				name: user.profile?.firstName
-					? `${user.profile.firstName} ${user.profile.lastName || ""}`.trim()
-					: userData.username || user.email,
+				name: displayName,
+				provider: "instagram",
+				instagramUsername: userData.username,
 			},
 			process.env.NEXTAUTH_SECRET!,
 			{ expiresIn: "7d" }
