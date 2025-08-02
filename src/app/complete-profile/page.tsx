@@ -59,16 +59,14 @@ function CompleteProfileContent() {
 		e.preventDefault();
 		setIsLoading(true);
 
-		// Validation du numéro de téléphone - un seul chiffre
-		if (formData.phone && formData.phone.length > 1) {
-			toast.error("Le numéro de téléphone doit être un seul chiffre (0-9)");
-			setIsLoading(false);
-			return;
-		}
-
-		// Validation que le téléphone est un chiffre si fourni
-		if (formData.phone && !/^[0-9]$/.test(formData.phone)) {
-			toast.error("Le numéro de téléphone doit être un chiffre entre 0 et 9");
+		// Validation du numéro de téléphone - format français
+		if (
+			formData.phone &&
+			!/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/.test(formData.phone)
+		) {
+			toast.error(
+				"Veuillez entrer un numéro de téléphone français valide (ex: 06 12 34 56 78)"
+			);
 			setIsLoading(false);
 			return;
 		}
@@ -94,8 +92,12 @@ function CompleteProfileContent() {
 				} else {
 					toast.success("Profil complété avec succès !");
 				}
-				// Redirection vers l'accueil au lieu de login
-				router.push("/");
+				// Redirection vers l'accueil avec un délai pour laisser le toast s'afficher
+				console.log("Redirection vers l'accueil dans 1.5 secondes...");
+				setTimeout(() => {
+					console.log("Redirection vers l'accueil maintenant...");
+					router.push("/");
+				}, 1500);
 			} else {
 				// Gestion spécifique des erreurs
 				if (response.status === 409) {
@@ -122,8 +124,8 @@ function CompleteProfileContent() {
 
 		// Validation spéciale pour le téléphone
 		if (name === "phone") {
-			// Ne permettre qu'un seul chiffre
-			if (value.length <= 1 && /^[0-9]?$/.test(value)) {
+			// Permettre le format téléphone français
+			if (value === "" || /^[0-9\s.\-+()]*$/.test(value)) {
 				setFormData((prev) => ({ ...prev, [name]: value }));
 			}
 		} else {
@@ -215,7 +217,7 @@ function CompleteProfileContent() {
 							value={formData.phone}
 							onChange={handleInputChange}
 							className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark w-full"
-							placeholder="Un chiffre (0-9)"
+							placeholder="06 12 34 56 78"
 						/>
 					</div>
 
