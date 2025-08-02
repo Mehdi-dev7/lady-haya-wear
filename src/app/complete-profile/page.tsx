@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { toast } from "react-toastify";
 
-export default function CompleteProfile() {
+function CompleteProfileContent() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [formData, setFormData] = useState({
 		email: "",
@@ -194,5 +194,20 @@ export default function CompleteProfile() {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+export default function CompleteProfile() {
+	return (
+		<Suspense fallback={
+			<div className="min-h-screen flex items-center justify-center bg-[#fae4e4]/75">
+				<div className="bg-white p-8 rounded-lg shadow-lg">
+					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-medium mx-auto"></div>
+					<p className="text-center mt-4 text-gray-600">Chargement...</p>
+				</div>
+			</div>
+		}>
+			<CompleteProfileContent />
+		</Suspense>
 	);
 }
