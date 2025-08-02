@@ -86,13 +86,69 @@ export async function GET(request: NextRequest) {
 
 		console.log("Données Instagram reçues:", userData);
 
-		// Créer un email unique basé sur l'ID Instagram
-		const instagramEmail = `instagram_${userData.id}@lady-haya-wear.com`;
+		// Essayer de récupérer plus d'informations via l'API Graph
+		let additionalData = null;
+		try {
+			// Essayer de récupérer les informations de la page Facebook liée
+			const pagesResponse = await fetch(
+				`https://graph.facebook.com/me/accounts?fields=instagram_business_account{id,username,account_type}&access_token=${accessToken}`
+			);
+
+			if (pagesResponse.ok) {
+				const pagesData = await pagesResponse.json();
+				console.log("Données des pages:", pagesData);
+
+				if (pagesData.data && pagesData.data.length > 0) {
+					for (const page of pagesData.data) {
+						if (page.instagram_business_account) {
+							// Récupérer les informations détaillées de la page
+							const pageDetailsResponse = await fetch(
+								`https://graph.facebook.com/${page.id}?fields=name,email&access_token=${accessToken}`
+							);
+
+							if (pageDetailsResponse.ok) {
+								additionalData = await pageDetailsResponse.json();
+								console.log("Données supplémentaires:", additionalData);
+								break;
+							}
+						}
+					}
+				}
+			}
+		} catch (error) {
+			console.log(
+				"Impossible de récupérer les données supplémentaires:",
+				error
+			);
+		}
+
+		// Utiliser l'email de la page Facebook si disponible, sinon générer un email
+		const userEmail =
+			additionalData?.email || `instagram_${userData.id}@lady-haya-wear.com`;
+
+		// Utiliser les noms de la page Facebook si disponibles
+		const pageName = additionalData?.name;
+		let firstName = userData.username;
+		let lastName = "Lady Haya";
+
+		if (pageName) {
+			const nameParts = pageName.split(" ");
+			firstName = nameParts[0] || userData.username;
+			lastName = nameParts.slice(1).join(" ") || "Lady Haya";
+		}
 
 		// Formater le nom d'utilisateur pour un meilleur affichage
 		const formatUsername = (username: string) => {
-			// Capitaliser la première lettre
-			return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
+			// Supprimer les points et underscores, capitaliser
+			const cleanUsername = username
+				.replace(/[._]/g, " ") // Remplacer points et underscores par des espaces
+				.split(" ")
+				.map(
+					(word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+				)
+				.join(" ");
+
+			return cleanUsername || "Utilisateur";
 		};
 
 		// Vérifier si l'utilisateur existe déjà via l'Account Instagram
@@ -112,12 +168,12 @@ export async function GET(request: NextRequest) {
 			// Créer un nouvel utilisateur
 			user = await prisma.user.create({
 				data: {
-					email: instagramEmail,
+					email: userEmail,
 					emailVerified: new Date(), // L'email Instagram est considéré comme vérifié
 					profile: {
 						create: {
-							firstName: formatUsername(userData.username || "Utilisateur"),
-							lastName: "Instagram",
+							firstName: formatUsername(firstName || "Utilisateur"),
+							lastName: lastName,
 						},
 					},
 				},
