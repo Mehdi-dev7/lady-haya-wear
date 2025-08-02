@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function CompleteProfileContent() {
@@ -75,13 +75,28 @@ function CompleteProfileContent() {
 			const data = await response.json();
 
 			if (response.ok) {
-				toast.success("Profil complété avec succès !");
+				if (data.updated) {
+					toast.success("Profil mis à jour avec succès !");
+				} else {
+					toast.success("Profil complété avec succès !");
+				}
 				router.push("/?success=profile_completed");
 			} else {
-				toast.error(data.error || "Erreur lors de la complétion du profil");
+				// Gestion spécifique des erreurs
+				if (response.status === 409) {
+					toast.error(
+						"Cet email est déjà utilisé. Veuillez utiliser un autre email ou vous connecter avec ce compte."
+					);
+				} else if (response.status === 401) {
+					toast.error("Session expirée. Veuillez vous reconnecter.");
+					router.push("/login");
+				} else {
+					toast.error(data.error || "Erreur lors de la complétion du profil");
+				}
 			}
 		} catch (error) {
-			toast.error("Erreur lors de la complétion du profil");
+			console.error("Erreur lors de la soumission:", error);
+			toast.error("Erreur de connexion. Veuillez réessayer.");
 		} finally {
 			setIsLoading(false);
 		}
@@ -199,14 +214,16 @@ function CompleteProfileContent() {
 
 export default function CompleteProfile() {
 	return (
-		<Suspense fallback={
-			<div className="min-h-screen flex items-center justify-center bg-[#fae4e4]/75">
-				<div className="bg-white p-8 rounded-lg shadow-lg">
-					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-medium mx-auto"></div>
-					<p className="text-center mt-4 text-gray-600">Chargement...</p>
+		<Suspense
+			fallback={
+				<div className="min-h-screen flex items-center justify-center bg-[#fae4e4]/75">
+					<div className="bg-white p-8 rounded-lg shadow-lg">
+						<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-medium mx-auto"></div>
+						<p className="text-center mt-4 text-gray-600">Chargement...</p>
+					</div>
 				</div>
-			</div>
-		}>
+			}
+		>
 			<CompleteProfileContent />
 		</Suspense>
 	);
