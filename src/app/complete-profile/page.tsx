@@ -144,7 +144,7 @@ function CompleteProfileContent() {
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-[#fae4e4]/75 px-4">
-			<div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+			<div className="bg-nude-light p-8 rounded-lg shadow-lg w-full max-w-md">
 				<div className="text-center mb-6">
 					<h1 className="text-2xl font-bold text-logo mb-2">
 						Complétez votre profil
@@ -170,7 +170,7 @@ function CompleteProfileContent() {
 							required
 							value={formData.email}
 							onChange={handleInputChange}
-							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-medium focus:border-transparent"
+							className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark w-full"
 							placeholder="votre@email.com"
 						/>
 					</div>
@@ -185,7 +185,7 @@ function CompleteProfileContent() {
 							required
 							value={formData.firstName}
 							onChange={handleInputChange}
-							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-medium focus:border-transparent"
+							className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark w-full"
 							placeholder="Votre prénom"
 						/>
 					</div>
@@ -200,7 +200,7 @@ function CompleteProfileContent() {
 							required
 							value={formData.lastName}
 							onChange={handleInputChange}
-							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-medium focus:border-transparent"
+							className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark w-full"
 							placeholder="Votre nom"
 						/>
 					</div>
@@ -214,7 +214,7 @@ function CompleteProfileContent() {
 							name="phone"
 							value={formData.phone}
 							onChange={handleInputChange}
-							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-medium focus:border-transparent"
+							className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark w-full"
 							placeholder="Un chiffre (0-9)"
 						/>
 					</div>
