@@ -59,6 +59,20 @@ function CompleteProfileContent() {
 		e.preventDefault();
 		setIsLoading(true);
 
+		// Validation du numéro de téléphone - un seul chiffre
+		if (formData.phone && formData.phone.length > 1) {
+			toast.error("Le numéro de téléphone doit être un seul chiffre (0-9)");
+			setIsLoading(false);
+			return;
+		}
+
+		// Validation que le téléphone est un chiffre si fourni
+		if (formData.phone && !/^[0-9]$/.test(formData.phone)) {
+			toast.error("Le numéro de téléphone doit être un chiffre entre 0 et 9");
+			setIsLoading(false);
+			return;
+		}
+
 		try {
 			const response = await fetch("/api/auth/complete-profile", {
 				method: "POST",
@@ -80,7 +94,8 @@ function CompleteProfileContent() {
 				} else {
 					toast.success("Profil complété avec succès !");
 				}
-				router.push("/?success=profile_completed");
+				// Redirection vers l'accueil au lieu de login
+				router.push("/");
 			} else {
 				// Gestion spécifique des erreurs
 				if (response.status === 409) {
@@ -102,11 +117,18 @@ function CompleteProfileContent() {
 		}
 	};
 
-	const handleInputChange = (field: string, value: string) => {
-		setFormData((prev) => ({
-			...prev,
-			[field]: value,
-		}));
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+
+		// Validation spéciale pour le téléphone
+		if (name === "phone") {
+			// Ne permettre qu'un seul chiffre
+			if (value.length <= 1 && /^[0-9]?$/.test(value)) {
+				setFormData((prev) => ({ ...prev, [name]: value }));
+			}
+		} else {
+			setFormData((prev) => ({ ...prev, [name]: value }));
+		}
 	};
 
 	if (!tempAuthData) {
@@ -144,9 +166,10 @@ function CompleteProfileContent() {
 						</label>
 						<input
 							type="email"
+							name="email"
 							required
 							value={formData.email}
-							onChange={(e) => handleInputChange("email", e.target.value)}
+							onChange={handleInputChange}
 							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-medium focus:border-transparent"
 							placeholder="votre@email.com"
 						/>
@@ -158,9 +181,10 @@ function CompleteProfileContent() {
 						</label>
 						<input
 							type="text"
+							name="firstName"
 							required
 							value={formData.firstName}
-							onChange={(e) => handleInputChange("firstName", e.target.value)}
+							onChange={handleInputChange}
 							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-medium focus:border-transparent"
 							placeholder="Votre prénom"
 						/>
@@ -172,9 +196,10 @@ function CompleteProfileContent() {
 						</label>
 						<input
 							type="text"
+							name="lastName"
 							required
 							value={formData.lastName}
-							onChange={(e) => handleInputChange("lastName", e.target.value)}
+							onChange={handleInputChange}
 							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-medium focus:border-transparent"
 							placeholder="Votre nom"
 						/>
@@ -186,17 +211,18 @@ function CompleteProfileContent() {
 						</label>
 						<input
 							type="tel"
+							name="phone"
 							value={formData.phone}
-							onChange={(e) => handleInputChange("phone", e.target.value)}
+							onChange={handleInputChange}
 							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-medium focus:border-transparent"
-							placeholder="Votre numéro de téléphone"
+							placeholder="Un chiffre (0-9)"
 						/>
 					</div>
 
 					<button
 						type="submit"
 						disabled={isLoading}
-						className="w-full bg-rose-medium text-white py-2 px-4 rounded-md hover:bg-rose-dark-2 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+						className="w-full bg-rose-medium text-white py-2 px-4 rounded-md hover:bg-rose-dark-2 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						{isLoading ? "Création du profil..." : "Créer mon profil"}
 					</button>
