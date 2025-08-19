@@ -65,35 +65,63 @@ export default function CategoryList({ categories }: CategoryListProps) {
 		// Espacement optimisé pour effet coverflow
 		const baseSpacing = isLargeScreen ? 300 : 220;
 
+		// Système de z-index relatif : chaque image domine celles plus éloignées
+		const calculateZIndex = (distance: number) => {
+			// Plus la distance est faible, plus le z-index est élevé
+			// Mais on laisse de l'espace pour que chaque niveau puisse dominer le suivant
+			return 100 - distance * 10;
+		};
+
 		if (absDistance === 0) {
 			// Slide centrale - priorité maximale
 			transform = "translateX(0) rotateY(0deg) scale(1) translateZ(0px)";
 			opacity = 1;
-			zIndex = 100;
+			zIndex = calculateZIndex(0); // 100
 			filter = "drop-shadow(0px 8px 24px rgba(18, 28, 53, 0.3))";
 		} else if (absDistance === 1) {
-			// Slides adjacentes - bien visibles avec ombre
+			// Slides adjacentes - dominent distance 2+
 			const side = diff > 0 ? 1 : -1;
 			transform = `translateX(${side * baseSpacing}px) rotateY(${-side * 45}deg) scale(0.8) translateZ(-100px)`;
 			opacity = 0.8;
-			zIndex = 80;
+			zIndex = calculateZIndex(1); // 90
 			filter = "drop-shadow(0px 6px 18px rgba(18, 28, 53, 0.2))";
 		} else if (absDistance === 2) {
-			// Slides du fond - plus proches pour éviter l'isolement
+			// Slides du fond - dominent distance 3+
 			const side = diff > 0 ? 1 : -1;
 			transform = `translateX(${side * (baseSpacing * 1.3)}px) rotateY(${-side * 60}deg) scale(0.65) translateZ(-200px)`;
 			opacity = 0.6;
-			zIndex = 30;
+			zIndex = calculateZIndex(2); // 80
 			filter = "drop-shadow(0px 4px 12px rgba(18, 28, 53, 0.15))";
 		} else {
-			// Slides très éloignées - ajustement rotation pour 1210px
+			// Slides très éloignées - au fond
 			const side = diff > 0 ? 1 : -1;
-			// Réduire la rotation à 1210px pour éviter l'espace
 			const rotationAngle = screenWidth >= 1210 && screenWidth < 1536 ? 60 : 70;
 			transform = `translateX(${side * (baseSpacing * 1.25)}px) rotateY(${-side * rotationAngle}deg) scale(0.55) translateZ(-300px)`;
 			opacity = 0.3;
-			zIndex = 5;
+			zIndex = calculateZIndex(3); // 70
 			filter = "drop-shadow(0px 2px 8px rgba(18, 28, 53, 0.1))";
+		}
+
+		// Ajouter un masque CSS pour cacher les parties qui dépassent
+		let clipPath = "none";
+		if (absDistance === 2) {
+			const side = diff > 0 ? 1 : -1;
+			if (side > 0) {
+				// Image à droite - masquer très légèrement le côté gauche qui dépasse
+				clipPath = "polygon(8% 0%, 100% 0%, 100% 100%, 8% 100%)";
+			} else {
+				// Image à gauche - masquer très légèrement le côté droit qui dépasse
+				clipPath = "polygon(0% 0%, 92% 0%, 92% 100%, 0% 100%)";
+			}
+		} else if (absDistance >= 3) {
+			const side = diff > 0 ? 1 : -1;
+			if (side > 0) {
+				// Image à droite - masquer plus le côté gauche qui dépasse
+				clipPath = "polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%)";
+			} else {
+				// Image à gauche - masquer plus le côté droit qui dépasse
+				clipPath = "polygon(0% 0%, 75% 0%, 75% 100%, 0% 100%)";
+			}
 		}
 
 		return {
@@ -101,6 +129,7 @@ export default function CategoryList({ categories }: CategoryListProps) {
 			opacity,
 			zIndex,
 			filter,
+			clipPath,
 		};
 	};
 
