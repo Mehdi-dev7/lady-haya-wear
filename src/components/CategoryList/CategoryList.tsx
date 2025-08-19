@@ -59,21 +59,21 @@ export default function CategoryList({ categories }: CategoryListProps) {
 			</div>
 
 			{/* Container de scroll */}
-			<div className="relative">
+			<div className="relative max-w-7xl mx-auto">
 				{/* Masques de fade-out sur les bords (tablette et au-dessus) */}
 				<div className="hidden md:block absolute left-0 top-0 bottom-0 w-18 lg:w-32 bg-gradient-to-r from-rose-light-2  to-rose-light/50 z-10 pointer-events-none"></div>
 				<div className="hidden md:block absolute right-0 top-0 bottom-0 w-18 lg:w-32 bg-gradient-to-l from-rose-light-2  to-rose-light/50 z-10 pointer-events-none"></div>
 
 				<div
 					ref={scrollContainerRef}
-					className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-8"
+					className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-8 justify-center"
 					style={{ scrollSnapType: "x mandatory" }}
 				>
 					{categories.map((category) => (
 						<Link
 							key={category._id}
 							href={`/collections/${category.slug?.current || category._id}`}
-							className="flex-shrink-0 w-64 h-80 group"
+							className="flex-shrink-0 w-64 h-80 2xl:w-80 2xl:h-96 group"
 							style={{ scrollSnapAlign: "center" }}
 						>
 							<div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-xl">

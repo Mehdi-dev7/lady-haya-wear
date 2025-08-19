@@ -529,31 +529,32 @@ export default function Login() {
 					}
 				}
 
-				/* Approche simplifiée avec opacity */
+				/* Animation symétrique des formulaires */
 				.form-box {
-					transition: opacity 0.3s ease-in-out 0.8s !important;
+					transition: opacity 0.3s ease-in-out !important;
 				}
 
 				.form-box.login {
 					opacity: 1 !important;
 					pointer-events: auto !important;
+					transition-delay: 0.8s !important;
 				}
 
 				.login-container.active .form-box.login {
 					opacity: 0 !important;
-					transition-delay: 0s !important;
+					transition-delay: 0.3s !important;
 					pointer-events: none !important;
 				}
 
 				.form-box.register {
 					opacity: 0 !important;
-					transition-delay: 0s !important;
+					transition-delay: 0.3s !important;
 					pointer-events: none !important;
 				}
 
 				.login-container.active .form-box.register {
 					opacity: 1 !important;
-					transition-delay: 1s !important;
+					transition-delay: 0.8s !important;
 					pointer-events: auto !important;
 				}
 
