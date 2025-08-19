@@ -10,6 +10,7 @@ interface SliderProps {
 
 export default function Slider({ featuredCategories }: SliderProps) {
 	const [currentSlide, setCurrentSlide] = useState(0);
+	const [isTransitioning, setIsTransitioning] = useState(true);
 
 	// Tableau des gradients disponibles
 	const gradients = [
@@ -20,22 +21,59 @@ export default function Slider({ featuredCategories }: SliderProps) {
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			setCurrentSlide((prev) => (prev + 1) % featuredCategories.length);
+			setCurrentSlide((prev) => prev + 1);
 		}, 3000);
 
 		return () => clearInterval(interval);
-	}, [featuredCategories.length]);
+	}, []);
+
+	// Réinitialiser la position quand on atteint la fin du deuxième set
+	useEffect(() => {
+		if (currentSlide === featuredCategories.length * 2) {
+			setTimeout(() => {
+				setIsTransitioning(false);
+				setCurrentSlide(featuredCategories.length);
+				setTimeout(() => {
+					setIsTransitioning(true);
+				}, 50);
+			}, 1000);
+		}
+	}, [currentSlide, featuredCategories.length]);
+
+	// Gérer le clic sur les dots
+	const handleDotClick = (index: number) => {
+		setCurrentSlide(featuredCategories.length + index);
+	};
+
+	// Fonction pour obtenir l'index réel (pour les gradients)
+	const getRealIndex = (slideIndex: number) => {
+		return slideIndex % gradients.length;
+	};
+
+	// Créer un tableau avec des images dupliquées pour l'effet infini
+	const infiniteSlides = [
+		...featuredCategories, // Premier set
+		...featuredCategories, // Deuxième set
+		...featuredCategories, // Troisième set
+	];
+
+	// Calculer l'index actuel pour les dots
+	const getCurrentDotIndex = () => {
+		return currentSlide % featuredCategories.length;
+	};
 
 	return (
 		<div className="h-screen w-full overflow-hidden relative">
 			<div
-				className="w-max h-full flex transition-all ease-in-out duration-1000"
-				style={{ transform: `translateX(-${currentSlide * 100}vw)` }}
+				className={`w-max h-full flex ${isTransitioning ? "transition-all ease-in-out duration-1000" : ""}`}
+				style={{
+					transform: `translateX(-${currentSlide * 100}vw)`,
+				}}
 			>
-				{featuredCategories.map((category, index) => (
+				{infiniteSlides.map((category, index) => (
 					<div
-						className={`${gradients[index % gradients.length]} h-full w-screen flex flex-col lg:flex-row`}
-						key={category._id}
+						className={`${gradients[getRealIndex(index)]} h-full w-screen flex-shrink-0 flex flex-col lg:flex-row`}
+						key={`${category._id}-${index}`}
 					>
 						{/* TEXT CONTAINER */}
 						<div className="h-1/3 lg:w-1/2 lg:h-full w-full flex flex-col items-center justify-center gap-3 lg:gap-8 2xl:gap-12 text-center mt-10 lg:mt-0 lg:pt-0">
@@ -101,12 +139,12 @@ export default function Slider({ featuredCategories }: SliderProps) {
 				{featuredCategories.map((category, index) => (
 					<div
 						className={`w-3 h-3 rounded-full ring-1 ring-gray-600 cursor-pointer flex items-center justify-center ${
-							currentSlide === index ? "scale-150" : ""
+							getCurrentDotIndex() === index ? "scale-150" : ""
 						}`}
 						key={category._id}
-						onClick={() => setCurrentSlide(index)}
+						onClick={() => handleDotClick(index)}
 					>
-						{currentSlide === index && (
+						{getCurrentDotIndex() === index && (
 							<div className="w-[6px] h-[6px] bg-gray-600 rounded-full" />
 						)}
 					</div>

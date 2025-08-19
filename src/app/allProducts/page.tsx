@@ -11,9 +11,9 @@ export default async function AllProducts() {
 	return (
 		<div className="min-h-screen bg-beige-light">
 			{/* Header de la page */}
-			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-12 mt-18">
+			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16">
 				<div className="text-center">
-					<h1 className="text-5xl lg:text-6xl font-alex-brush text-logo mb-4">
+					<h1 className="text-5xl lg:text-6xl font-alex-brush text-logo mt-12 lg:mt-14 mb-4">
 						Tous nos produits
 					</h1>
 					<p className="text-lg text-nude-dark mb-6 max-w-2xl mx-auto">

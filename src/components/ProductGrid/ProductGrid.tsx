@@ -101,7 +101,7 @@ export default function ProductGrid({
 						<Link
 							key={product._id}
 							href={`/products/${product.slug?.current || product._id}`}
-							className={`w-full flex flex-col gap-4 sm:w-[45%] lg:w-[27%] xl:w-[25%] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 ${index % 2 === 0 ? "bg-[#d9c4b5]/80" : "bg-rose-light-2"}`}
+							className={`w-full flex flex-col gap-4 sm:w-[45%] lg:w-[27%] xl:w-[25%] 2xl:max-w-[421px] group p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 ${index % 2 === 0 ? "bg-[#d9c4b5]/80" : "bg-rose-light-2"}`}
 						>
 							{/* Image du produit */}
 							<div className="relative w-full h-[28rem] rounded-2xl overflow-hidden group">
