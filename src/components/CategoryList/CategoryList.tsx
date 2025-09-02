@@ -62,8 +62,8 @@ export default function CategoryList({ categories }: CategoryListProps) {
 		let zIndex = 1;
 		let filter = "none";
 
-		// Espacement optimisé pour effet coverflow
-		const baseSpacing = isLargeScreen ? 300 : 220;
+		// Espacement réduit pour éviter les débordements sur les côtés
+		const baseSpacing = isLargeScreen ? 250 : 180;
 
 		// Système de z-index relatif : chaque image domine celles plus éloignées
 		const calculateZIndex = (distance: number) => {
@@ -86,42 +86,35 @@ export default function CategoryList({ categories }: CategoryListProps) {
 			zIndex = calculateZIndex(1); // 90
 			filter = "drop-shadow(0px 6px 18px rgba(18, 28, 53, 0.2))";
 		} else if (absDistance === 2) {
-			// Slides du fond - dominent distance 3+
+			// Slides en 2ème position - bien visibles, plus proches
 			const side = diff > 0 ? 1 : -1;
-			transform = `translateX(${side * (baseSpacing * 1.3)}px) rotateY(${-side * 60}deg) scale(0.65) translateZ(-200px)`;
-			opacity = 0.6;
+			transform = `translateX(${side * (baseSpacing * 1.1)}px) rotateY(${-side * 65}deg) scale(0.6) translateZ(-200px)`;
+			opacity = 0.4; // Plus visible
 			zIndex = calculateZIndex(2); // 80
 			filter = "drop-shadow(0px 4px 12px rgba(18, 28, 53, 0.15))";
 		} else {
-			// Slides très éloignées - au fond
+			// Slides en 3ème position et plus - complètement cachées pour éviter débordement
 			const side = diff > 0 ? 1 : -1;
-			const rotationAngle = screenWidth >= 1210 && screenWidth < 1536 ? 60 : 70;
-			transform = `translateX(${side * (baseSpacing * 1.25)}px) rotateY(${-side * rotationAngle}deg) scale(0.55) translateZ(-300px)`;
-			opacity = 0.3;
-			zIndex = calculateZIndex(3); // 70
-			filter = "drop-shadow(0px 2px 8px rgba(18, 28, 53, 0.1))";
+			transform = `translateX(${side * (baseSpacing * 1.2)}px) rotateY(${-side * 80}deg) scale(0.4) translateZ(-300px)`;
+			opacity = 0; // Complètement invisible
+			zIndex = 0; // Tout au fond
+			filter = "none";
 		}
 
-		// Ajouter un masque CSS pour cacher les parties qui dépassent
+		// Masquage CSS simplifié pour 3 niveaux
 		let clipPath = "none";
 		if (absDistance === 2) {
 			const side = diff > 0 ? 1 : -1;
 			if (side > 0) {
-				// Image à droite - masquer très légèrement le côté gauche qui dépasse
-				clipPath = "polygon(8% 0%, 100% 0%, 100% 100%, 8% 100%)";
+				// Image à droite - masquer légèrement le côté gauche qui dépasse
+				clipPath = "polygon(20% 0%, 100% 0%, 100% 100%, 20% 100%)";
 			} else {
-				// Image à gauche - masquer très légèrement le côté droit qui dépasse
-				clipPath = "polygon(0% 0%, 92% 0%, 92% 100%, 0% 100%)";
+				// Image à gauche - masquer légèrement le côté droit qui dépasse
+				clipPath = "polygon(0% 0%, 80% 0%, 80% 100%, 0% 100%)";
 			}
 		} else if (absDistance >= 3) {
-			const side = diff > 0 ? 1 : -1;
-			if (side > 0) {
-				// Image à droite - masquer plus le côté gauche qui dépasse
-				clipPath = "polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%)";
-			} else {
-				// Image à gauche - masquer plus le côté droit qui dépasse
-				clipPath = "polygon(0% 0%, 75% 0%, 75% 100%, 0% 100%)";
-			}
+			// Images en 3ème position et plus - complètement masquées
+			clipPath = "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)"; // Masque tout
 		}
 
 		return {
@@ -145,11 +138,16 @@ export default function CategoryList({ categories }: CategoryListProps) {
 				</p>
 			</div>
 
-			{/* Container 3D Coverflow */}
-			<div className="relative h-[600px] lg:h-[700px] 2xl:h-[800px] flex items-center justify-center perspective-1000">
-				<div className="relative w-full max-w-6xl 2xl:max-w-7xl h-full flex items-center justify-center">
+			{/* Container 3D Coverflow avec masquage des côtés */}
+			<div className="relative h-[600px] lg:h-[700px] 2xl:h-[800px] flex items-center justify-center perspective-1000 overflow-hidden">
+				<div className="relative w-full max-w-4xl 2xl:max-w-5xl h-full flex items-center justify-center overflow-hidden">
 					{categories.map((category, index) => {
 						const slideStyle = getSlideStyle(index);
+						const absDistance = Math.abs(index - currentIndex);
+
+						// Rendre seulement 3 positions : centre + 2 de chaque côté pour éviter débordement
+						if (absDistance > 2) return null;
+
 						return (
 							<div
 								key={category._id}
