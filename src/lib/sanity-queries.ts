@@ -26,6 +26,12 @@ export async function getAllProducts(): Promise<Product[]> {
       },
       featured,
       isNew,
+      badges {
+        isPromo,
+        promoType,
+        promoPercentage,
+        originalPrice
+      },
       _createdAt,
       _updatedAt,
       "price": *[_type == "productDetail" && product._ref == ^._id][0].price,
@@ -83,6 +89,12 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       },
       featured,
       isNew,
+      badges {
+        isPromo,
+        promoType,
+        promoPercentage,
+        originalPrice
+      },
       _createdAt,
       _updatedAt
     }
@@ -119,6 +131,12 @@ export async function getProductsByCategory(
       },
       featured,
       isNew,
+      badges {
+        isPromo,
+        promoType,
+        promoPercentage,
+        originalPrice
+      },
       _createdAt,
       _updatedAt,
       "price": *[_type == "productDetail" && product._ref == ^._id][0].price,
@@ -336,6 +354,12 @@ export async function getFeaturedProducts(): Promise<Product[]> {
       },
       featured,
       isNew,
+      badges {
+        isPromo,
+        promoType,
+        promoPercentage,
+        originalPrice
+      },
       _createdAt,
       _updatedAt,
       "price": *[_type == "productDetail" && product._ref == ^._id][0].price,

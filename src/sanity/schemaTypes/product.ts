@@ -82,6 +82,58 @@ export default defineType({
 			type: "boolean",
 			initialValue: false,
 		}),
+		defineField({
+			name: "badges",
+			title: "Badges et Promotions",
+			type: "object",
+			fields: [
+				defineField({
+					name: "isPromo",
+					title: "Produit en promotion",
+					type: "boolean",
+					initialValue: false,
+					description: "Activer pour afficher le badge promotion",
+				}),
+				defineField({
+					name: "promoType",
+					title: "Type de promotion",
+					type: "string",
+					options: {
+						list: [
+							{ title: "Pourcentage de réduction", value: "percentage" },
+							{ title: "Prix barré (prix original)", value: "originalPrice" },
+						],
+						layout: "radio",
+					},
+					hidden: ({ parent }) => !parent?.isPromo,
+					initialValue: "percentage",
+					description: "Choisissez le type de promotion à afficher",
+				}),
+				defineField({
+					name: "promoPercentage",
+					title: "Pourcentage de réduction (%)",
+					type: "number",
+					hidden: ({ parent }) =>
+						!parent?.isPromo || parent?.promoType !== "percentage",
+					validation: (Rule) =>
+						Rule.min(1)
+							.max(99)
+							.warning("Le pourcentage doit être entre 1 et 99"),
+					description: "Exemple: 20 pour -20%",
+				}),
+				defineField({
+					name: "originalPrice",
+					title: "Prix original (€)",
+					type: "number",
+					hidden: ({ parent }) =>
+						!parent?.isPromo || parent?.promoType !== "originalPrice",
+					validation: (Rule) => Rule.positive(),
+					description:
+						"Prix original à afficher barré (doit être supérieur au prix actuel du produit détaillé)",
+				}),
+			],
+			description: "Gestion des badges et promotions pour ce produit",
+		}),
 	],
 	orderings: [
 		{
@@ -100,12 +152,40 @@ export default defineType({
 			title: "name",
 			subtitle: "shortDescription",
 			media: "mainImage",
+			isNew: "isNew",
+			featured: "featured",
+			isPromo: "badges.isPromo",
+			promoType: "badges.promoType",
+			promoPercentage: "badges.promoPercentage",
 		},
 		prepare(selection) {
-			const { title, subtitle, media } = selection;
+			const {
+				title,
+				subtitle,
+				media,
+				isNew,
+				featured,
+				isPromo,
+				promoType,
+				promoPercentage,
+			} = selection;
+			let badges = [];
+
+			if (featured) badges.push("⭐");
+			if (isNew) badges.push("🆕");
+			if (isPromo) {
+				if (promoType === "percentage" && promoPercentage) {
+					badges.push(`🏷️ -${promoPercentage}%`);
+				} else if (promoType === "originalPrice") {
+					badges.push("🏷️ PROMO");
+				} else {
+					badges.push("🏷️");
+				}
+			}
+
 			return {
 				title: title,
-				subtitle: subtitle,
+				subtitle: `${subtitle} ${badges.join(" ")}`,
 				media: media,
 			};
 		},

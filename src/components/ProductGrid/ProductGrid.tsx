@@ -9,6 +9,8 @@ import { FaHeart } from "react-icons/fa";
 import { FiHeart } from "react-icons/fi";
 import { toast } from "react-toastify";
 import Filter from "../Filter/Filter";
+import ProductBadges from "@/components/ProductBadges/ProductBadges";
+import ProductPrice from "@/components/ProductPrice/ProductPrice";
 
 interface ProductGridProps {
 	products: any[];
@@ -131,12 +133,11 @@ export default function ProductGrid({
 									/>
 								)}
 
-								{/* Badge "Nouveau" si le produit est récent */}
-								{product.isNew && (
-									<div className="absolute top-2 left-2 bg-red-400 text-white px-2 py-1 rounded-full text-xs font-medium z-20">
-										Nouveau
-									</div>
-								)}
+								{/* Badges du produit */}
+								<ProductBadges 
+									badges={product.badges} 
+									isNew={product.isNew} 
+								/>
 							</div>
 
 							{/* Informations du produit */}
@@ -148,20 +149,13 @@ export default function ProductGrid({
 									{product.shortDescription}
 								</p>
 
-								{/* Prix */}
-								<div className="flex items-center gap-2 mt-2">
-									{product.originalPrice &&
-										product.originalPrice > product.price && (
-											<span className="text-sm text-gray-400 line-through">
-												{product.originalPrice.toFixed(2)} €
-											</span>
-										)}
-									<span className="text-lg font-semibold text-nude-dark">
-										{product.price
-											? `${product.price.toFixed(2)} €`
-											: "Prix sur demande"}
-									</span>
-								</div>
+								{/* Prix avec promotions */}
+								<ProductPrice 
+									price={product.price}
+									originalPrice={product.originalPrice}
+									badges={product.badges}
+									className="mt-2"
+								/>
 							</div>
 
 							{/* Boutons d'action */}

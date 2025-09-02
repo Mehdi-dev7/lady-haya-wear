@@ -49,11 +49,13 @@ export interface ProductSize {
 	quantity: number;
 }
 
-// Type pour les badges
+// Type pour les badges (version étendue)
 export interface ProductBadges {
-	isNew: boolean;
-	isPromo: boolean;
+	isNew?: boolean;
+	isPromo?: boolean;
+	promoType?: "percentage" | "originalPrice";
 	promoPercentage?: number;
+	originalPrice?: number;
 }
 
 // Type pour les couleurs (nouvelle structure)
@@ -78,6 +80,7 @@ export interface Product {
 	category: SanityReference;
 	featured: boolean;
 	isNew: boolean;
+	badges?: ProductBadges;
 	_createdAt: string;
 	_updatedAt: string;
 }

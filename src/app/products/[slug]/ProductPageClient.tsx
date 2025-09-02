@@ -1,5 +1,6 @@
 "use client";
 
+import ProductPrice from "@/components/ProductPrice/ProductPrice";
 import { useCart } from "@/lib/CartContext";
 import { useFavorites } from "@/lib/FavoritesContext";
 import { urlFor } from "@/lib/sanity";
@@ -322,16 +323,13 @@ export function ProductPageClient({
 						</div>
 
 						{/* Prix */}
-						<div className="flex items-center gap-4">
-							{product.badges?.isPromo && product.originalPrice && (
-								<span className="text-xl text-gray-400 line-through">
-									{product.originalPrice.toFixed(2)} €
-								</span>
-							)}
-							<div className="text-2xl md:text-3xl  font-semibold text-logo">
-								{product.price.toFixed(2)} €
-							</div>
-						</div>
+						<ProductPrice
+							price={product.price}
+							originalPrice={product.originalPrice}
+							badges={product.badges}
+							size="large"
+							className="text-2xl md:text-3xl"
+						/>
 
 						{/* Description */}
 						<div className="prose prose-lg max-w-none">
