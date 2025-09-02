@@ -39,20 +39,14 @@ export function middleware(request: NextRequest) {
 	);
 
 	if (isAdminRoute) {
-		// Vérifier les cookies de session
-		const hasSession =
-			request.cookies.has("next-auth.session-token") ||
-			request.cookies.has("__Secure-next-auth.session-token") ||
-			request.cookies.has("auth-token");
+		// Vérifier le cookie d'authentification admin
+		const hasAdminToken = request.cookies.has("admin-token");
 
-		if (!hasSession) {
+		if (!hasAdminToken) {
 			const loginUrl = new URL("/admin-login", request.url);
 			loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
 			return NextResponse.redirect(loginUrl);
 		}
-
-		// Vérifier si l'utilisateur est admin (cette vérification se fait côté serveur dans les API)
-		// Le middleware redirige vers la page de login admin si pas de session
 	}
 
 	return securityResponse;

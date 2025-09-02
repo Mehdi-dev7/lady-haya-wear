@@ -59,10 +59,8 @@ export default function AdminLoginPage() {
 			if (response.ok) {
 				// Connexion réussie
 				toast.success("Connexion réussie !");
-				// Attendre un peu pour que le toast s'affiche
-				setTimeout(() => {
-					router.push("/dashboard");
-				}, 1000);
+				// Redirection immédiate
+				router.push("/dashboard");
 			} else {
 				const errorMessage = data.error || "Identifiants incorrects";
 				setError(errorMessage);

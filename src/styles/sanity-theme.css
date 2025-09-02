@@ -1,0 +1,206 @@
+/* Thème personnalisé Lady Haya Wear pour Sanity Studio */
+
+/* Variables CSS globales */
+:root {
+	/* Couleurs principales Lady Haya */
+	--lady-haya-logo: #8a5f3d;
+	--lady-haya-nude-light: #f8ede4;
+	--lady-haya-nude-medium: #d9c4b5;
+	--lady-haya-nude-dark: #b49982;
+	--lady-haya-nude-dark-2: #ab8d73;
+	--lady-haya-rose-light-2: #fae4e4;
+	--lady-haya-rose-light: #f9dede;
+	--lady-haya-rose-medium: #f7d7d7;
+	--lady-haya-rose-dark: #f4cdcd;
+	--lady-haya-rose-dark-2: #e89cae;
+	--lady-haya-beige-light: #f5f1e9;
+	--lady-haya-beige-medium: #d7cdb9;
+	--lady-haya-beige-dark: #a99f88;
+}
+
+/* Thème Sanity Studio personnalisé */
+[data-ui="RootTheme"] {
+	/* Couleurs de marque */
+	--brand-primary: var(--lady-haya-logo) !important;
+	--brand-secondary: var(--lady-haya-nude-dark) !important;
+
+	/* Couleurs de fond */
+	--card-bg-color: #ffffff !important;
+	--default-bg-color: var(--lady-haya-beige-light) !important;
+	--backdrop-color: rgba(138, 95, 61, 0.1) !important;
+
+	/* Navigation */
+	--nav-bar-bg: var(--lady-haya-nude-light) !important;
+	--nav-bar-fg: var(--lady-haya-logo) !important;
+	--nav-bar-border-color: var(--lady-haya-nude-medium) !important;
+
+	/* Texte */
+	--card-fg-color: var(--lady-haya-logo) !important;
+	--muted-fg-color: var(--lady-haya-nude-dark-2) !important;
+	--accent-fg-color: var(--lady-haya-rose-dark-2) !important;
+
+	/* Bordures */
+	--card-border-color: var(--lady-haya-nude-medium) !important;
+	--input-border-color: var(--lady-haya-nude-medium) !important;
+	--focus-ring-color: var(--lady-haya-logo) !important;
+
+	/* États */
+	--state-success-color: var(--lady-haya-logo) !important;
+	--state-warning-color: var(--lady-haya-rose-dark-2) !important;
+	--state-danger-color: #dc2626 !important;
+	--state-info-color: var(--lady-haya-nude-dark) !important;
+
+	/* Boutons */
+	--button-primary-bg-color: var(--lady-haya-logo) !important;
+	--button-primary-fg-color: var(--lady-haya-nude-light) !important;
+	--button-secondary-bg-color: var(--lady-haya-nude-dark) !important;
+	--button-secondary-fg-color: var(--lady-haya-nude-light) !important;
+
+	/* Ombres */
+	--shadow-outline: 0 0 0 1px var(--lady-haya-nude-medium) !important;
+	--shadow-umbra: 0 2px 8px rgba(138, 95, 61, 0.1) !important;
+	--shadow-penumbra: 0 4px 16px rgba(138, 95, 61, 0.08) !important;
+	--shadow-ambient: 0 8px 24px rgba(138, 95, 61, 0.04) !important;
+}
+
+/* Personnalisation spécifique des composants */
+
+/* Header/Navbar */
+[data-ui="Navbar"] {
+	background-color: var(--lady-haya-nude-light) !important;
+	border-bottom: 1px solid var(--lady-haya-nude-medium) !important;
+}
+
+/* Logo et titre */
+[data-ui="Navbar"] h1,
+[data-ui="Navbar"] a[data-as="h1"] {
+	color: var(--lady-haya-logo) !important;
+	font-weight: 600 !important;
+}
+
+/* Menu de navigation */
+[data-ui="MenuButton"] {
+	color: var(--lady-haya-logo) !important;
+}
+
+[data-ui="MenuButton"]:hover {
+	background-color: var(--lady-haya-rose-light-2) !important;
+}
+
+/* Sidebar */
+[data-ui="Flex"][data-testid="structure-tool-menu"] {
+	background-color: var(--lady-haya-beige-light) !important;
+	border-right: 1px solid var(--lady-haya-nude-medium) !important;
+}
+
+/* Éléments de menu */
+[data-ui="MenuItem"] {
+	color: var(--lady-haya-logo) !important;
+}
+
+[data-ui="MenuItem"]:hover,
+[data-ui="MenuItem"][data-selected] {
+	background-color: var(--lady-haya-rose-light-2) !important;
+	color: var(--lady-haya-logo) !important;
+}
+
+/* Cartes de contenu */
+[data-ui="Card"] {
+	background-color: #ffffff !important;
+	border: 1px solid var(--lady-haya-nude-medium) !important;
+	box-shadow: 0 2px 8px rgba(138, 95, 61, 0.08) !important;
+}
+
+/* Boutons d'action */
+[data-ui="Button"][data-mode="default"] {
+	background-color: var(--lady-haya-logo) !important;
+	color: var(--lady-haya-nude-light) !important;
+	border: 1px solid var(--lady-haya-logo) !important;
+}
+
+[data-ui="Button"][data-mode="default"]:hover {
+	background-color: var(--lady-haya-nude-dark-2) !important;
+	border-color: var(--lady-haya-nude-dark-2) !important;
+}
+
+[data-ui="Button"][data-mode="ghost"] {
+	color: var(--lady-haya-logo) !important;
+}
+
+[data-ui="Button"][data-mode="ghost"]:hover {
+	background-color: var(--lady-haya-rose-light-2) !important;
+}
+
+/* Champs de formulaire */
+[data-ui="TextInput"],
+[data-ui="TextArea"] {
+	border-color: var(--lady-haya-nude-medium) !important;
+	background-color: #ffffff !important;
+}
+
+[data-ui="TextInput"]:focus,
+[data-ui="TextArea"]:focus {
+	border-color: var(--lady-haya-logo) !important;
+	box-shadow: 0 0 0 1px var(--lady-haya-logo) !important;
+}
+
+/* Labels */
+[data-ui="Label"] {
+	color: var(--lady-haya-logo) !important;
+	font-weight: 500 !important;
+}
+
+/* Badges et tags */
+[data-ui="Badge"] {
+	background-color: var(--lady-haya-rose-light-2) !important;
+	color: var(--lady-haya-logo) !important;
+}
+
+/* Tooltips */
+[data-ui="Tooltip"] {
+	background-color: var(--lady-haya-logo) !important;
+	color: var(--lady-haya-nude-light) !important;
+}
+
+/* Scrollbars personnalisées */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--lady-haya-beige-light);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--lady-haya-nude-medium);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--lady-haya-nude-dark);
+}
+
+/* Animations et transitions */
+[data-ui="Card"],
+[data-ui="Button"],
+[data-ui="MenuItem"] {
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* États de focus améliorés */
+*:focus-visible {
+	outline: 2px solid var(--lady-haya-logo) !important;
+	outline-offset: 2px !important;
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+	[data-ui="Navbar"] {
+		padding: 0.75rem !important;
+	}
+
+	[data-ui="Card"] {
+		margin: 0.5rem !important;
+	}
+}

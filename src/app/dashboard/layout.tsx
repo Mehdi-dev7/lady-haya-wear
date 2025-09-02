@@ -1,9 +1,10 @@
 "use client";
 
 import Sidebar from "@/components/Dashboard/Sidebar";
+import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function DashboardLayout({
@@ -12,11 +13,39 @@ export default function DashboardLayout({
 	children: React.ReactNode;
 }) {
 	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const pathname = usePathname();
+	const router = useRouter();
 
 	const toggleSidebar = () => {
 		setIsSidebarCollapsed(!isSidebarCollapsed);
 	};
+
+	// Vérifier l'authentification admin
+	useEffect(() => {
+		const checkAuth = async () => {
+			try {
+				const response = await fetch("/api/admin/auth");
+				if (response.ok) {
+					setIsAuthenticated(true);
+				} else {
+					// Non authentifié, rediriger vers login
+					router.push("/admin-login");
+				}
+			} catch (error) {
+				console.error(
+					"Erreur lors de la vérification d'authentification:",
+					error
+				);
+				router.push("/admin-login");
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+		checkAuth();
+	}, [router]);
 
 	// Fermer la sidebar sur mobile lors du changement de route
 	useEffect(() => {
@@ -36,6 +65,16 @@ export default function DashboardLayout({
 			console.error("Erreur lors de la déconnexion:", error);
 		}
 	};
+
+	// Afficher le loader pendant la vérification d'authentification
+	if (isLoading) {
+		return <Loader />;
+	}
+
+	// Si pas authentifié, ne rien afficher (redirection en cours)
+	if (!isAuthenticated) {
+		return <Loader />;
+	}
 
 	return (
 		<div className="flex h-screen bg-beige-light">
