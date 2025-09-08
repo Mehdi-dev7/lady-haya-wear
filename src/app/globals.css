@@ -218,6 +218,19 @@ body.navbar-visible {
 		--tw-gradient-stops:
 			var(--tw-gradient-from), var(--tw-gradient-to, rgba(215, 205, 185, 0));
 	}
+	.from-logo {
+		--tw-gradient-from: var(--color-logo);
+		--tw-gradient-stops:
+			var(--tw-gradient-from), var(--tw-gradient-to, rgba(138, 95, 61, 0));
+	}
+	.to-logo {
+		--tw-gradient-to: var(--color-logo);
+	}
+	.from-rose-dark {
+		--tw-gradient-from: var(--color-rose-dark);
+		--tw-gradient-stops:
+			var(--tw-gradient-from), var(--tw-gradient-to, rgba(244, 205, 205, 0));
+	}
 
 	/* Text Colors */
 	.text-nude-light {
