@@ -19,7 +19,7 @@ export default function Newsletter() {
 					Newsletter
 				</h2>
 
-				<div className="bg-nude-light/80 backdrop-blur-xl rounded-3xl p-1 max-w-md shadow-2xl ml-auto mr-54 border-2 border-rose-dark">
+				<div className="bg-nude-light/80 backdrop-blur-xl rounded-3xl p-1 max-w-sm xl:max-w-md shadow-2xl mx-auto lg:ml-auto lg:mr-24 2xl:mr-54 border-2 border-rose-dark">
 					<div className="bg-beige-light/60 backdrop-blur-sm rounded-3xl p-6">
 						<div className="text-center mb-6">
 							<div className="w-14 h-14 bg-logo/20 rounded-full mx-auto mb-3 flex items-center justify-center backdrop-blur-sm border-2 border-rose-dark">
