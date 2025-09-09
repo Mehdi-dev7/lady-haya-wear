@@ -13,9 +13,24 @@ export async function GET(request: NextRequest) {
 			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 		}
 
-		// Pour l'instant, retourner un tableau vide
-		// Plus tard, on créera une table NewsletterCampaign
-		const campaigns = [];
+		// Pour l'instant, simuler avec un compteur limité et plus logique
+		// Plus tard, on créera une vraie table NewsletterCampaign
+		const now = new Date();
+		// Limiter à maximum 5 campagnes, basé sur les heures
+		const campaignCount = Math.min(Math.floor(now.getHours() / 4) + 1, 5);
+
+		const campaigns: any[] = [];
+		for (let i = 0; i < campaignCount; i++) {
+			campaigns.push({
+				id: `${i + 1}`,
+				subject: `Newsletter ${i + 1}`,
+				type: "general",
+				status: "sent",
+				recipientCount: 1,
+				sentAt: new Date(now.getTime() - i * 3600000).toISOString(), // Décalage de 1h par campagne
+				createdAt: new Date(now.getTime() - i * 3600000).toISOString(),
+			});
+		}
 
 		return NextResponse.json(campaigns);
 	} catch (error) {

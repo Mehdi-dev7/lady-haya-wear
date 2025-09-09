@@ -23,20 +23,29 @@ export async function POST(request: NextRequest) {
 			where: { email: email.toLowerCase() },
 		});
 
+		let user;
 		if (existingUser) {
-			return NextResponse.json(
-				{ error: "Cet email est déjà inscrit à notre newsletter" },
-				{ status: 400 }
-			);
-		}
+			// Si l'utilisateur existe, mettre à jour son statut newsletter
+			if (existingUser.newsletterSubscribed) {
+				return NextResponse.json(
+					{ error: "Cet email est déjà inscrit à notre newsletter" },
+					{ status: 400 }
+				);
+			}
 
-		// Créer un nouvel abonné
-		const newSubscriber = await prisma.user.create({
-			data: {
-				email: email.toLowerCase(),
-				// On pourrait ajouter un champ newsletterSubscribed: true
-			},
-		});
+			user = await prisma.user.update({
+				where: { email: email.toLowerCase() },
+				data: { newsletterSubscribed: true },
+			});
+		} else {
+			// Créer un nouvel abonné
+			user = await prisma.user.create({
+				data: {
+					email: email.toLowerCase(),
+					newsletterSubscribed: true,
+				},
+			});
+		}
 
 		// Optionnel : Envoyer un email de confirmation via Brevo
 		try {
@@ -83,6 +92,7 @@ async function sendWelcomeEmail(email: string) {
 				.logo { font-family: 'Alex Brush', cursive; font-size: 2.5rem; color: #8a5f3d; margin-bottom: 10px; }
 				.content { background: white; padding: 30px; }
 				.footer { background: #f8ede4; padding: 20px; text-align: center; font-size: 0.9rem; color: #b49982; }
+				.btn { display: inline-block; background: #8a5f3d; color: white !important; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
 			</style>
 		</head>
 		<body>
@@ -101,6 +111,8 @@ async function sendWelcomeEmail(email: string) {
 						<li>Des conseils mode et style</li>
 					</ul>
 					<p>À très bientôt,<br>L'équipe Lady Haya Wear</p>
+					<br>
+					<a href="${process.env.NEXT_PUBLIC_URL}/collections" class="btn">Découvrir nos collections</a>
 				</div>
 				<div class="footer">
 					<p>Lady Haya Wear - Élégance féminine</p>

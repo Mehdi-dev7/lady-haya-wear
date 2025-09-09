@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 // DELETE - Supprimer un abonné
 export async function DELETE(
 	request: NextRequest,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
 		const admin = await getAdminFromRequest(request);
@@ -16,7 +16,8 @@ export async function DELETE(
 			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 		}
 
-		const subscriberId = params.id;
+		const resolvedParams = await params;
+		const subscriberId = resolvedParams.id;
 
 		// Supprimer l'abonné (ou marquer comme désabonné)
 		await prisma.user.delete({

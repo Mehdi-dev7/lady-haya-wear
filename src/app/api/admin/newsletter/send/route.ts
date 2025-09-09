@@ -32,7 +32,7 @@ async function sendNewsletterViaBrevo(
 				.logo { font-family: 'Alex Brush', cursive; font-size: 2.5rem; color: #8a5f3d; margin-bottom: 10px; }
 				.content { background: white; padding: 30px; }
 				.footer { background: #f8ede4; padding: 20px; text-align: center; font-size: 0.9rem; color: #b49982; }
-				.btn { display: inline-block; background: #8a5f3d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+				.btn { display: inline-block; background: #8a5f3d; color: white !important; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
 			</style>
 		</head>
 		<body>
@@ -44,7 +44,7 @@ async function sendNewsletterViaBrevo(
 				<div class="content">
 					${content.replace(/\n/g, "<br>")}
 					<br><br>
-					<a href="${process.env.NEXT_PUBLIC_URL}" class="btn">Découvrir nos collections</a>
+					<a href="${process.env.NEXT_PUBLIC_URL}/collections" class="btn">Découvrir nos collections</a>
 				</div>
 				<div class="footer">
 					<p>Merci de votre confiance,<br>L'équipe Lady Haya Wear</p>
@@ -113,8 +113,7 @@ export async function POST(request: NextRequest) {
 		// Récupérer la liste des abonnés
 		const subscribers = await prisma.user.findMany({
 			where: {
-				// newsletterSubscribed: true
-				// Pas besoin de filtrer email: { not: null } car email est obligatoire dans le schéma
+				newsletterSubscribed: true, // ✅ Seulement les abonnés volontaires
 			},
 			select: {
 				email: true,
