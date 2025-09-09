@@ -12,6 +12,8 @@ export default function CategoryList({ categories }: CategoryListProps) {
 	const [currentIndex, setCurrentIndex] = useState(1); // Commencer par la 2ème image
 	const [isLargeScreen, setIsLargeScreen] = useState(false);
 	const [screenWidth, setScreenWidth] = useState(1200);
+	const [touchStart, setTouchStart] = useState<number | null>(null);
+	const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
 	// Détecter la taille d'écran côté client
 	useEffect(() => {
@@ -52,6 +54,33 @@ export default function CategoryList({ categories }: CategoryListProps) {
 		setCurrentIndex(index);
 	};
 
+	// Distance minimale pour déclencher un swipe
+	const minSwipeDistance = 50;
+
+	const onTouchStart = (e: React.TouchEvent) => {
+		setTouchEnd(null); // Reset touch end
+		setTouchStart(e.targetTouches[0].clientX);
+	};
+
+	const onTouchMove = (e: React.TouchEvent) => {
+		setTouchEnd(e.targetTouches[0].clientX);
+	};
+
+	const onTouchEnd = () => {
+		if (!touchStart || !touchEnd) return;
+
+		const distance = touchStart - touchEnd;
+		const isLeftSwipe = distance > minSwipeDistance;
+		const isRightSwipe = distance < -minSwipeDistance;
+
+		if (isLeftSwipe && currentIndex < categories.length - 1) {
+			goToNext();
+		}
+		if (isRightSwipe && currentIndex > 0) {
+			goToPrev();
+		}
+	};
+
 	// Fonction pour calculer la position et l'effet 3D inspiré du CSS de référence
 	const getSlideStyle = (index: number) => {
 		const diff = index - currentIndex;
@@ -62,8 +91,17 @@ export default function CategoryList({ categories }: CategoryListProps) {
 		let zIndex = 1;
 		let filter = "none";
 
-		// Espacement réduit pour éviter les débordements sur les côtés
-		const baseSpacing = isLargeScreen ? 250 : 180;
+		// Espacement adaptatif pour utiliser toute la largeur disponible
+		const baseSpacing =
+			screenWidth < 640
+				? 160
+				: screenWidth < 768
+					? 180
+					: screenWidth < 1024
+						? 200
+						: isLargeScreen
+							? 250
+							: 220;
 
 		// Système de z-index relatif : chaque image domine celles plus éloignées
 		const calculateZIndex = (distance: number) => {
@@ -73,8 +111,16 @@ export default function CategoryList({ categories }: CategoryListProps) {
 		};
 
 		if (absDistance === 0) {
-			// Slide centrale - priorité maximale
-			transform = "translateX(0) rotateY(0deg) scale(1) translateZ(0px)";
+			// Slide centrale - taille adaptée selon l'écran pour mieux voir les images derrière
+			const centralScale =
+				screenWidth < 640
+					? 0.9
+					: screenWidth < 768
+						? 0.9
+						: screenWidth < 1024
+							? 0.95
+							: 1;
+			transform = `translateX(0) rotateY(0deg) scale(${centralScale}) translateZ(0px)`;
 			opacity = 1;
 			zIndex = calculateZIndex(0); // 100
 			filter = "drop-shadow(0px 8px 24px rgba(18, 28, 53, 0.3))";
@@ -127,7 +173,7 @@ export default function CategoryList({ categories }: CategoryListProps) {
 	};
 
 	return (
-		<div className="relative px-4 py-1 md:py-2 overflow-hidden">
+		<div className="relative px-0 lg:px-4 py-1 md:py-2 overflow-hidden w-full">
 			{/* Titre de section */}
 			<div className="text-center mb-2 md:mb-4">
 				<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mb-2 md:mb-4 md:mt-2">
@@ -136,11 +182,19 @@ export default function CategoryList({ categories }: CategoryListProps) {
 				<p className="text-nude-dark-2 font-light text-lg lg:text-xl">
 					Découvrez nos collections élégantes
 				</p>
+				<p className="text-nude-dark text-sm mt-2 lg:hidden">
+					← Glissez pour naviguer →
+				</p>
 			</div>
 
 			{/* Container 3D Coverflow avec masquage des côtés */}
-			<div className="relative h-[600px] lg:h-[700px] 2xl:h-[800px] flex items-center justify-center perspective-1000 overflow-hidden">
-				<div className="relative w-full max-w-4xl 2xl:max-w-5xl h-full flex items-center justify-center overflow-hidden">
+			<div
+				className="relative h-[600px] lg:h-[700px] 2xl:h-[800px] flex items-center justify-center perspective-1000 overflow-hidden w-full touch-pan-y"
+				onTouchStart={onTouchStart}
+				onTouchMove={onTouchMove}
+				onTouchEnd={onTouchEnd}
+			>
+				<div className="relative w-full max-w-none lg:max-w-4xl 2xl:max-w-5xl h-full flex items-center justify-center overflow-hidden">
 					{categories.map((category, index) => {
 						const slideStyle = getSlideStyle(index);
 						const absDistance = Math.abs(index - currentIndex);
@@ -151,7 +205,7 @@ export default function CategoryList({ categories }: CategoryListProps) {
 						return (
 							<div
 								key={category._id}
-								className="absolute w-96 h-[28rem] lg:w-[26rem] lg:h-[32rem] 2xl:w-[30rem] 2xl:h-[36rem] transition-all duration-700 ease-out cursor-pointer preserve-3d"
+								className="absolute w-80 h-[26rem] sm:w-[22rem] sm:h-[30rem] md:w-[24rem] md:h-[32rem] lg:w-[26rem] lg:h-[32rem] 2xl:w-[30rem] 2xl:h-[36rem] transition-all duration-700 ease-out cursor-pointer preserve-3d"
 								style={slideStyle}
 								onClick={() => goToSlide(index)}
 							>

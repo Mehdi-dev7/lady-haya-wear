@@ -1,7 +1,7 @@
 export default function Newsletter() {
 	return (
 		<section
-			className="relative h-[38vh] overflow-hidden"
+			className="relative h-[60vh] sm:h-[50vh] md:h-[48vh] lg:h-[48vh] xl:h-[48vh] 2xl:h-[38vh] overflow-hidden"
 			style={{
 				backgroundImage: "url(/assets/grid/newsletter.jpg)",
 				backgroundSize: "cover",
@@ -15,7 +15,7 @@ export default function Newsletter() {
 
 			{/* Contenu de la newsletter - reste dans l'image */}
 			<div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
-				<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mt-8 drop-shadow-lg">
+				<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mt-8 mb-6 lg:mb-0 drop-shadow-lg">
 					Newsletter
 				</h2>
 
