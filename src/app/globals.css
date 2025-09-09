@@ -232,6 +232,26 @@ body.navbar-visible {
 			var(--tw-gradient-from), var(--tw-gradient-to, rgba(244, 205, 205, 0));
 	}
 
+	/* Gradients via pour les transitions */
+	.via-beige-light {
+		--tw-gradient-via: var(--color-beige-light);
+		--tw-gradient-stops:
+			var(--tw-gradient-from), var(--tw-gradient-via),
+			var(--tw-gradient-to, rgba(245, 241, 233, 0));
+	}
+	.via-rose-light {
+		--tw-gradient-via: var(--color-rose-light);
+		--tw-gradient-stops:
+			var(--tw-gradient-from), var(--tw-gradient-via),
+			var(--tw-gradient-to, rgba(249, 222, 222, 0));
+	}
+	.via-nude-light {
+		--tw-gradient-via: var(--color-nude-light);
+		--tw-gradient-stops:
+			var(--tw-gradient-from), var(--tw-gradient-via),
+			var(--tw-gradient-to, rgba(248, 237, 228, 0));
+	}
+
 	/* Text Colors */
 	.text-nude-light {
 		color: var(--color-nude-light);
