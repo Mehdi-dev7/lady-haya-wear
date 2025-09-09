@@ -409,7 +409,7 @@ body.navbar-visible {
 		border-color: var(--color-logo);
 	}
 
-	/* Ring colors pour les bordures */
+	/* Ring colors pour les bordures et focus */
 	.ring-rose-medium {
 		--tw-ring-color: var(--color-rose-medium);
 	}
@@ -421,6 +421,19 @@ body.navbar-visible {
 	}
 	.ring-nude-medium {
 		--tw-ring-color: var(--color-nude-medium);
+	}
+	.ring-logo {
+		--tw-ring-color: var(--color-logo);
+	}
+	.focus\:ring-logo:focus {
+		--tw-ring-color: var(--color-logo);
+	}
+
+	/* Focus ring personnalisé avec couleur logo */
+	.focus-ring-logo:focus {
+		outline: none;
+		box-shadow: 0 0 0 2px var(--color-logo);
+		border-color: var(--color-logo);
 	}
 	@media (min-width: 768px) {
 		.container {

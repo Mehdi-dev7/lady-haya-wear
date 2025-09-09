@@ -1,4 +1,47 @@
+"use client";
+
+import { useState } from "react";
+import { toast } from "react-toastify";
+
 export default function Newsletter() {
+	const [email, setEmail] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		if (!email || !email.includes("@")) {
+			toast.error("Veuillez entrer une adresse email valide");
+			return;
+		}
+
+		setIsLoading(true);
+
+		try {
+			const response = await fetch("/api/newsletter/subscribe", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ email }),
+			});
+
+			const data = await response.json();
+
+			if (response.ok) {
+				toast.success("Merci pour votre inscription ! 🎉");
+				setEmail("");
+			} else {
+				toast.error(data.error || "Erreur lors de l'inscription");
+			}
+		} catch (error) {
+			console.error("Erreur:", error);
+			toast.error("Erreur lors de l'inscription");
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
 	return (
 		<section
 			className="relative h-[60vh] sm:h-[50vh] md:h-[48vh] lg:h-[48vh] xl:h-[48vh] 2xl:h-[38vh] overflow-hidden"
@@ -42,21 +85,29 @@ export default function Newsletter() {
 							</p>
 						</div>
 
-						<div className="space-y-4">
+						<form onSubmit={handleSubmit} className="space-y-4">
 							<div className="relative">
 								<input
 									type="email"
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
 									placeholder="votre@email.com"
 									className="w-full p-4 rounded-2xl bg-rose-light-2 backdrop-blur-sm border-2 border-nude-medium text-logo placeholder-nude-dark focus:outline-none focus:border-rose-dark-2 focus:bg-rose-light focus:ring-2 focus:ring-rose-dark-2 transition-all duration-300 text-center"
+									disabled={isLoading}
+									required
 								/>
 							</div>
 
-							<button className="group w-full bg-gradient-to-r from-logo to-nude-dark hover:from-nude-dark hover:to-logo text-beige-light py-4 rounded-2xl backdrop-blur-sm border-2 border-logo hover:border-nude-dark transition-all duration-500 font-light tracking-wide shadow-lg hover:shadow-xl cursor-pointer">
+							<button
+								type="submit"
+								disabled={isLoading}
+								className="group w-full bg-gradient-to-r from-logo to-nude-dark hover:from-nude-dark hover:to-logo text-beige-light py-4 rounded-2xl backdrop-blur-sm border-2 border-logo hover:border-nude-dark transition-all duration-500 font-light tracking-wide shadow-lg hover:shadow-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+							>
 								<span className="group-hover:scale-105 transition-transform duration-300 inline-block">
-									Rejoindre la communauté ✨
+									{isLoading ? "Inscription..." : "Rejoindre la communauté ✨"}
 								</span>
 							</button>
-						</div>
+						</form>
 					</div>
 				</div>
 			</div>

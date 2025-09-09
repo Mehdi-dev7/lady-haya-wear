@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import {
 	BarChart3,
 	Home,
+	Mail,
 	Menu,
 	Package,
 	Palette,
@@ -43,6 +44,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 			href: "/dashboard/promos",
 			icon: Ticket,
 			current: pathname === "/dashboard/promos",
+		},
+		{
+			name: "Newsletter",
+			href: "/dashboard/newsletter",
+			icon: Mail,
+			current: pathname === "/dashboard/newsletter",
 		},
 		{
 			name: "Administrateurs",

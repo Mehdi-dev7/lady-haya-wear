@@ -91,10 +91,7 @@ export default function Reviews() {
 	return (
 		<section className="relative py-16 bg-gradient-to-br from-rose-light via-beige-light to-nude-light overflow-hidden">
 			{/* Background decoration */}
-			<div className="absolute inset-0 opacity-10">
-				<div className="absolute top-10 left-10 w-32 h-32 bg-logo rounded-full blur-3xl"></div>
-				<div className="absolute bottom-10 right-10 w-40 h-40 bg-nude-dark rounded-full blur-3xl"></div>
-			</div>
+			
 
 			<div className="relative z-10 max-w-6xl mx-auto px-4">
 				{/* Titre de section */}
