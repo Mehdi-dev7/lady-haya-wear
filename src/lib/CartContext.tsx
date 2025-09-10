@@ -6,6 +6,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
+import { toast } from "react-toastify";
 
 export interface CartItem {
 	id: string;
@@ -123,7 +124,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 	const removeFromCart = (id: string) => {
 		setCartItems((prevItems) => {
+			const itemToRemove = prevItems.find((item) => item.id === id);
 			const updatedItems = prevItems.filter((item) => item.id !== id);
+
+			// Afficher le toast de suppression
+			if (itemToRemove) {
+				toast.info(
+					<div>
+						<div className="font-semibold">Produit supprimé du panier</div>
+						<div className="text-sm opacity-90">
+							{itemToRemove.name} - {itemToRemove.color} - Taille{" "}
+							{itemToRemove.size}
+						</div>
+					</div>,
+					{
+						position: "top-right",
+						autoClose: 3000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+					}
+				);
+			}
+
 			return updatedItems;
 		});
 	};

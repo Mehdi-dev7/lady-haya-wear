@@ -54,6 +54,9 @@ export default function CheckoutPage() {
 	const [promoError, setPromoError] = useState("");
 	const [appliedPromoCode, setAppliedPromoCode] = useState<any>(null);
 
+	// État pour la newsletter
+	const [subscribeNewsletter, setSubscribeNewsletter] = useState(true);
+
 	useEffect(() => {
 		async function fetchUserAndAddress() {
 			setLoading(true);
@@ -677,10 +680,21 @@ export default function CheckoutPage() {
 													value={cardInfo.expiry}
 													onChange={(e) => {
 														let val = e.target.value.replace(/[^0-9]/g, "");
-														// Si on a au moins 2 chiffres, ajouter le "/"
+
+														// Validation du mois (ne peut pas dépasser 12)
 														if (val.length >= 2) {
+															const month = parseInt(val.slice(0, 2));
+															if (month > 12) {
+																// Si le mois dépasse 12, on limite à 12
+																val = "12" + val.slice(2);
+															} else if (month === 0) {
+																// Si le mois est 00, on le corrige à 01
+																val = "01" + val.slice(2);
+															}
+															// Ajouter le "/"
 															val = val.slice(0, 2) + "/" + val.slice(2, 4);
 														}
+
 														setCardInfo({
 															...cardInfo,
 															expiry: val.slice(0, 5),
@@ -906,6 +920,50 @@ export default function CheckoutPage() {
 								</div>
 							</div>
 
+							{/* Newsletter subscription */}
+							<div className="border-t border-gray-200 pt-4 mb-4">
+								<label className="flex items-start gap-3 cursor-pointer">
+									<input
+										type="checkbox"
+										checked={subscribeNewsletter}
+										onChange={(e) => setSubscribeNewsletter(e.target.checked)}
+										className="sr-only"
+									/>
+									<span
+										className={`w-5 h-5 rounded border-2 border-gray-400 flex items-center justify-center transition-colors flex-shrink-0 mt-0.5 ${
+											subscribeNewsletter
+												? "bg-nude-dark border-nude-dark"
+												: "bg-white"
+										}`}
+									>
+										{subscribeNewsletter && (
+											<svg
+												className="w-3 h-3 text-white"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={3}
+													d="M5 13l4 4L19 7"
+												/>
+											</svg>
+										)}
+									</span>
+									<div>
+										<div className="font-medium text-nude-dark text-sm">
+											Recevoir nos offres exclusives
+										</div>
+										<div className="text-gray-500 mt-1 text-xs">
+											Restez informée de nos nouveautés, promotions et conseils
+											mode. Vous pouvez vous désabonner à tout moment.
+										</div>
+									</div>
+								</label>
+							</div>
+
 							{/* Boutons d'action */}
 							<div className="flex flex-col sm:flex-row lg:flex-col gap-3 mt-4">
 								<button
@@ -942,6 +1000,7 @@ export default function CheckoutPage() {
 												shippingCost: livraison,
 												taxAmount: tva,
 												total: totalTTC,
+												subscribeNewsletter,
 											};
 
 											const response = await fetch("/api/orders", {
@@ -952,7 +1011,15 @@ export default function CheckoutPage() {
 												body: JSON.stringify(orderData),
 											});
 
-											const result = await response.json();
+											let result;
+											try {
+												result = await response.json();
+											} catch (jsonError) {
+												console.error("Erreur de parsing JSON:", jsonError);
+												const textResponse = await response.text();
+												console.error("Réponse serveur:", textResponse);
+												throw new Error("Erreur serveur: réponse invalide");
+											}
 
 											if (response.ok) {
 												toast.success(

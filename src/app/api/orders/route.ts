@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
 			shippingCost,
 			taxAmount,
 			total,
+			subscribeNewsletter,
 		} = body;
 
 		// Récupérer l'adresse de livraison
@@ -109,6 +110,21 @@ export async function POST(request: NextRequest) {
 			where: { userId: user.id },
 		});
 
+		// Gérer l'inscription à la newsletter si demandée
+		if (subscribeNewsletter && user.email) {
+			try {
+				// Mettre à jour le statut newsletter de l'utilisateur
+				await prisma.user.update({
+					where: { id: user.id },
+					data: { newsletterSubscribed: true },
+				});
+				console.log(`Utilisateur ${user.email} inscrit à la newsletter`);
+			} catch (error) {
+				console.error("Erreur lors de l'inscription à la newsletter:", error);
+				// Ne pas faire échouer la commande si l'inscription newsletter échoue
+			}
+		}
+
 		// Préparer les données pour les emails
 		const orderData = {
 			customerName: order.customerName,
@@ -127,6 +143,8 @@ export async function POST(request: NextRequest) {
 
 		// 1. Email de confirmation au client avec facture PDF
 		try {
+			console.log("Début de génération de la facture PDF...");
+
 			// Générer la facture PDF
 			const invoiceData = {
 				orderNumber: order.orderNumber,
@@ -159,8 +177,11 @@ export async function POST(request: NextRequest) {
 				paymentMethod: selectedPayment,
 			};
 
+			console.log("Génération du PDF...");
 			const pdfBuffer = generateInvoicePDFAsBuffer(invoiceData);
+			console.log("PDF généré avec succès");
 
+			console.log("Envoi de l'email de confirmation...");
 			// Envoyer l'email avec la facture PDF en pièce jointe
 			await sendOrderConfirmationEmail(user.email, orderData, pdfBuffer);
 			console.log("Email de confirmation avec facture PDF envoyé au client");
@@ -169,6 +190,7 @@ export async function POST(request: NextRequest) {
 				"Erreur lors de l'envoi de l'email de confirmation:",
 				error
 			);
+			// Ne pas faire échouer la commande si l'email échoue
 		}
 
 		// 2. Email au vendeur avec les détails de la commande
@@ -263,8 +285,18 @@ export async function POST(request: NextRequest) {
 		});
 	} catch (error) {
 		console.error("Erreur lors de la création de la commande:", error);
+
+		// Log détaillé de l'erreur pour le debug
+		if (error instanceof Error) {
+			console.error("Message d'erreur:", error.message);
+			console.error("Stack trace:", error.stack);
+		}
+
 		return NextResponse.json(
-			{ error: "Erreur lors de la création de la commande" },
+			{
+				error: "Erreur lors de la création de la commande",
+				details: error instanceof Error ? error.message : "Erreur inconnue",
+			},
 			{ status: 500 }
 		);
 	}
