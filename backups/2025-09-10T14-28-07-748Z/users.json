@@ -1,0 +1,15 @@
+[
+  {
+    "id": "cmfd2kk8g0000i1m1ahvthebt",
+    "email": "mehdi.dev77@gmail.com",
+    "emailVerified": null,
+    "password": null,
+    "newsletterSubscribed": true,
+    "createdAt": "2025-09-09T21:35:24.015Z",
+    "updatedAt": "2025-09-09T21:35:24.015Z",
+    "resetToken": null,
+    "resetTokenExpiry": null,
+    "profile": null,
+    "addresses": []
+  }
+]

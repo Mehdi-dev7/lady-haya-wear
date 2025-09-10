@@ -1,0 +1,44 @@
+[
+  {
+    "id": "cmdk85bx500099kqm505zg071",
+    "code": "NEWSLETTER20",
+    "type": "PERCENTAGE",
+    "value": 20,
+    "minAmount": 30,
+    "maxUses": 100,
+    "usedCount": 0,
+    "validFrom": "2025-07-26T12:26:28.474Z",
+    "validUntil": "2025-10-24T12:26:28.474Z",
+    "active": true,
+    "createdAt": "2025-07-26T12:26:29.657Z",
+    "updatedAt": "2025-07-26T12:26:29.657Z"
+  },
+  {
+    "id": "cmdk85cni000a9kqmcb3kukwc",
+    "code": "WELCOME10",
+    "type": "FIXED",
+    "value": 10,
+    "minAmount": 50,
+    "maxUses": 50,
+    "usedCount": 0,
+    "validFrom": "2025-07-26T12:26:28.474Z",
+    "validUntil": "2025-09-24T12:26:28.474Z",
+    "active": true,
+    "createdAt": "2025-07-26T12:26:30.606Z",
+    "updatedAt": "2025-07-26T12:26:30.606Z"
+  },
+  {
+    "id": "cmdq41g8s000s9k0mqc7aaao4",
+    "code": "ETE2025",
+    "type": "PERCENTAGE",
+    "value": 10,
+    "minAmount": null,
+    "maxUses": null,
+    "usedCount": 0,
+    "validFrom": "2025-07-31T00:00:00.000Z",
+    "validUntil": "2025-08-10T00:00:00.000Z",
+    "active": true,
+    "createdAt": "2025-07-30T15:18:07.228Z",
+    "updatedAt": "2025-07-30T15:18:07.228Z"
+  }
+]
