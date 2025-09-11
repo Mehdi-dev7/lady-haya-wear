@@ -257,6 +257,19 @@ async function sendVerificationEmail(email: string, token: string) {
               Ce lien expirera dans 24 heures.
             </p>
             
+            <div style="background-color: #f8f4f0; padding: 20px; border-radius: 8px; margin: 30px 0; text-align: center;">
+              <h3 style="color: #8B4A47; margin-top: 0;">✨ En attendant, découvrez nos collections</h3>
+              <p style="color: #333; margin-bottom: 20px;">
+                Explorez dès maintenant notre sélection de vêtements élégants et modernes
+              </p>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://ladyhaya-wear.fr"}/collections" 
+                 style="background-color: #D4A574; color: white; padding: 12px 24px; 
+                        text-decoration: none; border-radius: 6px; font-weight: bold; 
+                        display: inline-block;">
+                Découvrir nos collections
+              </a>
+            </div>
+            
             <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
             
             <p style="font-size: 12px; color: #999; text-align: center;">

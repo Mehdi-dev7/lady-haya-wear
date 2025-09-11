@@ -44,11 +44,11 @@ async function sendNewsletterViaBrevo(
 				<div class="content">
 					${content.replace(/\n/g, "<br>")}
 					<br><br>
-					<a href="${process.env.NEXT_PUBLIC_URL}/collections" class="btn">Découvrir nos collections</a>
+					<a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/collections" class="btn">Découvrir nos collections</a>
 				</div>
 				<div class="footer">
 					<p>Merci de votre confiance,<br>L'équipe Lady Haya Wear</p>
-					<p><a href="${process.env.NEXT_PUBLIC_URL}/unsubscribe" style="color: #b49982;">Se désabonner</a></p>
+					<p><a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/unsubscribe" style="color: #b49982;">Se désabonner</a></p>
 				</div>
 			</div>
 		</body>

@@ -640,16 +640,22 @@ export default function CheckoutPage() {
 											<input
 												type="text"
 												inputMode="numeric"
-												pattern="[0-9]{16}"
-												maxLength={16}
-												placeholder="Numéro de carte"
-												className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-[#b49982]"
+												pattern="[0-9 ]{19}"
+												maxLength={19}
+												placeholder="1234 5678 9012 3456"
+												className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-[#b49982] font-mono tracking-wider"
 												value={cardInfo.number}
 												onChange={(e) => {
-													const val = e.target.value
+													// Supprimer tous les caractères non numériques
+													const digits = e.target.value
 														.replace(/\D/g, "")
 														.slice(0, 16);
-													setCardInfo({ ...cardInfo, number: val });
+													// Formater par groupes de 4 avec des espaces
+													const formatted = digits.replace(
+														/(\d{4})(?=\d)/g,
+														"$1 "
+													);
+													setCardInfo({ ...cardInfo, number: formatted });
 												}}
 												autoComplete="cc-number"
 											/>
@@ -1001,6 +1007,14 @@ export default function CheckoutPage() {
 												taxAmount: tva,
 												total: totalTTC,
 												subscribeNewsletter,
+												// Nettoyer le numéro de carte des espaces pour l'envoi au serveur
+												cardInfo:
+													selectedPayment === "cb"
+														? {
+																...cardInfo,
+																number: cardInfo.number.replace(/\s/g, ""),
+															}
+														: undefined,
 											};
 
 											const response = await fetch("/api/orders", {

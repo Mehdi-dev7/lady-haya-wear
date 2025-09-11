@@ -186,7 +186,7 @@ async function sendWelcomeEmail(email: string, firstName: string) {
               </div>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.NEXTAUTH_URL}" 
+                <a href="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://ladyhaya-wear.fr"}/collections" 
                    style="background-color: #D4A574; color: white; padding: 15px 30px; 
                           text-decoration: none; border-radius: 25px; font-weight: bold; 
                           display: inline-block; transition: background-color 0.3s;">
@@ -209,8 +209,8 @@ async function sendWelcomeEmail(email: string, firstName: string) {
                 <br>
                 Lady Haya Wear - Mode islamique moderne et élégante
                 <br>
-                <a href="${process.env.NEXTAUTH_URL}/mentions/mentions-legales" style="color: #8B4A47;">Mentions légales</a> | 
-                <a href="${process.env.NEXTAUTH_URL}/mentions/politique-confidentialite" style="color: #8B4A47;">Politique de confidentialité</a>
+                <a href="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://ladyhaya-wear.fr"}/mentions/mentions-legales" style="color: #8B4A47;">Mentions légales</a> | 
+                <a href="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://ladyhaya-wear.fr"}/mentions/politique-confidentialite" style="color: #8B4A47;">Politique de confidentialité</a>
               </p>
               
             </div>

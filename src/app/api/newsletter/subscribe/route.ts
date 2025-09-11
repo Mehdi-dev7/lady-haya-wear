@@ -112,11 +112,11 @@ async function sendWelcomeEmail(email: string) {
 					</ul>
 					<p>À très bientôt,<br>L'équipe Lady Haya Wear</p>
 					<br>
-					<a href="${process.env.NEXT_PUBLIC_URL}/collections" class="btn">Découvrir nos collections</a>
+					<a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/collections" class="btn">Découvrir nos collections</a>
 				</div>
 				<div class="footer">
 					<p>Lady Haya Wear - Élégance féminine</p>
-					<p><a href="${process.env.NEXT_PUBLIC_URL}/unsubscribe" style="color: #b49982;">Se désabonner</a></p>
+					<p><a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/unsubscribe" style="color: #b49982;">Se désabonner</a></p>
 				</div>
 			</div>
 		</body>

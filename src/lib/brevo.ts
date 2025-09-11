@@ -114,7 +114,8 @@ export async function sendOrderConfirmationEmail(
             <p>📧 Vous recevrez prochainement un email avec le numéro de suivi de votre colis.</p>
             <p>📞 Notre équipe est disponible pour toute question au 01 23 45 67 89 ou par email à contact@ladyhaya-wear.fr</p>
             
-            <a href="${process.env.NEXT_PUBLIC_APP_URL}/orders" class="button">Voir mes commandes</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/orders" class="button">Voir mes commandes</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/collections" class="button" style="margin-left: 10px;">Découvrir nos collections</a>
           </div>
           
           <div class="footer">
@@ -147,13 +148,15 @@ export async function sendOrderConfirmationEmail(
 		return { success: true, messageId: response.body?.messageId || "sent" };
 	} catch (error: any) {
 		console.error("Erreur lors de l'envoi de l'email de confirmation:", error);
-		
+
 		// Gestion spécifique des erreurs 401
 		if (error.response?.status === 401) {
 			console.error("Erreur d'authentification Brevo - Vérifiez votre API key");
-			throw new Error("Erreur d'authentification avec Brevo. Vérifiez la configuration.");
+			throw new Error(
+				"Erreur d'authentification avec Brevo. Vérifiez la configuration."
+			);
 		}
-		
+
 		throw error;
 	}
 }
