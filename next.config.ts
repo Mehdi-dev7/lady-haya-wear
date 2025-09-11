@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
 			},
 		],
 	},
+	// Configuration Turbopack pour spécifier le répertoire racine
+	turbopack: {
+		root: __dirname,
+	},
 };
 
 export default nextConfig;
