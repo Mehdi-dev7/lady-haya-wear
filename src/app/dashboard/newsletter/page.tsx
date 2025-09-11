@@ -16,10 +16,13 @@ interface NewsletterCampaign {
 	id: string;
 	subject: string;
 	content: string;
-	type: "promo" | "new_product" | "general";
-	sentAt?: string;
 	recipientCount: number;
-	status: "draft" | "sent" | "scheduled";
+	sentCount: number;
+	failedCount: number;
+	status: "DRAFT" | "SENDING" | "SENT" | "FAILED";
+	createdAt: string;
+	sentAt?: string;
+	updatedAt: string;
 }
 
 export default function NewsletterManagement() {
@@ -27,8 +30,12 @@ export default function NewsletterManagement() {
 	const [campaigns, setCampaigns] = useState<NewsletterCampaign[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [activeTab, setActiveTab] = useState<
-		"campaigns" | "subscribers" | "create"
+		"campaigns" | "subscribers" | "create" | "history"
 	>("campaigns");
+	const [cleanupInfo, setCleanupInfo] = useState<{
+		campaignsToDelete: number;
+		cutoffDate: string;
+	} | null>(null);
 
 	// État pour créer une nouvelle campagne
 	const [newCampaign, setNewCampaign] = useState({
@@ -42,6 +49,7 @@ export default function NewsletterManagement() {
 
 	useEffect(() => {
 		fetchData();
+		fetchCleanupInfo();
 	}, []);
 
 	// Fermeture du menu de type au clic extérieur
@@ -78,7 +86,7 @@ export default function NewsletterManagement() {
 
 			if (campaignsRes.ok) {
 				const campaignsData = await campaignsRes.json();
-				setCampaigns(campaignsData);
+				setCampaigns(campaignsData.campaigns || []);
 			}
 		} catch (error) {
 			console.error("Erreur lors du chargement:", error);
@@ -156,6 +164,51 @@ export default function NewsletterManagement() {
 		} catch (error) {
 			console.error("Erreur:", error);
 			toast.error("Erreur lors de la suppression");
+		}
+	};
+
+	const fetchCleanupInfo = async () => {
+		try {
+			const response = await fetch("/api/admin/newsletter/cleanup");
+			if (response.ok) {
+				const data = await response.json();
+				setCleanupInfo(data);
+			}
+		} catch (error) {
+			console.error("Erreur lors du chargement des infos de nettoyage:", error);
+		}
+	};
+
+	const performCleanup = async () => {
+		if (!cleanupInfo || cleanupInfo.campaignsToDelete === 0) {
+			toast.info("Aucune campagne ancienne à supprimer");
+			return;
+		}
+
+		if (
+			!confirm(
+				`Êtes-vous sûr de vouloir supprimer ${cleanupInfo.campaignsToDelete} campagnes de plus de 6 mois ?`
+			)
+		) {
+			return;
+		}
+
+		try {
+			const response = await fetch("/api/admin/newsletter/cleanup", {
+				method: "POST",
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				toast.success(data.message);
+				fetchData(); // Recharger les données
+				fetchCleanupInfo(); // Recharger les infos de nettoyage
+			} else {
+				throw new Error("Erreur lors du nettoyage");
+			}
+		} catch (error) {
+			console.error("Erreur:", error);
+			toast.error("Erreur lors du nettoyage des campagnes");
 		}
 	};
 
@@ -242,15 +295,15 @@ L'équipe Lady Haya Wear`,
 						Campagnes envoyées
 					</h3>
 					<p className="text-xl sm:text-2xl lg:text-3xl font-bold text-nude-dark">
-						{campaigns.filter((c) => c.status === "sent").length}
+						{campaigns.filter((c) => c.status === "SENT").length}
 					</p>
 				</div>
 				<div className="bg-white rounded-lg p-3 sm:p-6 shadow-md border border-rose-light w-full sm:w-64">
 					<h3 className="text-sm sm:text-lg font-semibold text-logo mb-2">
-						Brouillons
+						Emails envoyés
 					</h3>
 					<p className="text-xl sm:text-2xl lg:text-3xl font-bold text-nude-dark">
-						{campaigns.filter((c) => c.status === "draft").length}
+						{campaigns.reduce((total, c) => total + c.sentCount, 0)}
 					</p>
 				</div>
 			</div>
@@ -261,6 +314,7 @@ L'équipe Lady Haya Wear`,
 					{[
 						{ id: "campaigns", label: "Campagnes" },
 						{ id: "create", label: "Créer une campagne" },
+						{ id: "history", label: "Historique" },
 						{ id: "subscribers", label: "Abonnés" },
 					].map((tab) => (
 						<button
@@ -302,8 +356,7 @@ L'équipe Lady Haya Wear`,
 													{campaign.subject}
 												</h3>
 												<p className="text-xs sm:text-sm text-nude-dark mt-1">
-													Type: {campaign.type} • {campaign.recipientCount}{" "}
-													destinataires
+													{campaign.recipientCount} destinataires
 												</p>
 												{campaign.sentAt && (
 													<p className="text-xs text-nude-dark-2 mt-1">
@@ -317,20 +370,24 @@ L'équipe Lady Haya Wear`,
 											<div className="flex items-center justify-between sm:justify-end gap-2 flex-shrink-0">
 												<span
 													className={`px-2 py-1 rounded-full text-xs font-medium ${
-														campaign.status === "sent"
+														campaign.status === "SENT"
 															? "bg-green-100 text-green-800"
-															: campaign.status === "draft"
-																? "bg-yellow-100 text-yellow-800"
-																: "bg-blue-100 text-blue-800"
+															: campaign.status === "FAILED"
+																? "bg-red-100 text-red-800"
+																: campaign.status === "SENDING"
+																	? "bg-blue-100 text-blue-800"
+																	: "bg-yellow-100 text-yellow-800"
 													}`}
 												>
-													{campaign.status === "sent"
+													{campaign.status === "SENT"
 														? "Envoyé"
-														: campaign.status === "draft"
-															? "Brouillon"
-															: "Programmé"}
+														: campaign.status === "FAILED"
+															? "Échec"
+															: campaign.status === "SENDING"
+																? "En cours"
+																: "Brouillon"}
 												</span>
-												{campaign.status === "draft" && (
+												{campaign.status === "DRAFT" && (
 													<button
 														onClick={() => sendCampaign(campaign.id)}
 														className="px-2 sm:px-3 py-1 bg-logo text-white rounded text-xs sm:text-sm hover:bg-nude-dark transition-colors cursor-pointer"
@@ -664,6 +721,135 @@ L'équipe Lady Haya Wear`,
 									</p>
 								)}
 							</div>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{activeTab === "history" && (
+				<div className="bg-white rounded-lg shadow-md -mx-1 sm:mx-0">
+					<div className="p-2 sm:p-6">
+						<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
+							<h2 className="text-lg sm:text-xl font-semibold text-logo">
+								Historique des campagnes
+							</h2>
+
+							{/* Section nettoyage */}
+							{cleanupInfo && (
+								<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+									{cleanupInfo.campaignsToDelete > 0 ? (
+										<>
+											<span className="text-xs sm:text-sm text-amber-600 bg-amber-50 px-2 py-1 rounded">
+												{cleanupInfo.campaignsToDelete} campagnes anciennes (6+
+												mois)
+											</span>
+											<button
+												onClick={performCleanup}
+												className="px-3 py-1 bg-red-500 text-white rounded text-xs sm:text-sm hover:bg-red-600 transition-colors cursor-pointer"
+											>
+												🧹 Nettoyer
+											</button>
+										</>
+									) : (
+										<span className="text-xs sm:text-sm text-green-600 bg-green-50 px-2 py-1 rounded">
+											✅ Historique propre
+										</span>
+									)}
+								</div>
+							)}
+						</div>
+						<div className="space-y-2 sm:space-y-4">
+							{campaigns.length === 0 ? (
+								<p className="text-nude-dark text-center py-6 sm:py-8 text-sm sm:text-base">
+									Aucune campagne envoyée pour le moment
+								</p>
+							) : (
+								campaigns.map((campaign) => (
+									<div
+										key={campaign.id}
+										className="border border-rose-light rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow"
+									>
+										<div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+											<div className="flex-1 min-w-0">
+												<h3 className="font-semibold text-logo text-sm sm:text-base mb-2">
+													{campaign.subject}
+												</h3>
+												<div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs sm:text-sm text-nude-dark">
+													<div>
+														<span className="font-medium">Destinataires:</span>
+														<br />
+														{campaign.recipientCount}
+													</div>
+													<div>
+														<span className="font-medium">Envoyés:</span>
+														<br />
+														<span className="text-green-600">
+															{campaign.sentCount}
+														</span>
+													</div>
+													<div>
+														<span className="font-medium">Échecs:</span>
+														<br />
+														<span className="text-red-600">
+															{campaign.failedCount}
+														</span>
+													</div>
+													<div>
+														<span className="font-medium">Taux de succès:</span>
+														<br />
+														<span className="font-semibold">
+															{campaign.recipientCount > 0
+																? Math.round(
+																		(campaign.sentCount /
+																			campaign.recipientCount) *
+																			100
+																	)
+																: 0}
+															%
+														</span>
+													</div>
+												</div>
+												{campaign.sentAt && (
+													<p className="text-xs text-nude-dark-2 mt-2">
+														Envoyé le{" "}
+														{new Date(campaign.sentAt).toLocaleDateString(
+															"fr-FR",
+															{
+																year: "numeric",
+																month: "long",
+																day: "numeric",
+																hour: "2-digit",
+																minute: "2-digit",
+															}
+														)}
+													</p>
+												)}
+											</div>
+											<div className="flex items-center justify-between sm:justify-end gap-2 flex-shrink-0">
+												<span
+													className={`px-2 py-1 rounded-full text-xs font-medium ${
+														campaign.status === "SENT"
+															? "bg-green-100 text-green-800"
+															: campaign.status === "FAILED"
+																? "bg-red-100 text-red-800"
+																: campaign.status === "SENDING"
+																	? "bg-blue-100 text-blue-800"
+																	: "bg-yellow-100 text-yellow-800"
+													}`}
+												>
+													{campaign.status === "SENT"
+														? "Envoyé"
+														: campaign.status === "FAILED"
+															? "Échec"
+															: campaign.status === "SENDING"
+																? "En cours"
+																: "Brouillon"}
+												</span>
+											</div>
+										</div>
+									</div>
+								))
+							)}
 						</div>
 					</div>
 				</div>

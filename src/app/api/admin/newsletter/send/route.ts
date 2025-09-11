@@ -130,23 +130,69 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Envoyer via Brevo
-		const result = await sendNewsletterViaBrevo(
-			subject,
-			content,
-			recipientEmails
-		);
+		// Créer ou mettre à jour la campagne en base
+		let campaign;
+		if (campaignId) {
+			// Mettre à jour une campagne existante
+			campaign = await prisma.newsletterCampaign.update({
+				where: { id: campaignId },
+				data: {
+					status: "SENDING",
+					recipientCount: recipientEmails.length,
+					sentAt: new Date(),
+				},
+			});
+		} else {
+			// Créer une nouvelle campagne
+			campaign = await prisma.newsletterCampaign.create({
+				data: {
+					subject,
+					content,
+					recipientCount: recipientEmails.length,
+					status: "SENDING",
+					sentAt: new Date(),
+				},
+			});
+		}
 
-		// Ici on pourrait sauvegarder les statistiques d'envoi en base
-		console.log(
-			`Newsletter envoyée: ${result.successful}/${result.total} succès`
-		);
+		try {
+			// Envoyer via Brevo
+			const result = await sendNewsletterViaBrevo(
+				subject,
+				content,
+				recipientEmails
+			);
 
-		return NextResponse.json({
-			success: true,
-			message: `Newsletter envoyée à ${result.successful} destinataires`,
-			stats: result,
-		});
+			// Mettre à jour les statistiques de la campagne
+			await prisma.newsletterCampaign.update({
+				where: { id: campaign.id },
+				data: {
+					status: result.failed > 0 ? "FAILED" : "SENT",
+					sentCount: result.successful,
+					failedCount: result.failed,
+				},
+			});
+
+			console.log(
+				`Newsletter envoyée: ${result.successful}/${result.total} succès`
+			);
+
+			return NextResponse.json({
+				success: true,
+				message: `Newsletter envoyée à ${result.successful} destinataires`,
+				stats: result,
+				campaignId: campaign.id,
+			});
+		} catch (sendError) {
+			// En cas d'erreur d'envoi, marquer la campagne comme échouée
+			await prisma.newsletterCampaign.update({
+				where: { id: campaign.id },
+				data: {
+					status: "FAILED",
+				},
+			});
+			throw sendError;
+		}
 	} catch (error) {
 		console.error("Erreur lors de l'envoi de la newsletter:", error);
 		return NextResponse.json(

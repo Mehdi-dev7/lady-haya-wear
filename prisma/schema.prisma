@@ -231,6 +231,20 @@ model PromoCode {
   orders      Order[]  // Commandes qui ont utilisé ce code
 }
 
+// === NEWSLETTER ===
+model NewsletterCampaign {
+  id            String   @id @default(cuid())
+  subject       String   // Sujet de la campagne
+  content       String   @db.Text // Contenu de la newsletter
+  recipientCount Int     // Nombre de destinataires
+  sentCount     Int      @default(0) // Nombre d'emails envoyés avec succès
+  failedCount   Int      @default(0) // Nombre d'échecs d'envoi
+  status        CampaignStatus @default(DRAFT)
+  createdAt     DateTime @default(now())
+  sentAt        DateTime? // Date d'envoi
+  updatedAt     DateTime @updatedAt
+}
+
 // === ENUMS ===
 enum AddressType {
   BILLING
@@ -269,4 +283,11 @@ enum PaymentStatus {
   FAILED        // Échec du paiement
   REFUNDED      // Remboursé
   PARTIALLY_REFUNDED // Partiellement remboursé
+}
+
+enum CampaignStatus {
+  DRAFT         // Brouillon
+  SENDING       // En cours d'envoi
+  SENT          // Envoyée
+  FAILED        // Échec d'envoi
 }
