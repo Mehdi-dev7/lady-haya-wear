@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 interface Product {
 	id: string;
@@ -22,7 +22,8 @@ interface ReviewFormData {
 	};
 }
 
-export default function ReviewPage() {
+// Composant interne qui utilise useSearchParams
+function ReviewPageContent() {
 	const searchParams = useSearchParams();
 	const token = searchParams.get("token");
 
@@ -297,5 +298,23 @@ export default function ReviewPage() {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+// Composant principal avec Suspense
+export default function ReviewPage() {
+	return (
+		<Suspense
+			fallback={
+				<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-light via-beige-light to-nude-light pt-24">
+					<div className="text-center">
+						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-logo mx-auto mb-4"></div>
+						<p className="text-nude-dark">Chargement...</p>
+					</div>
+				</div>
+			}
+		>
+			<ReviewPageContent />
+		</Suspense>
 	);
 }
