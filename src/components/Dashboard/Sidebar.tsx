@@ -10,6 +10,7 @@ import {
 	Package,
 	Palette,
 	ShoppingCart,
+	Star,
 	Ticket,
 	UserCheck,
 	Users,
@@ -50,6 +51,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 			href: "/dashboard/newsletter",
 			icon: Mail,
 			current: pathname === "/dashboard/newsletter",
+		},
+		{
+			name: "Avis Clients",
+			href: "/dashboard/reviews",
+			icon: Star,
+			current: pathname === "/dashboard/reviews",
 		},
 		{
 			name: "Administrateurs",

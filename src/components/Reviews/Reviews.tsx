@@ -1,10 +1,28 @@
 "use client";
 import { useEffect, useState } from "react";
 
-// Données de faux avis pour commencer
-const fakeReviews = [
+interface Review {
+	id: string;
+	name: string;
+	review: string;
+	rating: number;
+	date: string;
+	productName?: string;
+}
+
+interface ReviewsData {
+	reviews: Review[];
+	stats: {
+		total: number;
+		average: number;
+		ratings: Record<number, number>;
+	};
+}
+
+// Données de fallback en cas d'erreur ou de chargement
+const fallbackReviews: Review[] = [
 	{
-		id: 1,
+		id: "fallback-1",
 		name: "Sarah M.",
 		review:
 			"Absolument magnifique ! La qualité est exceptionnelle et le tissu est très confortable. Je recommande vivement !",
@@ -12,7 +30,7 @@ const fakeReviews = [
 		date: "2024-01-15",
 	},
 	{
-		id: 2,
+		id: "fallback-2",
 		name: "Amina K.",
 		review:
 			"Très satisfaite de mon achat. Les couleurs sont encore plus belles qu'en photo et la coupe est parfaite.",
@@ -20,53 +38,63 @@ const fakeReviews = [
 		date: "2024-01-12",
 	},
 	{
-		id: 3,
+		id: "fallback-3",
 		name: "Fatima L.",
 		review:
 			"Service client au top et livraison rapide. Les vêtements sont de très bonne qualité, je reviendrai !",
 		rating: 5,
 		date: "2024-01-10",
 	},
-	{
-		id: 4,
-		name: "Khadija B.",
-		review:
-			"Parfait pour les occasions spéciales. Le style est élégant et moderne, exactement ce que je cherchais.",
-		rating: 5,
-		date: "2024-01-08",
-	},
-	{
-		id: 5,
-		name: "Aicha R.",
-		review:
-			"Qualité premium et finitions impeccables. C'est devenu ma boutique préférée pour les vêtements féminins !",
-		rating: 5,
-		date: "2024-01-05",
-	},
-	{
-		id: 6,
-		name: "Leila D.",
-		review:
-			"Très belle collection et prix raisonnables. L'expérience d'achat était parfaite du début à la fin.",
-		rating: 5,
-		date: "2024-01-03",
-	},
 ];
 
 export default function Reviews() {
+	const [reviews, setReviews] = useState<Review[]>(fallbackReviews);
+	const [stats, setStats] = useState<ReviewsData["stats"]>({
+		total: 0,
+		average: 5,
+		ratings: {},
+	});
 	const [currentReview, setCurrentReview] = useState(0);
 	const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+	const [loading, setLoading] = useState(true);
+
+	// Charger les avis depuis l'API
+	useEffect(() => {
+		fetchReviews();
+	}, []);
 
 	// Auto-rotation des avis
 	useEffect(() => {
-		if (!isAutoPlaying) return;
+		if (!isAutoPlaying || reviews.length === 0) return;
 
 		const interval = setInterval(() => {
-			setCurrentReview((prev) => (prev + 1) % fakeReviews.length);
+			setCurrentReview((prev) => (prev + 1) % reviews.length);
 		}, 4000); // Change toutes les 4 secondes
 
 		return () => clearInterval(interval);
-	}, [isAutoPlaying]);
+	}, [isAutoPlaying, reviews.length]);
+
+	const fetchReviews = async () => {
+		try {
+			const response = await fetch("/api/reviews?limit=10");
+			const data = await response.json();
+
+			if (response.ok && data.reviews.length > 0) {
+				setReviews(data.reviews);
+				setStats(data.stats);
+			} else {
+				// Garder les données de fallback si aucun avis n'est disponible
+				console.log(
+					"Aucun avis disponible, utilisation des données de fallback"
+				);
+			}
+		} catch (error) {
+			console.error("Erreur lors du chargement des avis:", error);
+			// Garder les données de fallback en cas d'erreur
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const goToReview = (index: number) => {
 		setCurrentReview(index);
@@ -91,7 +119,6 @@ export default function Reviews() {
 	return (
 		<section className="relative py-16 bg-gradient-to-br from-rose-light via-beige-light to-nude-light overflow-hidden">
 			{/* Background decoration */}
-			
 
 			<div className="relative z-10 max-w-6xl mx-auto px-4">
 				{/* Titre de section */}
@@ -111,7 +138,7 @@ export default function Reviews() {
 						<div className="text-center">
 							{/* Étoiles */}
 							<div className="flex justify-center mb-6">
-								{renderStars(fakeReviews[currentReview].rating)}
+								{renderStars(reviews[currentReview].rating)}
 							</div>
 
 							{/* Avis avec guillemets */}
@@ -124,7 +151,7 @@ export default function Reviews() {
 									<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
 								</svg>
 								<blockquote className="text-lg lg:text-xl text-nude-dark-2 font-light italic leading-relaxed px-8">
-									"{fakeReviews[currentReview].review}"
+									"{reviews[currentReview].review}"
 								</blockquote>
 								<svg
 									className="absolute -bottom-4 -right-4 w-12 h-12 text-rose-dark rotate-180"
@@ -135,19 +162,29 @@ export default function Reviews() {
 								</svg>
 							</div>
 
-							{/* Nom du client */}
+							{/* Nom du client et produit */}
 							<div className="border-t border-logo pt-6">
 								<p className="text-logo font-balqis text-xl font-semibold">
-									{fakeReviews[currentReview].name}
+									{reviews[currentReview].name}
 								</p>
-								<p className="text-nude-dark text-sm mt-1">Cliente vérifiée</p>
+								<p className="text-nude-dark text-sm mt-1">
+									Cliente vérifiée
+									{reviews[currentReview].productName && (
+										<> • {reviews[currentReview].productName}</>
+									)}
+								</p>
+								{!loading && stats.total > 0 && (
+									<p className="text-nude-dark text-xs mt-1">
+										Note moyenne: {stats.average}/5 ({stats.total} avis)
+									</p>
+								)}
 							</div>
 						</div>
 					</div>
 
 					{/* Navigation dots */}
 					<div className="flex justify-center mt-8 gap-3">
-						{fakeReviews.map((_, index) => (
+						{reviews.map((_, index) => (
 							<button
 								key={index}
 								onClick={() => goToReview(index)}
@@ -161,11 +198,25 @@ export default function Reviews() {
 						))}
 					</div>
 
-					{/* Message d'encouragement pour les premiers avis */}
+					{/* Message d'encouragement */}
 					<div className="mt-12 text-center">
-						<p className="text-nude-dark-2 font-light text-lg">
-							Vos avis nous aident à grandir ✨
-						</p>
+						{loading ? (
+							<div className="flex justify-center items-center">
+								<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-logo mr-2"></div>
+								<p className="text-nude-dark-2 font-light text-lg">
+									Chargement des avis...
+								</p>
+							</div>
+						) : stats.total > 0 ? (
+							<p className="text-nude-dark-2 font-light text-lg">
+								{stats.total} client{stats.total > 1 ? "s" : ""} satisfait
+								{stats.total > 1 ? "s" : ""} ✨
+							</p>
+						) : (
+							<p className="text-nude-dark-2 font-light text-lg">
+								Vos avis nous aident à grandir ✨
+							</p>
+						)}
 					</div>
 				</div>
 			</div>

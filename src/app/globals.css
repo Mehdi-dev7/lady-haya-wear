@@ -162,6 +162,23 @@ body.navbar-visible {
 	.bg-logo {
 		background-color: var(--color-logo);
 	}
+	/* Background avec opacité pour logo */
+	.bg-logo\/10 {
+		background-color: rgba(138, 95, 61, 0.1);
+	}
+	.bg-logo\/20 {
+		background-color: rgba(138, 95, 61, 0.2);
+	}
+	/* Background avec opacité pour rose-light */
+	.bg-rose-light\/20 {
+		background-color: rgba(249, 222, 222, 0.2);
+	}
+	.bg-rose-light\/30 {
+		background-color: rgba(249, 222, 222, 0.3);
+	}
+	.bg-rose-light\/50 {
+		background-color: rgba(249, 222, 222, 0.5);
+	}
 
 	/* Gradients */
 	.from-beige-light {
@@ -225,6 +242,18 @@ body.navbar-visible {
 	}
 	.to-logo {
 		--tw-gradient-to: var(--color-logo);
+	}
+	/* Gradients avec opacité pour logo */
+	.from-logo\/10 {
+		--tw-gradient-from: rgba(138, 95, 61, 0.1);
+		--tw-gradient-stops:
+			var(--tw-gradient-from), var(--tw-gradient-to, rgba(138, 95, 61, 0));
+	}
+	.to-logo\/20 {
+		--tw-gradient-to: rgba(138, 95, 61, 0.2);
+	}
+	.border-logo\/30 {
+		border-color: rgba(138, 95, 61, 0.3);
 	}
 	.from-rose-dark {
 		--tw-gradient-from: var(--color-rose-dark);
@@ -291,6 +320,19 @@ body.navbar-visible {
 	}
 	.text-logo {
 		color: var(--color-logo);
+	}
+	/* Text avec opacité */
+	.text-nude-dark\/30 {
+		color: rgba(180, 153, 130, 0.3);
+	}
+	.text-nude-dark\/60 {
+		color: rgba(180, 153, 130, 0.6);
+	}
+	.text-nude-dark\/70 {
+		color: rgba(180, 153, 130, 0.7);
+	}
+	.text-nude-dark\/80 {
+		color: rgba(180, 153, 130, 0.8);
 	}
 	.container {
 		margin-left: auto;
@@ -408,6 +450,16 @@ body.navbar-visible {
 	.border-logo {
 		border-color: var(--color-logo);
 	}
+	/* Border avec opacité */
+	.border-rose-medium\/10 {
+		border-color: rgba(247, 215, 215, 0.1);
+	}
+	.border-rose-medium\/20 {
+		border-color: rgba(247, 215, 215, 0.2);
+	}
+	.border-rose-medium\/30 {
+		border-color: rgba(247, 215, 215, 0.3);
+	}
 
 	/* Ring colors pour les bordures et focus */
 	.ring-rose-medium {
@@ -428,12 +480,26 @@ body.navbar-visible {
 	.focus\:ring-logo:focus {
 		--tw-ring-color: var(--color-logo);
 	}
+	.focus\:border-logo:focus {
+		border-color: var(--color-logo);
+	}
+	.focus\:border-nude-dark:focus {
+		border-color: var(--color-nude-dark);
+	}
 
 	/* Focus ring personnalisé avec couleur logo */
 	.focus-ring-logo:focus {
 		outline: none;
 		box-shadow: 0 0 0 2px var(--color-logo);
 		border-color: var(--color-logo);
+	}
+
+	/* Focus ring amélioré pour les inputs du dashboard */
+	.dashboard-input:focus {
+		outline: none;
+		border-color: var(--color-logo);
+		box-shadow: 0 0 0 3px rgba(138, 95, 61, 0.1);
+		--tw-ring-color: var(--color-logo);
 	}
 	@media (min-width: 768px) {
 		.container {

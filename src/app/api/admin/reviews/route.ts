@@ -1,0 +1,124 @@
+import { PrismaClient } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
+
+const prisma = new PrismaClient();
+
+// GET - Récupérer tous les reviews pour l'admin (avec filtres)
+export async function GET(request: NextRequest) {
+	try {
+		const { searchParams } = new URL(request.url);
+		const status = searchParams.get("status");
+		const page = parseInt(searchParams.get("page") || "1");
+		const limit = parseInt(searchParams.get("limit") || "20");
+		const search = searchParams.get("search");
+
+		// Construire les filtres
+		const where: any = {};
+
+		if (status && status !== "all") {
+			where.status = status;
+		}
+
+		if (search) {
+			where.OR = [
+				{ customerName: { contains: search, mode: "insensitive" } },
+				{ customerEmail: { contains: search, mode: "insensitive" } },
+				{ productName: { contains: search, mode: "insensitive" } },
+				{ comment: { contains: search, mode: "insensitive" } },
+				{
+					order: {
+						orderNumber: { contains: search, mode: "insensitive" },
+					},
+				},
+			];
+		}
+
+		// Calculer l'offset pour la pagination
+		const offset = (page - 1) * limit;
+
+		// Récupérer les reviews avec pagination
+		const [reviews, totalCount] = await Promise.all([
+			prisma.review.findMany({
+				where,
+				include: {
+					order: {
+						select: {
+							orderNumber: true,
+							createdAt: true,
+						},
+					},
+					user: {
+						select: {
+							id: true,
+							email: true,
+						},
+					},
+				},
+				orderBy: { createdAt: "desc" },
+				skip: offset,
+				take: limit,
+			}),
+			prisma.review.count({ where }),
+		]);
+
+		// Calculer les statistiques
+		const stats = await prisma.review.groupBy({
+			by: ["status"],
+			_count: {
+				status: true,
+			},
+		});
+
+		const statusStats = stats.reduce(
+			(acc, stat) => {
+				acc[stat.status] = stat._count.status;
+				return acc;
+			},
+			{} as Record<string, number>
+		);
+
+		// Calculer les statistiques des notes
+		const ratingStats = await prisma.review.groupBy({
+			by: ["rating"],
+			where: {
+				rating: {
+					gte: 1,
+				},
+			},
+			_count: {
+				rating: true,
+			},
+		});
+
+		const ratingDistribution = ratingStats.reduce(
+			(acc, stat) => {
+				acc[stat.rating] = stat._count.rating;
+				return acc;
+			},
+			{} as Record<number, number>
+		);
+
+		return NextResponse.json({
+			reviews,
+			pagination: {
+				page,
+				limit,
+				total: totalCount,
+				totalPages: Math.ceil(totalCount / limit),
+			},
+			stats: {
+				status: statusStats,
+				ratings: ratingDistribution,
+			},
+		});
+	} catch (error) {
+		console.error("Erreur lors de la récupération des reviews admin:", error);
+		return NextResponse.json(
+			{
+				error: "Erreur lors de la récupération des avis",
+				details: error instanceof Error ? error.message : "Erreur inconnue",
+			},
+			{ status: 500 }
+		);
+	}
+}

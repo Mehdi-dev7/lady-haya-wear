@@ -510,3 +510,113 @@ export async function sendOrderStatusUpdateEmail(
 		throw error;
 	}
 }
+
+// Fonction pour envoyer un email de demande d'avis client
+export async function sendReviewRequestEmail(
+	email: string,
+	reviewData: {
+		customerName: string;
+		orderNumber: string;
+		orderDate: string;
+		items: Array<{
+			id: string;
+			name: string;
+			quantity: number;
+		}>;
+		reviewToken: string;
+	}
+) {
+	const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+	sendSmtpEmail.to = [{ email }];
+	sendSmtpEmail.subject = `Votre avis nous intéresse ! Commande #${reviewData.orderNumber} - Lady Haya Wear`;
+	sendSmtpEmail.htmlContent = `
+		<html>
+			<head>
+				<style>
+					body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+					.banner { background: linear-gradient(135deg, #f8ede4 0%, #e8d5c5 100%); padding: 30px; text-align: center; }
+					.logo { font-family: 'Brush Script MT', 'Alex Brush', cursive; font-size: 36px; color: #8a5f3d; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+					.container { max-width: 600px; margin: 0 auto; background: #fff; }
+					.content { padding: 30px; }
+					.review-card { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin: 20px 0; }
+					.review-button { display: inline-block; background: #8a5f3d; color: white !important; padding: 15px 30px; text-decoration: none; border-radius: 8px; margin: 15px 0; font-weight: bold; }
+					.stars { font-size: 24px; margin: 10px 0; }
+					.product-item { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 6px; border-left: 4px solid #8a5f3d; }
+					.footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
+				</style>
+			</head>
+			<body>
+				<div class="container">
+					<div class="banner">
+						<h1 class="logo">Lady Haya</h1>
+						<p style="color: #8a5f3d; margin: 10px 0 0 0; font-size: 16px;">Votre boutique de vêtements et accessoires</p>
+					</div>
+					
+					<div class="content">
+						<h2>Bonjour ${reviewData.customerName},</h2>
+						<p>Nous espérons que vous avez bien reçu votre commande et qu'elle vous donne entière satisfaction !</p>
+						
+						<div class="review-card">
+							<h3>⭐ Votre avis compte pour nous</h3>
+							<p><strong>Commande #${reviewData.orderNumber}</strong> - ${reviewData.orderDate}</p>
+							<p>Votre expérience nous aide à nous améliorer et guide nos futurs clients dans leurs choix.</p>
+							
+							<div class="stars">
+								⭐⭐⭐⭐⭐
+							</div>
+							<p><em>Donnez-nous une note de 1 à 5 étoiles</em></p>
+						</div>
+						
+						<h3>📦 Articles de votre commande :</h3>
+						${reviewData.items
+							.map(
+								(item) => `
+							<div class="product-item">
+								<strong>${item.name}</strong><br>
+								<small>Quantité: ${item.quantity}</small>
+							</div>
+						`
+							)
+							.join("")}
+						
+						<div style="text-align: center; margin: 30px 0;">
+							<a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/review?token=${reviewData.reviewToken}" class="review-button">
+								✍️ Laisser mon avis
+							</a>
+						</div>
+						
+						<p><small><em>Ce lien est sécurisé et personnel. Il expire dans 30 jours.</em></small></p>
+						
+						<p>Merci de nous accorder quelques minutes pour partager votre expérience !</p>
+						
+						<p>Avec toute notre gratitude,<br>L'équipe Lady Haya Wear</p>
+					</div>
+					
+					<div class="footer">
+						<p><strong>Lady Haya Wear</strong></p>
+						<p>Votre boutique de vêtements et accessoires</p>
+						<p>📧 contact@ladyhaya-wear.fr | 📞 01 23 45 67 89</p>
+						<p><small>Si vous ne souhaitez plus recevoir ce type d'email, contactez-nous.</small></p>
+					</div>
+				</div>
+			</body>
+		</html>
+	`;
+	sendSmtpEmail.sender = {
+		name: "Lady Haya Wear",
+		email: process.env.BREVO_FROM_EMAIL || "contact@ladyhaya-wear.fr",
+	};
+
+	try {
+		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
+		console.log("Email de demande d'avis envoyé:", response);
+		return { success: true, messageId: response.body?.messageId || "sent" };
+	} catch (error) {
+		console.error(
+			"Erreur lors de l'envoi de l'email de demande d'avis:",
+			error
+		);
+		throw error;
+	}
+}

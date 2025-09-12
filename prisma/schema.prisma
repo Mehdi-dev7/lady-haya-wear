@@ -67,6 +67,7 @@ model User {
   cartItems     CartItem[]
   favorites     Favorite[]
   addresses     Address[]
+  reviews       Review[]    // Avis laissés par l'utilisateur
   resetToken    String?   // Token de reset password
   resetTokenExpiry DateTime? // Date d'expiration du token
 }
@@ -178,6 +179,7 @@ model Order {
   // Relations
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   items           OrderItem[]
+  reviews         Review[]    // Avis pour cette commande
   billingAddress  Address?    @relation("BillingAddress", fields: [billingAddressId], references: [id])
   shippingAddress Address?    @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
   promoCode       PromoCode?  @relation(fields: [promoCodeId], references: [id])
@@ -245,6 +247,41 @@ model NewsletterCampaign {
   updatedAt     DateTime @updatedAt
 }
 
+// === REVIEWS ===
+model Review {
+  id              String      @id @default(cuid())
+  userId          String
+  orderId         String
+  productId       String      // ID du produit Sanity
+  productName     String      // Nom du produit au moment du review
+  
+  // Données du review
+  rating          Int         // Note de 1 à 5 étoiles
+  comment         String      @db.Text // Commentaire du client
+  customerName    String      // Nom du client (pour affichage)
+  customerEmail   String      // Email du client
+  
+  // Statut de modération
+  status          ReviewStatus @default(PENDING)
+  
+  // Tracking des emails
+  emailSentAt     DateTime?   // Date d'envoi de l'email de demande
+  emailToken      String?     // Token unique pour le lien d'avis
+  submittedAt     DateTime?   // Date de soumission par le client
+  reviewedAt      DateTime?   // Date de modération par l'admin
+  reviewedBy      String?     // ID de l'admin qui a modéré
+  
+  // Métadonnées
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  // Relations
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order           Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, orderId, productId]) // Un seul avis par produit par commande
+}
+
 // === ENUMS ===
 enum AddressType {
   BILLING
@@ -290,4 +327,10 @@ enum CampaignStatus {
   SENDING       // En cours d'envoi
   SENT          // Envoyée
   FAILED        // Échec d'envoi
+}
+
+enum ReviewStatus {
+  PENDING       // En attente de modération
+  APPROVED      // Approuvé pour affichage public
+  REJECTED      // Rejeté par l'admin
 }
