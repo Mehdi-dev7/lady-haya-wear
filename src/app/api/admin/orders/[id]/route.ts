@@ -1,4 +1,5 @@
 import { sendOrderStatusUpdateEmail } from "@/lib/brevo";
+import { triggerReviewRequestForOrder } from "@/lib/review-automation";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -183,6 +184,30 @@ export async function PUT(
 					error
 				);
 				// Ne pas faire échouer la mise à jour de la commande si l'email échoue
+			}
+		}
+
+		// Déclencher automatiquement l'envoi d'email de demande d'avis si la commande passe à "DELIVERED"
+		if (status === "DELIVERED" && existingOrder.status !== "DELIVERED") {
+			try {
+				console.log(
+					`🚀 Déclenchement automatique de demande d'avis pour commande #${order.orderNumber}`
+				);
+				const reviewResult = await triggerReviewRequestForOrder(order.id);
+
+				if (reviewResult.success) {
+					console.log(
+						`✅ ${reviewResult.message} - Reviews créées: ${reviewResult.reviewsCreated}`
+					);
+				} else {
+					console.log(`⚠️ Demande d'avis non envoyée: ${reviewResult.error}`);
+				}
+			} catch (error) {
+				console.error(
+					`❌ Erreur lors du déclenchement automatique de demande d'avis pour commande #${order.orderNumber}:`,
+					error
+				);
+				// Ne pas faire échouer la mise à jour de la commande si l'envoi de review échoue
 			}
 		}
 

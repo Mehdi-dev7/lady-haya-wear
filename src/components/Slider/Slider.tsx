@@ -1,5 +1,6 @@
 "use client";
 import { urlFor } from "@/lib/sanity";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -63,93 +64,174 @@ export default function Slider({ featuredCategories }: SliderProps) {
 	};
 
 	return (
-		<div className="h-screen w-full overflow-hidden relative">
-			<div
+		<motion.div
+			className="h-screen w-full overflow-hidden relative"
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			transition={{ duration: 1 }}
+		>
+			<motion.div
 				className={`w-max h-full flex ${isTransitioning ? "transition-all ease-in-out duration-1000" : ""}`}
 				style={{
 					transform: `translateX(-${currentSlide * 100}vw)`,
 				}}
+				initial={{ x: 0 }}
+				animate={{ x: 0 }}
 			>
 				{infiniteSlides.map((category, index) => (
-					<div
+					<motion.div
 						className={`${gradients[getRealIndex(index)]} h-full w-screen flex-shrink-0 flex flex-col lg:flex-row`}
 						key={`${category._id}-${index}`}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ duration: 0.5 }}
 					>
 						{/* TEXT CONTAINER */}
-						<div className="h-1/3 lg:w-1/2 lg:h-full w-full flex flex-col items-center justify-center gap-3 lg:gap-8 2xl:gap-12 text-center mt-10 lg:mt-0 lg:pt-0">
-							<Image
-								src="/assets/logo-haya.png"
-								alt="logo"
-								width={200}
-								height={200}
-								className="w-24 h-24 lg:w-48 lg:h-48"
-							/>
-							<h2 className="hidden lg:block text-3xl xl:text-4xl 2xl:text-4xl font-semibold font-balqis text-center text-logo">
-								{category.name}
-							</h2>
-							<h1 className="text-5xl font-alex-brush text-logo lg:text-5xl xl:text-7xl text-center">
-								Lady Haya Wear
-							</h1>
-							<Link
-								href={`/collections/${category.slug?.current || category._id}`}
-								className="hidden lg:block"
+						<motion.div
+							className="h-1/3 lg:w-1/2 lg:h-full w-full flex flex-col items-center justify-center gap-3 lg:gap-8 2xl:gap-12 text-center mt-10 lg:mt-0 lg:pt-0"
+							initial={{ x: -100, opacity: 0 }}
+							animate={{ x: 0, opacity: 1 }}
+							transition={{ duration: 0.8, delay: 0.2 }}
+						>
+							<motion.div
+								initial={{ scale: 0, rotate: -180 }}
+								animate={{ scale: 1, rotate: 0 }}
+								transition={{ duration: 0.8, delay: 0.3 }}
+								whileHover={{ scale: 1.1, rotate: 5 }}
 							>
-								<button className="rounded-md py-3 px-4 bg-logo text-nude-light cursor-pointer hover:bg-nude-dark-2 hover:scale-105 transition-all duration-300">
-									Voir la collection
-								</button>
-							</Link>
-						</div>
-
-						{/* IMAGE CONTAINER */}
-						<div className="relative h-2/3 lg:w-1/2 lg:h-full">
-							<Image
-								src={
-									category.image
-										? urlFor(category.image)?.url() || "/assets/placeholder.jpg"
-										: "/assets/placeholder.jpg"
-								}
-								alt={category.image?.alt || category.name}
-								fill
-								sizes="100%"
-								className="object-cover"
-							/>
-							{/* DESCRIPTION OVERLAY - TOP */}
-							<div className="absolute top-4 left-1/2 transform -translate-x-1/2 lg:hidden">
-								<h2 className="text-3xl font-semibold text-white drop-shadow-lg text-center text-logo font-balqis">
-									{category.name}
-								</h2>
-							</div>
-							{/* BUTTON OVERLAY - BOTTOM RIGHT */}
-							<div className="absolute bottom-14 right-2 md:right-6 lg:hidden">
+								<Image
+									src="/assets/logo-haya.png"
+									alt="logo"
+									width={200}
+									height={200}
+									className="w-24 h-24 lg:w-48 lg:h-48"
+								/>
+							</motion.div>
+							<motion.h2
+								className="hidden lg:block text-3xl xl:text-4xl 2xl:text-4xl font-semibold font-balqis text-center text-logo"
+								initial={{ y: 30, opacity: 0 }}
+								animate={{ y: 0, opacity: 1 }}
+								transition={{ duration: 0.8, delay: 0.4 }}
+							>
+								{category.name}
+							</motion.h2>
+							<motion.h1
+								className="text-5xl font-alex-brush text-logo lg:text-5xl xl:text-7xl text-center"
+								initial={{ y: 30, opacity: 0 }}
+								animate={{ y: 0, opacity: 1 }}
+								transition={{ duration: 0.8, delay: 0.5 }}
+							>
+								Lady Haya Wear
+							</motion.h1>
+							<motion.div
+								initial={{ scale: 0, opacity: 0 }}
+								animate={{ scale: 1, opacity: 1 }}
+								transition={{ duration: 0.6, delay: 0.6 }}
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
+							>
 								<Link
 									href={`/collections/${category.slug?.current || category._id}`}
+									className="hidden lg:block"
 								>
-									<button className="rounded-md py-2 px-2 md:px-3 mr-4 md:mr-0 text-nude-light text-base bg-logo cursor-pointer hover:bg-nude-dark-2 hover:scale-105 transition-all duration-300">
+									<button className="rounded-md py-3 px-4 bg-logo text-nude-light cursor-pointer hover:bg-nude-dark-2 transition-all duration-300">
 										Voir la collection
 									</button>
 								</Link>
-							</div>
-						</div>
-					</div>
+							</motion.div>
+						</motion.div>
+
+						{/* IMAGE CONTAINER */}
+						<motion.div
+							className="relative h-2/3 lg:w-1/2 lg:h-full"
+							initial={{ x: 100, opacity: 0 }}
+							animate={{ x: 0, opacity: 1 }}
+							transition={{ duration: 0.8, delay: 0.3 }}
+						>
+							<motion.div
+								initial={{ scale: 1.1, opacity: 0 }}
+								animate={{ scale: 1, opacity: 1 }}
+								transition={{ duration: 1, delay: 0.4 }}
+								whileHover={{ scale: 1.05 }}
+								className="relative h-full w-full"
+							>
+								<Image
+									src={
+										category.image
+											? urlFor(category.image)?.url() ||
+												"/assets/placeholder.jpg"
+											: "/assets/placeholder.jpg"
+									}
+									alt={category.image?.alt || category.name}
+									fill
+									sizes="100%"
+									className="object-cover"
+								/>
+							</motion.div>
+							{/* DESCRIPTION OVERLAY - TOP */}
+							<motion.div
+								className="absolute top-4 left-1/2 transform -translate-x-1/2 lg:hidden"
+								initial={{ y: -50, opacity: 0 }}
+								animate={{ y: 0, opacity: 1 }}
+								transition={{ duration: 0.8, delay: 0.6 }}
+							>
+								<h2 className="text-3xl font-semibold text-white drop-shadow-lg text-center text-logo font-balqis">
+									{category.name}
+								</h2>
+							</motion.div>
+							{/* BUTTON OVERLAY - BOTTOM RIGHT */}
+							<motion.div
+								className="absolute bottom-14 right-2 md:right-6 lg:hidden"
+								initial={{ x: 50, opacity: 0 }}
+								animate={{ x: 0, opacity: 1 }}
+								transition={{ duration: 0.8, delay: 0.7 }}
+							>
+								<Link
+									href={`/collections/${category.slug?.current || category._id}`}
+								>
+									<motion.button
+										className="rounded-md py-2 px-2 md:px-3 mr-4 md:mr-0 text-nude-light text-base bg-logo cursor-pointer hover:bg-nude-dark-2 transition-all duration-300"
+										whileHover={{ scale: 1.05 }}
+										whileTap={{ scale: 0.95 }}
+									>
+										Voir la collection
+									</motion.button>
+								</Link>
+							</motion.div>
+						</motion.div>
+					</motion.div>
 				))}
-			</div>
+			</motion.div>
 
 			{/* DOTS - FIXED AT BOTTOM */}
-			<div className="absolute left-1/2 bottom-8 lg:bottom-12 xl:bottom-16 2xl:bottom-20 transform -translate-x-1/2 flex gap-4 z-10">
+			<motion.div
+				className="absolute left-1/2 bottom-8 lg:bottom-12 xl:bottom-16 2xl:bottom-20 transform -translate-x-1/2 flex gap-4 z-10"
+				initial={{ y: 50, opacity: 0 }}
+				animate={{ y: 0, opacity: 1 }}
+				transition={{ duration: 0.8, delay: 0.8 }}
+			>
 				{featuredCategories.map((category, index) => (
-					<div
+					<motion.div
 						className={`w-3 h-3 rounded-full ring-1 ring-gray-600 cursor-pointer flex items-center justify-center ${
 							getCurrentDotIndex() === index ? "scale-150" : ""
 						}`}
 						key={category._id}
 						onClick={() => handleDotClick(index)}
+						whileHover={{ scale: 1.2 }}
+						whileTap={{ scale: 0.9 }}
+						transition={{ duration: 0.2 }}
 					>
 						{getCurrentDotIndex() === index && (
-							<div className="w-[6px] h-[6px] bg-gray-600 rounded-full" />
+							<motion.div
+								className="w-[6px] h-[6px] bg-gray-600 rounded-full"
+								initial={{ scale: 0 }}
+								animate={{ scale: 1 }}
+								transition={{ duration: 0.3 }}
+							/>
 						)}
-					</div>
+					</motion.div>
 				))}
-			</div>
-		</div>
+			</motion.div>
+		</motion.div>
 	);
 }

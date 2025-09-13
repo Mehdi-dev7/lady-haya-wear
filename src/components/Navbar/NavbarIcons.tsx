@@ -4,6 +4,7 @@ import { useScrollLock } from "@/hooks/useScrollLock";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import { useFavorites } from "@/lib/FavoritesContext";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -65,15 +66,36 @@ export default function NavbarIcons() {
 	};
 
 	return (
-		<div className="flex items-center gap-4 xl:gap-6 relative">
-			<FaUser
-				className="text-xl cursor-pointer text-logo"
-				onClick={handleProfile}
-			/>
+		<motion.div
+			className="flex items-center gap-4 xl:gap-6 relative"
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			transition={{ duration: 0.3 }}
+		>
+			<motion.div
+				initial={{ scale: 0, opacity: 0, y: -20 }}
+				animate={{ scale: 1, opacity: 1, y: 0 }}
+				transition={{
+					duration: 0.6,
+					delay: 0.2,
+					ease: [0.68, -0.55, 0.265, 1.55],
+				}}
+				whileHover={{ scale: 1.1, y: -2 }}
+				whileTap={{ scale: 0.9 }}
+			>
+				<FaUser
+					className="text-xl cursor-pointer text-logo"
+					onClick={handleProfile}
+				/>
+			</motion.div>
+
 			{isProfileOpen && isLoggedIn && (
-				<div
+				<motion.div
 					ref={profileModalRef}
 					className="absolute p-4 rounded-lg top-12 right-2 text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)] z-20 bg-nude-light border border-nude-light min-w-[200px]"
+					initial={{ opacity: 0, scale: 0.8, y: -10 }}
+					animate={{ opacity: 1, scale: 1, y: 0 }}
+					transition={{ duration: 0.3, ease: "easeOut" }}
 				>
 					<div className="flex items-center gap-3 mb-3 pb-3 border-b border-nude-medium">
 						<Image
@@ -112,20 +134,49 @@ export default function NavbarIcons() {
 					>
 						Se déconnecter
 					</button>
-				</div>
+				</motion.div>
 			)}
-			<div className="relative cursor-pointer">
+
+			<motion.div
+				className="relative cursor-pointer"
+				initial={{ scale: 0, opacity: 0, y: -20 }}
+				animate={{ scale: 1, opacity: 1, y: 0 }}
+				transition={{
+					duration: 0.6,
+					delay: 0.4,
+					ease: [0.68, -0.55, 0.265, 1.55],
+				}}
+				whileHover={{ scale: 1.1, y: -2 }}
+				whileTap={{ scale: 0.9 }}
+			>
 				<FaHeart
 					className="text-xl cursor-pointer text-logo"
 					onClick={() => setIsFavOpen(true)}
 				/>
 				{favorites.length > 0 && (
-					<div className="absolute -top-4 -right-4 w-6 h-6 bg-red-400 rounded-full text-white text-sm flex items-center justify-center">
+					<motion.div
+						className="absolute -top-4 -right-4 w-6 h-6 bg-red-400 rounded-full text-white text-sm flex items-center justify-center"
+						initial={{ scale: 0 }}
+						animate={{ scale: 1 }}
+						transition={{ duration: 0.3, delay: 0.1 }}
+					>
 						{favorites.length}
-					</div>
+					</motion.div>
 				)}
-			</div>
-			<div className="relative cursor-pointer">
+			</motion.div>
+
+			<motion.div
+				className="relative cursor-pointer"
+				initial={{ scale: 0, opacity: 0, y: -20 }}
+				animate={{ scale: 1, opacity: 1, y: 0 }}
+				transition={{
+					duration: 0.6,
+					delay: 0.6,
+					ease: [0.68, -0.55, 0.265, 1.55],
+				}}
+				whileHover={{ scale: 1.1, y: -2 }}
+				whileTap={{ scale: 0.9 }}
+			>
 				<FaBagShopping
 					className="text-xl mr-2 md:mr-0 cursor-pointer text-logo"
 					data-cart-icon
@@ -135,15 +186,20 @@ export default function NavbarIcons() {
 					}}
 				/>
 				{getCartCount() > 0 && (
-					<div className="absolute -top-4 -right-4 w-6 h-6 bg-red-400 rounded-full text-white text-sm flex items-center justify-center mr-2 md:mr-0">
+					<motion.div
+						className="absolute -top-4 -right-4 w-6 h-6 bg-red-400 rounded-full text-white text-sm flex items-center justify-center mr-2 md:mr-0"
+						initial={{ scale: 0 }}
+						animate={{ scale: 1 }}
+						transition={{ duration: 0.3, delay: 0.1 }}
+					>
 						{getCartCount()}
-					</div>
+					</motion.div>
 				)}
 				{isCartOpen && <CartModal onClose={() => setIsCartOpen(false)} />}
-			</div>
+			</motion.div>
 
 			{/* FavModal */}
 			<FavModal isOpen={isFavOpen} onClose={() => setIsFavOpen(false)} />
-		</div>
+		</motion.div>
 	);
 }

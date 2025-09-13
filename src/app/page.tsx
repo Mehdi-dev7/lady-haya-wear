@@ -1,3 +1,5 @@
+import AnimatedPageWrapper from "@/components/AnimatedPageWrapper";
+import AnimatedSection from "@/components/AnimatedSection";
 import CategoryList from "@/components/CategoryList/CategoryList";
 import Newsletter from "@/components/Newsletter/Newsletter";
 import ProductList from "@/components/ProductList/ProductList";
@@ -16,17 +18,34 @@ export default async function Home() {
 	const featuredProducts = await getFeaturedProducts();
 
 	return (
-		<div className="w-full">
+		<AnimatedPageWrapper>
 			<Slider featuredCategories={featuredCategories} />
-			<section className="bg-rose-light-2 md:py-16 py-8 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">
+
+			<AnimatedSection
+				className="bg-rose-light-2 md:py-16 py-8 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48"
+				delay={0.2}
+			>
 				<CategoryList categories={allCategories} />
-			</section>
-			<section className="bg-beige-light md:py-16 py-8 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">
+			</AnimatedSection>
+
+			<AnimatedSection
+				className="bg-beige-light md:py-16 py-8 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48"
+				delay={0.3}
+			>
 				<ProductList featuredProducts={featuredProducts} />
-			</section>
-			<Reviews />
-			<Newsletter />
-			<ServicesInfo />
-		</div>
+			</AnimatedSection>
+
+			<AnimatedSection delay={0.4}>
+				<Reviews />
+			</AnimatedSection>
+
+			<AnimatedSection delay={0.5}>
+				<Newsletter />
+			</AnimatedSection>
+
+			<AnimatedSection delay={0.6}>
+				<ServicesInfo />
+			</AnimatedSection>
+		</AnimatedPageWrapper>
 	);
 }

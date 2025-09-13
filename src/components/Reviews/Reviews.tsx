@@ -74,6 +74,13 @@ export default function Reviews() {
 		return () => clearInterval(interval);
 	}, [isAutoPlaying, reviews.length]);
 
+	// S'assurer que currentReview reste dans les limites
+	useEffect(() => {
+		if (reviews.length > 0 && currentReview >= reviews.length) {
+			setCurrentReview(0);
+		}
+	}, [reviews.length, currentReview]);
+
 	const fetchReviews = async () => {
 		try {
 			const response = await fetch("/api/reviews?limit=10");
@@ -133,70 +140,108 @@ export default function Reviews() {
 
 				{/* Container des avis */}
 				<div className="relative">
-					{/* Avis principal */}
-					<div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 lg:p-12 shadow-2xl border-2 border-rose-dark max-w-4xl mx-auto">
-						<div className="text-center">
-							{/* Étoiles */}
-							<div className="flex justify-center mb-6">
-								{renderStars(reviews[currentReview].rating)}
+					{reviews.length > 0 && reviews[currentReview] ? (
+						<>
+							{/* Avis principal */}
+							<div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 lg:p-12 shadow-2xl border-2 border-rose-dark max-w-4xl mx-auto">
+								<div className="text-center">
+									{/* Étoiles */}
+									<div className="flex justify-center mb-6">
+										{renderStars(reviews[currentReview].rating)}
+									</div>
+
+									{/* Avis avec guillemets */}
+									<div className="relative mb-8">
+										<svg
+											className="absolute -top-4 -left-4 w-12 h-12 text-rose-dark"
+											fill="currentColor"
+											viewBox="0 0 32 32"
+										>
+											<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
+										</svg>
+										<blockquote className="text-lg lg:text-xl text-nude-dark-2 font-light italic leading-relaxed px-8">
+											"{reviews[currentReview].review}"
+										</blockquote>
+										<svg
+											className="absolute -bottom-4 -right-4 w-12 h-12 text-rose-dark rotate-180"
+											fill="currentColor"
+											viewBox="0 0 32 32"
+										>
+											<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
+										</svg>
+									</div>
+
+									{/* Nom du client et produit */}
+									<div className="border-t border-logo pt-6">
+										<p className="text-logo font-balqis text-xl font-semibold">
+											{reviews[currentReview].name}
+										</p>
+										<p className="text-nude-dark text-sm mt-1">
+											Cliente vérifiée
+											{reviews[currentReview].productName && (
+												<> • {reviews[currentReview].productName}</>
+											)}
+										</p>
+										{!loading && stats.total > 0 && (
+											<p className="text-nude-dark text-xs mt-1">
+												Note moyenne: {stats.average}/5 ({stats.total} avis)
+											</p>
+										)}
+									</div>
+								</div>
 							</div>
 
-							{/* Avis avec guillemets */}
-							<div className="relative mb-8">
-								<svg
-									className="absolute -top-4 -left-4 w-12 h-12 text-rose-dark"
-									fill="currentColor"
-									viewBox="0 0 32 32"
-								>
-									<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
-								</svg>
-								<blockquote className="text-lg lg:text-xl text-nude-dark-2 font-light italic leading-relaxed px-8">
-									"{reviews[currentReview].review}"
-								</blockquote>
-								<svg
-									className="absolute -bottom-4 -right-4 w-12 h-12 text-rose-dark rotate-180"
-									fill="currentColor"
-									viewBox="0 0 32 32"
-								>
-									<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
-								</svg>
+							{/* Navigation dots */}
+							<div className="flex justify-center mt-8 gap-3">
+								{reviews.map((_, index) => (
+									<button
+										key={index}
+										onClick={() => goToReview(index)}
+										className={`w-3 h-3 rounded-full transition-all duration-300 hover:scale-110 ${
+											index === currentReview
+												? "bg-logo opacity-100 scale-125"
+												: "bg-logo opacity-50 hover:opacity-70"
+										}`}
+										aria-label={`Voir l'avis ${index + 1}`}
+									/>
+								))}
 							</div>
-
-							{/* Nom du client et produit */}
-							<div className="border-t border-logo pt-6">
-								<p className="text-logo font-balqis text-xl font-semibold">
-									{reviews[currentReview].name}
-								</p>
-								<p className="text-nude-dark text-sm mt-1">
-									Cliente vérifiée
-									{reviews[currentReview].productName && (
-										<> • {reviews[currentReview].productName}</>
-									)}
-								</p>
-								{!loading && stats.total > 0 && (
-									<p className="text-nude-dark text-xs mt-1">
-										Note moyenne: {stats.average}/5 ({stats.total} avis)
+						</>
+					) : (
+						/* Message de fallback si aucun avis */
+						<div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 lg:p-12 shadow-2xl border-2 border-rose-dark max-w-4xl mx-auto">
+							<div className="text-center">
+								<div className="flex justify-center mb-6">{renderStars(5)}</div>
+								<div className="relative mb-8">
+									<svg
+										className="absolute -top-4 -left-4 w-12 h-12 text-rose-dark"
+										fill="currentColor"
+										viewBox="0 0 32 32"
+									>
+										<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
+									</svg>
+									<blockquote className="text-lg lg:text-xl text-nude-dark-2 font-light italic leading-relaxed px-8">
+										"Chargement des avis clients..."
+									</blockquote>
+									<svg
+										className="absolute -bottom-4 -right-4 w-12 h-12 text-rose-dark rotate-180"
+										fill="currentColor"
+										viewBox="0 0 32 32"
+									>
+										<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
+									</svg>
+								</div>
+								<div className="border-t border-logo pt-6">
+									<p className="text-logo font-balqis text-xl font-semibold">
+										Lady Haya Wear
 									</p>
-								)}
+									<p className="text-nude-dark text-sm mt-1">
+										Vos avis nous aident à grandir ✨
+									</p>
+								</div>
 							</div>
 						</div>
-					</div>
-
-					{/* Navigation dots */}
-					<div className="flex justify-center mt-8 gap-3">
-						{reviews.map((_, index) => (
-							<button
-								key={index}
-								onClick={() => goToReview(index)}
-								className={`w-3 h-3 rounded-full transition-all duration-300 hover:scale-110 ${
-									index === currentReview
-										? "bg-logo opacity-100 scale-125"
-										: "bg-logo opacity-50 hover:opacity-70"
-								}`}
-								aria-label={`Voir l'avis ${index + 1}`}
-							/>
-						))}
-					</div>
+					)}
 
 					{/* Message d'encouragement */}
 					<div className="mt-12 text-center">
