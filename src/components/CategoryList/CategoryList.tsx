@@ -290,7 +290,7 @@ export default function CategoryList({ categories }: CategoryListProps) {
 				<motion.button
 					onClick={goToPrev}
 					disabled={currentIndex <= 0}
-					className={`p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 ${
+					className={`p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-100 ${
 						currentIndex <= 0
 							? "bg-gray-300/50 text-gray-400 cursor-not-allowed"
 							: "bg-white/80 hover:bg-white text-logo hover:scale-110 cursor-pointer"
@@ -302,18 +302,6 @@ export default function CategoryList({ categories }: CategoryListProps) {
 						opacity: 1,
 					}}
 					viewport={{ once: true, amount: 0.1 }}
-					whileHover={{
-						scale: 1.2,
-						rotate: -10,
-						boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-						y: -5,
-					}}
-					whileTap={{ scale: 0.9, rotate: -15 }}
-					transition={{
-						duration: 0.6,
-						ease: "easeOut",
-						delay: 0.8,
-					}}
 				>
 					<motion.svg
 						className="w-4 h-4 lg:w-6 lg:h-6"
@@ -343,7 +331,7 @@ export default function CategoryList({ categories }: CategoryListProps) {
 				<motion.button
 					onClick={goToNext}
 					disabled={currentIndex >= categories.length - 1}
-					className={`p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 ${
+					className={`p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-100 ${
 						currentIndex >= categories.length - 1
 							? "bg-gray-300/50 text-gray-400 cursor-not-allowed"
 							: "bg-white/80 hover:bg-white text-logo hover:scale-110 cursor-pointer"
@@ -355,18 +343,7 @@ export default function CategoryList({ categories }: CategoryListProps) {
 						opacity: 1,
 					}}
 					viewport={{ once: true, amount: 0.1 }}
-					whileHover={{
-						scale: 1.2,
-						rotate: 10,
-						boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-						y: -5,
-					}}
-					whileTap={{ scale: 0.9, rotate: 15 }}
-					transition={{
-						duration: 0.6,
-						ease: "easeOut",
-						delay: 0.8,
-					}}
+					whileTap={{ scale: 0.9 }}
 				>
 					<motion.svg
 						className="w-4 h-4 lg:w-6 lg:h-6"
@@ -427,20 +404,15 @@ export default function CategoryList({ categories }: CategoryListProps) {
 						<motion.button
 							key={index}
 							onClick={() => goToSlide(index)}
-							className={`w-3 h-3 rounded-full transition-all duration-300 ${
+							className={`w-3 h-3 rounded-full transition-all duration-100 ${
 								index === currentIndex
 									? "bg-logo opacity-100"
 									: index < currentIndex
 										? "bg-logo opacity-50"
 										: "bg-logo opacity-20 hover:opacity-40"
-							}`}
+							} hover:scale-125 hover:-translate-y-1 hover:shadow-lg`}
 							aria-label={`Aller à ${category.name} (${index + 1}/${categories.length})`}
 							title={category.name}
-							whileHover={{
-								scale: 1.4,
-								y: -3,
-								boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-							}}
 							whileTap={{ scale: 0.8 }}
 							animate={{
 								scale: index === currentIndex ? 1.3 : 1,

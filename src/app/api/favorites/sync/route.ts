@@ -10,21 +10,15 @@ type LocalFavorite = {
 };
 
 export async function POST(request: NextRequest) {
-	console.log(
-		"[API favorites/sync] SYNC API appelée, cookies:",
-		request.cookies.getAll()
-	);
 	try {
 		// Vérifier l'authentification
 		const token = request.cookies.get("auth-token")?.value;
-		console.log("[API favorites/sync] Token reçu:", token);
 		if (!token) {
 			return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 		}
 
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
 		const userId = decoded.userId;
-		console.log("[API favorites/sync] UserId décodé:", userId);
 
 		const { localFavorites }: { localFavorites: LocalFavorite[] } =
 			await request.json();
@@ -37,10 +31,11 @@ export async function POST(request: NextRequest) {
 		// Synchroniser : fusionner les favoris locaux avec ceux de la base
 		const syncedFavorites = [];
 
-		// Ajouter les favoris locaux à la base s'ils n'existent pas (utiliser upsert)
+		// Ajouter les favoris locaux à la base s'ils n'existent pas
 		for (const localFav of localFavorites) {
 			try {
-				const upsertedFavorite = await prisma.favorite.upsert({
+				// Utiliser upsert avec une gestion d'erreur plus robuste
+				const favorite = await prisma.favorite.upsert({
 					where: {
 						userId_productId: {
 							userId,
@@ -48,30 +43,40 @@ export async function POST(request: NextRequest) {
 						},
 					},
 					update: {
-						// Rien à mettre à jour pour les favoris
+						// Rien à mettre à jour, le favori existe déjà
 					},
 					create: {
 						userId,
 						productId: localFav.productId,
 					},
 				});
-				syncedFavorites.push(upsertedFavorite);
-			} catch (error) {
-				console.error(
-					`Erreur lors de l'upsert du favori ${localFav.productId}:`,
-					error
-				);
-				// Essayer de récupérer l'enregistrement existant
-				const existingFav = await prisma.favorite.findUnique({
-					where: {
-						userId_productId: {
-							userId,
-							productId: localFav.productId,
-						},
-					},
-				});
-				if (existingFav) {
-					syncedFavorites.push(existingFav);
+				syncedFavorites.push(favorite);
+			} catch (error: any) {
+				// Si c'est une erreur de contrainte unique, essayer de récupérer l'existant
+				if (error.code === "P2002") {
+					try {
+						const existingFav = await prisma.favorite.findUnique({
+							where: {
+								userId_productId: {
+									userId,
+									productId: localFav.productId,
+								},
+							},
+						});
+						if (existingFav) {
+							syncedFavorites.push(existingFav);
+						}
+					} catch (findError) {
+						console.error(
+							`Erreur lors de la récupération du favori ${localFav.productId}:`,
+							findError
+						);
+					}
+				} else {
+					console.error(
+						`Erreur lors de l'upsert du favori ${localFav.productId}:`,
+						error
+					);
 				}
 			}
 		}
@@ -89,10 +94,6 @@ export async function POST(request: NextRequest) {
 
 		// Enrichir les données avec les détails Sanity
 		const enrichedFavorites = await enrichFavorites(syncedFavorites);
-		console.log(
-			"[API favorites/sync] Fin de sync, favoris en BDD:",
-			syncedFavorites
-		);
 
 		return NextResponse.json({ favorites: enrichedFavorites }, { status: 200 });
 	} catch (error) {

@@ -67,7 +67,7 @@ export default function Footer() {
 								href="https://instagram.com/lady.haya_wear"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="p-3 bg-pink-600 rounded-full hover:bg-pink-700 hover:scale-110 transition-all duration-200 ease-out"
+								className="p-3 bg-pink-600 rounded-full hover:bg-pink-700"
 								initial={{ scale: 0, opacity: 0 }}
 								whileInView={{ scale: 1, opacity: 1 }}
 								viewport={{ once: true, amount: 0.1 }}
@@ -76,6 +76,7 @@ export default function Footer() {
 									ease: [0.68, -0.55, 0.265, 1.55],
 									delay: 0.6,
 								}}
+								whileHover={{ scale: 1.1 }}
 								whileTap={{ scale: 0.95 }}
 							>
 								<FaInstagram className="text-xl" />
@@ -84,7 +85,7 @@ export default function Footer() {
 								href="https://tiktok.com/@lady.haya_wear"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="p-3 bg-black rounded-full hover:bg-gray-800 hover:scale-110 transition-all duration-200 ease-out"
+								className="p-3 bg-black rounded-full hover:bg-gray-800"
 								initial={{ scale: 0, opacity: 0 }}
 								whileInView={{ scale: 1, opacity: 1 }}
 								viewport={{ once: true, amount: 0.1 }}
@@ -93,6 +94,7 @@ export default function Footer() {
 									ease: [0.68, -0.55, 0.265, 1.55],
 									delay: 0.8,
 								}}
+								whileHover={{ scale: 1.1 }}
 								whileTap={{ scale: 0.95 }}
 							>
 								<FaTiktok className="text-xl" />

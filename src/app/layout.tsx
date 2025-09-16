@@ -32,9 +32,9 @@ export default function RootLayout({
 			</head>
 			<body className="antialiased">
 				<CSRFProtection>
-					<CartProvider>
-						<FavoritesProvider>
-							<AuthProvider>
+					<AuthProvider>
+						<CartProvider>
+							<FavoritesProvider>
 								<StudioWrapper>{children}</StudioWrapper>
 
 								<ToastContainer
@@ -53,9 +53,9 @@ export default function RootLayout({
 										zIndex: 99999,
 									}}
 								/>
-							</AuthProvider>
-						</FavoritesProvider>
-					</CartProvider>
+							</FavoritesProvider>
+						</CartProvider>
+					</AuthProvider>
 				</CSRFProtection>
 			</body>
 		</html>

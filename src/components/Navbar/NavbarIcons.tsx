@@ -80,7 +80,6 @@ export default function NavbarIcons() {
 					delay: 0.2,
 					ease: [0.68, -0.55, 0.265, 1.55],
 				}}
-				whileHover={{ scale: 1.1, y: -2 }}
 				whileTap={{ scale: 0.9 }}
 			>
 				<FaUser
@@ -146,7 +145,6 @@ export default function NavbarIcons() {
 					delay: 0.4,
 					ease: [0.68, -0.55, 0.265, 1.55],
 				}}
-				whileHover={{ scale: 1.1, y: -2 }}
 				whileTap={{ scale: 0.9 }}
 			>
 				<FaHeart
@@ -174,7 +172,6 @@ export default function NavbarIcons() {
 					delay: 0.6,
 					ease: [0.68, -0.55, 0.265, 1.55],
 				}}
-				whileHover={{ scale: 1.1, y: -2 }}
 				whileTap={{ scale: 0.9 }}
 			>
 				<FaBagShopping

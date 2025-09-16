@@ -1,7 +1,7 @@
 "use client";
 
-import { useCart } from "@/lib/CartContext";
-import { useFavorites } from "@/lib/FavoritesContext";
+// Note: useCart et useFavorites sont maintenant gérés séparément
+// pour éviter les dépendances circulaires
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface User {
@@ -39,8 +39,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		user: null,
 		loading: true,
 	});
-	const { cartItems } = useCart();
-	const { favorites } = useFavorites();
+	// Note: useCart et useFavorites sont maintenant gérés séparément
+	// pour éviter les dépendances circulaires
 
 	const hydrateContextsFromDB = async () => {
 		try {

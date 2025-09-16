@@ -139,19 +139,24 @@ export default function Newsletter() {
 								/>
 							</motion.div>
 
-							<motion.button
-								type="submit"
-								disabled={isLoading}
-								className="group w-full bg-gradient-to-r from-logo to-nude-dark hover:from-nude-dark hover:to-logo text-beige-light py-4 rounded-2xl backdrop-blur-sm border-2 border-logo hover:border-nude-dark font-light tracking-wide shadow-lg hover:shadow-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+							<motion.div
 								initial={{ x: 50, opacity: 0 }}
 								whileInView={{ x: 0, opacity: 1 }}
 								viewport={{ once: true, amount: 0.1 }}
 								transition={{ duration: 0.6, ease: "easeOut", delay: 1.3 }}
 							>
-								<span className="group-hover:scale-105 inline-block">
-									{isLoading ? "Inscription..." : "Rejoindre la communauté ✨"}
-								</span>
-							</motion.button>
+								<button
+									type="submit"
+									disabled={isLoading}
+									className="group w-full bg-gradient-to-r from-logo to-nude-dark hover:from-nude-dark hover:to-logo text-beige-light py-4 rounded-2xl backdrop-blur-sm border-2 border-logo hover:border-nude-dark font-light tracking-wide shadow-lg hover:shadow-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+								>
+									<span className="group-hover:scale-105 inline-block transition-transform duration-200">
+										{isLoading
+											? "Inscription..."
+											: "Rejoindre la communauté ✨"}
+									</span>
+								</button>
+							</motion.div>
 						</form>
 					</div>
 				</motion.div>

@@ -37,7 +37,6 @@ export async function POST(request: NextRequest) {
 
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
 		const userId = decoded.userId;
-		console.log("[API cart/sync] UserId décodé:", userId);
 
 		const { localCartItems }: { localCartItems: LocalCartItem[] } =
 			await request.json();
@@ -98,19 +97,9 @@ export async function POST(request: NextRequest) {
 			}
 		}
 
-		// Ajouter les articles qui n'existent que en base
-		for (const dbItem of dbCartItems) {
-			const existsInLocal = localCartItems.some(
-				(localItem) =>
-					localItem.productId === dbItem.productId &&
-					localItem.color === dbItem.colorName &&
-					localItem.size === dbItem.sizeName
-			);
-
-			if (!existsInLocal) {
-				syncedItems.push(dbItem);
-			}
-		}
+		// Ne pas supprimer automatiquement les articles de la base
+		// La suppression se fait maintenant via l'API /api/cart/remove
+		// Cela évite de supprimer tout le panier quand il est vide localement
 
 		// Enrichir les données avec les détails Sanity
 		const enrichedItems = await enrichCartItems(syncedItems);

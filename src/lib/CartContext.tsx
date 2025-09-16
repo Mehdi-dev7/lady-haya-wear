@@ -7,6 +7,7 @@ import {
 	useState,
 } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "./AuthContext";
 
 export interface CartItem {
 	id: string;
@@ -39,6 +40,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
 	const [cartItems, setCartItems] = useState<CartItem[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const { user } = useAuth();
 
 	// Charger le panier depuis localStorage au démarrage
 	useEffect(() => {
@@ -118,6 +120,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
 				updatedItems = [...prevItems, { ...newItem, id }];
 			}
 
+			// Synchroniser avec la base de données si l'utilisateur est connecté
+			if (user) {
+				// Synchroniser avec la base de données
+				fetch("/api/cart/sync", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ localCartItems: updatedItems }),
+				}).catch((error) => {
+					console.error("Erreur lors de la synchronisation:", error);
+				});
+			}
+
 			return updatedItems;
 		});
 	};
@@ -127,25 +143,45 @@ export function CartProvider({ children }: { children: ReactNode }) {
 			const itemToRemove = prevItems.find((item) => item.id === id);
 			const updatedItems = prevItems.filter((item) => item.id !== id);
 
-			// Afficher le toast de suppression
+			// Synchroniser avec la base de données si l'utilisateur est connecté
+			if (itemToRemove && user) {
+				// Supprimer directement de la base de données
+				fetch("/api/cart/remove", {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						productId: itemToRemove.productId,
+						color: itemToRemove.color,
+						size: itemToRemove.size,
+					}),
+				}).catch((error) => {
+					console.error("Erreur lors de la suppression en BDD:", error);
+				});
+			}
+
+			// Afficher le toast de suppression après le rendu
 			if (itemToRemove) {
-				toast.info(
-					<div>
-						<div className="font-semibold">Produit supprimé du panier</div>
-						<div className="text-sm opacity-90">
-							{itemToRemove.name} - {itemToRemove.color} - Taille{" "}
-							{itemToRemove.size}
-						</div>
-					</div>,
-					{
-						position: "top-right",
-						autoClose: 3000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-					}
-				);
+				setTimeout(() => {
+					toast.info(
+						<div>
+							<div className="font-semibold">Produit supprimé du panier</div>
+							<div className="text-sm opacity-90">
+								{itemToRemove.name} - {itemToRemove.color} - Taille{" "}
+								{itemToRemove.size}
+							</div>
+						</div>,
+						{
+							position: "top-right",
+							autoClose: 3000,
+							hideProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							draggable: true,
+						}
+					);
+				}, 0);
 			}
 
 			return updatedItems;

@@ -6,6 +6,8 @@ import {
 	useEffect,
 	useState,
 } from "react";
+import { toast } from "react-toastify";
+import { useAuth } from "./AuthContext";
 
 interface Product {
 	productId: string;
@@ -39,6 +41,7 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(
 export function FavoritesProvider({ children }: { children: ReactNode }) {
 	const [favorites, setFavorites] = useState<Product[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const { user } = useAuth();
 
 	// Charger les favoris depuis localStorage au démarrage
 	useEffect(() => {
@@ -105,11 +108,66 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
 	const addToFavorites = (product: Product) => {
 		setFavorites((prev) => {
-			const updatedFavorites = prev.find(
+			const existingFavorite = prev.find(
 				(fav) => fav.productId === product.productId
-			)
-				? prev
-				: [...prev, product];
+			);
+
+			if (existingFavorite) {
+				// Le favori existe déjà
+				toast.info(
+					<div>
+						<div className="font-semibold">Favori déjà ajouté</div>
+						<div className="text-sm opacity-90">
+							{product.name} est déjà dans vos favoris
+						</div>
+					</div>,
+					{
+						position: "top-right",
+						autoClose: 3000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+					}
+				);
+				return prev; // Ne pas modifier la liste
+			}
+
+			const updatedFavorites = [...prev, product];
+
+			// Synchroniser avec la base de données si l'utilisateur est connecté
+			if (user) {
+				fetch("/api/favorites/sync", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ localFavorites: updatedFavorites }),
+				}).catch((error) => {
+					console.error(
+						"Erreur lors de la synchronisation des favoris:",
+						error
+					);
+				});
+			}
+
+			// Toast de confirmation d'ajout
+			toast.success(
+				<div>
+					<div className="font-semibold">Favori ajouté</div>
+					<div className="text-sm opacity-90">
+						{product.name} a été ajouté à vos favoris
+					</div>
+				</div>,
+				{
+					position: "top-right",
+					autoClose: 3000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				}
+			);
 
 			return updatedFavorites;
 		});
@@ -117,9 +175,43 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
 	const removeFromFavorites = (productId: string) => {
 		setFavorites((prev) => {
+			const itemToRemove = prev.find((fav) => fav.productId === productId);
 			const updatedFavorites = prev.filter(
 				(fav) => fav.productId !== productId
 			);
+
+			// Synchroniser avec la base de données si l'utilisateur est connecté
+			if (user) {
+				fetch("/api/favorites/remove", {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ productId }),
+				}).catch((error) => {
+					console.error("Erreur lors de la suppression des favoris:", error);
+				});
+			}
+
+			// Toast de confirmation de suppression
+			if (itemToRemove) {
+				toast.info(
+					<div>
+						<div className="font-semibold">Favori supprimé</div>
+						<div className="text-sm opacity-90">
+							{itemToRemove.name} a été retiré de vos favoris
+						</div>
+					</div>,
+					{
+						position: "top-right",
+						autoClose: 3000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+					}
+				);
+			}
 
 			return updatedFavorites;
 		});
@@ -131,6 +223,36 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 			const updatedFavorites = exists
 				? prev.filter((fav) => fav.productId !== product.productId)
 				: [...prev, product];
+
+			// Synchroniser avec la base de données si l'utilisateur est connecté
+			if (user) {
+				if (exists) {
+					// Supprimer
+					fetch("/api/favorites/remove", {
+						method: "DELETE",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ productId: product.productId }),
+					}).catch((error) => {
+						console.error("Erreur lors de la suppression des favoris:", error);
+					});
+				} else {
+					// Ajouter
+					fetch("/api/favorites/sync", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ localFavorites: updatedFavorites }),
+					}).catch((error) => {
+						console.error(
+							"Erreur lors de la synchronisation des favoris:",
+							error
+						);
+					});
+				}
+			}
 
 			return updatedFavorites;
 		});

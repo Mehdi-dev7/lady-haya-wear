@@ -12,6 +12,7 @@ interface SliderProps {
 export default function Slider({ featuredCategories }: SliderProps) {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [isTransitioning, setIsTransitioning] = useState(true);
+	const [isPaused, setIsPaused] = useState(false);
 
 	// Tableau des gradients disponibles
 	const gradients = [
@@ -21,12 +22,14 @@ export default function Slider({ featuredCategories }: SliderProps) {
 	];
 
 	useEffect(() => {
+		if (isPaused) return;
+
 		const interval = setInterval(() => {
 			setCurrentSlide((prev) => prev + 1);
 		}, 3000);
 
 		return () => clearInterval(interval);
-	}, []);
+	}, [isPaused]);
 
 	// Réinitialiser la position quand on atteint la fin du deuxième set
 	useEffect(() => {
@@ -64,27 +67,17 @@ export default function Slider({ featuredCategories }: SliderProps) {
 	};
 
 	return (
-		<motion.div
-			className="h-screen w-full overflow-hidden relative"
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
-			transition={{ duration: 1 }}
-		>
-			<motion.div
+		<div className="h-screen w-full overflow-hidden relative">
+			<div
 				className={`w-max h-full flex ${isTransitioning ? "transition-all ease-in-out duration-1000" : ""}`}
 				style={{
 					transform: `translateX(-${currentSlide * 100}vw)`,
 				}}
-				initial={{ x: 0 }}
-				animate={{ x: 0 }}
 			>
 				{infiniteSlides.map((category, index) => (
-					<motion.div
+					<div
 						className={`${gradients[getRealIndex(index)]} h-full w-screen flex-shrink-0 flex flex-col lg:flex-row`}
 						key={`${category._id}-${index}`}
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						transition={{ duration: 0.5 }}
 					>
 						{/* TEXT CONTAINER */}
 						<motion.div
@@ -127,14 +120,18 @@ export default function Slider({ featuredCategories }: SliderProps) {
 								initial={{ scale: 0, opacity: 0 }}
 								animate={{ scale: 1, opacity: 1 }}
 								transition={{ duration: 0.6, delay: 0.6 }}
-								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}
+								className="hover:scale-105 transition-transform duration-100"
 							>
 								<Link
 									href={`/collections/${category.slug?.current || category._id}`}
 									className="hidden lg:block"
 								>
-									<button className="rounded-md py-3 px-4 bg-logo text-nude-light cursor-pointer hover:bg-nude-dark-2 transition-all duration-300">
+									<button
+										className="rounded-md py-3 px-4 bg-logo text-nude-light cursor-pointer transition-all duration-300"
+										onMouseEnter={() => setIsPaused(true)}
+										onMouseLeave={() => setIsPaused(false)}
+									>
 										Voir la collection
 									</button>
 								</Link>
@@ -152,7 +149,6 @@ export default function Slider({ featuredCategories }: SliderProps) {
 								initial={{ scale: 1.1, opacity: 0 }}
 								animate={{ scale: 1, opacity: 1 }}
 								transition={{ duration: 1, delay: 0.4 }}
-								whileHover={{ scale: 1.05 }}
 								className="relative h-full w-full"
 							>
 								<Image
@@ -190,18 +186,19 @@ export default function Slider({ featuredCategories }: SliderProps) {
 									href={`/collections/${category.slug?.current || category._id}`}
 								>
 									<motion.button
-										className="rounded-md py-2 px-2 md:px-3 mr-4 md:mr-0 text-nude-light text-base bg-logo cursor-pointer hover:bg-nude-dark-2 transition-all duration-300"
-										whileHover={{ scale: 1.05 }}
+										className="rounded-md py-2 px-2 md:px-3 mr-4 md:mr-0 text-nude-light text-base bg-logo cursor-pointer hover:bg-nude-dark-2 hover:scale-105 transition-all duration-100"
 										whileTap={{ scale: 0.95 }}
+										onMouseEnter={() => setIsPaused(true)}
+										onMouseLeave={() => setIsPaused(false)}
 									>
 										Voir la collection
 									</motion.button>
 								</Link>
 							</motion.div>
 						</motion.div>
-					</motion.div>
+					</div>
 				))}
-			</motion.div>
+			</div>
 
 			{/* DOTS - FIXED AT BOTTOM */}
 			<motion.div
@@ -232,6 +229,6 @@ export default function Slider({ featuredCategories }: SliderProps) {
 					</motion.div>
 				))}
 			</motion.div>
-		</motion.div>
+		</div>
 	);
 }
