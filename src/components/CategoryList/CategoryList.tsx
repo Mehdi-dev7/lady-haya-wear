@@ -1,5 +1,6 @@
 "use client";
 import { urlFor } from "@/lib/sanity";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -176,15 +177,44 @@ export default function CategoryList({ categories }: CategoryListProps) {
 		<div className="relative px-0 lg:px-4 py-1 md:py-2 overflow-hidden w-full">
 			{/* Titre de section */}
 			<div className="text-center mb-2 md:mb-4">
-				<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mb-2 md:mb-4 md:mt-2">
+				<motion.h2
+					className="text-5xl lg:text-6xl font-alex-brush text-logo mb-2 md:mb-4 md:mt-2"
+					initial={{ y: 50, opacity: 0 }}
+					whileInView={{ y: 0, opacity: 1 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{
+						duration: 0.8,
+						ease: "easeOut",
+					}}
+				>
 					Nos Collections
-				</h2>
-				<p className="text-nude-dark-2 font-light text-lg lg:text-xl">
+				</motion.h2>
+				<motion.p
+					className="text-nude-dark-2 font-light text-lg lg:text-xl"
+					initial={{ y: 50, opacity: 0 }}
+					whileInView={{ y: 0, opacity: 1 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{
+						duration: 0.8,
+						ease: "easeOut",
+						delay: 0.4,
+					}}
+				>
 					Découvrez nos collections élégantes
-				</p>
-				<p className="text-nude-dark text-sm mt-2 lg:hidden">
+				</motion.p>
+				<motion.p
+					className="text-nude-dark text-sm mt-2 lg:hidden"
+					initial={{ y: 50, opacity: 0 }}
+					whileInView={{ y: 0, opacity: 1 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{
+						duration: 0.8,
+						ease: "easeOut",
+						delay: 0.4,
+					}}
+				>
 					← Glissez pour naviguer →
-				</p>
+				</motion.p>
 			</div>
 
 			{/* Container 3D Coverflow avec masquage des côtés */}
