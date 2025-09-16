@@ -15,6 +15,7 @@ export default function Navbar() {
 	useEffect(() => {
 		const handleScroll = () => {
 			const scrollY = window.scrollY;
+			console.log("Scroll Y:", scrollY, "isScrolled:", scrollY > 200);
 			setIsScrolled(scrollY > 200);
 			setShowScrollTop(scrollY > 1000);
 		};
@@ -23,7 +24,7 @@ export default function Navbar() {
 			setIsMenuOpen(event.detail.isOpen);
 		};
 
-		window.addEventListener("scroll", handleScroll);
+		window.addEventListener("scroll", handleScroll, { passive: true });
 		window.addEventListener("menuToggle", handleMenuToggle as EventListener);
 
 		return () => {
@@ -44,10 +45,7 @@ export default function Navbar() {
 
 	return (
 		<>
-			<motion.div
-				initial={{ y: -100, opacity: 0 }}
-				animate={{ y: 0, opacity: 1 }}
-				transition={{ duration: 0.8, ease: "easeOut" }}
+			<div
 				className={`xl:h-[68px] h-[72px] px-4 md:px-8 lg:px-8 xl:px-18 2xl:px-22 bg-rose-light fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
 					isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
 				}`}
@@ -238,7 +236,7 @@ export default function Navbar() {
 						<NavbarIcons />
 					</motion.div>
 				</div>
-			</motion.div>
+			</div>
 
 			{/* Bouton remonter en haut */}
 			<AnimatePresence>

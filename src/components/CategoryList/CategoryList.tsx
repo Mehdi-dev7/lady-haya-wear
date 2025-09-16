@@ -218,11 +218,19 @@ export default function CategoryList({ categories }: CategoryListProps) {
 			</div>
 
 			{/* Container 3D Coverflow avec masquage des côtés */}
-			<div
+			<motion.div
 				className="relative h-[600px] lg:h-[700px] 2xl:h-[800px] flex items-center justify-center perspective-1000 overflow-hidden w-full touch-pan-y"
 				onTouchStart={onTouchStart}
 				onTouchMove={onTouchMove}
 				onTouchEnd={onTouchEnd}
+				initial={{ y: 100, opacity: 0 }}
+				whileInView={{ y: 0, opacity: 1 }}
+				viewport={{ once: true, amount: 0.1 }}
+				transition={{
+					duration: 1.2,
+					ease: [0.68, -0.8, 0.265, 1.8],
+					delay: 0.5,
+				}}
 			>
 				<div className="relative w-full max-w-none lg:max-w-4xl 2xl:max-w-5xl h-full flex items-center justify-center overflow-hidden">
 					{categories.map((category, index) => {
@@ -275,11 +283,11 @@ export default function CategoryList({ categories }: CategoryListProps) {
 						);
 					})}
 				</div>
-			</div>
+			</motion.div>
 
 			{/* Boutons de navigation */}
 			<div className="flex justify-center gap-4">
-				<button
+				<motion.button
 					onClick={goToPrev}
 					disabled={currentIndex <= 0}
 					className={`p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 ${
@@ -288,12 +296,40 @@ export default function CategoryList({ categories }: CategoryListProps) {
 							: "bg-white/80 hover:bg-white text-logo hover:scale-110 cursor-pointer"
 					}`}
 					aria-label="Précédent"
+					initial={{ x: -200, opacity: 0 }}
+					whileInView={{
+						x: 0,
+						opacity: 1,
+					}}
+					viewport={{ once: true, amount: 0.1 }}
+					whileHover={{
+						scale: 1.2,
+						rotate: -10,
+						boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+						y: -5,
+					}}
+					whileTap={{ scale: 0.9, rotate: -15 }}
+					transition={{
+						duration: 0.8,
+						ease: "easeOut",
+						delay: 0.8,
+					}}
 				>
-					<svg
+					<motion.svg
 						className="w-4 h-4 lg:w-6 lg:h-6"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
+						whileHover={{
+							x: -3,
+							scale: 1.1,
+							strokeWidth: 2.5,
+						}}
+						transition={{
+							type: "spring",
+							stiffness: 400,
+							damping: 17,
+						}}
 					>
 						<path
 							strokeLinecap="round"
@@ -301,10 +337,10 @@ export default function CategoryList({ categories }: CategoryListProps) {
 							strokeWidth={2}
 							d="M15 19l-7-7 7-7"
 						/>
-					</svg>
-				</button>
+					</motion.svg>
+				</motion.button>
 
-				<button
+				<motion.button
 					onClick={goToNext}
 					disabled={currentIndex >= categories.length - 1}
 					className={`p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 ${
@@ -313,12 +349,40 @@ export default function CategoryList({ categories }: CategoryListProps) {
 							: "bg-white/80 hover:bg-white text-logo hover:scale-110 cursor-pointer"
 					}`}
 					aria-label="Suivant"
+					initial={{ x: 200, opacity: 0 }}
+					whileInView={{
+						x: 0,
+						opacity: 1,
+					}}
+					viewport={{ once: true, amount: 0.1 }}
+					whileHover={{
+						scale: 1.2,
+						rotate: 10,
+						boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+						y: -5,
+					}}
+					whileTap={{ scale: 0.9, rotate: 15 }}
+					transition={{
+						duration: 0.8,
+						ease: "easeOut",
+						delay: 0.8,
+					}}
 				>
-					<svg
+					<motion.svg
 						className="w-4 h-4 lg:w-6 lg:h-6"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
+						whileHover={{
+							x: 3,
+							scale: 1.1,
+							strokeWidth: 2.5,
+						}}
+						transition={{
+							type: "spring",
+							stiffness: 400,
+							damping: 17,
+						}}
 					>
 						<path
 							strokeLinecap="round"
@@ -326,36 +390,71 @@ export default function CategoryList({ categories }: CategoryListProps) {
 							strokeWidth={2}
 							d="M9 5l7 7-7 7"
 						/>
-					</svg>
-				</button>
+					</motion.svg>
+				</motion.button>
 			</div>
 
 			{/* Indicateurs de pagination */}
-			<div className="flex flex-col items-center gap-2 md:gap-3 mt-1 md:mt-2">
+			<motion.div
+				className="flex flex-col items-center gap-2 md:gap-3 mt-1 md:mt-2"
+				initial={{ y: 30, opacity: 0 }}
+				whileInView={{ y: 0, opacity: 1 }}
+				viewport={{ once: true, amount: 0.1 }}
+				transition={{
+					duration: 0.6,
+					ease: "easeOut",
+					delay: 1.0,
+				}}
+			>
 				{/* Compteur */}
-				<div className="text-sm text-nude-dark font-medium">
+				<motion.div
+					className="text-sm text-nude-dark font-medium"
+					initial={{ scale: 0.8, opacity: 0 }}
+					whileInView={{ scale: 1, opacity: 1 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{
+						duration: 0.5,
+						ease: "easeOut",
+						delay: 1.2,
+					}}
+				>
 					{currentIndex + 1} / {categories.length}
-				</div>
+				</motion.div>
 
 				{/* Dots avec opacité */}
 				<div className="flex justify-center gap-2">
 					{categories.map((category, index) => (
-						<button
+						<motion.button
 							key={index}
 							onClick={() => goToSlide(index)}
-							className={`w-3 h-3 rounded-full transition-all duration-300 hover:scale-110 ${
+							className={`w-3 h-3 rounded-full transition-all duration-300 ${
 								index === currentIndex
-									? "bg-logo opacity-100 scale-125"
+									? "bg-logo opacity-100"
 									: index < currentIndex
 										? "bg-logo opacity-50"
 										: "bg-logo opacity-20 hover:opacity-40"
 							}`}
 							aria-label={`Aller à ${category.name} (${index + 1}/${categories.length})`}
 							title={category.name}
+							whileHover={{
+								scale: 1.4,
+								y: -3,
+								boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+							}}
+							whileTap={{ scale: 0.8 }}
+							animate={{
+								scale: index === currentIndex ? 1.3 : 1,
+								y: index === currentIndex ? -2 : 0,
+							}}
+							transition={{
+								type: "spring",
+								stiffness: 300,
+								damping: 20,
+							}}
 						/>
 					))}
 				</div>
-			</div>
+			</motion.div>
 
 			<style jsx>{`
 				.perspective-1000 {
