@@ -363,9 +363,9 @@ export default function CategoryList({ categories }: CategoryListProps) {
 					}}
 					whileTap={{ scale: 0.9, rotate: 15 }}
 					transition={{
-						duration: 0.8,
+						duration: 0.6,
 						ease: "easeOut",
-						delay: 0.8,
+						delay: 0.5,
 					}}
 				>
 					<motion.svg
