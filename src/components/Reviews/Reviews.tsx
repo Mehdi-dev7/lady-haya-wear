@@ -1,4 +1,5 @@
 "use client";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 interface Review {
@@ -20,32 +21,7 @@ interface ReviewsData {
 }
 
 // Données de fallback en cas d'erreur ou de chargement
-const fallbackReviews: Review[] = [
-	{
-		id: "fallback-1",
-		name: "Sarah M.",
-		review:
-			"Absolument magnifique ! La qualité est exceptionnelle et le tissu est très confortable. Je recommande vivement !",
-		rating: 5,
-		date: "2024-01-15",
-	},
-	{
-		id: "fallback-2",
-		name: "Amina K.",
-		review:
-			"Très satisfaite de mon achat. Les couleurs sont encore plus belles qu'en photo et la coupe est parfaite.",
-		rating: 5,
-		date: "2024-01-12",
-	},
-	{
-		id: "fallback-3",
-		name: "Fatima L.",
-		review:
-			"Service client au top et livraison rapide. Les vêtements sont de très bonne qualité, je reviendrai !",
-		rating: 5,
-		date: "2024-01-10",
-	},
-];
+const fallbackReviews: Review[] = [];
 
 export default function Reviews() {
 	const [reviews, setReviews] = useState<Review[]>(fallbackReviews);
@@ -90,14 +66,14 @@ export default function Reviews() {
 				setReviews(data.reviews);
 				setStats(data.stats);
 			} else {
-				// Garder les données de fallback si aucun avis n'est disponible
-				console.log(
-					"Aucun avis disponible, utilisation des données de fallback"
-				);
+				// Pas d'avis disponibles, garder le tableau vide
+				console.log("Aucun avis disponible");
+				setReviews([]);
 			}
 		} catch (error) {
 			console.error("Erreur lors du chargement des avis:", error);
-			// Garder les données de fallback en cas d'erreur
+			// En cas d'erreur, garder le tableau vide
+			setReviews([]);
 		} finally {
 			setLoading(false);
 		}
@@ -130,49 +106,121 @@ export default function Reviews() {
 			<div className="relative z-10 max-w-6xl mx-auto px-4">
 				{/* Titre de section */}
 				<div className="text-center mb-12">
-					<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mb-4">
+					<motion.h2
+						className="text-5xl lg:text-6xl font-alex-brush text-logo mb-4"
+						initial={{ y: 50, opacity: 0 }}
+						whileInView={{ y: 0, opacity: 1 }}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{ duration: 0.8, ease: "easeOut" }}
+					>
 						Nos Clientes Témoignent
-					</h2>
-					<p className="text-nude-dark-2 font-light text-lg lg:text-xl max-w-2xl mx-auto">
+					</motion.h2>
+					<motion.p
+						className="text-nude-dark-2 font-light text-lg lg:text-xl max-w-2xl mx-auto"
+						initial={{ y: 30, opacity: 0 }}
+						whileInView={{ y: 0, opacity: 1 }}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+					>
 						Découvrez ce que nos clientes pensent de nos créations
-					</p>
+					</motion.p>
 				</div>
 
 				{/* Container des avis */}
-				<div className="relative">
+				<motion.div
+					className="relative"
+					initial={{ opacity: 0, y: 100 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{
+						duration: 1.0,
+						ease: [0.68, -0.55, 0.265, 1.55],
+						delay: 0.5,
+					}}
+				>
 					{reviews.length > 0 && reviews[currentReview] ? (
 						<>
 							{/* Avis principal */}
-							<div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 lg:p-12 shadow-2xl border-2 border-rose-dark max-w-4xl mx-auto">
-								<div className="text-center">
-									{/* Étoiles */}
-									<div className="flex justify-center mb-6">
-										{renderStars(reviews[currentReview].rating)}
-									</div>
+							<AnimatePresence mode="wait">
+								<motion.div
+									key={currentReview}
+									className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 lg:p-12 shadow-2xl border-2 border-rose-dark max-w-4xl mx-auto"
+									initial={{
+										opacity: 0,
+										scale: 0.8,
+										rotateY: 90,
+										x: 100,
+									}}
+									animate={{
+										opacity: 1,
+										scale: 1,
+										rotateY: 0,
+										x: 0,
+									}}
+									exit={{
+										opacity: 0,
+										scale: 0.8,
+										rotateY: -90,
+										x: -100,
+									}}
+									transition={{
+										duration: 0.8,
+										ease: [0.25, 0.1, 0.25, 1],
+									}}
+								>
+									<div className="text-center">
+										{/* Étoiles */}
+										<motion.div
+											className="flex justify-center mb-6"
+											initial={{ scale: 0, opacity: 0 }}
+											animate={{ scale: 1, opacity: 1 }}
+											transition={{
+												duration: 0.6,
+												delay: 0.2,
+												ease: [0.68, -0.55, 0.265, 1.55],
+											}}
+										>
+											{renderStars(reviews[currentReview].rating)}
+										</motion.div>
 
-									{/* Avis avec guillemets */}
-									<div className="relative mb-8">
-										<svg
-											className="absolute -top-4 -left-4 w-12 h-12 text-rose-dark"
-											fill="currentColor"
-											viewBox="0 0 32 32"
+										{/* Avis avec guillemets */}
+										<motion.div
+											className="relative mb-8"
+											initial={{ y: 30, opacity: 0 }}
+											animate={{ y: 0, opacity: 1 }}
+											transition={{
+												duration: 0.8,
+												delay: 0.4,
+												ease: "easeOut",
+											}}
 										>
-											<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
-										</svg>
-										<blockquote className="text-lg lg:text-xl text-nude-dark-2 font-light italic leading-relaxed px-8">
-											"{reviews[currentReview].review}"
-										</blockquote>
-										<svg
-											className="absolute -bottom-4 -right-4 w-12 h-12 text-rose-dark rotate-180"
-											fill="currentColor"
-											viewBox="0 0 32 32"
-										>
-											<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
-										</svg>
+											<svg
+												className="absolute -top-4 -left-4 w-12 h-12 text-rose-dark"
+												fill="currentColor"
+												viewBox="0 0 32 32"
+											>
+												<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
+											</svg>
+											<blockquote className="text-lg lg:text-xl text-nude-dark-2 font-light italic leading-relaxed px-8">
+												"{reviews[currentReview].review}"
+											</blockquote>
+											<svg
+												className="absolute -bottom-4 -right-4 w-12 h-12 text-rose-dark rotate-180"
+												fill="currentColor"
+												viewBox="0 0 32 32"
+											>
+												<path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8zM22 8c-3.3 0-6 2.7-6 6v10h10V14h-4c0-2.2 1.8-4 4-4V8z" />
+											</svg>
+										</motion.div>
 									</div>
 
 									{/* Nom du client et produit */}
-									<div className="border-t border-logo pt-6">
+									<motion.div
+										className="border-t border-logo pt-6 text-center"
+										initial={{ y: 20, opacity: 0 }}
+										animate={{ y: 0, opacity: 1 }}
+										transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
+									>
 										<p className="text-logo font-balqis text-xl font-semibold">
 											{reviews[currentReview].name}
 										</p>
@@ -187,25 +235,42 @@ export default function Reviews() {
 												Note moyenne: {stats.average}/5 ({stats.total} avis)
 											</p>
 										)}
-									</div>
-								</div>
-							</div>
+									</motion.div>
+								</motion.div>
+							</AnimatePresence>
 
 							{/* Navigation dots */}
-							<div className="flex justify-center mt-8 gap-3">
+							<motion.div
+								className="flex justify-center mt-8 gap-3"
+								initial={{ y: 30, opacity: 0 }}
+								animate={{ y: 0, opacity: 1 }}
+								transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
+							>
 								{reviews.map((_, index) => (
-									<button
+									<motion.button
 										key={index}
 										onClick={() => goToReview(index)}
-										className={`w-3 h-3 rounded-full transition-all duration-300 hover:scale-110 ${
+										className={`w-3 h-3 rounded-full transition-all duration-300 ${
 											index === currentReview
-												? "bg-logo opacity-100 scale-125"
+												? "bg-logo opacity-100"
 												: "bg-logo opacity-50 hover:opacity-70"
 										}`}
 										aria-label={`Voir l'avis ${index + 1}`}
+										initial={{ scale: 0, opacity: 0 }}
+										animate={{
+											scale: index === currentReview ? 1.4 : 1,
+											opacity: index === currentReview ? 1 : 0.5,
+										}}
+										whileHover={{ scale: 1.2 }}
+										whileTap={{ scale: 0.9 }}
+										transition={{
+											duration: 0.3,
+											delay: 0.9 + index * 0.1,
+											ease: "easeOut",
+										}}
 									/>
 								))}
-							</div>
+							</motion.div>
 						</>
 					) : (
 						/* Message de fallback si aucun avis */
@@ -244,7 +309,13 @@ export default function Reviews() {
 					)}
 
 					{/* Message d'encouragement */}
-					<div className="mt-12 text-center">
+					<motion.div
+						className="mt-12 text-center"
+						initial={{ y: 30, opacity: 0 }}
+						whileInView={{ y: 0, opacity: 1 }}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{ duration: 0.8, delay: 1.0, ease: "easeOut" }}
+					>
 						{loading ? (
 							<div className="flex justify-center items-center">
 								<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-logo mr-2"></div>
@@ -262,8 +333,8 @@ export default function Reviews() {
 								Vos avis nous aident à grandir ✨
 							</p>
 						)}
-					</div>
-				</div>
+					</motion.div>
+				</motion.div>
 			</div>
 		</section>
 	);

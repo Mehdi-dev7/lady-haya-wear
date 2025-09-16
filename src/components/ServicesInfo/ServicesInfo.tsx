@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import {
 	TbCreditCard,
@@ -14,7 +15,13 @@ export default function ServicesInfo() {
 		<section className="bg-rose-light-2 border-t border-nude-light py-8 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">
 			<div className="max-w-7xl mx-auto">
 				{/* Grille des services en colonnes sur mobile, grille sur desktop */}
-				<div className="grid grid-cols-2 lg:grid-cols-5 gap-4 relative">
+				<motion.div
+					className="grid grid-cols-2 lg:grid-cols-5 gap-4 relative"
+					initial={{ y: 30, opacity: 0 }}
+					whileInView={{ y: 0, opacity: 1 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{ duration: 0.7, ease: "easeOut" }}
+				>
 					{/* Livraison gratuite */}
 					<div className="flex items-center gap-3 p-3 relative border-r border-nude-dark lg:border-r-0">
 						<TbTruckDelivery className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -86,7 +93,7 @@ export default function ServicesInfo() {
 							<div className="text-xs text-gray-500">24-48h</div>
 						</div>
 					</Link>
-				</div>
+				</motion.div>
 			</div>
 		</section>
 	);

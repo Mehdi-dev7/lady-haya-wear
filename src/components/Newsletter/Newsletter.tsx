@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -58,14 +59,42 @@ export default function Newsletter() {
 
 			{/* Contenu de la newsletter - reste dans l'image */}
 			<div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
-				<h2 className="text-5xl lg:text-6xl font-alex-brush text-logo mt-8 mb-6 lg:mb-0 drop-shadow-lg">
+				<motion.h2
+					className="text-5xl lg:text-6xl font-alex-brush text-logo mt-8 mb-6 lg:mb-0 drop-shadow-lg"
+					initial={{ y: 50, opacity: 0 }}
+					whileInView={{ y: 0, opacity: 1 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{ duration: 0.8, ease: "easeOut" }}
+				>
 					Newsletter
-				</h2>
+				</motion.h2>
 
-				<div className="bg-nude-light/80 backdrop-blur-xs rounded-3xl p-1 max-w-sm xl:max-w-md shadow-2xl mx-auto lg:ml-auto lg:mr-24 2xl:mr-54 border-2 border-rose-dark">
+				<motion.div
+					className="bg-nude-light/80 backdrop-blur-xs rounded-3xl p-1 max-w-sm xl:max-w-md shadow-2xl mx-auto lg:ml-auto lg:mr-24 2xl:mr-54 border-2 border-rose-dark"
+					initial={{ y: 100, opacity: 0, scale: 0.8 }}
+					whileInView={{ y: 0, opacity: 1, scale: 1 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+				>
 					<div className="bg-beige-light/60 backdrop-blur-xs rounded-3xl p-6">
-						<div className="text-center mb-6">
-							<div className="w-14 h-14 bg-logo/20 rounded-full mx-auto mb-3 flex items-center justify-center backdrop-blur-sm border-2 border-rose-dark">
+						<motion.div
+							className="text-center mb-6"
+							initial={{ y: 30, opacity: 0 }}
+							whileInView={{ y: 0, opacity: 1 }}
+							viewport={{ once: true, amount: 0.1 }}
+							transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
+						>
+							<motion.div
+								className="w-14 h-14 bg-logo/20 rounded-full mx-auto mb-3 flex items-center justify-center backdrop-blur-sm border-2 border-rose-dark"
+								initial={{ scale: 0, rotate: -180 }}
+								whileInView={{ scale: 1, rotate: 0 }}
+								viewport={{ once: true, amount: 0.1 }}
+								transition={{
+									duration: 0.8,
+									ease: [0.68, -0.55, 0.265, 1.55],
+									delay: 0.7,
+								}}
+							>
 								<svg
 									className="w-8 h-8 text-rose-dark"
 									fill="none"
@@ -79,14 +108,26 @@ export default function Newsletter() {
 										d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
 									/>
 								</svg>
-							</div>
-							<p className="text-rose-light font-light text-base leading-relaxed drop-shadow-sm">
+							</motion.div>
+							<motion.p
+								className="text-rose-light font-light text-base leading-relaxed drop-shadow-sm"
+								initial={{ y: 20, opacity: 0 }}
+								whileInView={{ y: 0, opacity: 1 }}
+								viewport={{ once: true, amount: 0.1 }}
+								transition={{ duration: 0.6, ease: "easeOut", delay: 0.9 }}
+							>
 								Découvrez nos dernières créations en avant-première
-							</p>
-						</div>
+							</motion.p>
+						</motion.div>
 
 						<form onSubmit={handleSubmit} className="space-y-4">
-							<div className="relative">
+							<motion.div
+								className="relative"
+								initial={{ x: -50, opacity: 0 }}
+								whileInView={{ x: 0, opacity: 1 }}
+								viewport={{ once: true, amount: 0.1 }}
+								transition={{ duration: 0.6, ease: "easeOut", delay: 1.3 }}
+							>
 								<input
 									type="email"
 									value={email}
@@ -96,20 +137,24 @@ export default function Newsletter() {
 									disabled={isLoading}
 									required
 								/>
-							</div>
+							</motion.div>
 
-							<button
+							<motion.button
 								type="submit"
 								disabled={isLoading}
-								className="group w-full bg-gradient-to-r from-logo to-nude-dark hover:from-nude-dark hover:to-logo text-beige-light py-4 rounded-2xl backdrop-blur-sm border-2 border-logo hover:border-nude-dark transition-all duration-500 font-light tracking-wide shadow-lg hover:shadow-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+								className="group w-full bg-gradient-to-r from-logo to-nude-dark hover:from-nude-dark hover:to-logo text-beige-light py-4 rounded-2xl backdrop-blur-sm border-2 border-logo hover:border-nude-dark font-light tracking-wide shadow-lg hover:shadow-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+								initial={{ x: 50, opacity: 0 }}
+								whileInView={{ x: 0, opacity: 1 }}
+								viewport={{ once: true, amount: 0.1 }}
+								transition={{ duration: 0.6, ease: "easeOut", delay: 1.3 }}
 							>
-								<span className="group-hover:scale-105 transition-transform duration-300 inline-block">
+								<span className="group-hover:scale-105 inline-block">
 									{isLoading ? "Inscription..." : "Rejoindre la communauté ✨"}
 								</span>
-							</button>
+							</motion.button>
 						</form>
 					</div>
-				</div>
+				</motion.div>
 			</div>
 		</section>
 	);

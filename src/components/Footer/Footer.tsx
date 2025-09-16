@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -13,9 +14,21 @@ export default function Footer() {
 		<footer className="bg-logo text-nude-light">
 			{/* Contenu principal du footer */}
 			<div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-12">
-				<div className="grid grid-cols-1 lg:grid-cols-4  gap-8">
+				<motion.div
+					className="grid grid-cols-1 lg:grid-cols-4  gap-8"
+					initial={{ opacity: 0, y: 50 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+				>
 					{/* Logo et informations de l'entreprise */}
-					<div className="lg:col-span-2">
+					<motion.div
+						className="lg:col-span-2"
+						initial={{ opacity: 0, x: -30 }}
+						whileInView={{ opacity: 1, x: 0 }}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+					>
 						<div className="flex items-center gap-3 mb-4">
 							<Image
 								src="/assets/logo-haya.png"
@@ -37,35 +50,63 @@ export default function Footer() {
 							<p>SIRET : 123 456 789 00012</p>
 							<p>RCS : Paris B 123 456 789</p>
 						</div>
-					</div>
+					</motion.div>
 
 					{/* Réseaux sociaux */}
-					<div>
+					<motion.div
+						initial={{ opacity: 0, y: 30 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+					>
 						<h3 className="text-lg lg:text-xl font-balqis font-semibold mb-4">
 							Suivez-nous
 						</h3>
 						<div className="flex gap-4">
-							<a
+							<motion.a
 								href="https://instagram.com/lady.haya_wear"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="p-3 bg-pink-600 rounded-full hover:bg-pink-700 transition-colors duration-300"
+								className="p-3 bg-pink-600 rounded-full hover:bg-pink-700 hover:scale-110 transition-all duration-200 ease-out"
+								initial={{ scale: 0, opacity: 0 }}
+								whileInView={{ scale: 1, opacity: 1 }}
+								viewport={{ once: true, amount: 0.1 }}
+								transition={{
+									duration: 0.5,
+									ease: [0.68, -0.55, 0.265, 1.55],
+									delay: 0.6,
+								}}
+								whileTap={{ scale: 0.95 }}
 							>
 								<FaInstagram className="text-xl" />
-							</a>
-							<a
+							</motion.a>
+							<motion.a
 								href="https://tiktok.com/@lady.haya_wear"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="p-3 bg-black rounded-full hover:bg-gray-800 transition-colors duration-300"
+								className="p-3 bg-black rounded-full hover:bg-gray-800 hover:scale-110 transition-all duration-200 ease-out"
+								initial={{ scale: 0, opacity: 0 }}
+								whileInView={{ scale: 1, opacity: 1 }}
+								viewport={{ once: true, amount: 0.1 }}
+								transition={{
+									duration: 0.5,
+									ease: [0.68, -0.55, 0.265, 1.55],
+									delay: 0.8,
+								}}
+								whileTap={{ scale: 0.95 }}
 							>
 								<FaTiktok className="text-xl" />
-							</a>
+							</motion.a>
 						</div>
-					</div>
+					</motion.div>
 
 					{/* Contact */}
-					<div>
+					<motion.div
+						initial={{ opacity: 0, x: 30 }}
+						whileInView={{ opacity: 1, x: 0 }}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
+					>
 						<h3 className="text-lg lg:text-xl font-balqis font-semibold mb-4">
 							Contact
 						</h3>
@@ -97,8 +138,8 @@ export default function Footer() {
 								</address>
 							</div>
 						</div>
-					</div>
-				</div>
+					</motion.div>
+				</motion.div>
 			</div>
 
 			{/* Séparateur */}
@@ -106,7 +147,13 @@ export default function Footer() {
 
 			{/* Mentions légales */}
 			<div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-6">
-				<div className="flex flex-col md:flex-row justify-between items-center gap-4">
+				<motion.div
+					className="flex flex-col md:flex-row justify-between items-center gap-4"
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{ duration: 0.6, ease: "easeOut", delay: 0.8 }}
+				>
 					<div className="text-sm">
 						© 2024 Lady Haya. Tous droits réservés.
 					</div>
@@ -130,7 +177,7 @@ export default function Footer() {
 							Conditions de vente
 						</Link>
 					</div>
-				</div>
+				</motion.div>
 			</div>
 		</footer>
 	);
