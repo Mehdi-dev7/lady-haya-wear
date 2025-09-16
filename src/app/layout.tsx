@@ -3,6 +3,7 @@ import StudioWrapper from "@/components/StudioWrapper";
 import { AuthProvider } from "@/lib/AuthContext";
 import { CartProvider } from "@/lib/CartContext";
 import { FavoritesProvider } from "@/lib/FavoritesContext";
+import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -53,6 +54,7 @@ export default function RootLayout({
 										zIndex: 99999,
 									}}
 								/>
+								<Analytics />
 							</FavoritesProvider>
 						</CartProvider>
 					</AuthProvider>
