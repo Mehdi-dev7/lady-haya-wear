@@ -13,14 +13,17 @@ export default function AllProducts() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
+				console.log("🔍 Début du chargement des données...");
 				const [productsData, categoriesData] = await Promise.all([
 					getAllProducts(),
 					getAllCategories(),
 				]);
+				console.log("📦 Produits récupérés:", productsData.length);
+				console.log("📂 Catégories récupérées:", categoriesData.length);
 				setProducts(productsData);
 				setCategories(categoriesData);
 			} catch (error) {
-				console.error("Erreur lors du chargement des données:", error);
+				console.error("❌ Erreur lors du chargement des données:", error);
 			} finally {
 				setIsLoading(false);
 			}

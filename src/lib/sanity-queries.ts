@@ -60,7 +60,18 @@ export async function getAllProducts(): Promise<Product[]> {
     } | order(_createdAt desc)
   `;
 
-	return sanityClient.fetch(query);
+	try {
+		console.log("🔍 Exécution de la requête getAllProducts...");
+		const result = await sanityClient.fetch(query);
+		console.log(
+			"✅ Requête getAllProducts réussie, nombre de produits:",
+			result.length
+		);
+		return result;
+	} catch (error) {
+		console.error("❌ Erreur dans getAllProducts:", error);
+		throw error;
+	}
 }
 
 // Requête pour récupérer un produit par slug (cartes)

@@ -352,7 +352,7 @@ export function ProductPageClient({
 										}}
 										transition={{
 											duration: 0.3,
-											delay: 1.2 + i * 0.08,
+											delay: 1.4 + i * 0.08,
 											ease: [0.25, 0.46, 0.45, 0.94],
 										}}
 									>
