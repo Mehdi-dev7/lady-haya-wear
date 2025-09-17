@@ -1,56 +1,143 @@
+"use client";
+
 import ProductGrid from "@/components/ProductGrid/ProductGrid";
 import { getAllCategories, getAllProducts } from "@/lib/sanity-queries";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-export default async function AllProducts() {
-	// Ces appels déclencheront le fichier error.tsx en cas d'erreur
-	const [products, categories] = await Promise.all([
-		getAllProducts(),
-		getAllCategories(),
-	]);
+export default function AllProducts() {
+	const [products, setProducts] = useState<any[]>([]);
+	const [categories, setCategories] = useState<any[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const [productsData, categoriesData] = await Promise.all([
+					getAllProducts(),
+					getAllCategories(),
+				]);
+				setProducts(productsData);
+				setCategories(categoriesData);
+			} catch (error) {
+				console.error("Erreur lors du chargement des données:", error);
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	if (isLoading) {
+		return (
+			<div className="min-h-screen flex items-center justify-center bg-beige-light">
+				<div className="text-center">
+					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-logo mx-auto mb-4"></div>
+					<p className="text-nude-dark">Chargement des produits...</p>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="min-h-screen bg-beige-light">
 			{/* Header de la page */}
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16">
-				<div className="text-center">
-					<h1 className="text-5xl lg:text-6xl font-alex-brush text-logo mt-12 lg:mt-14 mb-4">
+				<motion.div
+					className="text-center"
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.8, ease: "easeOut" }}
+				>
+					<motion.h1
+						className="text-5xl lg:text-6xl font-alex-brush text-logo mt-12 lg:mt-14 mb-4"
+						initial={{ y: 50, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+					>
 						Tous nos produits
-					</h1>
-					<p className="text-lg text-nude-dark mb-6 max-w-2xl mx-auto">
+					</motion.h1>
+					<motion.p
+						className="text-lg text-nude-dark mb-6 max-w-2xl mx-auto"
+						initial={{ y: 30, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+					>
 						Découvrez notre collection complète de vêtements élégants et
 						tendance pour femmes musulmanes. Des pièces uniques qui allient
 						style et confort.
-					</p>
-					<div className="flex flex-col sm:flex-row gap-4 justify-center">
+					</motion.p>
+					<motion.div
+						className="flex flex-col sm:flex-row gap-4 justify-center"
+						initial={{ y: 20, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+					>
 						<div className="text-sm text-nude-dark bg-rose-light-2 px-4 py-2 rounded-full">
 							{products.length} produit{products.length > 1 ? "s" : ""}{" "}
 							disponible{products.length > 1 ? "s" : ""}
 						</div>
-					</div>
-				</div>
+					</motion.div>
+				</motion.div>
 			</section>
 
 			{/* Grille des produits */}
-			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-2 mb-16">
+			<motion.section
+				className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-2 mb-16"
+				initial={{ opacity: 0, y: 40 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+			>
 				<ProductGrid
 					products={products}
 					title=""
 					showFilters={true}
 					categories={categories}
 				/>
-			</section>
+			</motion.section>
 
 			{/* Section CTA */}
-			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-rose-light-2 py-16">
-				<div className="text-center">
-					<h2 className="text-4xl lg:text-5xl font-alex-brush text-logo mb-4">
+			<motion.section
+				className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-rose-light-2 py-16"
+				initial={{ opacity: 0, y: 30 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true, amount: 0.3 }}
+				transition={{ duration: 0.8, ease: "easeOut" }}
+			>
+				<motion.div
+					className="text-center"
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, amount: 0.3 }}
+					transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+				>
+					<motion.h2
+						className="text-4xl lg:text-5xl font-alex-brush text-logo mb-4"
+						initial={{ y: 30, opacity: 0 }}
+						whileInView={{ y: 0, opacity: 1 }}
+						viewport={{ once: true, amount: 0.3 }}
+						transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+					>
 						Vous ne trouvez pas votre bonheur ?
-					</h2>
-					<p className="text-lg text-nude-dark mb-8 max-w-2xl mx-auto">
+					</motion.h2>
+					<motion.p
+						className="text-lg text-nude-dark mb-8 max-w-2xl mx-auto"
+						initial={{ y: 20, opacity: 0 }}
+						whileInView={{ y: 0, opacity: 1 }}
+						viewport={{ once: true, amount: 0.3 }}
+						transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+					>
 						Nos collections sont régulièrement mises à jour avec de nouvelles
 						pièces. N'hésitez pas à nous contacter pour des demandes spéciales.
-					</p>
-					<div className="flex flex-col sm:flex-row gap-4 justify-center">
+					</motion.p>
+					<motion.div
+						className="flex flex-col sm:flex-row gap-4 justify-center"
+						initial={{ y: 20, opacity: 0 }}
+						whileInView={{ y: 0, opacity: 1 }}
+						viewport={{ once: true, amount: 0.3 }}
+						transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+					>
 						<a
 							href="/contact"
 							className="rounded-2xl w-max ring-1 ring-nude-dark text-nude-dark py-3 px-6 text-sm hover:bg-nude-dark hover:text-[#f8ede4] transition-all duration-300"
@@ -63,9 +150,9 @@ export default async function AllProducts() {
 						>
 							Voir par collection
 						</a>
-					</div>
-				</div>
-			</section>
+					</motion.div>
+				</motion.div>
+			</motion.section>
 		</div>
 	);
 }

@@ -104,10 +104,10 @@ export default function Footer() {
 
 					{/* Contact */}
 					<motion.div
-						// initial={{ opacity: 0, x: 30 }}
-						// whileInView={{ opacity: 1, x: 0 }}
-						// viewport={{ once: true, amount: 0.1 }}
-						// transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
+						initial={{ opacity: 0, y: 30 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
 					>
 						<h3 className="text-lg lg:text-xl font-balqis font-semibold mb-4">
 							Contact

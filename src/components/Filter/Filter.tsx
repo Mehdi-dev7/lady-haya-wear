@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { FaChevronDown, FaFilter, FaSearch, FaTimes } from "react-icons/fa";
 
@@ -233,23 +234,48 @@ export default function Filter({
 	return (
 		<div className="mb-8">
 			{/* Barre de recherche principale */}
-			<div className="flex flex-col lg:flex-row gap-4 mb-6">
+			<motion.div
+				className="flex flex-col lg:flex-row gap-4 mb-6"
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.6, ease: "easeOut" }}
+			>
 				<div className="flex-1 relative">
-					<FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+					<motion.div
+						className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+						animate={{
+							scale: searchTerm ? [1, 1.2, 1] : 1,
+							rotate: searchTerm ? [0, 10, -10, 0] : 0,
+						}}
+						transition={{ duration: 0.5 }}
+					>
+						<FaSearch />
+					</motion.div>
 					<input
 						type="text"
 						placeholder="Rechercher un produit..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
-						className="w-2/3 md:w-1/2 lg:w-1/3 pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-colors"
+						className="w-2/3 md:w-1/2 lg:w-1/3 pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-all duration-300"
+					/>
+					{/* Effet de typing */}
+					<motion.div
+						className="absolute bottom-0 left-0 h-0.5 bg-nude-dark"
+						initial={{ width: 0 }}
+						animate={{ width: searchTerm ? "100%" : "0%" }}
+						transition={{ duration: 0.3 }}
 					/>
 				</div>
 
-				<div className="flex gap-2 lg:-ml-12">
-				
+				<motion.div
+					className="flex gap-2 lg:-ml-12"
+					initial={{ opacity: 0, x: 20 }}
+					animate={{ opacity: 1, x: 0 }}
+					transition={{ duration: 0.6, delay: 0.2 }}
+				>
 					<button
 						onClick={() => setShowFilters(!showFilters)}
-						className={` flex items-center gap-2 px-2 py-1 rounded-2xl border-2 cursor-pointer transition-colors ${
+						className={`flex items-center gap-2 px-2 py-1 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${
 							showFilters
 								? "border-nude-dark bg-nude-medium text-nude-light"
 								: "border-nude-medium text-nude-dark hover:border-nude-medium"
@@ -259,94 +285,179 @@ export default function Filter({
 						Filtres
 					</button>
 
-					{hasActiveFilters && (
-						<button
-							onClick={clearAllFilters}
-							className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 border-red-300 text-red-300 hover:bg-red-300 hover:text-white transition-colors cursor-pointer"
-						>
-							<FaTimes />
-							Effacer
-						</button>
-					)}
-				</div>
-			</div>
+					<AnimatePresence>
+						{hasActiveFilters && (
+							<motion.button
+								onClick={clearAllFilters}
+								className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 border-red-300 text-red-300 hover:bg-red-300 hover:text-white transition-all duration-300 cursor-pointer"
+								initial={{ opacity: 0, scale: 0.8, x: 20 }}
+								animate={{ opacity: 1, scale: 1, x: 0 }}
+								exit={{ opacity: 0, scale: 0.8, x: 20 }}
+								transition={{ duration: 0.3 }}
+							>
+								<FaTimes />
+								Effacer
+							</motion.button>
+						)}
+					</AnimatePresence>
+				</motion.div>
+			</motion.div>
 
 			{/* Panneau de filtres */}
-			{showFilters && (
-				<div className="bg-rose-light-2 rounded-2xl p-6 shadow-lg border border-nude-light mb-6">
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-						{/* Tri */}
-						<CustomSelect
-							value={sortBy}
-							onChange={setSortBy}
-							options={sortOptions}
-							placeholder="Trier par"
-							label="Trier par"
-						/>
+			<AnimatePresence>
+				{showFilters && (
+					<motion.div
+						className="bg-rose-light-2 rounded-2xl p-6 shadow-lg border border-nude-light mb-6"
+						initial={{
+							opacity: 0,
+							y: -20,
+							scale: 0.95,
+						}}
+						animate={{
+							opacity: 1,
+							y: 0,
+							scale: 1,
+						}}
+						exit={{
+							opacity: 0,
+							y: -20,
+							scale: 0.95,
+						}}
+						transition={{
+							duration: 0.3,
+							ease: "easeOut",
+						}}
+					>
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+							{/* Tri */}
+							<motion.div
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ delay: 0.3 }}
+							>
+								<CustomSelect
+									value={sortBy}
+									onChange={setSortBy}
+									options={sortOptions}
+									placeholder="Trier par"
+									label="Trier par"
+								/>
+							</motion.div>
 
-						{/* Catégorie */}
-						{categories.length > 0 && (
-							<CustomSelect
-								value={selectedCategory}
-								onChange={setSelectedCategory}
-								options={categoryOptions}
-								placeholder="Sélectionner une collection"
-								label="Collection"
-							/>
-						)}
+							{/* Catégorie */}
+							{categories.length > 0 && (
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ delay: 0.4 }}
+								>
+									<CustomSelect
+										value={selectedCategory}
+										onChange={setSelectedCategory}
+										options={categoryOptions}
+										placeholder="Sélectionner une collection"
+										label="Collection"
+									/>
+								</motion.div>
+							)}
 
-						{/* Couleur */}
-						<CustomSelect
-							value={selectedColor}
-							onChange={setSelectedColor}
-							options={colorOptions}
-							placeholder="Sélectionner une couleur"
-							label="Couleur"
-						/>
+							{/* Couleur */}
+							<motion.div
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ delay: 0.5 }}
+							>
+								<CustomSelect
+									value={selectedColor}
+									onChange={setSelectedColor}
+									options={colorOptions}
+									placeholder="Sélectionner une couleur"
+									label="Couleur"
+								/>
+							</motion.div>
 
-						{/* Taille */}
-						<CustomSelect
-							value={selectedSize}
-							onChange={setSelectedSize}
-							options={sizeOptions}
-							placeholder="Sélectionner une taille"
-							label="Taille"
-						/>
-					</div>
-				</div>
-			)}
+							{/* Taille */}
+							<motion.div
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ delay: 0.6 }}
+							>
+								<CustomSelect
+									value={selectedSize}
+									onChange={setSelectedSize}
+									options={sizeOptions}
+									placeholder="Sélectionner une taille"
+									label="Taille"
+								/>
+							</motion.div>
+						</div>
+					</motion.div>
+				)}
+			</AnimatePresence>
 
 			{/* Indicateur de filtres actifs */}
-			{hasActiveFilters && (
-				<div className="flex flex-wrap gap-2 mb-4">
-					{searchTerm && (
-						<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
-							Recherche : "{searchTerm}"
-						</span>
-					)}
-					{selectedCategory && (
-						<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
-							Collection : {selectedCategory}
-						</span>
-					)}
-					{selectedColor && (
-						<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
-							Couleur : {selectedColor}
-						</span>
-					)}
-					{selectedSize && (
-						<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
-							Taille : {selectedSize}
-						</span>
-					)}
-
-					{sortBy && (
-						<span className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm">
-							Tri : {sortBy}
-						</span>
-					)}
-				</div>
-			)}
+			<AnimatePresence>
+				{hasActiveFilters && (
+					<motion.div
+						className="flex flex-wrap gap-2 mb-4"
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: -10 }}
+						transition={{ duration: 0.3 }}
+					>
+						{searchTerm && (
+							<motion.span
+								className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm"
+								initial={{ opacity: 0, scale: 0.8 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ duration: 0.3 }}
+							>
+								Recherche : "{searchTerm}"
+							</motion.span>
+						)}
+						{selectedCategory && (
+							<motion.span
+								className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm"
+								initial={{ opacity: 0, scale: 0.8 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ duration: 0.3, delay: 0.1 }}
+							>
+								Collection : {selectedCategory}
+							</motion.span>
+						)}
+						{selectedColor && (
+							<motion.span
+								className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm"
+								initial={{ opacity: 0, scale: 0.8 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ duration: 0.3, delay: 0.2 }}
+							>
+								Couleur : {selectedColor}
+							</motion.span>
+						)}
+						{selectedSize && (
+							<motion.span
+								className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm"
+								initial={{ opacity: 0, scale: 0.8 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ duration: 0.3, delay: 0.3 }}
+							>
+								Taille : {selectedSize}
+							</motion.span>
+						)}
+						{sortBy && (
+							<motion.span
+								className="px-3 py-1 bg-nude-light text-nude-dark rounded-full text-sm"
+								initial={{ opacity: 0, scale: 0.8 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ duration: 0.3, delay: 0.4 }}
+							>
+								Tri : {sortBy}
+							</motion.span>
+						)}
+					</motion.div>
+				)}
+			</AnimatePresence>
 		</div>
 	);
 }
