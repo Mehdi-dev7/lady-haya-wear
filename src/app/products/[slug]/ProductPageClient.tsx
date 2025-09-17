@@ -4,6 +4,7 @@ import ProductPrice from "@/components/ProductPrice/ProductPrice";
 import { useCart } from "@/lib/CartContext";
 import { useFavorites } from "@/lib/FavoritesContext";
 import { urlFor } from "@/lib/sanity";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -212,7 +213,12 @@ export function ProductPageClient({
 	return (
 		<div className="min-h-screen bg-beige-light">
 			{/* Navigation breadcrumb */}
-			<nav className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-4 bg-white/50">
+			<motion.nav
+				className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-4 bg-white/50"
+				initial={{ opacity: 0, y: -20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.6, ease: "easeOut" }}
+			>
 				<div className="flex items-center gap-2 text-sm text-nude-dark">
 					<Link href="/" className="hover:text-red-400 transition-colors">
 						Accueil
@@ -227,14 +233,24 @@ export function ProductPageClient({
 					<span>/</span>
 					<span className="text-red-400">{product.name}</span>
 				</div>
-			</nav>
+			</motion.nav>
 
 			{/* Section principale du produit */}
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16">
 				{/* Titre et badges - version mobile (au-dessus de l'image) */}
-				<div className="block md:hidden mb-8">
+				<motion.div
+					className="block md:hidden mb-8"
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+				>
 					{/* Badges */}
-					<div className="flex gap-2 mb-4 justify-center">
+					<motion.div
+						className="flex gap-2 mb-4 justify-center"
+						initial={{ opacity: 0, scale: 0.8 }}
+						animate={{ opacity: 1, scale: 1 }}
+						transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+					>
 						{product.badges?.isNew && (
 							<span className="bg-red-400 text-white px-3 py-1 rounded-full text-xs font-medium">
 								Nouveau
@@ -245,18 +261,59 @@ export function ProductPageClient({
 								Promo {product.badges?.promoPercentage}%
 							</span>
 						)}
-					</div>
+					</motion.div>
 
-					<h1 className="text-4xl md:text-5xl font-alex-brush text-logo mb-2 text-center">
+					<motion.h1
+						className="text-4xl md:text-5xl font-alex-brush text-logo mb-2 text-center"
+						initial={{ y: 50, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+					>
 						{product.name}
-					</h1>
-				</div>
+					</motion.h1>
+				</motion.div>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-12">
 					{/* Galerie d'images */}
-					<div className="space-y-4 w-full max-w-[420px] md:w-[350px] lg:w-[450px] mx-auto lg:mx-0">
+					<motion.div
+						className="space-y-4 w-full max-w-[420px] md:w-[350px] lg:w-[450px] mx-auto lg:mx-0"
+						initial={{
+							opacity: 0,
+							x: -50,
+							scale: 0.9,
+							filter: "blur(10px)",
+						}}
+						animate={{
+							opacity: 1,
+							x: 0,
+							scale: 1,
+							filter: "blur(0px)",
+						}}
+						transition={{
+							duration: 0.8,
+							delay: 0.8,
+							ease: [0.68, -0.55, 0.265, 1.55],
+						}}
+					>
 						{/* Image principale */}
-						<div className="h-[400px] md:h-[450px] lg:h-[500px] relative rounded-2xl overflow-hidden shadow-lg">
+						<motion.div
+							className="h-[400px] md:h-[450px] lg:h-[500px] relative rounded-2xl overflow-hidden shadow-lg"
+							initial={{
+								opacity: 0,
+								scale: 0.8,
+								rotateY: -15,
+							}}
+							animate={{
+								opacity: 1,
+								scale: 1,
+								rotateY: 0,
+							}}
+							transition={{
+								duration: 0.8,
+								delay: 1.0,
+								ease: [0.68, -0.55, 0.265, 1.55],
+							}}
+						>
 							{currentImage ? (
 								<Image
 									src={urlFor(currentImage)?.url() || "/assets/placeholder.jpg"}
@@ -269,13 +326,13 @@ export function ProductPageClient({
 									<span className="text-6xl">🛍️</span>
 								</div>
 							)}
-						</div>
+						</motion.div>
 
 						{/* Miniatures des images de la couleur sélectionnée */}
 						{colorImages && colorImages.length > 1 && (
 							<div className="flex justify-center lg:justify-start gap-2 lg:gap-4 mt-8">
 								{colorImages.map((image: any, i: number) => (
-									<div
+									<motion.div
 										key={i}
 										className={`w-20 h-20 lg:w-1/4 lg:h-32 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
 											selectedImageIndex === i
@@ -283,6 +340,21 @@ export function ProductPageClient({
 												: "hover:shadow-md"
 										}`}
 										onClick={() => setSelectedImageIndex(i)}
+										initial={{
+											opacity: 0,
+											scale: 0.8,
+											rotate: -8,
+										}}
+										animate={{
+											opacity: 1,
+											scale: 1,
+											rotate: 0,
+										}}
+										transition={{
+											duration: 0.3,
+											delay: 1.2 + i * 0.08,
+											ease: [0.25, 0.46, 0.45, 0.94],
+										}}
 									>
 										<Image
 											src={urlFor(image)?.url() || "/assets/placeholder.jpg"}
@@ -293,18 +365,54 @@ export function ProductPageClient({
 											sizes="30vw"
 											className="object-cover rounded-2xl transition-transform duration-300 hover:scale-105"
 										/>
-									</div>
+									</motion.div>
 								))}
 							</div>
 						)}
-					</div>
+					</motion.div>
 
 					{/* Informations du produit */}
-					<div className="space-y-6">
+					<motion.div
+						className="space-y-6"
+						initial={{
+							opacity: 0,
+							x: 50,
+							scale: 0.9,
+							filter: "blur(10px)",
+						}}
+						animate={{
+							opacity: 1,
+							x: 0,
+							scale: 1,
+							filter: "blur(0px)",
+						}}
+						whileInView={{
+							opacity: 1,
+							x: 0,
+							scale: 1,
+							filter: "blur(0px)",
+						}}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{
+							duration: 0.8,
+							delay: 1.0,
+							ease: [0.68, -0.55, 0.265, 1.55],
+						}}
+					>
 						{/* En-tête - version desktop */}
-						<div className="hidden md:block">
+						<motion.div
+							className="hidden md:block"
+							initial={{ opacity: 0, y: 30 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
+						>
 							{/* Badges */}
-							<div className="flex gap-2 mb-4">
+							<motion.div
+								className="flex gap-2 mb-4"
+								initial={{ opacity: 0, scale: 0.8 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ duration: 0.5, delay: 1.4, ease: "easeOut" }}
+							>
 								{product.badges?.isNew && (
 									<span className="bg-red-400 text-white px-3 py-1 rounded-full text-xs font-medium">
 										Nouveau
@@ -315,34 +423,61 @@ export function ProductPageClient({
 										Promo {product.badges?.promoPercentage}%
 									</span>
 								)}
-							</div>
+							</motion.div>
 
-							<h1 className="text-4xl lg:text-5xl font-alex-brush text-logo mb-2">
+							<motion.h1
+								className="text-4xl lg:text-5xl font-alex-brush text-logo mb-2"
+								initial={{ y: 50, opacity: 0 }}
+								animate={{ y: 0, opacity: 1 }}
+								transition={{ duration: 0.8, delay: 1.6, ease: "easeOut" }}
+							>
 								{product.name}
-							</h1>
-						</div>
+							</motion.h1>
+						</motion.div>
 
 						{/* Prix */}
-						<ProductPrice
-							price={product.price}
-							originalPrice={product.originalPrice}
-							badges={product.badges}
-							size="large"
-							className="text-2xl md:text-3xl"
-						/>
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6, delay: 1.8, ease: "easeOut" }}
+						>
+							<ProductPrice
+								price={product.price}
+								originalPrice={product.originalPrice}
+								badges={product.badges}
+								size="large"
+								className="text-2xl md:text-3xl"
+							/>
+						</motion.div>
 
 						{/* Description */}
-						<div className="prose prose-lg max-w-none">
+						<motion.div
+							className="prose prose-lg max-w-none"
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6, delay: 2.0, ease: "easeOut" }}
+						>
 							<p className="text-nude-dark leading-relaxed">
 								{product.description}
 							</p>
-						</div>
+						</motion.div>
 
 						{/* Sélecteurs */}
-						<div className="space-y-6">
+						<motion.div
+							className="space-y-6"
+							initial={{ opacity: 0, y: 30 }}
+							animate={{ opacity: 1, y: 0 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, amount: 0.1 }}
+							transition={{ duration: 0.6, delay: 2.2, ease: "easeOut" }}
+						>
 							{/* Couleurs */}
 							{product.colors && product.colors.length > 0 && (
-								<div>
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.5, delay: 2.4, ease: "easeOut" }}
+								>
 									<h3 className="text-xl font-medium text-nude-dark mb-3">
 										Couleur
 									</h3>
@@ -350,7 +485,7 @@ export function ProductPageClient({
 										{product.colors.map((color: any, index: number) => {
 											const isAvailable = isColorAvailable(color);
 											return (
-												<button
+												<motion.button
 													key={index}
 													className={`relative group ${!isAvailable ? "opacity-50" : ""}`}
 													title={`${color.name}${!isAvailable ? " - Non disponible" : ""}`}
@@ -361,6 +496,19 @@ export function ProductPageClient({
 															setSelectedImageIndex(0);
 															setSelectedSize(null);
 														}
+													}}
+													initial={{
+														opacity: 0,
+														scale: 0.5,
+													}}
+													animate={{
+														opacity: 1,
+														scale: 1,
+													}}
+													transition={{
+														duration: 0.4,
+														delay: 2.4 + index * 0.1,
+														ease: "easeOut",
 													}}
 												>
 													<div
@@ -379,18 +527,22 @@ export function ProductPageClient({
 													<span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-nude-dark opacity-0 group-hover:opacity-100 transition-opacity">
 														{color.name}
 													</span>
-												</button>
+												</motion.button>
 											);
 										})}
 									</div>
-								</div>
+								</motion.div>
 							)}
 
 							{/* Tailles pour la couleur sélectionnée */}
 							{selectedColor &&
 								selectedColor.sizes &&
 								selectedColor.sizes.length > 0 && (
-									<div>
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.5, delay: 2.6, ease: "easeOut" }}
+									>
 										<h3 className="text-xl font-medium text-nude-dark mb-3">
 											Taille
 										</h3>
@@ -442,11 +594,16 @@ export function ProductPageClient({
 												❌ Aucune taille disponible pour cette couleur
 											</p>
 										)}
-									</div>
+									</motion.div>
 								)}
 
 							{/* Guide des tailles */}
-							<div className="border-t border-gray-200">
+							<motion.div
+								className="border-t border-gray-200"
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.5, delay: 2.8, ease: "easeOut" }}
+							>
 								<button
 									onClick={() => setShowSizeGuide(!showSizeGuide)}
 									className="flex items-center gap-2 text-nude-dark hover:text-rose-dark-2 transition-colors cursor-pointer"
@@ -512,10 +669,15 @@ export function ProductPageClient({
 										</div>
 									</div>
 								)}
-							</div>
+							</motion.div>
 
 							{/* Quantité */}
-							<div className="mb-10">
+							<motion.div
+								className="mb-10"
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.5, delay: 3.0, ease: "easeOut" }}
+							>
 								<h3 className="text-xl font-medium text-nude-dark mb-3">
 									Quantité
 								</h3>
@@ -540,10 +702,17 @@ export function ProductPageClient({
 										+
 									</button>
 								</div>
-							</div>
+							</motion.div>
 
 							{/* Boutons d'action */}
-							<div className="flex flex-col gap-4">
+							<motion.div
+								className="flex flex-col gap-4"
+								initial={{ opacity: 0, y: 30 }}
+								animate={{ opacity: 1, y: 0 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								viewport={{ once: true, amount: 0.1 }}
+								transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+							>
 								{/* Boutons principaux - Ajouter au panier et Favori côte à côte */}
 								<div className="flex gap-3 items-center justify-start sm:justify-center">
 									<button
@@ -591,14 +760,26 @@ export function ProductPageClient({
 										Voir le panier
 									</button>
 								)}
-							</div>
-						</div>
+							</motion.div>
+						</motion.div>
 
 						{/* Informations supplémentaires */}
-						<div className="border-t border-gray-200 pt-6 space-y-4">
+						<motion.div
+							className="border-t border-gray-200 pt-6 space-y-4"
+							initial={{ opacity: 0, y: 30 }}
+							animate={{ opacity: 1, y: 0 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, amount: 0.1 }}
+							transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+						>
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 								{/* Livraison gratuite */}
-								<div className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100">
+								<motion.div
+									className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100"
+									initial={{ opacity: 0, y: 20, scale: 0.9 }}
+									animate={{ opacity: 1, y: 0, scale: 1 }}
+									transition={{ duration: 0.4, delay: 3.8, ease: "easeOut" }}
+								>
 									<TbTruckDelivery className="w-6 h-6 text-green-500 flex-shrink-0" />
 									<div>
 										<div className="font-semibold text-sm text-nude-dark">
@@ -606,75 +787,105 @@ export function ProductPageClient({
 										</div>
 										<div className="text-xs text-gray-600">Dès 60€ d'achat</div>
 									</div>
-								</div>
+								</motion.div>
 
 								{/* Paiement sécurisé */}
-								<Link
-									href="/services/paiement-securise"
-									className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+								<motion.div
+									initial={{ opacity: 0, y: 20, scale: 0.9 }}
+									animate={{ opacity: 1, y: 0, scale: 1 }}
+									transition={{ duration: 0.4, delay: 4.0, ease: "easeOut" }}
 								>
-									<TbCreditCard className="w-6 h-6 text-blue-500 flex-shrink-0" />
-									<div>
-										<div className="font-semibold text-sm text-nude-dark">
-											Paiement sécurisé
+									<Link
+										href="/services/paiement-securise"
+										className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+									>
+										<TbCreditCard className="w-6 h-6 text-blue-500 flex-shrink-0" />
+										<div>
+											<div className="font-semibold text-sm text-nude-dark">
+												Paiement sécurisé
+											</div>
+											<div className="text-xs text-gray-600">
+												CB, PayPal, Apple Pay
+											</div>
 										</div>
-										<div className="text-xs text-gray-600">
-											CB, PayPal, Apple Pay
-										</div>
-									</div>
-								</Link>
+									</Link>
+								</motion.div>
 
 								{/* Satisfait ou remboursé */}
-								<Link
-									href="/services/retours"
-									className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+								<motion.div
+									initial={{ opacity: 0, y: 20, scale: 0.9 }}
+									animate={{ opacity: 1, y: 0, scale: 1 }}
+									transition={{ duration: 0.4, delay: 4.2, ease: "easeOut" }}
 								>
-									<TbPackage className="w-6 h-6 text-orange-500 flex-shrink-0" />
-									<div>
-										<div className="font-semibold text-sm text-nude-dark">
-											Echange possible dans les 30 jours
+									<Link
+										href="/services/retours"
+										className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+									>
+										<TbPackage className="w-6 h-6 text-orange-500 flex-shrink-0" />
+										<div>
+											<div className="font-semibold text-sm text-nude-dark">
+												Echange possible dans les 30 jours
+											</div>
 										</div>
-									</div>
-								</Link>
+									</Link>
+								</motion.div>
 
 								{/* Service client */}
-								<Link
-									href="/services/service-client"
-									className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+								<motion.div
+									initial={{ opacity: 0, y: 20, scale: 0.9 }}
+									animate={{ opacity: 1, y: 0, scale: 1 }}
+									transition={{ duration: 0.4, delay: 4.4, ease: "easeOut" }}
 								>
-									<TbHeadset className="w-6 h-6 text-purple-500 flex-shrink-0" />
-									<div>
-										<div className="font-semibold text-sm text-nude-dark">
-											Service client
+									<Link
+										href="/services/service-client"
+										className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+									>
+										<TbHeadset className="w-6 h-6 text-purple-500 flex-shrink-0" />
+										<div>
+											<div className="font-semibold text-sm text-nude-dark">
+												Service client
+											</div>
+											<div className="text-xs text-gray-600">Support 7j/7</div>
 										</div>
-										<div className="text-xs text-gray-600">Support 7j/7</div>
-									</div>
-								</Link>
+									</Link>
+								</motion.div>
 
 								{/* Envoi rapide */}
-								<Link
-									href="/services/envoi-rapide"
-									className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+								<motion.div
+									initial={{ opacity: 0, y: 20, scale: 0.9 }}
+									animate={{ opacity: 1, y: 0, scale: 1 }}
+									transition={{ duration: 0.4, delay: 4.6, ease: "easeOut" }}
 								>
-									<TbPackageExport className="w-6 h-6 text-red-500 flex-shrink-0" />
-									<div>
-										<div className="font-semibold text-sm text-nude-dark">
-											Envoi rapide
+									<Link
+										href="/services/envoi-rapide"
+										className="flex items-center gap-3 p-3 bg-nude-light rounded-lg shadow-sm border border-gray-100 hover:bg-nude-dark/10 transition-colors cursor-pointer"
+									>
+										<TbPackageExport className="w-6 h-6 text-red-500 flex-shrink-0" />
+										<div>
+											<div className="font-semibold text-sm text-nude-dark">
+												Envoi rapide
+											</div>
+											<div className="text-xs text-gray-600">
+												Livraison en 24-48h
+											</div>
 										</div>
-										<div className="text-xs text-gray-600">
-											Livraison en 24-48h
-										</div>
-									</div>
-								</Link>
+									</Link>
+								</motion.div>
 							</div>
-						</div>
-					</div>
+						</motion.div>
+					</motion.div>
 				</div>
 			</section>
 
 			{/* Navigation entre produits */}
 			{(prevProduct || nextProduct) && (
-				<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-8 bg-white/50">
+				<motion.section
+					className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-8 bg-white/50"
+					initial={{ opacity: 0, y: 30 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{ duration: 0.6, ease: "easeOut" }}
+				>
 					<div className="flex justify-between items-center">
 						{prevProduct && (
 							<Link
@@ -758,56 +969,97 @@ export function ProductPageClient({
 							</Link>
 						)}
 					</div>
-				</section>
+				</motion.section>
 			)}
 
 			{/* Produits similaires */}
 			{similarProducts.length > 0 && (
-				<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16 bg-rose-light-2">
-					<div className="text-center mb-12">
+				<motion.section
+					className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16 bg-rose-light-2"
+					initial={{ opacity: 0, y: 50 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{ duration: 0.8, ease: "easeOut" }}
+				>
+					<motion.div
+						className="text-center mb-12"
+						initial={{ opacity: 0, y: 30 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+					>
 						<h2 className="text-4xl lg:text-5xl font-alex-brush text-logo mb-4">
 							Produits similaires
 						</h2>
 						<p className="text-lg text-nude-dark">
 							Découvrez d'autres produits de cette collection
 						</p>
-					</div>
+					</motion.div>
 
 					{/* Slider mobile - visible uniquement sur mobile */}
-					<div className="md:hidden relative">
+					<motion.div
+						className="md:hidden relative"
+						initial={{ opacity: 0, y: 30 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+					>
 						{/* Container du slider */}
 						<div
 							ref={setSimilarProductsScrollRef}
 							className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory justify-center"
 						>
-							{similarProducts.slice(0, 7).map((similarProduct) => (
-								<Link
+							{similarProducts.slice(0, 7).map((similarProduct, index) => (
+								<motion.div
 									key={similarProduct._id}
-									href={`/products/${similarProduct.slug?.current || similarProduct._id}`}
-									className="group flex-shrink-0 w-64 snap-start"
+									initial={{
+										opacity: 0,
+										y: 50,
+										scale: 0.8,
+										filter: "blur(10px)",
+									}}
+									whileInView={{
+										opacity: 1,
+										y: 0,
+										scale: 1,
+										filter: "blur(0px)",
+									}}
+									viewport={{ once: true, amount: 0.1 }}
+									transition={{
+										duration: 0.6,
+										delay: 0.6 + index * 0.1,
+										ease: [0.68, -0.55, 0.265, 1.55],
+									}}
+									className="flex-shrink-0 w-64 snap-start"
 								>
-									<div className="relative h-80 rounded-2xl overflow-hidden shadow-lg">
-										<Image
-											src={
-												urlFor(similarProduct.colors?.[0]?.mainImage)?.url() ||
-												"/assets/placeholder.jpg"
-											}
-											alt={similarProduct.name}
-											fill
-											sizes="256px"
-											className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
-										/>
-										{/* Overlay avec dégradé pour le nom et prix */}
-										<div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white/90 via-white/60 to-transparent p-4 pb-2 flex flex-col justify-end">
-											<h3 className="font-medium text-nude-dark text-sm mb-1 line-clamp-1 drop-shadow-sm">
-												{similarProduct.name}
-											</h3>
-											<p className="text-lg font-semibold text-logo drop-shadow-sm">
-												{similarProduct.price.toFixed(2)} €
-											</p>
+									<Link
+										href={`/products/${similarProduct.slug?.current || similarProduct._id}`}
+										className="group block"
+									>
+										<div className="relative h-80 rounded-2xl overflow-hidden shadow-lg">
+											<Image
+												src={
+													urlFor(
+														similarProduct.colors?.[0]?.mainImage
+													)?.url() || "/assets/placeholder.jpg"
+												}
+												alt={similarProduct.name}
+												fill
+												sizes="256px"
+												className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
+											/>
+											{/* Overlay avec dégradé pour le nom et prix */}
+											<div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white/90 via-white/60 to-transparent p-4 pb-2 flex flex-col justify-end">
+												<h3 className="font-medium text-nude-dark text-sm mb-1 line-clamp-1 drop-shadow-sm">
+													{similarProduct.name}
+												</h3>
+												<p className="text-lg font-semibold text-logo drop-shadow-sm">
+													{similarProduct.price.toFixed(2)} €
+												</p>
+											</div>
 										</div>
-									</div>
-								</Link>
+									</Link>
+								</motion.div>
 							))}
 						</div>
 
@@ -852,38 +1104,65 @@ export function ProductPageClient({
 								</svg>
 							</button>
 						</div>
-					</div>
+					</motion.div>
 
 					{/* Grid desktop - visible uniquement sur desktop */}
-					<div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-[450px] lg:max-w-[1000px] mx-auto lg:mx-0">
-						{similarProducts.slice(0, 7).map((similarProduct) => (
-							<Link
+					<motion.div
+						className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-[450px] lg:max-w-[1000px] mx-auto lg:mx-0"
+						initial={{ opacity: 0, y: 30 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, amount: 0.1 }}
+						transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+					>
+						{similarProducts.slice(0, 7).map((similarProduct, index) => (
+							<motion.div
 								key={similarProduct._id}
-								href={`/products/${similarProduct.slug?.current || similarProduct._id}`}
-								className="group"
+								initial={{
+									opacity: 0,
+									y: 50,
+									scale: 0.8,
+									filter: "blur(10px)",
+								}}
+								whileInView={{
+									opacity: 1,
+									y: 0,
+									scale: 1,
+									filter: "blur(0px)",
+								}}
+								viewport={{ once: true, amount: 0.1 }}
+								transition={{
+									duration: 0.6,
+									delay: 0.6 + index * 0.1,
+									ease: [0.68, -0.55, 0.265, 1.55],
+								}}
 							>
-								<div className="relative h-80 rounded-2xl overflow-hidden shadow-lg mb-4">
-									<Image
-										src={
-											urlFor(similarProduct.colors?.[0]?.mainImage)?.url() ||
-											"/assets/placeholder.jpg"
-										}
-										alt={similarProduct.name}
-										fill
-										sizes="25vw"
-										className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
-									/>
-								</div>
-								<h3 className="font-medium text-nude-dark text-lg mb-2">
-									{similarProduct.name}
-								</h3>
-								<p className="text-2xl font-semibold text-logo">
-									{similarProduct.price.toFixed(2)} €
-								</p>
-							</Link>
+								<Link
+									href={`/products/${similarProduct.slug?.current || similarProduct._id}`}
+									className="group block"
+								>
+									<div className="relative h-80 rounded-2xl overflow-hidden shadow-lg mb-4">
+										<Image
+											src={
+												urlFor(similarProduct.colors?.[0]?.mainImage)?.url() ||
+												"/assets/placeholder.jpg"
+											}
+											alt={similarProduct.name}
+											fill
+											sizes="25vw"
+											className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
+										/>
+									</div>
+									<h3 className="font-medium text-nude-dark text-lg mb-2">
+										{similarProduct.name}
+									</h3>
+									<p className="text-2xl font-semibold text-logo">
+										{similarProduct.price.toFixed(2)} €
+									</p>
+								</Link>
+							</motion.div>
 						))}
-					</div>
-				</section>
+					</motion.div>
+				</motion.section>
 			)}
 		</div>
 	);
