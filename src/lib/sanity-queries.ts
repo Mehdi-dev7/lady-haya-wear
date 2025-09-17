@@ -420,7 +420,18 @@ export async function getAllCategories(): Promise<Category[]> {
     } | order(name asc)
   `;
 
-	return sanityClient.fetch(query);
+	try {
+		console.log("🔍 Exécution de la requête getAllCategories...");
+		const result = await sanityClient.fetch(query);
+		console.log(
+			"✅ Requête getAllCategories réussie, nombre de catégories:",
+			result.length
+		);
+		return result;
+	} catch (error) {
+		console.error("❌ Erreur dans getAllCategories:", error);
+		throw error;
+	}
 }
 
 // Requête pour récupérer une catégorie par slug
