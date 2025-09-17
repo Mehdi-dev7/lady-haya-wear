@@ -130,7 +130,7 @@ export default function ProductGrid({
 									rotateX: -15,
 									rotateY: 10,
 								}}
-								animate={{
+								whileInView={{
 									opacity: 1,
 									y: 0,
 									scale: 1,
@@ -138,6 +138,7 @@ export default function ProductGrid({
 									rotateX: 0,
 									rotateY: 0,
 								}}
+								viewport={{ once: true, amount: 0.1 }}
 								transition={{
 									duration: 0.8,
 									delay: index * 0.3,
