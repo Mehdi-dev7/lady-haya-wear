@@ -1,9 +1,9 @@
+import ProductGrid from "@/components/ProductGrid/ProductGrid";
+import SafeImage from "@/components/ui/SafeImage";
 import { urlFor } from "@/lib/sanity";
 import { getCategoryBySlug, getProductsByCategory } from "@/lib/sanity-queries";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ProductGrid from "@/components/ProductGrid/ProductGrid";
 
 type Props = {
 	params: Promise<{ slug: string }>;
@@ -29,8 +29,8 @@ export default async function CollectionPage({ params, searchParams }: Props) {
 					{/* Image de la collection */}
 					<div className="relative w-full md:w-1/3 h-80 mt-8 lg:mt-14 rounded-2xl overflow-hidden shadow-lg">
 						{category.image ? (
-							<Image
-								src={urlFor(category.image)?.url() || "/assets/placeholder.jpg"}
+							<SafeImage
+								src={urlFor(category.image)?.url()}
 								alt={category.image.alt || category.name}
 								fill
 								sizes="33vw"
@@ -76,8 +76,8 @@ export default async function CollectionPage({ params, searchParams }: Props) {
 
 			{/* Produits de la collection */}
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-beige-light py-16">
-				<ProductGrid 
-					products={products} 
+				<ProductGrid
+					products={products}
 					title={`${products.length} produit${products.length > 1 ? "s" : ""} dans cette collection`}
 					showFilters={true}
 				/>

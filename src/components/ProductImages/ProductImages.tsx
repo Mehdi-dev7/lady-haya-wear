@@ -1,8 +1,8 @@
 "use client";
 
 import { SanityImage, urlFor } from "@/lib/sanity";
-import Image from "next/image";
 import { useState } from "react";
+import SafeImage from "../ui/SafeImage";
 
 interface ProductImagesProps {
 	images?: SanityImage[];
@@ -35,8 +35,8 @@ export default function ProductImages({
 		<div className="">
 			{/* Image principale */}
 			<div className="h-[500px] relative rounded-2xl overflow-hidden shadow-lg">
-				<Image
-					src={urlFor(images[index])?.url() || "/assets/placeholder.jpg"}
+				<SafeImage
+					src={urlFor(images[index])?.url()}
 					alt={
 						images[index]?.alt ||
 						`${productName} - Image ${index + 1}` ||
@@ -60,8 +60,8 @@ export default function ProductImages({
 						}`}
 						onClick={() => setIndex(i)}
 					>
-						<Image
-							src={urlFor(img)?.url() || "/assets/placeholder.jpg"}
+						<SafeImage
+							src={urlFor(img)?.url()}
 							alt={
 								img?.alt ||
 								`${productName} - Miniature ${i + 1}` ||

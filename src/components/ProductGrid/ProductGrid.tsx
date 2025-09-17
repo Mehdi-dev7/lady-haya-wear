@@ -5,13 +5,13 @@ import ProductPrice from "@/components/ProductPrice/ProductPrice";
 import { useFavorites } from "@/lib/FavoritesContext";
 import { urlFor } from "@/lib/sanity";
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FiHeart } from "react-icons/fi";
 import { toast } from "react-toastify";
 import Filter from "../Filter/Filter";
+import SafeImage from "../ui/SafeImage";
 
 interface ProductGridProps {
 	products: any[];
@@ -172,11 +172,8 @@ export default function ProductGrid({
 										}}
 									>
 										{/* Image principale */}
-										<Image
-											src={
-												urlFor(product.mainImage)?.url() ||
-												"/assets/placeholder.jpg"
-											}
+										<SafeImage
+											src={urlFor(product.mainImage)?.url()}
 											alt={product.mainImage?.alt || product.name}
 											fill
 											sizes="25vw"
@@ -185,11 +182,8 @@ export default function ProductGrid({
 
 										{/* Image de hover */}
 										{product.hoverImage && (
-											<Image
-												src={
-													urlFor(product.hoverImage)?.url() ||
-													"/assets/placeholder.jpg"
-												}
+											<SafeImage
+												src={urlFor(product.hoverImage)?.url()}
 												alt={product.hoverImage?.alt || product.name}
 												fill
 												sizes="25vw"

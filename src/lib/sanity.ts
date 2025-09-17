@@ -17,7 +17,7 @@ const builder = imageUrlBuilder(sanityClient);
 
 export function urlFor(source: SanityImage | null | undefined) {
 	if (!source) return null;
-	return builder.image(source);
+	return builder.image(source).quality(90).format("webp");
 }
 
 // Types utilitaires pour Sanity

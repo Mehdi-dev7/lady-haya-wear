@@ -1,9 +1,9 @@
 "use client";
 import { urlFor } from "@/lib/sanity";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import SafeImage from "../ui/SafeImage";
 
 interface CategoryListProps {
 	categories: any[];
@@ -252,12 +252,9 @@ export default function CategoryList({ categories }: CategoryListProps) {
 									className="block w-full h-full group"
 								>
 									<div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-3xl transform-gpu">
-										<Image
+										<SafeImage
 											src={
-												category.image
-													? urlFor(category.image)?.url() ||
-														"/assets/placeholder.jpg"
-													: "/assets/placeholder.jpg"
+												category.image ? urlFor(category.image)?.url() : null
 											}
 											alt={category.image?.alt || category.name}
 											fill

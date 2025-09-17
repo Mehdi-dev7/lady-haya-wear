@@ -1,11 +1,11 @@
 "use client";
 
 import ProductPrice from "@/components/ProductPrice/ProductPrice";
+import SafeImage from "@/components/ui/SafeImage";
 import { useCart } from "@/lib/CartContext";
 import { useFavorites } from "@/lib/FavoritesContext";
 import { urlFor } from "@/lib/sanity";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -315,8 +315,8 @@ export function ProductPageClient({
 							}}
 						>
 							{currentImage ? (
-								<Image
-									src={urlFor(currentImage)?.url() || "/assets/placeholder.jpg"}
+								<SafeImage
+									src={urlFor(currentImage)?.url()}
 									alt={currentImage?.alt || product.name}
 									fill
 									className="object-cover rounded-2xl transition-all duration-300"
@@ -356,8 +356,8 @@ export function ProductPageClient({
 											ease: [0.25, 0.46, 0.45, 0.94],
 										}}
 									>
-										<Image
-											src={urlFor(image)?.url() || "/assets/placeholder.jpg"}
+										<SafeImage
+											src={urlFor(image)?.url()}
 											alt={
 												image?.alt || `${selectedColor?.name} - Image ${i + 1}`
 											}
@@ -893,11 +893,8 @@ export function ProductPageClient({
 								className="flex flex-col items-center gap-2 group hover:bg-rose-light-2 p-3 rounded-xl transition-all duration-300"
 							>
 								<div className="w-16 h-16 relative rounded-2xl overflow-hidden">
-									<Image
-										src={
-											urlFor(prevProduct.colors?.[0]?.mainImage)?.url() ||
-											"/assets/placeholder.jpg"
-										}
+									<SafeImage
+										src={urlFor(prevProduct.colors?.[0]?.mainImage)?.url()}
 										alt={prevProduct.name}
 										fill
 										sizes="64px"
@@ -934,11 +931,8 @@ export function ProductPageClient({
 								className="flex flex-col items-center gap-2 group hover:bg-rose-light-2 p-3 rounded-xl transition-all duration-300"
 							>
 								<div className="w-16 h-16 relative rounded-2xl overflow-hidden">
-									<Image
-										src={
-											urlFor(nextProduct.colors?.[0]?.mainImage)?.url() ||
-											"/assets/placeholder.jpg"
-										}
+									<SafeImage
+										src={urlFor(nextProduct.colors?.[0]?.mainImage)?.url()}
 										alt={nextProduct.name}
 										fill
 										sizes="64px"
@@ -1037,12 +1031,10 @@ export function ProductPageClient({
 										className="group block"
 									>
 										<div className="relative h-80 rounded-2xl overflow-hidden shadow-lg">
-											<Image
-												src={
-													urlFor(
-														similarProduct.colors?.[0]?.mainImage
-													)?.url() || "/assets/placeholder.jpg"
-												}
+											<SafeImage
+												src={urlFor(
+													similarProduct.colors?.[0]?.mainImage
+												)?.url()}
 												alt={similarProduct.name}
 												fill
 												sizes="256px"
@@ -1141,11 +1133,8 @@ export function ProductPageClient({
 									className="group block"
 								>
 									<div className="relative h-80 rounded-2xl overflow-hidden shadow-lg mb-4">
-										<Image
-											src={
-												urlFor(similarProduct.colors?.[0]?.mainImage)?.url() ||
-												"/assets/placeholder.jpg"
-											}
+										<SafeImage
+											src={urlFor(similarProduct.colors?.[0]?.mainImage)?.url()}
 											alt={similarProduct.name}
 											fill
 											sizes="25vw"

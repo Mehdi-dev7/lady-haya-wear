@@ -2,11 +2,9 @@
 
 import { urlFor } from "@/lib/sanity";
 import { getFeaturedProducts } from "@/lib/sanity-queries";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
-import { Product } from "@/lib/sanity";
+import SafeImage from "../ui/SafeImage";
 
 // Type pour les produits avec catégorie résolue
 interface FeaturedProduct {
@@ -32,7 +30,9 @@ interface FeaturedProduct {
 }
 
 export default function FeaturedProducts() {
-	const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
+	const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>(
+		[]
+	);
 
 	useEffect(() => {
 		const fetchFeaturedProducts = async () => {
@@ -72,10 +72,8 @@ export default function FeaturedProducts() {
 					>
 						<div className="relative h-80 rounded-2xl overflow-hidden shadow-lg mb-4">
 							{/* Image principale */}
-							<Image
-								src={
-									urlFor(product.mainImage)?.url() || "/assets/placeholder.jpg"
-								}
+							<SafeImage
+								src={urlFor(product.mainImage)?.url()}
 								alt={product.mainImage?.alt || product.name}
 								fill
 								sizes="33vw"
@@ -84,11 +82,8 @@ export default function FeaturedProducts() {
 
 							{/* Image de hover */}
 							{product.hoverImage && (
-								<Image
-									src={
-										urlFor(product.hoverImage)?.url() ||
-										"/assets/placeholder.jpg"
-									}
+								<SafeImage
+									src={urlFor(product.hoverImage)?.url()}
 									alt={product.hoverImage?.alt || product.name}
 									fill
 									sizes="33vw"

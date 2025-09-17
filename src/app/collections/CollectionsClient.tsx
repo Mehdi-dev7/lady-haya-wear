@@ -1,8 +1,8 @@
 "use client";
 
+import SafeImage from "@/components/ui/SafeImage";
 import { urlFor } from "@/lib/sanity";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 
 interface Category {
@@ -78,11 +78,8 @@ export default function CollectionsClient({
 							>
 								<div className="relative w-full h-80 xl:max-w-[450px] xl:max-h-[320px] xl:mx-auto rounded-2xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-xl">
 									{category.image ? (
-										<Image
-											src={
-												urlFor(category.image)?.url() ||
-												"/assets/placeholder.jpg"
-											}
+										<SafeImage
+											src={urlFor(category.image)?.url()}
 											alt={category.image?.alt || category.name}
 											fill
 											sizes="30vw"

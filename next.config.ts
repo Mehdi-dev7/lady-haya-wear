@@ -10,7 +10,18 @@ const nextConfig: NextConfig = {
 				port: "",
 				pathname: "/**",
 			},
+			{
+				protocol: "https",
+				hostname: "*.apicdn.sanity.io",
+				port: "",
+				pathname: "/**",
+			},
 		],
+		// Configuration pour améliorer la fiabilité des images
+		formats: ["image/webp", "image/avif"],
+		minimumCacheTTL: 60,
+		dangerouslyAllowSVG: true,
+		contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
 	},
 	// Configuration Turbopack pour spécifier le répertoire racine
 	turbopack: {

@@ -1,9 +1,9 @@
 "use client";
 import { urlFor } from "@/lib/sanity";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import SafeImage from "../ui/SafeImage";
 
 interface SliderProps {
 	featuredCategories: any[];
@@ -92,7 +92,7 @@ export default function Slider({ featuredCategories }: SliderProps) {
 								transition={{ duration: 0.8, delay: 0.3 }}
 								whileHover={{ scale: 1.1, rotate: 5 }}
 							>
-								<Image
+								<SafeImage
 									src="/assets/logo-haya.png"
 									alt="logo"
 									width={200}
@@ -151,13 +151,8 @@ export default function Slider({ featuredCategories }: SliderProps) {
 								transition={{ duration: 1, delay: 0.4 }}
 								className="relative h-full w-full"
 							>
-								<Image
-									src={
-										category.image
-											? urlFor(category.image)?.url() ||
-												"/assets/placeholder.jpg"
-											: "/assets/placeholder.jpg"
-									}
+								<SafeImage
+									src={category.image ? urlFor(category.image)?.url() : null}
 									alt={category.image?.alt || category.name}
 									fill
 									sizes="100%"
