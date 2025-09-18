@@ -28,9 +28,7 @@ const nextConfig: NextConfig = {
 		root: __dirname,
 	},
 	// Configuration pour les timeouts des API routes
-	experimental: {
-		serverComponentsExternalPackages: ["@prisma/client"],
-	},
+	serverExternalPackages: ["@prisma/client"],
 };
 
 export default nextConfig;

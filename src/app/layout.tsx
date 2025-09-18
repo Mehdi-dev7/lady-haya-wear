@@ -39,17 +39,20 @@ export default function RootLayout({
 								<StudioWrapper>{children}</StudioWrapper>
 
 								<ToastContainer
-									position="top-right"
-									autoClose={3000}
+									position="top-center"
+									autoClose={4000}
 									hideProgressBar={false}
-									newestOnTop={false}
+									newestOnTop={true}
 									closeOnClick
 									rtl={false}
 									pauseOnFocusLoss
 									draggable
 									pauseOnHover
 									theme="light"
-									toastClassName="!z-[99999] md:!w-auto md:!top-4 md:!right-4 md:!left-auto md:!rounded-lg md:!p-0"
+									limit={3}
+									style={{
+										zIndex: 99999,
+									}}
 									toastStyle={{
 										zIndex: 99999,
 									}}
