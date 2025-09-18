@@ -40,6 +40,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
 	const [cartItems, setCartItems] = useState<CartItem[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [syncTimeout, setSyncTimeout] = useState<NodeJS.Timeout | null>(null);
 	const { user } = useAuth();
 
 	// Charger le panier depuis localStorage au démarrage
@@ -55,10 +56,40 @@ export function CartProvider({ children }: { children: ReactNode }) {
 		}
 	}, []);
 
+	// Fonction de synchronisation avec debouncing
+	const debouncedSync = (items: CartItem[]) => {
+		// Annuler le timeout précédent s'il existe
+		if (syncTimeout) {
+			clearTimeout(syncTimeout);
+		}
+
+		// Créer un nouveau timeout
+		const newTimeout = setTimeout(() => {
+			if (user && items.length > 0) {
+				fetch("/api/cart/sync", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ localCartItems: items }),
+				}).catch((error) => {
+					console.error("Erreur lors de la synchronisation:", error);
+				});
+			}
+		}, 1000); // Attendre 1 seconde avant de synchroniser
+
+		setSyncTimeout(newTimeout);
+	};
+
 	// Sauvegarder automatiquement dans localStorage à chaque changement
 	useEffect(() => {
 		localStorage.setItem("cart", JSON.stringify(cartItems));
-	}, [cartItems]);
+
+		// Synchroniser avec la base de données avec debouncing
+		if (user) {
+			debouncedSync(cartItems);
+		}
+	}, [cartItems, user]);
 
 	// Écouter les événements de synchronisation depuis AuthContext
 	useEffect(() => {
@@ -120,19 +151,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 				updatedItems = [...prevItems, { ...newItem, id }];
 			}
 
-			// Synchroniser avec la base de données si l'utilisateur est connecté
-			if (user) {
-				// Synchroniser avec la base de données
-				fetch("/api/cart/sync", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ localCartItems: updatedItems }),
-				}).catch((error) => {
-					console.error("Erreur lors de la synchronisation:", error);
-				});
-			}
+			// La synchronisation se fait automatiquement via useEffect
 
 			return updatedItems;
 		});
@@ -143,23 +162,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 			const itemToRemove = prevItems.find((item) => item.id === id);
 			const updatedItems = prevItems.filter((item) => item.id !== id);
 
-			// Synchroniser avec la base de données si l'utilisateur est connecté
-			if (itemToRemove && user) {
-				// Supprimer directement de la base de données
-				fetch("/api/cart/remove", {
-					method: "DELETE",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						productId: itemToRemove.productId,
-						color: itemToRemove.color,
-						size: itemToRemove.size,
-					}),
-				}).catch((error) => {
-					console.error("Erreur lors de la suppression en BDD:", error);
-				});
-			}
+			// La synchronisation se fait automatiquement via useEffect
 
 			// Afficher le toast de suppression après le rendu
 			if (itemToRemove) {

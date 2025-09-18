@@ -1,9 +1,12 @@
 "use client";
+import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { FiTrash2 } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 interface CartModalProps {
 	onClose: () => void;
@@ -11,6 +14,8 @@ interface CartModalProps {
 
 export default function CartModal({ onClose }: CartModalProps) {
 	const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
+	const { user } = useAuth();
+	const router = useRouter();
 
 	// Fonction pour vérifier le stock disponible d'un item
 	const getAvailableStock = (item: any) => {
@@ -158,13 +163,23 @@ export default function CartModal({ onClose }: CartModalProps) {
 							>
 								Voir le panier
 							</Link>
-							<Link
-								href="/checkout"
-								onClick={onClose}
+							<button
+								onClick={() => {
+									if (!user) {
+										toast.error(
+											"Vous devez être connecté pour passer commande"
+										);
+										onClose();
+										router.push("/login?redirect=/checkout");
+									} else {
+										onClose();
+										router.push("/checkout");
+									}
+								}}
 								className="flex-1 rounded-xl py-3 px-4 border-2 border-nude-dark bg-nude-dark text-nude-light text-sm hover:bg-rose-dark hover:border-nude-dark hover:text-nude-dark transition-all duration-300 cursor-pointer text-center"
 							>
 								Commander
-							</Link>
+							</button>
 						</div>
 					</div>
 				</>

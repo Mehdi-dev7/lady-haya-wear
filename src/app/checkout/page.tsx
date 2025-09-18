@@ -62,6 +62,15 @@ export default function CheckoutPage() {
 			setLoading(true);
 			try {
 				const userRes = await fetch("/api/user/account");
+
+				// Vérifier si l'utilisateur est authentifié
+				if (!userRes.ok || userRes.status === 401) {
+					console.log("Utilisateur non authentifié, redirection vers login");
+					toast.error("Vous devez être connecté pour accéder au checkout");
+					router.push("/login?redirect=/checkout");
+					return;
+				}
+
 				const userData = await userRes.json();
 				console.log("Utilisateur récupéré:", userData);
 				setUser(userData.user);
@@ -72,12 +81,14 @@ export default function CheckoutPage() {
 				setAddress(addressData.address);
 			} catch (error) {
 				console.error("Erreur lors de la récupération des données:", error);
+				toast.error("Vous devez être connecté pour accéder au checkout");
+				router.push("/login?redirect=/checkout");
 			} finally {
 				setLoading(false);
 			}
 		}
 		fetchUserAndAddress();
-	}, []);
+	}, [router]);
 
 	useEffect(() => {
 		async function fetchAddresses() {
@@ -87,9 +98,8 @@ export default function CheckoutPage() {
 				const data = await res.json();
 				console.log("Adresses récupérées:", data);
 				setAdresses(data.addresses || []);
-				// Sélectionner la principale par défaut
-				const main = (data.addresses || []).find((a: any) => a.isDefault);
-				setSelectedAddressId(main ? main.id : data.addresses?.[0]?.id || null);
+				// Sélectionner la première adresse par défaut
+				setSelectedAddressId(data.addresses?.[0]?.id || null);
 			} catch (error) {
 				console.error("Erreur lors de la récupération des adresses:", error);
 			} finally {
@@ -250,45 +260,48 @@ export default function CheckoutPage() {
 										</div>
 									) : (
 										<div className="flex flex-col gap-2">
-											{/* Affichage de l'adresse principale */}
-											{adresses
-												.filter((a) => a.isDefault)
-												.map((a) => (
-													<label
-														key={a.id}
-														className="flex items-center gap-3 cursor-pointer"
-													>
-														<input
-															type="radio"
-															name="selectedAddress"
-															checked={selectedAddressId === a.id}
-															onChange={() => setSelectedAddressId(a.id)}
-															className="sr-only"
-														/>
-														<span
-															className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedAddressId === a.id ? "bg-nude-dark" : "bg-white"}`}
-														/>
-														<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
-															<div className="text-logo font-semibold">
-																{a.lastName} {a.firstName}
-															</div>
-															<div className="text-nude-dark">{a.street}</div>
-															<div className="text-nude-dark">
-																{a.zipCode} {a.city}
-															</div>
-															<div className="text-xs text-gray-500 mt-1">
-																{a.civility === "MR"
-																	? "M."
-																	: a.civility === "MME"
-																		? "Mme"
-																		: ""}{" "}
-																(principale)
-															</div>
+											{/* Affichage de la première adresse (toujours visible) */}
+											{adresses.length > 0 && (
+												<label
+													key={adresses[0].id}
+													className="flex items-center gap-3 cursor-pointer"
+												>
+													<input
+														type="radio"
+														name="selectedAddress"
+														checked={selectedAddressId === adresses[0].id}
+														onChange={() =>
+															setSelectedAddressId(adresses[0].id)
+														}
+														className="sr-only"
+													/>
+													<span
+														className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedAddressId === adresses[0].id ? "bg-nude-dark" : "bg-white"}`}
+													/>
+													<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
+														<div className="text-logo font-semibold">
+															{adresses[0].lastName} {adresses[0].firstName}
 														</div>
-													</label>
-												))}
-											{/* Lien pour afficher/masquer les autres adresses */}
-											{adresses.filter((a) => !a.isDefault).length > 0 && (
+														<div className="text-nude-dark">
+															{adresses[0].street}
+														</div>
+														<div className="text-nude-dark">
+															{adresses[0].zipCode} {adresses[0].city}
+														</div>
+														<div className="text-xs text-gray-500 mt-1">
+															{adresses[0].civility === "MR"
+																? "M."
+																: adresses[0].civility === "MME"
+																	? "Mme"
+																	: ""}{" "}
+															{adresses[0].isDefault && "(principale)"}
+														</div>
+													</div>
+												</label>
+											)}
+
+											{/* Lien pour afficher/masquer les autres adresses (s'il y en a plus d'une) */}
+											{adresses.length > 1 && (
 												<button
 													type="button"
 													className="flex items-center gap-1 text-nude-dark underline font-semibold  mt-2 mb-1 hover:text-logo cursor-pointer"
@@ -302,14 +315,15 @@ export default function CheckoutPage() {
 													<span>
 														{showOtherAddresses
 															? "Masquer les autres adresses"
-															: "Voir mes adresses"}
+															: `Voir mes autres adresses (${adresses.length - 1})`}
 													</span>
 												</button>
 											)}
-											{/* Affichage des autres adresses */}
+
+											{/* Affichage des autres adresses (à partir de la 2ème) */}
 											{showOtherAddresses &&
 												adresses
-													.filter((a) => !a.isDefault)
+													.slice(1) // Prendre toutes les adresses sauf la première
 													.map((a) => (
 														<label
 															key={a.id}
@@ -338,7 +352,8 @@ export default function CheckoutPage() {
 																		? "M."
 																		: a.civility === "MME"
 																			? "Mme"
-																			: ""}
+																			: ""}{" "}
+																	{a.isDefault && "(principale)"}
 																</div>
 															</div>
 														</label>
@@ -416,7 +431,19 @@ export default function CheckoutPage() {
 										setLoading(true);
 										const res2 = await fetch("/api/user/account/address?all=1");
 										const data2 = await res2.json();
-										setAdresses(data2.addresses || []);
+										const newAddresses = data2.addresses || [];
+										setAdresses(newAddresses);
+
+										// Sélectionner automatiquement la première adresse de la liste mise à jour
+										if (newAddresses.length > 0) {
+											setSelectedAddressId(newAddresses[0].id);
+											// Si c'est la première adresse ajoutée, elle sera visible directement
+											// Si c'est une adresse supplémentaire, ouvrir la section des autres adresses
+											if (newAddresses.length > 1) {
+												setShowOtherAddresses(true);
+											}
+										}
+
 										setLoading(false);
 									}}
 								>
@@ -1108,7 +1135,7 @@ export default function CheckoutPage() {
 											d="M5 13l4 4L19 7"
 										/>
 									</svg>
-									<span>Livraison gratuite dès 50€</span>
+									<span>Livraison gratuite dès 60€</span>
 								</div>
 								<div className="flex items-center gap-2">
 									<svg
@@ -1124,7 +1151,7 @@ export default function CheckoutPage() {
 											d="M5 13l4 4L19 7"
 										/>
 									</svg>
-									<span>Retours possibles sous 30 jours</span>
+									<span>Retours possibles sous 15 jours</span>
 								</div>
 								<div className="flex items-center gap-2">
 									<svg

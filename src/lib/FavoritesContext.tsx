@@ -107,56 +107,18 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 	// La sauvegarde en BDD est maintenant gérée par AuthProvider via les événements
 
 	const addToFavorites = (product: Product) => {
-		setFavorites((prev) => {
-			const existingFavorite = prev.find(
-				(fav) => fav.productId === product.productId
-			);
+		// Vérifier si le favori existe déjà avant la mise à jour
+		const existingFavorite = favorites.find(
+			(fav) => fav.productId === product.productId
+		);
 
-			if (existingFavorite) {
-				// Le favori existe déjà
-				toast.info(
-					<div>
-						<div className="font-semibold">Favori déjà ajouté</div>
-						<div className="text-sm opacity-90">
-							{product.name} est déjà dans vos favoris
-						</div>
-					</div>,
-					{
-						position: "top-right",
-						autoClose: 3000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-					}
-				);
-				return prev; // Ne pas modifier la liste
-			}
-
-			const updatedFavorites = [...prev, product];
-
-			// Synchroniser avec la base de données si l'utilisateur est connecté
-			if (user) {
-				fetch("/api/favorites/sync", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ localFavorites: updatedFavorites }),
-				}).catch((error) => {
-					console.error(
-						"Erreur lors de la synchronisation des favoris:",
-						error
-					);
-				});
-			}
-
-			// Toast de confirmation d'ajout
-			toast.success(
+		if (existingFavorite) {
+			// Le favori existe déjà
+			toast.info(
 				<div>
-					<div className="font-semibold">Favori ajouté</div>
+					<div className="font-semibold">Favori déjà ajouté</div>
 					<div className="text-sm opacity-90">
-						{product.name} a été ajouté à vos favoris
+						{product.name} est déjà dans vos favoris
 					</div>
 				</div>,
 				{
@@ -168,53 +130,89 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 					draggable: true,
 				}
 			);
+			return; // Ne pas modifier la liste
+		}
 
+		setFavorites((prev) => {
+			const updatedFavorites = [...prev, product];
 			return updatedFavorites;
 		});
+
+		// Synchroniser avec la base de données si l'utilisateur est connecté
+		if (user) {
+			fetch("/api/favorites/sync", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ localFavorites: [...favorites, product] }),
+			}).catch((error) => {
+				console.error("Erreur lors de la synchronisation des favoris:", error);
+			});
+		}
+
+		// Toast de confirmation d'ajout (en dehors du setState)
+		toast.success(
+			<div>
+				<div className="font-semibold">Favori ajouté</div>
+				<div className="text-sm opacity-90">
+					{product.name} a été ajouté à vos favoris
+				</div>
+			</div>,
+			{
+				position: "top-right",
+				autoClose: 3000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+			}
+		);
 	};
 
 	const removeFromFavorites = (productId: string) => {
+		// Trouver l'élément à supprimer avant la mise à jour
+		const itemToRemove = favorites.find((fav) => fav.productId === productId);
+
 		setFavorites((prev) => {
-			const itemToRemove = prev.find((fav) => fav.productId === productId);
 			const updatedFavorites = prev.filter(
 				(fav) => fav.productId !== productId
 			);
-
-			// Synchroniser avec la base de données si l'utilisateur est connecté
-			if (user) {
-				fetch("/api/favorites/remove", {
-					method: "DELETE",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ productId }),
-				}).catch((error) => {
-					console.error("Erreur lors de la suppression des favoris:", error);
-				});
-			}
-
-			// Toast de confirmation de suppression
-			if (itemToRemove) {
-				toast.info(
-					<div>
-						<div className="font-semibold">Favori supprimé</div>
-						<div className="text-sm opacity-90">
-							{itemToRemove.name} a été retiré de vos favoris
-						</div>
-					</div>,
-					{
-						position: "top-right",
-						autoClose: 3000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-					}
-				);
-			}
-
 			return updatedFavorites;
 		});
+
+		// Synchroniser avec la base de données si l'utilisateur est connecté
+		if (user) {
+			fetch("/api/favorites/remove", {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ productId }),
+			}).catch((error) => {
+				console.error("Erreur lors de la suppression des favoris:", error);
+			});
+		}
+
+		// Toast de confirmation de suppression (en dehors du setState)
+		if (itemToRemove) {
+			toast.info(
+				<div>
+					<div className="font-semibold">Favori supprimé</div>
+					<div className="text-sm opacity-90">
+						{itemToRemove.name} a été retiré de vos favoris
+					</div>
+				</div>,
+				{
+					position: "top-right",
+					autoClose: 3000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				}
+			);
+		}
 	};
 
 	const toggleFavorite = (product: Product) => {

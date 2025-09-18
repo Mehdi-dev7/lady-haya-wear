@@ -146,11 +146,22 @@ export default function Filter({
 	useEffect(() => {
 		let filteredProducts = [...products];
 
-		// Filtre par recherche (nom)
+		// Filtre par recherche (nom) - Recherche précise
 		if (searchTerm) {
-			filteredProducts = filteredProducts.filter((product) =>
-				product.name.toLowerCase().includes(searchTerm.toLowerCase())
-			);
+			const searchLower = searchTerm.toLowerCase().trim();
+
+			filteredProducts = filteredProducts.filter((product) => {
+				const productName = product.name?.toLowerCase() || "";
+				const words: string[] = productName.split(" ");
+
+				// Priorité 1: Le nom complet commence par le terme recherché
+				if (productName.startsWith(searchLower)) {
+					return true;
+				}
+
+				// Priorité 2: Un mot du nom commence par le terme recherché
+				return words.some((word: string) => word.startsWith(searchLower));
+			});
 		}
 
 		// Filtre par catégorie
@@ -257,13 +268,6 @@ export default function Filter({
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
 						className="w-2/3 md:w-1/2 lg:w-1/3 pl-10 pr-4 py-3 rounded-2xl border-2 border-nude-medium focus:border-nude-dark focus:outline-none transition-all duration-300"
-					/>
-					{/* Effet de typing */}
-					<motion.div
-						className="absolute bottom-0 left-0 h-0.5 bg-nude-dark"
-						initial={{ width: 0 }}
-						animate={{ width: searchTerm ? "100%" : "0%" }}
-						transition={{ duration: 0.3 }}
 					/>
 				</div>
 

@@ -1,13 +1,18 @@
 "use client";
 
+import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FiArrowLeft, FiTrash2 } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 export default function CartPage() {
 	const { cartItems, removeFromCart, updateQuantity, getCartTotal, clearCart } =
 		useCart();
+	const { user } = useAuth();
+	const router = useRouter();
 
 	// Fonction pour vérifier le stock disponible d'un item
 	const getAvailableStock = (item: any) => {
@@ -267,12 +272,21 @@ export default function CartPage() {
 								</div>
 
 								{/* Bouton commander */}
-								<Link
-									href="/checkout"
-									className="w-[80%] md:w-[60%] lg:w-full 2xl:w-[80%] bg-nude-dark text-white py-3 px-6 rounded-2xl text-base md:text-lg font-semibold hover:bg-rose-dark transition-all duration-300 text-center block hover:text-nude-dark hover:border-nude-dark hover:border-2"
+								<button
+									onClick={() => {
+										if (!user) {
+											toast.error(
+												"Vous devez être connecté pour passer commande"
+											);
+											router.push("/login?redirect=/checkout");
+										} else {
+											router.push("/checkout");
+										}
+									}}
+									className="w-[80%] md:w-[60%] lg:w-full 2xl:w-[80%] bg-nude-dark text-white py-3 px-6 rounded-2xl text-base md:text-lg font-semibold hover:bg-rose-dark transition-all duration-300 text-center hover:text-nude-dark hover:border-nude-dark hover:border-2 cursor-pointer"
 								>
 									Passer la commande
-								</Link>
+								</button>
 
 								{/* Informations supplémentaires */}
 								<div className="mt-6 space-y-3 text-sm text-gray-500">
