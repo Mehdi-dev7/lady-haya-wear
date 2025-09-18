@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-09-18T14:58:00.281Z",
+  "counts": {
+    "users": 3,
+    "orders": 2,
+    "cartItems": 3,
+    "favorites": 1,
+    "promoCodes": 3,
+    "admins": 1
+  }
+}

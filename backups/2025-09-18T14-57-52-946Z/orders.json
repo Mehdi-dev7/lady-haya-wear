@@ -1,0 +1,102 @@
+[
+  {
+    "id": "cmffj2kfx000bi1bd5cg9dotq",
+    "userId": "cmffitiet0006i1bdgbvenyhf",
+    "orderNumber": "CMD-1757602370296-5RDEKI",
+    "status": "DELIVERED",
+    "customerEmail": "mehdi-wil@hotmail.fr",
+    "customerName": "mehdi di",
+    "customerPhone": null,
+    "subtotal": 30,
+    "shippingCost": 5.99,
+    "taxAmount": 6,
+    "total": 41.99,
+    "promoCodeId": null,
+    "promoDiscount": 0,
+    "paymentMethod": "cb",
+    "paymentStatus": "PAID",
+    "billingAddressId": "cmffj1bft0009i1bdg5x985vj",
+    "shippingAddressId": "cmffj1bft0009i1bdg5x985vj",
+    "notes": null,
+    "trackingNumber": null,
+    "carrier": null,
+    "createdAt": "2025-09-11T14:52:50.301Z",
+    "updatedAt": "2025-09-11T23:27:40.089Z",
+    "shippedAt": null,
+    "deliveredAt": "2025-09-11T23:27:40.088Z",
+    "items": [
+      {
+        "id": "cmffj2kfx000ci1bdu6eg8wzi",
+        "orderId": "cmffj2kfx000bi1bd5cg9dotq",
+        "productId": "be04b7fa-2e3d-499c-8b84-baa12e6870fb-bleu-Unique",
+        "productName": "hijab du maroc",
+        "colorName": "bleu",
+        "sizeName": "Unique",
+        "quantity": 1,
+        "unitPrice": 30,
+        "totalPrice": 30
+      }
+    ]
+  },
+  {
+    "id": "cmfebe6p90009i1w6c0min8jv",
+    "userId": "cmfeadc120000i12ca7u54k9s",
+    "orderNumber": "CMD-1757529009257-EQ7LSE",
+    "status": "DELIVERED",
+    "customerEmail": "abouqays.mehdi@gmail.com",
+    "customerName": "Wilfrid Didou",
+    "customerPhone": "06 50 15 70 32",
+    "subtotal": 278,
+    "shippingCost": 0,
+    "taxAmount": 55.6,
+    "total": 333.6,
+    "promoCodeId": null,
+    "promoDiscount": 0,
+    "paymentMethod": "cb",
+    "paymentStatus": "PAID",
+    "billingAddressId": "cmfeaeauv0005i12cq7xfiok5",
+    "shippingAddressId": "cmfeaeauv0005i12cq7xfiok5",
+    "notes": "",
+    "trackingNumber": "3567888",
+    "carrier": "chronopost",
+    "createdAt": "2025-09-10T18:30:09.261Z",
+    "updatedAt": "2025-09-11T23:27:53.258Z",
+    "shippedAt": "2025-09-10T20:42:55.050Z",
+    "deliveredAt": "2025-09-11T23:27:53.256Z",
+    "items": [
+      {
+        "id": "cmfebe6p9000ai1w65airmk1c",
+        "orderId": "cmfebe6p90009i1w6c0min8jv",
+        "productId": "89dc8dcd-47b1-4150-b04e-2219d5ae69b2-bleu-L",
+        "productName": "abaya rose",
+        "colorName": "bleu",
+        "sizeName": "L",
+        "quantity": 2,
+        "unitPrice": 45,
+        "totalPrice": 90
+      },
+      {
+        "id": "cmfebe6p9000bi1w6wya42097",
+        "orderId": "cmfebe6p90009i1w6c0min8jv",
+        "productId": "be04b7fa-2e3d-499c-8b84-baa12e6870fb-bleu-Unique",
+        "productName": "hijab du maroc",
+        "colorName": "bleu",
+        "sizeName": "Unique",
+        "quantity": 1,
+        "unitPrice": 30,
+        "totalPrice": 30
+      },
+      {
+        "id": "cmfebe6p9000ci1w66fx31vlz",
+        "orderId": "cmfebe6p90009i1w6c0min8jv",
+        "productId": "46b59c2d-7e43-49d2-a0af-77a6436611b3-rose-XL",
+        "productName": "abaya du desert",
+        "colorName": "rose",
+        "sizeName": "XL",
+        "quantity": 2,
+        "unitPrice": 79,
+        "totalPrice": 158
+      }
+    ]
+  }
+]

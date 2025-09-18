@@ -1,0 +1,13 @@
+[
+  {
+    "id": "cmddci7bh00009k6zzoog0n4d",
+    "email": "lady.haya.75@gmail.com",
+    "password": "$2b$12$PrqVLn77VqPFxiat1UuC5emiM1nk/X64fGL7z.hVsHqz1CEurm4oq",
+    "name": "Administrateur Principal",
+    "role": "SUPER_ADMIN",
+    "isActive": true,
+    "lastLoginAt": "2025-09-11T23:02:44.992Z",
+    "createdAt": "2025-07-21T16:54:05.454Z",
+    "updatedAt": "2025-09-11T23:02:44.994Z"
+  }
+]

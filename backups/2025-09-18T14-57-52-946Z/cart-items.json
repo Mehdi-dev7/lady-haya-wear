@@ -1,0 +1,35 @@
+[
+  {
+    "id": "cmfmzwfte000li1x7pzcdwaxg",
+    "userId": "cmffitiet0006i1bdgbvenyhf",
+    "productId": "89dc8dcd-47b1-4150-b04e-2219d5ae69b2",
+    "colorName": "bleu",
+    "sizeName": "L",
+    "quantity": 1,
+    "price": 45,
+    "createdAt": "2025-09-16T20:18:21.075Z",
+    "updatedAt": "2025-09-17T17:03:02.044Z"
+  },
+  {
+    "id": "cmfmzx9jg000ti1x71sucjso0",
+    "userId": "cmffitiet0006i1bdgbvenyhf",
+    "productId": "46b59c2d-7e43-49d2-a0af-77a6436611b3",
+    "colorName": "rose",
+    "sizeName": "XL",
+    "quantity": 1,
+    "price": 79,
+    "createdAt": "2025-09-16T20:18:59.597Z",
+    "updatedAt": "2025-09-17T17:03:02.860Z"
+  },
+  {
+    "id": "cmfpi1i300001ie041chrjdxi",
+    "userId": "cmfd2kk8g0000i1m1ahvthebt",
+    "productId": "46b59c2d-7e43-49d2-a0af-77a6436611b3",
+    "colorName": "rose",
+    "sizeName": "L",
+    "quantity": 2,
+    "price": 79,
+    "createdAt": "2025-09-18T14:21:42.733Z",
+    "updatedAt": "2025-09-18T14:53:49.606Z"
+  }
+]

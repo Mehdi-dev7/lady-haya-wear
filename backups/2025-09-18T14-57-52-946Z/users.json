@@ -1,0 +1,89 @@
+[
+  {
+    "id": "cmfeadc120000i12ca7u54k9s",
+    "email": "abouqays.mehdi@gmail.com",
+    "emailVerified": "2025-09-10T18:01:29.891Z",
+    "password": null,
+    "newsletterSubscribed": true,
+    "createdAt": "2025-09-10T18:01:29.895Z",
+    "updatedAt": "2025-09-10T18:30:12.506Z",
+    "resetToken": null,
+    "resetTokenExpiry": null,
+    "profile": {
+      "id": "cmfeadc130001i12cga5tfzsu",
+      "userId": "cmfeadc120000i12ca7u54k9s",
+      "civility": "MR",
+      "firstName": "Wilfrid",
+      "lastName": "Didou",
+      "phone": "06 50 15 70 32",
+      "birthDate": null
+    },
+    "addresses": [
+      {
+        "id": "cmfeaeauv0005i12cq7xfiok5",
+        "userId": "cmfeadc120000i12ca7u54k9s",
+        "type": "SHIPPING",
+        "civility": null,
+        "firstName": "Didou",
+        "lastName": "",
+        "company": null,
+        "street": "19 rue f7 lotissement alwafa lazaret",
+        "city": "oujda",
+        "zipCode": "60000",
+        "country": "France",
+        "phone": null,
+        "isDefault": true
+      }
+    ]
+  },
+  {
+    "id": "cmffitiet0006i1bdgbvenyhf",
+    "email": "mehdi-wil@hotmail.fr",
+    "emailVerified": "2025-09-11T14:46:24.363Z",
+    "password": "$2b$12$R8DOilfzRFz/nxTsjDz32.Ib59SobaGuuuAYaDTK6LMbtOaorY38K",
+    "newsletterSubscribed": true,
+    "createdAt": "2025-09-11T14:45:47.765Z",
+    "updatedAt": "2025-09-11T14:52:53.626Z",
+    "resetToken": null,
+    "resetTokenExpiry": null,
+    "profile": {
+      "id": "cmffitiet0007i1bddot63tqx",
+      "userId": "cmffitiet0006i1bdgbvenyhf",
+      "civility": null,
+      "firstName": "mehdi",
+      "lastName": "di",
+      "phone": null,
+      "birthDate": null
+    },
+    "addresses": [
+      {
+        "id": "cmffj1bft0009i1bdg5x985vj",
+        "userId": "cmffitiet0006i1bdgbvenyhf",
+        "type": "SHIPPING",
+        "civility": "MR",
+        "firstName": "mehdi",
+        "lastName": "di",
+        "company": null,
+        "street": "11, rue des lilas",
+        "city": "paris",
+        "zipCode": "75000",
+        "country": "France",
+        "phone": null,
+        "isDefault": false
+      }
+    ]
+  },
+  {
+    "id": "cmfd2kk8g0000i1m1ahvthebt",
+    "email": "mehdi.dev77@gmail.com",
+    "emailVerified": "2025-09-18T14:21:40.523Z",
+    "password": null,
+    "newsletterSubscribed": true,
+    "createdAt": "2025-09-09T21:35:24.015Z",
+    "updatedAt": "2025-09-18T14:21:40.524Z",
+    "resetToken": null,
+    "resetTokenExpiry": null,
+    "profile": null,
+    "addresses": []
+  }
+]
