@@ -61,10 +61,10 @@ export default function ServiceClientPage() {
 										Envoyez-nous un email directement à notre équipe support.
 									</p>
 									<a
-										href="mailto:contact@ladyhaya.com"
+										href="mailto:contact@ladyhaya.fr"
 										className="inline-block bg-logo text-nude-light px-4 md:px-6 py-2 rounded-md hover:bg-nude-dark-2 transition-colors text-sm md:text-base"
 									>
-										contact@ladyhaya.com
+										contact@ladyhaya.fr
 									</a>
 								</div>
 							</div>
