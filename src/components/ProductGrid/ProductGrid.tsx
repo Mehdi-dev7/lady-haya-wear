@@ -167,7 +167,7 @@ export default function ProductGrid({
 										}}
 										transition={{
 											duration: 0.6,
-											delay: index * 0.3 + 0.2,
+											delay: index * 0.3 + 0.1,
 											ease: [0.68, -0.55, 0.265, 1.55],
 										}}
 									>

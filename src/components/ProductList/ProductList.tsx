@@ -84,7 +84,7 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 							initial={{ opacity: 0, filter: "blur(10px)" }}
 							whileInView={{ opacity: 1, filter: "blur(0px)" }}
 							viewport={{ once: true, amount: 0.7 }}
-							transition={{ duration: 0.7, delay: index * 0.3 }}
+							transition={{ duration: 0.7, delay: index * 0.2 }}
 						>
 							<Link href={`/products/${product.slug?.current || product._id}`}>
 								{/* Image du produit */}

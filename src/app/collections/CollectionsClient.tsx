@@ -68,7 +68,7 @@ export default function CollectionsClient({
 							transition={{
 								duration: 0.8,
 								ease: "easeOut",
-								delay: 0.6 + index * 0.2,
+								delay: 0.6 + index * 0.1,
 							}}
 							className="w-full sm:w-[45%] lg:w-[30%]"
 						>
