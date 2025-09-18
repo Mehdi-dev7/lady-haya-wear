@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
 	turbopack: {
 		root: __dirname,
 	},
+	// Configuration pour les timeouts des API routes
+	experimental: {
+		serverComponentsExternalPackages: ["@prisma/client"],
+	},
 };
 
 export default nextConfig;
