@@ -159,23 +159,43 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 					const Icon = item.icon;
 					return (
 						<div key={item.name}>
-							<Link
-								href={item.href}
-								className={cn(
-									"flex items-center px-3 py-2 text-sm lg:text-base font-medium rounded-md transition-colors",
-									item.current
-										? "bg-rose-medium text-logo"
-										: "text-nude-dark hover:bg-rose-medium hover:text-logo"
-								)}
-							>
-								<Icon
+							{item.name === "Studio" ? (
+								<a
+									href={item.href}
+									target="_blank"
+									rel="noopener noreferrer"
 									className={cn(
-										"h-5 w-5",
-										isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
+										"flex items-center px-3 py-2 text-sm lg:text-base font-medium rounded-md transition-colors",
+										"text-nude-dark hover:bg-rose-medium hover:text-logo"
 									)}
-								/>
-								{!isCollapsed && <span>{item.name}</span>}
-							</Link>
+								>
+									<Icon
+										className={cn(
+											"h-5 w-5",
+											isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
+										)}
+									/>
+									{!isCollapsed && <span>{item.name}</span>}
+								</a>
+							) : (
+								<Link
+									href={item.href}
+									className={cn(
+										"flex items-center px-3 py-2 text-sm lg:text-base font-medium rounded-md transition-colors",
+										item.current
+											? "bg-rose-medium text-logo"
+											: "text-nude-dark hover:bg-rose-medium hover:text-logo"
+									)}
+								>
+									<Icon
+										className={cn(
+											"h-5 w-5",
+											isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
+										)}
+									/>
+									{!isCollapsed && <span>{item.name}</span>}
+								</Link>
+							)}
 							{/* Trait sous "Administrateurs" */}
 							{item.name === "Administrateurs" && !isCollapsed && (
 								<div className="border-b border-rose-medium my-2"></div>

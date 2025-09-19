@@ -2,7 +2,8 @@
 
 import SalesChart from "@/components/Dashboard/SalesChart";
 import StatsCard from "@/components/Dashboard/StatsCard";
-import { Package, ShoppingCart, TrendingUp, Users } from "lucide-react";
+import { Package, ShoppingCart, TrendingUp, Users, Edit3, ExternalLink } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardPage() {
 	// Données de test pour les statistiques
@@ -56,11 +57,27 @@ export default function DashboardPage() {
 	return (
 		<div className="space-y-6">
 			{/* En-tête */}
-			<div>
-				<h1 className="text-3xl font-bold text-logo">Tableau de bord</h1>
-				<p className="text-nude-dark mt-2">
-					Vue d'ensemble de votre boutique Lady Haya Wear
-				</p>
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+				<div>
+					<h1 className="text-3xl font-bold text-logo">Tableau de bord</h1>
+					<p className="text-nude-dark mt-2">
+						Vue d'ensemble de votre boutique Lady Haya Wear
+					</p>
+				</div>
+				
+				{/* Actions rapides */}
+				<div className="mt-4 sm:mt-0 flex flex-wrap gap-3">
+					<Link
+						href="/studio"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="inline-flex items-center gap-2 bg-nude-dark text-white px-4 py-2 rounded-lg hover:bg-nude-medium transition-colors text-sm font-medium"
+					>
+						<Edit3 className="w-4 h-4" />
+						Studio Sanity
+						<ExternalLink className="w-3 h-3" />
+					</Link>
+				</div>
 			</div>
 
 			{/* Cartes de statistiques */}
