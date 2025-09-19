@@ -1,10 +1,10 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-export default function UnsubscribePage() {
+function UnsubscribeContent() {
 	const searchParams = useSearchParams();
 	const email = searchParams.get("email");
 	const [isLoading, setIsLoading] = useState(false);
@@ -91,5 +91,20 @@ export default function UnsubscribePage() {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+export default function UnsubscribePage() {
+	return (
+		<Suspense fallback={
+			<div className="min-h-screen bg-beige-light flex items-center justify-center p-4">
+				<div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
+					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-nude-dark mx-auto"></div>
+					<p className="mt-4 text-gray-600">Chargement...</p>
+				</div>
+			</div>
+		}>
+			<UnsubscribeContent />
+		</Suspense>
 	);
 }
