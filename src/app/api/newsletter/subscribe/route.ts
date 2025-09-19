@@ -88,10 +88,10 @@ async function sendWelcomeEmail(email: string) {
 			<style>
 				body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
 				.container { max-width: 600px; margin: 0 auto; padding: 20px; }
-				.header { background: linear-gradient(135deg, #f9dede, #f5f1e9); padding: 30px; text-align: center; }
+				.header { background: #f8f9fa; padding: 30px; text-align: center; }
 				.logo { font-family: 'Alex Brush', cursive; font-size: 2.5rem; color: #8a5f3d; margin-bottom: 10px; }
 				.content { background: white; padding: 30px; }
-				.footer { background: #f8ede4; padding: 20px; text-align: center; font-size: 0.9rem; color: #b49982; }
+				.footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 0.9rem; color: #666; }
 				.btn { display: inline-block; background: #8a5f3d; color: white !important; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
 			</style>
 		</head>
@@ -99,15 +99,15 @@ async function sendWelcomeEmail(email: string) {
 			<div class="container">
 				<div class="header">
 					<div class="logo">Lady Haya Wear</div>
-					<p style="color: #ab8d73; margin: 0;">Élégance et raffinement</p>
+					<p style="color: #666; margin: 0;">Votre boutique de mode</p>
 				</div>
 				<div class="content">
-					<h2 style="color: #8a5f3d;">Bienvenue dans notre communauté ! 🎉</h2>
+					<h2 style="color: #8a5f3d;">Bienvenue dans notre communauté</h2>
 					<p>Merci de vous être inscrit(e) à notre newsletter.</p>
-					<p>Vous recevrez en avant-première :</p>
+					<p>Vous recevrez :</p>
 					<ul>
 						<li>Nos nouvelles collections</li>
-						<li>Des offres exclusives</li>
+						<li>Des informations sur nos produits</li>
 						<li>Des conseils mode et style</li>
 					</ul>
 					<p>À très bientôt,<br>L'équipe Lady Haya Wear</p>
@@ -115,8 +115,8 @@ async function sendWelcomeEmail(email: string) {
 					<a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/collections" class="btn">Découvrir nos collections</a>
 				</div>
 				<div class="footer">
-					<p>Lady Haya Wear - Élégance féminine</p>
-					<p><a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/unsubscribe" style="color: #b49982;">Se désabonner</a></p>
+					<p>Lady Haya Wear</p>
+					<p><a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/mentions/politique-confidentialite" style="color: #666;">Politique de confidentialité</a></p>
 				</div>
 			</div>
 		</body>
@@ -133,11 +133,17 @@ async function sendWelcomeEmail(email: string) {
 		body: JSON.stringify({
 			sender: {
 				name: "Lady Haya Wear",
-				email: process.env.BREVO_FROM_EMAIL || "noreply@ladyhaya-wear.fr",
+				email: process.env.BREVO_FROM_EMAIL || "contact@ladyhaya-wear.fr",
 			},
 			to: [{ email }],
-			subject: "Bienvenue chez Lady Haya Wear ! ✨",
+			subject: "Bienvenue chez Lady Haya Wear",
 			htmlContent: htmlContent,
+			headers: {
+				"List-Unsubscribe": `<${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/unsubscribe?email=${encodeURIComponent(email)}>`,
+				"List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+				"X-Mailer": "Lady Haya Wear Newsletter",
+				"X-Priority": "3",
+			},
 		}),
 	});
 

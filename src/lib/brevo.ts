@@ -180,7 +180,7 @@ export async function sendWelcomeEmail(email: string, customerName: string) {
   `;
 	sendSmtpEmail.sender = {
 		name: "Lady Haya Wear",
-		email: process.env.BREVO_FROM_EMAIL || "contact@ladyhaya.com",
+		email: process.env.BREVO_FROM_EMAIL || "contact@ladyhaya-wear.fr",
 	};
 
 	try {
@@ -220,7 +220,7 @@ export async function sendPasswordResetEmail(
   `;
 	sendSmtpEmail.sender = {
 		name: "Lady Haya Wear",
-		email: process.env.BREVO_FROM_EMAIL || "contact@ladyhaya.com",
+		email: process.env.BREVO_FROM_EMAIL || "contact@ladyhaya-wear.fr",
 	};
 
 	try {
