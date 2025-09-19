@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import NotificationBadge from "./NotificationBadge";
 
 interface SidebarProps {
 	isCollapsed: boolean;
@@ -26,6 +28,40 @@ interface SidebarProps {
 
 const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 	const pathname = usePathname();
+	const [notifications, setNotifications] = useState({
+		orders: 0,
+		reviews: 0,
+	});
+
+	// Récupérer les notifications
+	useEffect(() => {
+		const fetchNotifications = async () => {
+			try {
+				// Récupérer les commandes en préparation
+				const ordersResponse = await fetch("/api/admin/orders?status=PREPARING");
+				const ordersData = await ordersResponse.json();
+				const ordersCount = Array.isArray(ordersData) ? ordersData.length : 0;
+
+				// Récupérer les avis en attente
+				const reviewsResponse = await fetch("/api/admin/reviews?status=PENDING");
+				const reviewsData = await reviewsResponse.json();
+				const reviewsCount = Array.isArray(reviewsData) ? reviewsData.length : 0;
+
+				setNotifications({
+					orders: ordersCount,
+					reviews: reviewsCount,
+				});
+			} catch (error) {
+				console.error("Erreur lors de la récupération des notifications:", error);
+			}
+		};
+
+		fetchNotifications();
+		
+		// Actualiser toutes les 30 secondes
+		const interval = setInterval(fetchNotifications, 30000);
+		return () => clearInterval(interval);
+	}, []);
 
 	const navigation = [
 		{
@@ -33,42 +69,49 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 			href: "/dashboard",
 			icon: Home,
 			current: pathname === "/dashboard",
+			badge: null,
 		},
 		{
 			name: "Commandes",
 			href: "/dashboard/orders",
 			icon: Package,
 			current: pathname === "/dashboard/orders",
+			badge: notifications.orders,
 		},
 		{
 			name: "Promotions",
 			href: "/dashboard/promos",
 			icon: Ticket,
 			current: pathname === "/dashboard/promos",
+			badge: null,
 		},
 		{
 			name: "Newsletter",
 			href: "/dashboard/newsletter",
 			icon: Mail,
 			current: pathname === "/dashboard/newsletter",
+			badge: null,
 		},
 		{
 			name: "Avis Clients",
 			href: "/dashboard/reviews",
 			icon: Star,
 			current: pathname === "/dashboard/reviews",
+			badge: notifications.reviews,
 		},
 		{
 			name: "Administrateurs",
 			href: "/dashboard/admins",
 			icon: UserCheck,
 			current: pathname === "/dashboard/admins",
+			badge: null,
 		},
 		{
 			name: "Studio",
 			href: "/studio",
 			icon: Palette,
 			current: pathname === "/studio",
+			badge: null,
 		},
 	];
 
@@ -158,7 +201,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 				{navigation.map((item, index) => {
 					const Icon = item.icon;
 					return (
-						<div key={item.name}>
+						<div key={item.name} className="relative">
 							{item.name === "Studio" ? (
 								<a
 									href={item.href}
@@ -175,7 +218,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 											isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
 										)}
 									/>
-									{!isCollapsed && <span>{item.name}</span>}
+									{!isCollapsed && (
+										<div className="flex items-center justify-between w-full">
+											<span>{item.name}</span>
+											{item.badge && <NotificationBadge count={item.badge} />}
+										</div>
+									)}
 								</a>
 							) : (
 								<Link
@@ -193,7 +241,15 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 											isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
 										)}
 									/>
-									{!isCollapsed && <span>{item.name}</span>}
+									{!isCollapsed && (
+										<div className="flex items-center justify-between w-full">
+											<span>{item.name}</span>
+											{item.badge && <NotificationBadge count={item.badge} />}
+										</div>
+									)}
+									{isCollapsed && item.badge && (
+										<NotificationBadge count={item.badge} className="absolute -top-1 -right-1" />
+									)}
 								</Link>
 							)}
 							{/* Trait sous "Administrateurs" */}
