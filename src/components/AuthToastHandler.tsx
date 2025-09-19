@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { toast } from "react-toastify";
 
-export default function AuthToastHandler() {
+function AuthToastContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -53,4 +53,12 @@ export default function AuthToastHandler() {
 	}, [router]);
 
 	return null; // Ce composant ne rend rien
+}
+
+export default function AuthToastHandler() {
+	return (
+		<Suspense fallback={null}>
+			<AuthToastContent />
+		</Suspense>
+	);
 }
