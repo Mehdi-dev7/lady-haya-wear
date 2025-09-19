@@ -5,7 +5,7 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { IoEyeSharp } from "react-icons/io5";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 type Adresse = {
@@ -647,7 +647,6 @@ export default function AccountPage() {
 
 	return (
 		<>
-			<ToastContainer position="top-center" autoClose={3000} />
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-12 min-h-screen flex items-center justify-center bg-beige-light animate-fade-in-up">
 				<AdresseModal
 					open={modalOpen}

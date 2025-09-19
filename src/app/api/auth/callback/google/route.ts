@@ -126,8 +126,10 @@ export async function GET(request: NextRequest) {
 			{ expiresIn: "7d" }
 		);
 
-		// Rediriger vers la page d'accueil avec le cookie de session
-		const response = NextResponse.redirect(new URL("/", request.url));
+		// Rediriger vers la page de login avec le paramètre de succès
+		const response = NextResponse.redirect(
+			new URL("/login?success=google_auth", request.url)
+		);
 		response.cookies.set("auth-token", token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
