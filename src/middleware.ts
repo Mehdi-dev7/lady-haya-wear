@@ -31,7 +31,7 @@ export function middleware(request: NextRequest) {
 	}
 
 	// ===== PROTECTION DES ROUTES ADMIN =====
-	const adminRoutes = ["/dashboard", "/studio"];
+	const adminRoutes = ["/dashboard"]; // Temporairement retiré /studio
 
 	// Vérifier si la route actuelle est une route admin
 	const isAdminRoute = adminRoutes.some((route) =>
@@ -66,6 +66,6 @@ export const config = {
 		"/checkout/:path*",
 		"/cart/:path*",
 		"/dashboard/:path*",
-		"/studio/:path*",
+		// "/studio/:path*", // Temporairement retiré
 	],
 };
