@@ -68,6 +68,8 @@ export async function GET(request: NextRequest) {
 
 			shippedAt: order.shippedAt,
 			deliveredAt: order.deliveredAt,
+			trackingNumber: order.trackingNumber,
+			carrier: order.carrier,
 			items: order.items.map((item) => ({
 				id: item.id,
 				productId: item.productId,

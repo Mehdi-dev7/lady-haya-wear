@@ -51,13 +51,14 @@ export async function triggerReviewRequestForOrder(orderId: string) {
 			};
 		}
 
+		// Générer un token unique pour toute la commande
+		const reviewToken = randomBytes(32).toString("hex");
+		console.log(
+			`📝 Création des reviews pour ${order.items.length} produits avec token: ${reviewToken}`
+		);
+
 		// Créer les enregistrements Review pour chaque produit de la commande
-		console.log(`📝 Création des reviews pour ${order.items.length} produits`);
-
 		const reviewPromises = order.items.map(async (item) => {
-			// Générer un token unique pour chaque review
-			const reviewToken = randomBytes(32).toString("hex");
-
 			return prisma.review.create({
 				data: {
 					userId: order.userId,
@@ -69,7 +70,7 @@ export async function triggerReviewRequestForOrder(orderId: string) {
 					customerName: order.customerName,
 					customerEmail: order.customerEmail,
 					status: "PENDING",
-					emailToken: reviewToken,
+					emailToken: reviewToken, // Même token pour tous les reviews de la commande
 					emailSentAt: new Date(),
 				},
 			});
@@ -91,7 +92,7 @@ export async function triggerReviewRequestForOrder(orderId: string) {
 				name: item.productName,
 				quantity: item.quantity,
 			})),
-			reviewToken: randomBytes(32).toString("hex"), // Token global pour la commande
+			reviewToken: reviewToken, // Utiliser le même token
 		};
 
 		// Envoyer l'email de demande d'avis

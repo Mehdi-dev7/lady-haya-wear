@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
 		if (!code) {
 			return NextResponse.redirect(
-				new URL("/login?error=google_auth_failed", request.url)
+				new URL("/?error=google_auth_failed", request.url)
 			);
 		}
 
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 		const payload = ticket.getPayload();
 		if (!payload) {
 			return NextResponse.redirect(
-				new URL("/login?error=google_auth_failed", request.url)
+				new URL("/?error=google_auth_failed", request.url)
 			);
 		}
 
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
 
 		if (!email) {
 			return NextResponse.redirect(
-				new URL("/login?error=google_auth_failed", request.url)
+				new URL("/?error=google_auth_failed", request.url)
 			);
 		}
 
@@ -126,9 +126,9 @@ export async function GET(request: NextRequest) {
 			{ expiresIn: "7d" }
 		);
 
-		// Rediriger vers la page de login avec le paramètre de succès
+		// Rediriger vers l'accueil avec le paramètre de succès
 		const response = NextResponse.redirect(
-			new URL("/login?success=google_auth", request.url)
+			new URL("/?success=google_auth", request.url)
 		);
 		response.cookies.set("auth-token", token, {
 			httpOnly: true,
@@ -141,7 +141,7 @@ export async function GET(request: NextRequest) {
 	} catch (error) {
 		console.error("Erreur lors du callback Google:", error);
 		return NextResponse.redirect(
-			new URL("/login?error=google_auth_failed", request.url)
+			new URL("/?error=google_auth_failed", request.url)
 		);
 	}
 }

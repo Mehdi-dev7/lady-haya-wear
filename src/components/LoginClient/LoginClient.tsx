@@ -36,23 +36,6 @@ export default function Login() {
 	const callbackUrl = searchParams.get("callbackUrl") || "/";
 	const { login } = useAuth();
 
-	// Gérer les toasts après redirection (ex: Google auth)
-	useEffect(() => {
-		const urlParams = new URLSearchParams(window.location.search);
-		const success = urlParams.get("success");
-		const error = urlParams.get("error");
-
-		if (success === "google_auth") {
-			toast.success("Authentification Google réussie !");
-			// Nettoyer l'URL
-			router.replace("/login");
-		} else if (error === "google_auth_failed") {
-			toast.error("Erreur lors de l'authentification Google");
-			// Nettoyer l'URL
-			router.replace("/login");
-		}
-	}, [router]);
-
 	// Données du formulaire de connexion
 	const [loginData, setLoginData] = useState({
 		email: "",

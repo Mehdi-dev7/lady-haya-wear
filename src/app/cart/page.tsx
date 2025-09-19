@@ -304,7 +304,7 @@ export default function CartPage() {
 												d="M5 13l4 4L19 7"
 											/>
 										</svg>
-										<span>Livraison gratuite dès 50€</span>
+										<span>Livraison gratuite dès 60€</span>
 									</div>
 									<div className="flex items-center gap-2">
 										<svg
@@ -320,7 +320,7 @@ export default function CartPage() {
 												d="M5 13l4 4L19 7"
 											/>
 										</svg>
-										<span>Retours gratuits sous 30 jours</span>
+										<span>Retours gratuits sous 15 jours</span>
 									</div>
 									<div className="flex items-center gap-2">
 										<svg

@@ -1,3 +1,4 @@
+import AuthToastHandler from "@/components/AuthToastHandler";
 import CategoryList from "@/components/CategoryList/CategoryList";
 import Newsletter from "@/components/Newsletter/Newsletter";
 import ProductList from "@/components/ProductList/ProductList";
@@ -17,6 +18,7 @@ export default async function Home() {
 
 	return (
 		<>
+			<AuthToastHandler />
 			<Slider featuredCategories={featuredCategories} />
 
 			<section className="bg-rose-light-2 md:py-16 py-8 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48">

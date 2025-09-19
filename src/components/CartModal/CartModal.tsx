@@ -153,7 +153,7 @@ export default function CartModal({ onClose }: CartModalProps) {
 							</span>
 						</div>
 						<p className="text-gray-500 text-xs mb-4">
-							Livraison gratuite dès 50€ d'achat
+							Livraison gratuite dès 60€ d'achat
 						</p>
 						<div className="flex gap-2">
 							<Link

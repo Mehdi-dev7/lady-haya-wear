@@ -47,6 +47,8 @@ interface Order {
 	confirmedAt?: string;
 	shippedAt?: string;
 	deliveredAt?: string;
+	trackingNumber?: string;
+	carrier?: string;
 	items: OrderItem[];
 	shippingAddress?: Address;
 	billingAddress?: Address;
@@ -96,6 +98,48 @@ function getStatusLabel(statut: string) {
 			return "Remboursée";
 		default:
 			return statut;
+	}
+}
+
+// Fonction pour obtenir le lien de suivi
+function getTrackingUrl(carrier: string, trackingNumber: string) {
+	if (!trackingNumber || !carrier) return "";
+
+	switch (carrier) {
+		case "colissimo":
+			return `https://www.laposte.fr/outils/suivre-vos-envois?code=${trackingNumber}`;
+		case "chronopost":
+			return `https://www.chronopost.fr/tracking-colis?listeNumerosLT=${trackingNumber}`;
+		case "mondial-relay":
+			return `https://www.mondialrelay.fr/suivi-de-colis?numeroExpedition=${trackingNumber}`;
+		case "dpd":
+			return `https://www.dpd.fr/tracer/${trackingNumber}`;
+		case "ups":
+			return `https://www.ups.com/track?tracknum=${trackingNumber}`;
+		case "fedex":
+			return `https://www.fedex.com/fr-fr/tracking.html?tracknumbers=${trackingNumber}`;
+		default:
+			return "";
+	}
+}
+
+// Fonction pour obtenir le nom du transporteur
+function getCarrierName(carrier: string) {
+	switch (carrier) {
+		case "colissimo":
+			return "Colissimo";
+		case "chronopost":
+			return "Chronopost";
+		case "mondial-relay":
+			return "Mondial Relay";
+		case "dpd":
+			return "DPD";
+		case "ups":
+			return "UPS";
+		case "fedex":
+			return "FedEx";
+		default:
+			return carrier;
 	}
 }
 
@@ -167,6 +211,50 @@ function CommandeModal({
 						€{commande.total.toFixed(2)}
 					</span>
 				</div>
+
+				{/* Suivi de colis dans la modal */}
+				{commande.trackingNumber && commande.carrier && (
+					<div className="mb-4 p-3 bg-blue-50 rounded-lg">
+						<p className="text-sm font-medium text-blue-800 mb-2">
+							📦 Suivi de colis
+						</p>
+						<div className="text-sm text-blue-700">
+							<div className="flex items-center gap-2 mb-1">
+								<span>{getCarrierName(commande.carrier)}</span>
+								<span className="font-mono bg-blue-100 px-2 py-1 rounded text-xs">
+									{commande.trackingNumber}
+								</span>
+							</div>
+							{getTrackingUrl(commande.carrier, commande.trackingNumber) && (
+								<a
+									href={getTrackingUrl(
+										commande.carrier,
+										commande.trackingNumber
+									)}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
+								>
+									🔗 Suivre mon colis
+									<svg
+										className="w-4 h-4"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+										/>
+									</svg>
+								</a>
+							)}
+						</div>
+					</div>
+				)}
+
 				<button
 					className="w-full bg-rose-dark-2 hover:bg-rose-dark text-white font-semibold py-2 rounded-full transition-all duration-200 cursor-pointer"
 					onClick={() =>
@@ -400,6 +488,54 @@ export default function OrdersPage() {
 																	</div>
 																)}
 
+																{/* Suivi de colis */}
+																{cmd.trackingNumber && cmd.carrier && (
+																	<div className="mb-3">
+																		<p className="text-sm font-medium text-gray-700 mb-1">
+																			Suivi de colis :
+																		</p>
+																		<div className="text-sm text-gray-600">
+																			<div className="flex items-center gap-2">
+																				<span>
+																					📦 {getCarrierName(cmd.carrier)}
+																				</span>
+																				<span className="font-mono bg-gray-100 px-2 py-1 rounded text-xs">
+																					{cmd.trackingNumber}
+																				</span>
+																			</div>
+																			{getTrackingUrl(
+																				cmd.carrier,
+																				cmd.trackingNumber
+																			) && (
+																				<a
+																					href={getTrackingUrl(
+																						cmd.carrier,
+																						cmd.trackingNumber
+																					)}
+																					target="_blank"
+																					rel="noopener noreferrer"
+																					className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-xs mt-1"
+																				>
+																					🔗 Suivre mon colis
+																					<svg
+																						className="w-3 h-3"
+																						fill="none"
+																						stroke="currentColor"
+																						viewBox="0 0 24 24"
+																					>
+																						<path
+																							strokeLinecap="round"
+																							strokeLinejoin="round"
+																							strokeWidth={2}
+																							d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+																						/>
+																					</svg>
+																				</a>
+																			)}
+																		</div>
+																	</div>
+																)}
+
 																{/* Bouton signaler un souci */}
 																<button
 																	className="w-full bg-rose-dark-2 hover:bg-rose-dark text-white font-semibold py-2 rounded-full transition-all duration-200 cursor-pointer text-sm"
@@ -540,6 +676,54 @@ export default function OrdersPage() {
 																				{cmd.shippingAddress.zipCode}{" "}
 																				{cmd.shippingAddress.city}
 																			</div>
+																		</div>
+																	</div>
+																)}
+
+																{/* Suivi de colis */}
+																{cmd.trackingNumber && cmd.carrier && (
+																	<div className="mb-3">
+																		<p className="text-sm font-medium text-gray-700 mb-1">
+																			Suivi de colis :
+																		</p>
+																		<div className="text-sm text-gray-600">
+																			<div className="flex items-center gap-2">
+																				<span>
+																					📦 {getCarrierName(cmd.carrier)}
+																				</span>
+																				<span className="font-mono bg-gray-100 px-2 py-1 rounded text-xs">
+																					{cmd.trackingNumber}
+																				</span>
+																			</div>
+																			{getTrackingUrl(
+																				cmd.carrier,
+																				cmd.trackingNumber
+																			) && (
+																				<a
+																					href={getTrackingUrl(
+																						cmd.carrier,
+																						cmd.trackingNumber
+																					)}
+																					target="_blank"
+																					rel="noopener noreferrer"
+																					className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-xs mt-1"
+																				>
+																					🔗 Suivre mon colis
+																					<svg
+																						className="w-3 h-3"
+																						fill="none"
+																						stroke="currentColor"
+																						viewBox="0 0 24 24"
+																					>
+																						<path
+																							strokeLinecap="round"
+																							strokeLinejoin="round"
+																							strokeWidth={2}
+																							d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+																						/>
+																					</svg>
+																				</a>
+																			)}
 																		</div>
 																	</div>
 																)}

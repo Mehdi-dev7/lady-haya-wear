@@ -18,13 +18,13 @@ export async function GET(request: NextRequest) {
 		// Vérifier s'il y a une erreur
 		if (error) {
 			console.error("Erreur Instagram OAuth:", error);
-			return NextResponse.redirect("/login?error=instagram_auth_failed");
+			return NextResponse.redirect("/?error=instagram_auth_failed");
 		}
 
 		// Vérifier le code d'autorisation
 		if (!code) {
 			console.error("Code d'autorisation manquant");
-			return NextResponse.redirect("/login?error=instagram_code_missing");
+			return NextResponse.redirect("/?error=instagram_code_missing");
 		}
 
 		// Vérifier le state pour la sécurité
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
 		if (!storedState || state !== storedState) {
 			console.error("State invalide");
-			return NextResponse.redirect("/login?error=instagram_state_invalid");
+			return NextResponse.redirect("/?error=instagram_state_invalid");
 		}
 
 		// Échanger le code contre un token d'accès
@@ -249,6 +249,6 @@ export async function GET(request: NextRequest) {
 		return response;
 	} catch (error) {
 		console.error("Erreur lors du callback Instagram:", error);
-		return NextResponse.redirect("/login?error=instagram_callback_failed");
+		return NextResponse.redirect("/?error=instagram_callback_failed");
 	}
 }
