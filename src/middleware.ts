@@ -41,12 +41,20 @@ export function middleware(request: NextRequest) {
 	if (isAdminRoute) {
 		// Vérifier le cookie d'authentification admin
 		const hasAdminToken = request.cookies.has("admin-token");
+		
+		// Debug: afficher les cookies disponibles
+		console.log("🔍 Debug middleware - Route admin:", request.nextUrl.pathname);
+		console.log("🔍 Cookies disponibles:", Array.from(request.cookies.keys()));
+		console.log("🔍 Admin token présent:", hasAdminToken);
 
 		if (!hasAdminToken) {
+			console.log("❌ Pas de token admin, redirection vers admin-login");
 			const loginUrl = new URL("/admin-login", request.url);
 			loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
 			return NextResponse.redirect(loginUrl);
 		}
+		
+		console.log("✅ Token admin trouvé, accès autorisé");
 	}
 
 	return securityResponse;
