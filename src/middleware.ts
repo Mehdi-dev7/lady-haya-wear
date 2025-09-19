@@ -44,7 +44,6 @@ export function middleware(request: NextRequest) {
 		
 		// Debug: afficher les cookies disponibles
 		console.log("🔍 Debug middleware - Route admin:", request.nextUrl.pathname);
-		console.log("🔍 Cookies disponibles:", Array.from(request.cookies.keys()));
 		console.log("🔍 Admin token présent:", hasAdminToken);
 
 		if (!hasAdminToken) {
