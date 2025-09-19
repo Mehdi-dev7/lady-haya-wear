@@ -492,6 +492,11 @@ export default function AccountPage() {
 		if (name === "telephone") {
 			// Empêcher les caractères non numériques
 			newValue = newValue.replace(/[^\d\s]/g, "");
+			// Limiter à 15 chiffres maximum
+			const onlyDigits = newValue.replace(/\D/g, "");
+			if (onlyDigits.length > 15) {
+				newValue = onlyDigits.substring(0, 15);
+			}
 			newValue = formatTel(newValue);
 			newErrors.telephone = validateTel(newValue);
 		}
@@ -849,6 +854,7 @@ export default function AccountPage() {
 										onChange={handleChange}
 										onBlur={handleBlur}
 										disabled={!editing.telephone}
+										maxLength={17}
 										className="border border-nude-dark/40 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#d9c4b5] bg-beige-light text-logo placeholder-nude-dark"
 									/>
 									{touched.telephone && errors.telephone && (
