@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
 	try {
 		const { searchParams } = new URL(request.url);
 		const status = searchParams.get("status");
+		const submitted = searchParams.get("submitted");
 		const page = parseInt(searchParams.get("page") || "1");
 		const limit = parseInt(searchParams.get("limit") || "20");
 		const search = searchParams.get("search");
@@ -17,6 +18,15 @@ export async function GET(request: NextRequest) {
 
 		if (status && status !== "all") {
 			where.status = status;
+		}
+
+		// Filtrer par soumission client
+		if (submitted === "true") {
+			where.submittedAt = {
+				not: null, // Seulement les reviews soumis par le client
+			};
+		} else if (submitted === "false") {
+			where.submittedAt = null; // Seulement les reviews non soumis
 		}
 
 		if (search) {
@@ -61,9 +71,18 @@ export async function GET(request: NextRequest) {
 			prisma.review.count({ where }),
 		]);
 
-		// Calculer les statistiques
+		// Calculer les statistiques (seulement pour les reviews soumis par les clients)
+		const statsWhere = {
+			...where,
+			// Pour les stats, on ne compte que les reviews soumis par les clients
+			submittedAt: {
+				not: null,
+			},
+		};
+
 		const stats = await prisma.review.groupBy({
 			by: ["status"],
+			where: statsWhere,
 			_count: {
 				status: true,
 			},
@@ -77,12 +96,15 @@ export async function GET(request: NextRequest) {
 			{} as Record<string, number>
 		);
 
-		// Calculer les statistiques des notes
+		// Calculer les statistiques des notes (seulement pour les reviews soumis)
 		const ratingStats = await prisma.review.groupBy({
 			by: ["rating"],
 			where: {
 				rating: {
 					gte: 1,
+				},
+				submittedAt: {
+					not: null,
 				},
 			},
 			_count: {

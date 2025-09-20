@@ -100,6 +100,10 @@ export default function ReviewsManagementPage() {
 
 			if (selectedStatus !== "all") {
 				params.append("status", selectedStatus);
+				// Pour les reviews PENDING, ne montrer que ceux soumis par les clients
+				if (selectedStatus === "PENDING") {
+					params.append("submitted", "true");
+				}
 			}
 
 			if (searchTerm) {

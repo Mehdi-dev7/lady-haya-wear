@@ -37,18 +37,16 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 	useEffect(() => {
 		const fetchNotifications = async () => {
 			try {
-				// Récupérer les commandes en préparation (PROCESSING)
-				const ordersResponse = await fetch(
-					"/api/admin/orders?status=PROCESSING"
-				);
+				// Récupérer les commandes en préparation (PENDING)
+				const ordersResponse = await fetch("/api/admin/orders?status=PENDING");
 				const ordersData = await ordersResponse.json();
 				const ordersCount = Array.isArray(ordersData.orders)
 					? ordersData.orders.length
 					: 0;
 
-				// Récupérer les avis en attente
+				// Récupérer les avis soumis par les clients et en attente de modération
 				const reviewsResponse = await fetch(
-					"/api/admin/reviews?status=PENDING"
+					"/api/admin/reviews?status=PENDING&submitted=true"
 				);
 				const reviewsData = await reviewsResponse.json();
 				const reviewsCount = Array.isArray(reviewsData.reviews)
@@ -219,20 +217,33 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 									target="_blank"
 									rel="noopener noreferrer"
 									className={cn(
-										"flex items-center px-3 py-2 text-sm lg:text-base font-medium rounded-md transition-colors",
+										"flex items-center px-3 py-2 text-sm lg:text-base font-medium rounded-md transition-colors relative",
 										"text-nude-dark hover:bg-rose-medium hover:text-logo"
 									)}
 								>
-									<Icon
-										className={cn(
-											"h-5 w-5",
-											isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
+									<div className="relative">
+										<Icon
+											className={cn(
+												"h-5 w-5",
+												isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
+											)}
+										/>
+										{isCollapsed && item.badge && item.badge > 0 && (
+											<NotificationBadge
+												count={item.badge}
+												className="absolute -top-1 -right-1"
+											/>
 										)}
-									/>
+									</div>
 									{!isCollapsed && (
 										<div className="flex items-center justify-between w-full">
 											<span>{item.name}</span>
-											{item.badge && <NotificationBadge count={item.badge} />}
+											{item.badge && item.badge > 0 && (
+												<NotificationBadge
+													count={item.badge}
+													className="flex-shrink-0"
+												/>
+											)}
 										</div>
 									)}
 								</a>
@@ -253,13 +264,22 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 												isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
 											)}
 										/>
-										{item.badge && item.badge > 0 && (
-											<NotificationBadge count={item.badge} />
+										{isCollapsed && item.badge && item.badge > 0 && (
+											<NotificationBadge
+												count={item.badge}
+												className="absolute -top-1 -right-1"
+											/>
 										)}
 									</div>
 									{!isCollapsed && (
 										<div className="flex items-center justify-between w-full">
 											<span>{item.name}</span>
+											{item.badge && item.badge > 0 && (
+												<NotificationBadge
+													count={item.badge}
+													className="flex-shrink-0"
+												/>
+											)}
 										</div>
 									)}
 								</Link>
