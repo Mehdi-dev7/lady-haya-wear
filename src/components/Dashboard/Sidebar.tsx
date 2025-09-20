@@ -37,27 +37,38 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 	useEffect(() => {
 		const fetchNotifications = async () => {
 			try {
-				// Récupérer les commandes en préparation
-				const ordersResponse = await fetch("/api/admin/orders?status=PREPARING");
+				// Récupérer les commandes en préparation (PROCESSING)
+				const ordersResponse = await fetch(
+					"/api/admin/orders?status=PROCESSING"
+				);
 				const ordersData = await ordersResponse.json();
-				const ordersCount = Array.isArray(ordersData) ? ordersData.length : 0;
+				const ordersCount = Array.isArray(ordersData.orders)
+					? ordersData.orders.length
+					: 0;
 
 				// Récupérer les avis en attente
-				const reviewsResponse = await fetch("/api/admin/reviews?status=PENDING");
+				const reviewsResponse = await fetch(
+					"/api/admin/reviews?status=PENDING"
+				);
 				const reviewsData = await reviewsResponse.json();
-				const reviewsCount = Array.isArray(reviewsData) ? reviewsData.length : 0;
+				const reviewsCount = Array.isArray(reviewsData.reviews)
+					? reviewsData.reviews.length
+					: 0;
 
 				setNotifications({
 					orders: ordersCount,
 					reviews: reviewsCount,
 				});
 			} catch (error) {
-				console.error("Erreur lors de la récupération des notifications:", error);
+				console.error(
+					"Erreur lors de la récupération des notifications:",
+					error
+				);
 			}
 		};
 
 		fetchNotifications();
-		
+
 		// Actualiser toutes les 30 secondes
 		const interval = setInterval(fetchNotifications, 30000);
 		return () => clearInterval(interval);
@@ -76,7 +87,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 			href: "/dashboard/orders",
 			icon: Package,
 			current: pathname === "/dashboard/orders",
-			badge: notifications.orders,
+			badge: notifications.orders > 0 ? notifications.orders : null,
 		},
 		{
 			name: "Promotions",
@@ -97,7 +108,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 			href: "/dashboard/reviews",
 			icon: Star,
 			current: pathname === "/dashboard/reviews",
-			badge: notifications.reviews,
+			badge: notifications.reviews > 0 ? notifications.reviews : null,
 		},
 		{
 			name: "Administrateurs",
@@ -229,26 +240,27 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 								<Link
 									href={item.href}
 									className={cn(
-										"flex items-center px-3 py-2 text-sm lg:text-base font-medium rounded-md transition-colors",
+										"flex items-center px-3 py-2 text-sm lg:text-base font-medium rounded-md transition-colors relative",
 										item.current
 											? "bg-rose-medium text-logo"
 											: "text-nude-dark hover:bg-rose-medium hover:text-logo"
 									)}
 								>
-									<Icon
-										className={cn(
-											"h-5 w-5",
-											isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
+									<div className="relative">
+										<Icon
+											className={cn(
+												"h-5 w-5",
+												isCollapsed ? "mx-auto h-8 w-8" : "mr-3"
+											)}
+										/>
+										{item.badge && item.badge > 0 && (
+											<NotificationBadge count={item.badge} />
 										)}
-									/>
+									</div>
 									{!isCollapsed && (
 										<div className="flex items-center justify-between w-full">
 											<span>{item.name}</span>
-											{item.badge && <NotificationBadge count={item.badge} />}
 										</div>
-									)}
-									{isCollapsed && item.badge && (
-										<NotificationBadge count={item.badge} className="absolute -top-1 -right-1" />
 									)}
 								</Link>
 							)}
