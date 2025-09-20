@@ -200,7 +200,7 @@ export default function CheckoutPage() {
 				</span>
 			</div>
 			{/* Header */}
-			<header className="bg-nude-light border-b border-gray-200 mt-12">
+			<header className="bg-rose-light border-b border-gray-200 mt-12">
 				<div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-6">
 					<div className="flex items-center gap-4">
 						<Link
@@ -278,23 +278,27 @@ export default function CheckoutPage() {
 													<span
 														className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedAddressId === adresses[0].id ? "bg-nude-dark" : "bg-white"}`}
 													/>
-													<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
-														<div className="text-logo font-semibold">
-															{adresses[0].lastName} {adresses[0].firstName}
+													<div className="flex-1 bg-gradient-to-r from-white via-nude-light to-white rounded-2xl shadow-lg border border-nude-dark p-4 max-w-md">
+														<div className=" flex items-center">
+															<span className="text-sm text-gray-900 mr-2">
+																{adresses[0].civility === "MR"
+																	? "M."
+																	: adresses[0].civility === "MME"
+																		? "Mme"
+																		: ""}
+															</span>
+															<span className="text-gray-900">
+																{adresses[0].firstName} {adresses[0].lastName}
+															</span>
+															{adresses[0].isDefault && (
+																<span className="text-xs text-gray-900 ml-2">
+																	(principale)
+																</span>
+															)}
 														</div>
-														<div className="text-nude-dark">
-															{adresses[0].street}
-														</div>
-														<div className="text-nude-dark">
+														<div className="text-gray-900">{adresses[0].street}</div>
+														<div className="text-gray-900">
 															{adresses[0].zipCode} {adresses[0].city}
-														</div>
-														<div className="text-xs text-gray-500 mt-1">
-															{adresses[0].civility === "MR"
-																? "M."
-																: adresses[0].civility === "MME"
-																	? "Mme"
-																	: ""}{" "}
-															{adresses[0].isDefault && "(principale)"}
 														</div>
 													</div>
 												</label>
@@ -339,21 +343,22 @@ export default function CheckoutPage() {
 															<span
 																className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedAddressId === a.id ? "bg-nude-dark" : "bg-white"}`}
 															/>
-															<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
-																<div className="text-logo font-semibold">
-																	{a.lastName} {a.firstName}
+															<div className="flex-1 bg-gradient-to-r from-white via-nude-light to-white rounded-2xl shadow-lg border border-nude-dark p-4 max-w-md">
+																<div className="flex items-center">
+																	<span className="text-sm text-gray-900 mr-2">
+																		{a.civility === "MR"
+																			? "M."
+																			: a.civility === "MME"
+																				? "Mme"
+																				: ""}
+																	</span>
+																	<span className="text-gray-900">
+																		{a.firstName} {a.lastName}
+																	</span>
 																</div>
-																<div className="text-nude-dark">{a.street}</div>
-																<div className="text-nude-dark">
+																<div className="text-gray-900">{a.street}</div>
+																<div className="text-gray-900">
 																	{a.zipCode} {a.city}
-																</div>
-																<div className="text-xs text-gray-500 mt-1">
-																	{a.civility === "MR"
-																		? "M."
-																		: a.civility === "MME"
-																			? "Mme"
-																			: ""}{" "}
-																	{a.isDefault && "(principale)"}
 																</div>
 															</div>
 														</label>
@@ -402,7 +407,7 @@ export default function CheckoutPage() {
 							{/* Formulaire déroulant d'ajout d'adresse */}
 							{showAddressMenu && (
 								<form
-									className="bg-beige-light border border-nude-dark/30 rounded-lg p-4 mt-2 w-full max-w-md animate-fade-in flex flex-col gap-3"
+									className="bg-gradient-to-r from-white via-nude-light to-white rounded-2xl shadow-lg border border-nude-dark p-4 mt-2 w-full max-w-md animate-fade-in flex flex-col gap-3"
 									onSubmit={async (e) => {
 										e.preventDefault();
 										const res = await fetch("/api/user/account/address", {
@@ -563,12 +568,21 @@ export default function CheckoutPage() {
 											<span
 												className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors bg-nude-dark`}
 											/>
-											<div className="flex-1 bg-beige-light border border-nude-dark/30 rounded-lg p-4 max-w-md">
-												<div className="text-logo font-semibold">
-													{addr.lastName} {addr.firstName}
+											<div className="flex-1 bg-gradient-to-r from-white via-nude-light to-white rounded-2xl shadow-lg border border-nude-dark p-4 max-w-md">
+												<div className="text-logo font-semibold flex items-center">
+													<span className="text-sm text-gray-900 mr-2">
+														{addr.civility === "MR"
+															? "M."
+															: addr.civility === "MME"
+																? "Mme"
+																: ""}
+													</span>
+													<span className="text-gray-900">
+														{addr.firstName} {addr.lastName}
+													</span>
 												</div>
-												<div className="text-nude-dark">{addr.street}</div>
-												<div className="text-nude-dark">
+												<div className="text-gray-900">{addr.street}</div>
+												<div className="text-gray-900">
 													{addr.zipCode} {addr.city}
 												</div>
 											</div>
@@ -578,7 +592,7 @@ export default function CheckoutPage() {
 							)}
 
 							{/* Livraison */}
-							<div className="bg-[#d9c4b5]/35 rounded-2xl shadow-lg p-6 mb-8 mt-12">
+							<div className="bg-gradient-to-r from-white via-nude-light to-white rounded-2xl shadow-lg border border-nude-dark p-6 mb-8 mt-8">
 								<h2 className="text-xl sm:text-2xl font-semibold text-nude-dark mb-6">
 									Livraison
 								</h2>
@@ -639,7 +653,7 @@ export default function CheckoutPage() {
 							</div>
 
 							{/* Paiement */}
-							<div className="bg-[#d9c4b5]/35 rounded-2xl shadow-lg p-6 mt-8 mb-6">
+							<div className="bg-gradient-to-r from-white via-nude-light to-white rounded-2xl shadow-lg border border-nude-dark p-6 mb-8 mt-8">
 								<h2 className="text-xl sm:text-2xl font-semibold text-nude-dark mb-6">
 									Paiement
 								</h2>
