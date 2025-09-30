@@ -48,7 +48,7 @@ export default function CollectionsClient({
 				</div>
 
 				{/* Collections Grid */}
-				<div className="flex gap-x-8 gap-y-8 sm:gap-y-16 justify-between flex-wrap">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-12">
 					{categories.map((category, index) => (
 						<motion.div
 							key={category._id}
@@ -70,20 +70,20 @@ export default function CollectionsClient({
 								ease: "easeOut",
 								delay: 0.6 + index * 0.1,
 							}}
-							className="w-full sm:w-[45%] lg:w-[30%]"
+							className="w-full"
 						>
 							<Link
 								href={`/collections/${category.slug.current}`}
-								className="w-full group block"
+								className="group block w-full"
 							>
-								<div className="relative w-full h-80 xl:max-w-[450px] xl:max-h-[320px] xl:mx-auto rounded-2xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-xl">
+								<div className="relative w-full max-w-sm sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-md 2xl:max-w-md h-96 2xl:h-[530px] xl:h-[500px] lg:h-[450px] mx-auto rounded-2xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-xl">
 									{category.image ? (
 										<SafeImage
 											src={urlFor(category.image)?.url()}
 											alt={category.image?.alt || category.name}
 											fill
 											sizes="30vw"
-											className="object-cover transition-all duration-500 group-hover:scale-105"
+											className="object-cover object-center transition-all duration-500 group-hover:scale-105"
 										/>
 									) : (
 										<div className="w-full h-full bg-gradient-to-br from-nude-light to-rose-light-2 flex items-center justify-center rounded-2xl">

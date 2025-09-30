@@ -63,9 +63,12 @@ export function ProductPageClient({
 				?.quantity) ||
 		0;
 
-	// Toutes les images de la couleur sélectionnée
+	// Toutes les images de la couleur sélectionnée (limitées à 6 images max)
 	const colorImages = selectedColor
-		? [selectedColor.mainImage, ...(selectedColor.additionalImages || [])]
+		? [
+				selectedColor.mainImage,
+				...(selectedColor.additionalImages || []),
+			].slice(0, 6)
 		: [];
 
 	// Image actuellement affichée
@@ -297,7 +300,7 @@ export function ProductPageClient({
 					>
 						{/* Image principale */}
 						<motion.div
-							className="h-[400px] md:h-[450px] lg:h-[500px] relative rounded-2xl overflow-hidden shadow-lg"
+							className="h-[450px] md:h-[500px] lg:h-[550px] relative rounded-2xl overflow-hidden shadow-lg"
 							initial={{
 								opacity: 0,
 								scale: 0.8,
@@ -319,7 +322,7 @@ export function ProductPageClient({
 									src={urlFor(currentImage)?.url()}
 									alt={currentImage?.alt || product.name}
 									fill
-									className="object-cover rounded-2xl transition-all duration-300"
+									className="object-cover object-center rounded-2xl transition-all duration-300"
 								/>
 							) : (
 								<div className="w-full h-full bg-gradient-to-br from-nude-light to-rose-light-2 flex items-center justify-center">
@@ -328,45 +331,97 @@ export function ProductPageClient({
 							)}
 						</motion.div>
 
-						{/* Miniatures des images de la couleur sélectionnée */}
+						{/* Miniatures des images de la couleur sélectionnée - Grille 3x2 */}
 						{colorImages && colorImages.length > 1 && (
-							<div className="flex justify-center lg:justify-start gap-2 lg:gap-4 mt-8">
-								{colorImages.map((image: any, i: number) => (
-									<motion.div
-										key={i}
-										className={`w-20 h-20 lg:w-1/4 lg:h-32 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
-											selectedImageIndex === i
-												? "ring-2 ring-nude-dark shadow-lg"
-												: "hover:shadow-md"
-										}`}
-										onClick={() => setSelectedImageIndex(i)}
-										initial={{
-											opacity: 0,
-											scale: 0.8,
-											rotate: -8,
-										}}
-										animate={{
-											opacity: 1,
-											scale: 1,
-											rotate: 0,
-										}}
-										transition={{
-											duration: 0.3,
-											delay: 1.4 + i * 0.08,
-											ease: [0.25, 0.46, 0.45, 0.94],
-										}}
-									>
-										<SafeImage
-											src={urlFor(image)?.url()}
-											alt={
-												image?.alt || `${selectedColor?.name} - Image ${i + 1}`
-											}
-											fill
-											sizes="30vw"
-											className="object-cover rounded-2xl transition-transform duration-300 hover:scale-105"
-										/>
-									</motion.div>
-								))}
+							<div className="mt-8 space-y-3">
+								{/* Première ligne - 3 premières miniatures (incluant l'image principale) */}
+								<div className="flex justify-center lg:justify-start gap-3">
+									{colorImages.slice(0, 3).map((image: any, i: number) => {
+										return (
+											<motion.div
+												key={i}
+												className={`w-28 h-38 lg:w-32 lg:h-44 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
+													selectedImageIndex === i
+														? "ring-2 ring-nude-dark shadow-lg scale-105"
+														: "hover:shadow-md hover:scale-102"
+												}`}
+												onClick={() => setSelectedImageIndex(i)}
+												initial={{
+													opacity: 0,
+													scale: 0.8,
+													rotate: -8,
+												}}
+												animate={{
+													opacity: 1,
+													scale: 1,
+													rotate: 0,
+												}}
+												transition={{
+													duration: 0.3,
+													delay: 1.4 + i * 0.08,
+													ease: [0.25, 0.46, 0.45, 0.94],
+												}}
+											>
+												<SafeImage
+													src={urlFor(image)?.url()}
+													alt={
+														image?.alt ||
+														`${selectedColor?.name} - Image ${i + 1}`
+													}
+													fill
+													sizes="30vw"
+													className="object-cover object-center rounded-2xl transition-transform duration-300 hover:scale-105"
+												/>
+											</motion.div>
+										);
+									})}
+								</div>
+
+								{/* Deuxième ligne - 3 miniatures suivantes (si elles existent) */}
+								{colorImages.length > 3 && (
+									<div className="flex justify-center lg:justify-start gap-3">
+										{colorImages.slice(3, 6).map((image: any, i: number) => {
+											const actualIndex = i + 3; // +3 car on commence après les 3 premières
+											return (
+												<motion.div
+													key={actualIndex}
+													className={`w-28 h-38 lg:w-32 lg:h-44 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
+														selectedImageIndex === actualIndex
+															? "ring-2 ring-nude-dark shadow-lg scale-105"
+															: "hover:shadow-md hover:scale-102"
+													}`}
+													onClick={() => setSelectedImageIndex(actualIndex)}
+													initial={{
+														opacity: 0,
+														scale: 0.8,
+														rotate: -8,
+													}}
+													animate={{
+														opacity: 1,
+														scale: 1,
+														rotate: 0,
+													}}
+													transition={{
+														duration: 0.3,
+														delay: 1.6 + i * 0.08,
+														ease: [0.25, 0.46, 0.45, 0.94],
+													}}
+												>
+													<SafeImage
+														src={urlFor(image)?.url()}
+														alt={
+															image?.alt ||
+															`${selectedColor?.name} - Image ${actualIndex + 1}`
+														}
+														fill
+														sizes="30vw"
+														className="object-cover object-center rounded-2xl transition-transform duration-300 hover:scale-105"
+													/>
+												</motion.div>
+											);
+										})}
+									</div>
+								)}
 							</div>
 						)}
 					</motion.div>
@@ -804,9 +859,7 @@ export function ProductPageClient({
 											<div className="font-semibold text-sm text-nude-dark">
 												Paiement sécurisé
 											</div>
-											<div className="text-xs text-gray-600">
-												CB, PayPal
-											</div>
+											<div className="text-xs text-gray-600">CB, PayPal</div>
 										</div>
 									</Link>
 								</motion.div>
@@ -898,7 +951,7 @@ export function ProductPageClient({
 										alt={prevProduct.name}
 										fill
 										sizes="64px"
-										className="object-cover rounded-2xl"
+										className="object-cover object-center rounded-2xl"
 									/>
 								</div>
 								<div className="text-center">
@@ -936,7 +989,7 @@ export function ProductPageClient({
 										alt={nextProduct.name}
 										fill
 										sizes="64px"
-										className="object-cover rounded-2xl"
+										className="object-cover object-center rounded-2xl"
 									/>
 								</div>
 								<div className="text-center">
@@ -1038,7 +1091,7 @@ export function ProductPageClient({
 												alt={similarProduct.name}
 												fill
 												sizes="256px"
-												className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
+												className="object-cover object-center rounded-2xl transition-transform duration-300 group-hover:scale-105"
 											/>
 											{/* Overlay avec dégradé pour le nom et prix */}
 											<div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white/90 via-white/60 to-transparent p-4 pb-2 flex flex-col justify-end">
@@ -1138,7 +1191,7 @@ export function ProductPageClient({
 											alt={similarProduct.name}
 											fill
 											sizes="25vw"
-											className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
+											className="object-cover object-center rounded-2xl transition-transform duration-300 group-hover:scale-105"
 										/>
 									</div>
 									<h3 className="font-medium text-nude-dark text-lg mb-2">
