@@ -278,7 +278,7 @@ export default function CheckoutPage() {
 													<span
 														className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedAddressId === adresses[0].id ? "bg-nude-dark" : "bg-white"}`}
 													/>
-													<div className="flex-1 bg-rose-light rounded-2xl shadow-lg border border-nude-dark p-4 max-w-md">
+													<div className="flex-1 bg-rose-light-2 rounded-2xl shadow-lg border border-nude-dark p-4 max-w-md">
 														<div className=" flex items-center">
 															<span className="text-sm text-gray-900 mr-2">
 																{adresses[0].civility === "MR"
@@ -343,7 +343,7 @@ export default function CheckoutPage() {
 															<span
 																className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedAddressId === a.id ? "bg-nude-dark" : "bg-white"}`}
 															/>
-															<div className="flex-1 bg-rose-light rounded-2xl shadow-lg border border-nude-dark p-4 max-w-md">
+															<div className="flex-1 bg-rose-light-2 rounded-2xl shadow-lg border border-nude-dark p-4 max-w-md">
 																<div className="flex items-center">
 																	<span className="text-sm text-gray-900 mr-2">
 																		{a.civility === "MR"
@@ -407,7 +407,7 @@ export default function CheckoutPage() {
 							{/* Formulaire déroulant d'ajout d'adresse */}
 							{showAddressMenu && (
 								<form
-									className="bg-rose-light rounded-2xl shadow-lg border border-nude-dark p-4 mt-2 w-full max-w-md animate-fade-in flex flex-col gap-3"
+									className="bg-rose-light-2 rounded-2xl shadow-lg border border-nude-dark p-4 mt-2 w-full max-w-md animate-fade-in flex flex-col gap-3"
 									onSubmit={async (e) => {
 										e.preventDefault();
 										const res = await fetch("/api/user/account/address", {
@@ -592,7 +592,7 @@ export default function CheckoutPage() {
 							)}
 
 							{/* Livraison */}
-							<div className="bg-rose-light rounded-2xl shadow-lg border border-nude-dark p-6 mb-8 mt-8">
+							<div className="bg-rose-light-2 rounded-2xl shadow-lg border border-nude-dark p-6 mb-8 mt-8">
 								<h2 className="text-xl sm:text-2xl font-semibold text-nude-dark mb-6">
 									Livraison
 								</h2>
@@ -653,7 +653,7 @@ export default function CheckoutPage() {
 							</div>
 
 							{/* Paiement */}
-							<div className="bg-rose-light rounded-2xl shadow-lg border border-nude-dark p-6 mb-8 mt-8">
+							<div className="bg-rose-light-2 rounded-2xl shadow-lg border border-nude-dark p-6 mb-8 mt-8">
 								<h2 className="text-xl sm:text-2xl font-semibold text-nude-dark mb-6">
 									Paiement
 								</h2>
@@ -1149,7 +1149,7 @@ export default function CheckoutPage() {
 											d="M5 13l4 4L19 7"
 										/>
 									</svg>
-									<span>Livraison gratuite dès 60€</span>
+									<span>Livraison gratuite dès 69€</span>
 								</div>
 								<div className="flex items-center gap-2">
 									<svg

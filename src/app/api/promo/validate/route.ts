@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -12,6 +13,21 @@ export async function POST(request: NextRequest) {
 				{ error: "Code et montant requis" },
 				{ status: 400 }
 			);
+		}
+
+		// Vérifier l'authentification pour obtenir l'ID utilisateur
+		const token = request.cookies.get("auth-token")?.value;
+		let userId: string | null = null;
+
+		if (token) {
+			try {
+				const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
+				userId = decoded.userId;
+			} catch (error) {
+				console.log(
+					"Token invalide ou expiré, validation sans restriction utilisateur"
+				);
+			}
 		}
 
 		// Rechercher le code promo
@@ -66,6 +82,26 @@ export async function POST(request: NextRequest) {
 				},
 				{ status: 200 }
 			);
+		}
+
+		// Vérifier si l'utilisateur a déjà utilisé ce code promo
+		if (userId) {
+			const existingOrder = await prisma.order.findFirst({
+				where: {
+					userId: userId,
+					promoCodeId: promoCode.id,
+				},
+			});
+
+			if (existingOrder) {
+				return NextResponse.json(
+					{
+						valid: false,
+						message: "Vous avez déjà utilisé ce code promo",
+					},
+					{ status: 200 }
+				);
+			}
 		}
 
 		// Calculer la réduction

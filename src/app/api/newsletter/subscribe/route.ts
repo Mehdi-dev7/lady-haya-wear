@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 			});
 		}
 
-		// Optionnel : Envoyer un email de confirmation via Brevo
+		// Optionnel : Envoyer un email de confirmation via Brevo avec le code promo
 		try {
 			await sendWelcomeEmail(email);
 		} catch (emailError) {
@@ -93,6 +93,9 @@ async function sendWelcomeEmail(email: string) {
 				.content { background: white; padding: 30px; }
 				.footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 0.9rem; color: #666; }
 				.btn { display: inline-block; background: #8a5f3d; color: white !important; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+				.promo-box { background: linear-gradient(135deg, #8a5f3d, #a67c52); color: white; padding: 25px; border-radius: 12px; text-align: center; margin: 25px 0; }
+				.promo-code { background: white; color: #8a5f3d; padding: 15px 25px; border-radius: 8px; font-family: monospace; font-size: 1.2rem; font-weight: bold; margin: 15px 0; display: inline-block; }
+				.promo-text { font-size: 1.1rem; margin-bottom: 15px; }
 			</style>
 		</head>
 		<body>
@@ -102,14 +105,24 @@ async function sendWelcomeEmail(email: string) {
 					<p style="color: #666; margin: 0;">Votre boutique de mode</p>
 				</div>
 				<div class="content">
-					<h2 style="color: #8a5f3d;">Bienvenue dans notre communauté</h2>
+					<h2 style="color: #8a5f3d;">Bienvenue dans notre communauté ! 🎉</h2>
 					<p>Merci de vous être inscrit(e) à notre newsletter.</p>
-					<p>Vous recevrez :</p>
+					
+					<div class="promo-box">
+						<div class="promo-text">🎁 <strong>Votre cadeau de bienvenue :</strong></div>
+						<div style="font-size: 1.3rem; margin-bottom: 10px;">10% de réduction sur votre première commande !</div>
+						<div class="promo-code">NEWSLETTER10</div>
+						<div style="font-size: 0.9rem; opacity: 0.9;">Valable sur une commande de 20€ minimum</div>
+					</div>
+					
+					<p>Vous recevrez également :</p>
 					<ul>
-						<li>Nos nouvelles collections</li>
-						<li>Des informations sur nos produits</li>
-						<li>Des conseils mode et style</li>
+						<li>Nos nouvelles collections en avant-première</li>
+						<li>Des informations exclusives sur nos produits</li>
+						<li>Des conseils mode et style personnalisés</li>
+						<li>Des offres spéciales réservées aux abonnés</li>
 					</ul>
+					
 					<p>À très bientôt,<br>L'équipe Lady Haya Wear</p>
 					<br>
 					<a href="${process.env.NEXT_PUBLIC_APP_URL || "https://ladyhaya-wear.fr"}/collections" class="btn">Découvrir nos collections</a>

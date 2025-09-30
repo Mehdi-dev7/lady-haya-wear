@@ -60,7 +60,7 @@ export default function Newsletter() {
 			{/* Contenu de la newsletter - reste dans l'image */}
 			<div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
 				<motion.h2
-					className="text-5xl lg:text-6xl font-alex-brush text-logo mt-8 mb-6 lg:mb-0 drop-shadow-lg"
+					className="text-5xl lg:text-6xl font-alex-brush text-logo mt-8 mb-4 lg:mb-2 drop-shadow-lg"
 					initial={{ y: 50, opacity: 0 }}
 					whileInView={{ y: 0, opacity: 1 }}
 					viewport={{ once: true, amount: 0.1 }}
@@ -70,7 +70,17 @@ export default function Newsletter() {
 				</motion.h2>
 
 				<motion.div
-					className="bg-nude-light/80 backdrop-blur-xs rounded-3xl p-1 max-w-sm xl:max-w-md shadow-2xl mx-auto lg:ml-auto lg:mr-24 2xl:mr-54 border-2 border-rose-dark"
+					className="bg-rose-light px-6 py-3 rounded-xl text-lg font-medium shadow-lg mb-6 lg:mb-4"
+					initial={{ scale: 0, opacity: 0 }}
+					whileInView={{ scale: 1, opacity: 1 }}
+					viewport={{ once: true, amount: 0.1 }}
+					transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+				>
+					🎉 <span className="font-poppins text-logo">Inscrivez-vous pour bénéficier de 10% de réduction</span>
+				</motion.div>
+
+				<motion.div
+					className="bg-nude-light/80 backdrop-blur-xs rounded-3xl p-1 max-w-sm xl:max-w-md shadow-2xl lg:mb-6 mx-auto lg:ml-auto lg:mr-24 2xl:mr-54 border-2 border-rose-dark"
 					initial={{ y: 100, opacity: 0, scale: 0.8 }}
 					whileInView={{ y: 0, opacity: 1, scale: 1 }}
 					viewport={{ once: true, amount: 0.1 }}
@@ -110,7 +120,7 @@ export default function Newsletter() {
 								</svg>
 							</motion.div>
 							<motion.p
-								className="text-rose-light font-light text-base leading-relaxed drop-shadow-sm"
+								className="text-rose-light font-poppins text-base leading-relaxed drop-shadow-sm"
 								initial={{ y: 20, opacity: 0 }}
 								whileInView={{ y: 0, opacity: 1 }}
 								viewport={{ once: true, amount: 0.1 }}

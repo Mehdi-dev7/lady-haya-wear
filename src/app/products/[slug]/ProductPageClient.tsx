@@ -785,7 +785,7 @@ export function ProductPageClient({
 										<div className="font-semibold text-sm text-nude-dark">
 											Livraison gratuite
 										</div>
-										<div className="text-xs text-gray-600">Dès 60€ d'achat</div>
+										<div className="text-xs text-gray-600">Dès 69€ d'achat</div>
 									</div>
 								</motion.div>
 
@@ -805,7 +805,7 @@ export function ProductPageClient({
 												Paiement sécurisé
 											</div>
 											<div className="text-xs text-gray-600">
-												CB, PayPal, Apple Pay
+												CB, PayPal
 											</div>
 										</div>
 									</Link>
@@ -824,7 +824,7 @@ export function ProductPageClient({
 										<TbPackage className="w-6 h-6 text-orange-500 flex-shrink-0" />
 										<div>
 											<div className="font-semibold text-sm text-nude-dark">
-												Echange possible dans les 30 jours
+												Retours possibles dans les 15 jours
 											</div>
 										</div>
 									</Link>

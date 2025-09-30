@@ -29,7 +29,7 @@ export default function ServicesInfo() {
 							<div className="font-medium text-sm text-nude-dark">
 								Livraison gratuite
 							</div>
-							<div className="text-xs text-gray-500">Dès 50€</div>
+							<div className="text-xs text-gray-500">Dès 69€</div>
 						</div>
 						{/* Trait de séparation à droite - visible à partir de md */}
 						<div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-8 bg-nude-dark hidden md:block"></div>
