@@ -1,4 +1,5 @@
 import BulkPromoTool from "./bulkPromo";
+import BulkStockTool from "./bulkStock";
 
 export const tools = [
 	{
@@ -6,5 +7,11 @@ export const tools = [
 		title: "Promotions en Masse",
 		component: BulkPromoTool,
 		icon: () => "🎯",
+	},
+	{
+		name: "bulk-stock",
+		title: "Gestion du Stock",
+		component: BulkStockTool,
+		icon: () => "📦",
 	},
 ];

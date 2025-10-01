@@ -2,10 +2,82 @@
 
 import SalesChart from "@/components/Dashboard/SalesChart";
 import StatsCard from "@/components/Dashboard/StatsCard";
-import { Package, ShoppingCart, TrendingUp, Users, Edit3, ExternalLink } from "lucide-react";
+import { sanityClient } from "@/lib/sanity";
+import {
+	AlertTriangle,
+	Edit3,
+	ExternalLink,
+	Package,
+	ShoppingCart,
+	TrendingUp,
+	Users,
+} from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+interface LowStockProduct {
+	_id: string;
+	name: string;
+	product: {
+		name: string;
+	};
+	colors: Array<{
+		name: string;
+		sizes: Array<{
+			size: string;
+			quantity: number;
+		}>;
+	}>;
+}
 
 export default function DashboardPage() {
+	const [lowStockProducts, setLowStockProducts] = useState<LowStockProduct[]>(
+		[]
+	);
+	const [loading, setLoading] = useState(true);
+
+	// Charger les produits avec stock faible
+	useEffect(() => {
+		const fetchLowStockProducts = async () => {
+			try {
+				const products = await sanityClient.fetch(`
+					*[_type == "productDetail"] {
+						_id,
+						name,
+						product-> {
+							name
+						},
+						colors[] {
+							name,
+							sizes[] {
+								size,
+								quantity
+							}
+						}
+					}
+				`);
+
+				// Filtrer les produits avec stock faible (quantité < 5)
+				const lowStock = products.filter((product: LowStockProduct) =>
+					product.colors.some((color) =>
+						color.sizes.some((size) => size.quantity > 0 && size.quantity < 5)
+					)
+				);
+
+				setLowStockProducts(lowStock);
+			} catch (error) {
+				console.error(
+					"Erreur lors du chargement des produits en stock faible:",
+					error
+				);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchLowStockProducts();
+	}, []);
+
 	// Données de test pour les statistiques
 	const stats = [
 		{
@@ -64,7 +136,7 @@ export default function DashboardPage() {
 						Vue d'ensemble de votre boutique Lady Haya Wear
 					</p>
 				</div>
-				
+
 				{/* Actions rapides */}
 				<div className="mt-4 sm:mt-0 flex flex-wrap gap-3">
 					<Link
@@ -93,6 +165,65 @@ export default function DashboardPage() {
 					/>
 				))}
 			</div>
+
+			{/* Alertes de stock faible */}
+			{lowStockProducts.length > 0 && (
+				<div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
+					<div className="flex items-center gap-3 mb-4">
+						<AlertTriangle className="w-6 h-6 text-orange-600" />
+						<h3 className="text-lg font-semibold text-orange-800">
+							⚠️ Alertes de Stock Faible
+						</h3>
+						<span className="bg-orange-200 text-orange-800 px-2 py-1 rounded-full text-sm font-medium">
+							{lowStockProducts.length} produit
+							{lowStockProducts.length > 1 ? "s" : ""}
+						</span>
+					</div>
+					<div className="space-y-3">
+						{lowStockProducts.slice(0, 5).map((product) => (
+							<div
+								key={product._id}
+								className="flex items-center justify-between bg-white rounded-lg p-3 border border-orange-200"
+							>
+								<div className="flex-1">
+									<p className="font-medium text-nude-dark">{product.name}</p>
+									<div className="flex flex-wrap gap-2 mt-1">
+										{product.colors.map((color, colorIndex) =>
+											color.sizes
+												.filter(
+													(size) => size.quantity > 0 && size.quantity < 5
+												)
+												.map((size, sizeIndex) => (
+													<span
+														key={`${colorIndex}-${sizeIndex}`}
+														className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs font-medium"
+													>
+														{color.name} {size.size}: {size.quantity}
+													</span>
+												))
+										)}
+									</div>
+								</div>
+								<Link
+									href="/studio"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-orange-600 hover:text-orange-800 text-sm font-medium"
+								>
+									Gérer le stock
+								</Link>
+							</div>
+						))}
+						{lowStockProducts.length > 5 && (
+							<p className="text-sm text-orange-700 text-center">
+								Et {lowStockProducts.length - 5} autre
+								{lowStockProducts.length - 5 > 1 ? "s" : ""} produit
+								{lowStockProducts.length - 5 > 1 ? "s" : ""}...
+							</p>
+						)}
+					</div>
+				</div>
+			)}
 
 			{/* Graphique des ventes */}
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

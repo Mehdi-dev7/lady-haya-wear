@@ -1,5 +1,6 @@
 import { sendCustomEmail, sendOrderConfirmationEmail } from "@/lib/brevo";
 import { generateInvoicePDFAsBuffer } from "@/lib/invoice-generator";
+import { sanityClient } from "@/lib/sanity";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
@@ -104,6 +105,112 @@ export async function POST(request: NextRequest) {
 				promoCode: true,
 			},
 		});
+
+		// Décrémenter le stock dans Sanity pour chaque article
+		try {
+			console.log("🔄 Début de la décrémentation du stock...");
+
+			for (const item of cartItems) {
+				console.log(
+					`📦 Traitement du produit ${item.name} (${item.color}, ${item.size}) - Quantité: ${item.quantity}`
+				);
+
+				// Récupérer le produit détaillé depuis Sanity
+				const productDetail = await sanityClient.fetch(
+					`
+					*[_type == "productDetail" && product._ref == $productId][0] {
+						_id,
+						colors[] {
+							name,
+							sizes[] {
+								size,
+								available,
+								quantity
+							},
+							available
+						}
+					}
+				`,
+					{ productId: item.id }
+				);
+
+				if (!productDetail) {
+					console.warn(`⚠️ Produit détaillé non trouvé pour l'ID: ${item.id}`);
+					continue;
+				}
+
+				// Trouver la couleur et la taille correspondantes
+				const colorIndex = productDetail.colors.findIndex(
+					(color: any) => color.name === item.color
+				);
+
+				if (colorIndex === -1) {
+					console.warn(
+						`⚠️ Couleur "${item.color}" non trouvée pour le produit ${item.name}`
+					);
+					continue;
+				}
+
+				const sizeIndex = productDetail.colors[colorIndex].sizes.findIndex(
+					(size: any) => size.size === item.size
+				);
+
+				if (sizeIndex === -1) {
+					console.warn(
+						`⚠️ Taille "${item.size}" non trouvée pour le produit ${item.name} (${item.color})`
+					);
+					continue;
+				}
+
+				// Vérifier le stock disponible
+				const currentStock =
+					productDetail.colors[colorIndex].sizes[sizeIndex].quantity;
+				if (currentStock < item.quantity) {
+					console.error(
+						`❌ Stock insuffisant pour ${item.name} (${item.color}, ${item.size}): ${currentStock} disponible, ${item.quantity} demandé`
+					);
+					return NextResponse.json(
+						{
+							error: `Stock insuffisant pour ${item.name} (${item.color}, ${item.size}). Stock disponible: ${currentStock}`,
+						},
+						{ status: 400 }
+					);
+				}
+
+				// Calculer le nouveau stock
+				const newQuantity = currentStock - item.quantity;
+				const newAvailable = newQuantity > 0;
+
+				// Mettre à jour le stock dans Sanity
+				const updatedColors = [...productDetail.colors];
+				const updatedColor = { ...updatedColors[colorIndex] };
+				const updatedSizes = [...updatedColor.sizes];
+				updatedSizes[sizeIndex] = {
+					...updatedSizes[sizeIndex],
+					quantity: newQuantity,
+					available: newAvailable,
+				};
+				updatedColor.sizes = updatedSizes;
+				updatedColors[colorIndex] = updatedColor;
+
+				await sanityClient
+					.patch(productDetail._id)
+					.set({ colors: updatedColors })
+					.commit();
+
+				console.log(
+					`✅ Stock mis à jour pour ${item.name} (${item.color}, ${item.size}): ${currentStock} → ${newQuantity}`
+				);
+			}
+
+			console.log("✅ Décrémentation du stock terminée avec succès");
+		} catch (error) {
+			console.error("❌ Erreur lors de la décrémentation du stock:", error);
+			return NextResponse.json(
+				{ error: "Erreur lors de la mise à jour du stock" },
+				{ status: 500 }
+			);
+		}
 
 		// Vider le panier
 		await prisma.cartItem.deleteMany({
