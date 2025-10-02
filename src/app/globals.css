@@ -4,6 +4,46 @@
 
 @import "tailwindcss";
 
+/* Protection des images */
+img {
+	-webkit-user-select: none !important;
+	-moz-user-select: none !important;
+	-ms-user-select: none !important;
+	user-select: none !important;
+	-webkit-user-drag: none !important;
+	-moz-user-drag: none !important;
+	-ms-user-drag: none !important;
+	user-drag: none !important;
+	-webkit-touch-callout: none !important;
+	pointer-events: auto;
+	outline: none !important;
+}
+
+/* Protection des éléments contenant des images */
+[data-protected] {
+	-webkit-user-select: none !important;
+	-moz-user-select: none !important;
+	-ms-user-select: none !important;
+	user-select: none !important;
+	-webkit-touch-callout: none !important;
+}
+
+/* Empêcher le highlight sur les images */
+img::selection,
+img::-moz-selection,
+[data-protected]::selection,
+[data-protected]::-moz-selection {
+	background: transparent !important;
+	color: inherit !important;
+}
+
+/* Masquer l'outline sur les éléments images */
+img:focus,
+[data-protected]:focus {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
 /* Fonts */
 @font-face {
 	font-family: "AlexBrush-Regular";

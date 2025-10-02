@@ -1,5 +1,6 @@
 import { CSRFProtection } from "@/components/Security/CSRFProtection";
 import StudioWrapper from "@/components/StudioWrapper";
+import LightImageProtection from "@/components/ui/LightImageProtection";
 import { AuthProvider } from "@/lib/AuthContext";
 import { CartProvider } from "@/lib/CartContext";
 import { FavoritesProvider } from "@/lib/FavoritesContext";
@@ -33,6 +34,7 @@ export default function RootLayout({
 			</head>
 			<body className="antialiased">
 				<CSRFProtection>
+					<LightImageProtection />
 					<AuthProvider>
 						<CartProvider>
 							<FavoritesProvider>
