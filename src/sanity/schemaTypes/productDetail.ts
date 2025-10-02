@@ -57,6 +57,10 @@ export default defineType({
 			of: [
 				{
 					type: "object",
+					options: {
+						collapsible: true,
+						collapsed: true,
+					},
 					fields: [
 						{
 							name: "name",
@@ -311,21 +315,13 @@ export default defineType({
 			productName: "product.name",
 			isNew: "badges.isNew",
 			isPromo: "badges.isPromo",
-			colors: "colors",
 		},
 		prepare(selection) {
-			const { title, subtitle, media, productName, isNew, isPromo, colors } =
-				selection;
+			const { title, subtitle, media, productName, isNew, isPromo } = selection;
 			let badges = [];
 			if (productName) badges.push("📋");
 			if (isNew) badges.push("🆕");
 			if (isPromo) badges.push("🏷️");
-
-			// Vérifier le stock faible
-			const hasLowStock = colors?.some((color: any) =>
-				color.sizes?.some((size: any) => size.quantity > 0 && size.quantity < 5)
-			);
-			if (hasLowStock) badges.push("⚠️");
 
 			return {
 				title: title,
