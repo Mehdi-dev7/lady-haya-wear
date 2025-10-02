@@ -111,6 +111,7 @@ async function sendWelcomeEmail(email: string) {
 					<div class="promo-box">
 						<div class="promo-text">🎁 <strong>Votre cadeau de bienvenue :</strong></div>
 						<div style="font-size: 1.3rem; margin-bottom: 10px;">10% de réduction sur votre première commande !</div>
+						<div style="font-size: 1.3rem; margin-bottom: 10px;">avec le code promo :</div>
 						<div class="promo-code">NEWSLETTER10</div>
 						<div style="font-size: 0.9rem; opacity: 0.9;">Valable sur une commande de 20€ minimum</div>
 					</div>
