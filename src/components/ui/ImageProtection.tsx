@@ -2,6 +2,16 @@
 
 import { useEffect } from "react";
 
+// Déclaration des types pour les propriétés personnalisées de window
+declare global {
+	interface Window {
+		devTools?: {
+			open?: () => void;
+			close?: () => void;
+		};
+	}
+}
+
 export default function ImageProtection() {
 	useEffect(() => {
 		// Fonction pour bloquer les raccourcis clavier malveillants
@@ -113,9 +123,14 @@ export default function ImageProtection() {
 			if (
 				typeof window !== "undefined" &&
 				window.devTools &&
-				typeof window.devTools.open === "function"
+				typeof window.devTools.close === "function"
 			) {
-				window.devTools.close();
+				try {
+					window.devTools.close();
+				} catch (error) {
+					// Ignorer les erreurs si les outils dev ne sont pas configurables
+					console.debug("Impossible de fermer les outils développeur");
+				}
 			}
 		};
 

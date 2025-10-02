@@ -15,6 +15,7 @@ interface SafeImageProps {
 	placeholder?: "blur" | "empty";
 	blurDataURL?: string;
 	fallback?: string;
+	protected?: boolean; // Nouvelle option pour activer la protection
 }
 
 export default function SafeImage({
@@ -29,6 +30,7 @@ export default function SafeImage({
 	placeholder = "empty",
 	blurDataURL,
 	fallback = "/assets/placeholder.jpg",
+	protected: isProtected = false,
 }: SafeImageProps) {
 	const [imageError, setImageError] = useState(false);
 	const [isMounted, setIsMounted] = useState(false);
@@ -91,7 +93,7 @@ export default function SafeImage({
 		);
 	}
 
-	return (
+	const imageElement = (
 		<Image
 			src={src}
 			alt={alt}
@@ -110,5 +112,36 @@ export default function SafeImage({
 			unoptimized={false}
 			quality={90}
 		/>
+	);
+
+	// Si pas de protection, retourner l'image directement
+	if (!isProtected) {
+		return imageElement;
+	}
+
+	// Si protection activée, wrapper dans un conteneur protégé
+	return (
+		<div
+			className="relative"
+			onContextMenu={(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				return false;
+			}}
+			onDragStart={(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				return false;
+			}}
+			style={{
+				userSelect: "none",
+				MozUserSelect: "none",
+				WebkitUserSelect: "none",
+				WebkitTouchCallout: "none",
+			}}
+			data-protected="true"
+		>
+			{imageElement}
+		</div>
 	);
 }

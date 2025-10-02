@@ -2,6 +2,7 @@
 
 import SafeImage from "./SafeImage";
 
+// Interface identique à SafeImageProps mais héritée
 interface ProtectedImageSimpleProps {
 	src: string | null | undefined;
 	alt: string;
@@ -14,37 +15,9 @@ interface ProtectedImageSimpleProps {
 	placeholder?: "blur" | "empty";
 	blurDataURL?: string;
 	fallback?: string;
-	onError?: () => void;
 }
 
 export default function ProtectedImageSimple(props: ProtectedImageSimpleProps) {
-	return (
-		<div
-			className="relative"
-			onContextMenu={(e) => {
-				e.preventDefault();
-				e.stopPropagation();
-				return false;
-			}}
-			onDragStart={(e) => {
-				e.preventDefault();
-				e.stopPropagation();
-				return false;
-			}}
-			onSelectStart={(e) => {
-				e.preventDefault();
-				e.stopPropagation();
-				return false;
-			}}
-			style={{
-				userSelect: "none",
-				MozUserSelect: "none",
-				WebkitUserSelect: "none",
-				WebkitTouchCallout: "none",
-			}}
-			data-protected="true"
-		>
-			<SafeImage {...props} />
-		</div>
-	);
+	// Utiliser SafeImage avec protection activée
+	return <SafeImage {...props} protected={true} />;
 }
