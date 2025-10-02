@@ -88,13 +88,13 @@ async function sendWelcomeEmail(email: string) {
 			<style>
 				body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
 				.container { max-width: 600px; margin: 0 auto; padding: 20px; }
-				.header { background: #f8f9fa; padding: 30px; text-align: center; }
+				.header { background: #f9dede; padding: 30px; text-align: center; }
 				.logo { font-family: 'Alex Brush', cursive; font-size: 2.5rem; color: #8a5f3d; margin-bottom: 10px; }
 				.content { background: white; padding: 30px; }
-				.footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 0.9rem; color: #666; }
+				.footer { background: #f9dede; padding: 20px; text-align: center; font-size: 0.9rem; color: #666; }
 				.btn { display: inline-block; background: #8a5f3d; color: white !important; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-				.promo-box { background: linear-gradient(135deg, #8a5f3d, #a67c52); color: white; padding: 25px; border-radius: 12px; text-align: center; margin: 25px 0; }
-				.promo-code { background: white; color: #8a5f3d; padding: 15px 25px; border-radius: 8px; font-family: monospace; font-size: 1.2rem; font-weight: bold; margin: 15px 0; display: inline-block; }
+				.promo-box { background: #b49982; color: white; padding: 25px; border-radius: 12px; text-align: center; margin: 25px 0; }
+				.promo-code { background: #f9dede; color: #8a5f3d; padding: 15px 25px; border-radius: 8px; font-family: monospace; font-size: 1.2rem; font-weight: bold; margin: 15px 0; display: inline-block; }
 				.promo-text { font-size: 1.1rem; margin-bottom: 15px; }
 			</style>
 		</head>
@@ -102,7 +102,7 @@ async function sendWelcomeEmail(email: string) {
 			<div class="container">
 				<div class="header">
 					<div class="logo">Lady Haya Wear</div>
-					<p style="color: #666; margin: 0;">Votre boutique de mode</p>
+					<p style="color: #8a5f3d; margin: 0;">Votre boutique de mode</p>
 				</div>
 				<div class="content">
 					<h2 style="color: #8a5f3d;">Bienvenue dans notre communauté ! 🎉</h2>
