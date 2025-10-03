@@ -18,13 +18,9 @@ import { useClient, useSchema } from "sanity";
 interface ProductDetail {
 	_id: string;
 	name: string;
-	product: {
+	category: {
 		_id: string;
 		name: string;
-		category: {
-			_id: string;
-			name: string;
-		};
 	};
 	colors: Array<{
 		name: string;
@@ -108,16 +104,12 @@ export default function BulkStockTool() {
 			try {
 				const data = await client.fetch(
 					`
-          *[_type == "productDetail" && product->category._ref == $categoryId] | order(name asc) {
+          *[_type == "productUnified" && category._ref == $categoryId] | order(name asc) {
             _id,
             name,
-            product-> {
+            category-> {
               _id,
-              name,
-              category-> {
-                _id,
-                name
-              }
+              name
             },
             colors[] {
               name,
@@ -421,16 +413,12 @@ export default function BulkStockTool() {
 			// Recharger les produits pour voir les changements
 			const data = await client.fetch(
 				`
-        *[_type == "productDetail" && product->category._ref == $categoryId] | order(name asc) {
+        *[_type == "productUnified" && category._ref == $categoryId] | order(name asc) {
           _id,
           name,
-          product-> {
+          category-> {
             _id,
-            name,
-            category-> {
-              _id,
-              name
-            }
+            name
           },
           colors[] {
             name,
@@ -501,16 +489,12 @@ export default function BulkStockTool() {
 			// Recharger les produits
 			const data = await client.fetch(
 				`
-        *[_type == "productDetail" && product->category._ref == $categoryId] | order(name asc) {
+        *[_type == "productUnified" && category._ref == $categoryId] | order(name asc) {
           _id,
           name,
-          product-> {
+          category-> {
             _id,
-            name,
-            category-> {
-              _id,
-              name
-            }
+            name
           },
           colors[] {
             name,

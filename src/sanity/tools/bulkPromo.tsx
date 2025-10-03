@@ -89,14 +89,18 @@ export default function BulkPromoTool() {
 			try {
 				const data = await client.fetch(
 					`
-          *[_type == "product" && category._ref == $categoryId] | order(name asc) {
+          *[_type == "productUnified" && category._ref == $categoryId] | order(name asc) {
             _id,
             name,
             category-> {
               _id,
               name
             },
-            badges
+            "badges": {
+              "isPromo": isPromo,
+              "promoType": "percentage",
+              "promoPercentage": promoPercentage
+            }
           }
         `,
 					{ categoryId: selectedCategory }
@@ -187,16 +191,11 @@ export default function BulkPromoTool() {
 		try {
 			const updates = Array.from(selectedProducts).map((productId) => {
 				const updateData: any = {
-					badges: {
-						isPromo: true,
-						promoType: promoType,
-					},
+					isPromo: true,
 				};
 
 				if (promoType === "percentage") {
-					updateData.badges.promoPercentage = parseFloat(promoValue);
-				} else {
-					updateData.badges.originalPrice = parseFloat(promoValue);
+					updateData.promoPercentage = parseFloat(promoValue);
 				}
 
 				return client.patch(productId).set(updateData).commit();
@@ -213,14 +212,18 @@ export default function BulkPromoTool() {
 			// Recharger les produits pour voir les changements
 			const data = await client.fetch(
 				`
-        *[_type == "product" && category._ref == $categoryId] | order(name asc) {
+        *[_type == "productUnified" && category._ref == $categoryId] | order(name asc) {
           _id,
           name,
           category-> {
             _id,
             name
           },
-          badges
+          "badges": {
+            "isPromo": isPromo,
+            "promoType": "percentage",
+            "promoPercentage": promoPercentage
+          }
         }
       `,
 				{ categoryId: selectedCategory }
@@ -257,12 +260,8 @@ export default function BulkPromoTool() {
 				return client
 					.patch(productId)
 					.set({
-						badges: {
-							isPromo: false,
-							promoType: undefined,
-							promoPercentage: undefined,
-							originalPrice: undefined,
-						},
+						isPromo: false,
+						promoPercentage: undefined,
 					})
 					.commit();
 			});
@@ -278,14 +277,18 @@ export default function BulkPromoTool() {
 			// Recharger les produits
 			const data = await client.fetch(
 				`
-        *[_type == "product" && category._ref == $categoryId] | order(name asc) {
+        *[_type == "productUnified" && category._ref == $categoryId] | order(name asc) {
           _id,
           name,
           category-> {
             _id,
             name
           },
-          badges
+          "badges": {
+            "isPromo": isPromo,
+            "promoType": "percentage",
+            "promoPercentage": promoPercentage
+          }
         }
       `,
 				{ categoryId: selectedCategory }
