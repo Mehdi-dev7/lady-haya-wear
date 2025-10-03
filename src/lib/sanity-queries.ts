@@ -540,3 +540,327 @@ export async function getFeaturedCategories(): Promise<Category[]> {
 
 	return sanityClient.fetch(query);
 }
+
+// ========== NOUVELLES QUERIES POUR PRODUITS UNIFIÉS ==========
+
+// Requête pour récupérer tous les produits unifiés
+export async function getAllUnifiedProducts(): Promise<Product[]> {
+	const query = `
+    *[_type == "productUnified"] {
+      _id,
+      _type,
+      name,
+      slug,
+      shortDescription,
+      description,
+      mainImage {
+        _type,
+        asset->,
+        alt
+      },
+      hoverImage {
+        _type,
+        asset->,
+        alt
+      },
+      category-> {
+        _id,
+        name,
+        slug
+      },
+      price,
+      originalPrice,
+      colors[] {
+        name,
+        hexCode,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
+        },
+        available
+      },
+      featured,
+      isNew,
+      isPromo,
+      promoPercentage,
+      tags,
+      _createdAt,
+      _updatedAt
+    } | order(_createdAt desc)
+  `;
+
+	try {
+		console.log("🔍 Exécution de la requête getAllUnifiedProducts...");
+		const result = await sanityClient.fetch(query);
+		console.log(
+			"✅ Requête getAllUnifiedProducts réussie, nombre de produits:",
+			result.length
+		);
+		return result;
+	} catch (error) {
+		console.error("❌ Erreur dans getAllUnifiedProducts:", error);
+		throw error;
+	}
+}
+
+// Requête pour récupérer un produit unifié par slug
+export async function getUnifiedProductBySlug(
+	slug: string
+): Promise<ProductDetail | null> {
+	const query = `
+    *[_type == "productUnified" && slug.current == $slug][0] {
+      _id,
+      _type,
+      name,
+      slug,
+      shortDescription,
+      description,
+      mainImage {
+        _type,
+        asset->,
+        alt
+      },
+      hoverImage {
+        _type,
+        asset->,
+        alt
+      },
+      category-> {
+        _id,
+        name,
+        slug
+      },
+      price,
+      originalPrice,
+      colors[] {
+        name,
+        hexCode,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
+        },
+        available
+      },
+      featured,
+      isNew,
+      isPromo,
+      promoPercentage,
+      tags,
+      _createdAt,
+      _updatedAt
+    }
+  `;
+
+	return sanityClient.fetch(query, { slug });
+}
+
+// Requête pour récupérer les produits unifiés d'une catégorie
+export async function getUnifiedProductsByCategory(
+	categorySlug: string
+): Promise<Product[]> {
+	const query = `
+    *[_type == "productUnified" && category->slug.current == $categorySlug] {
+      _id,
+      _type,
+      name,
+      slug,
+      shortDescription,
+      description,
+      mainImage {
+        _type,
+        asset->,
+        alt
+      },
+      hoverImage {
+        _type,
+        asset->,
+        alt
+      },
+      category-> {
+        _id,
+        name,
+        slug
+      },
+      price,
+      originalPrice,
+      colors[] {
+        name,
+        hexCode,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
+        },
+        available
+      },
+      featured,
+      isNew,
+      isPromo,
+      promoPercentage,
+      tags,
+      _createdAt,
+      _updatedAt
+    } | order(_createdAt desc)
+  `;
+
+	return sanityClient.fetch(query, { categorySlug });
+}
+
+// Requête pour récupérer les produits unifiés mis en avant (Coups de cœur)
+export async function getFeaturedUnifiedProducts(): Promise<Product[]> {
+	const query = `
+    *[_type == "productUnified" && featured == true] {
+      _id,
+      _type,
+      name,
+      slug,
+      shortDescription,
+      description,
+      mainImage {
+        _type,
+        asset->,
+        alt
+      },
+      hoverImage {
+        _type,
+        asset->,
+        alt
+      },
+      category-> {
+        _id,
+        name,
+        slug
+      },
+      price,
+      originalPrice,
+      colors[] {
+        name,
+        hexCode,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
+        },
+        available
+      },
+      featured,
+      isNew,
+      isPromo,
+      promoPercentage,
+      tags,
+      _createdAt,
+      _updatedAt
+    } | order(_createdAt desc) [0...6]
+  `;
+
+	return sanityClient.fetch(query);
+}
+
+// Requête pour rechercher des produits unifiés
+export async function searchUnifiedProducts(
+	searchTerm: string
+): Promise<Product[]> {
+	const query = `
+    *[_type == "productUnified" && (
+      name match $searchTerm + "*" ||
+      shortDescription match $searchTerm + "*" ||
+      description match $searchTerm + "*" ||
+      category->name match $searchTerm + "*"
+    )] {
+      _id,
+      _type,
+      name,
+      slug,
+      shortDescription,
+      description,
+      mainImage {
+        _type,
+        asset->,
+        alt
+      },
+      hoverImage {
+        _type,
+        asset->,
+        alt
+      },
+      category-> {
+        _id,
+        name,
+        slug
+      },
+      price,
+      originalPrice,
+      colors[] {
+        name,
+        hexCode,
+        mainImage {
+          _type,
+          asset->,
+          alt
+        },
+        additionalImages[] {
+          _type,
+          asset->,
+          alt
+        },
+        sizes[] {
+          size,
+          available,
+          quantity
+        },
+        available
+      },
+      featured,
+      isNew,
+      isPromo,
+      promoPercentage,
+      tags,
+      _createdAt,
+      _updatedAt
+    } | order(_createdAt desc)
+  `;
+
+	return sanityClient.fetch(query, { searchTerm });
+}
