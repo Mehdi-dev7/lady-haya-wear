@@ -1,6 +1,5 @@
 import BulkPromoTool from "./bulkPromo";
 import BulkStockTool from "./bulkStock";
-import FixMissingKeys from "./fixMissingKeys";
 
 export const tools = [
 	{
@@ -14,11 +13,5 @@ export const tools = [
 		title: "Gestion du Stock",
 		component: BulkStockTool,
 		icon: () => "📦",
-	},
-	{
-		name: "fix-missing-keys",
-		title: "Corriger les Clés Manquantes",
-		component: FixMissingKeys,
-		icon: () => "🔧",
 	},
 ];
