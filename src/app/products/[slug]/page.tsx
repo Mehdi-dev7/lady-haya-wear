@@ -35,13 +35,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
 	// Produits similaires (même catégorie)
 	const similarProducts = allProducts
 		.filter(
-			(p) => p.category?._id === product.category?._id && p._id !== product._id
+			(p: any) => p.category?._id === (product as any).category?._id && p._id !== product._id
 		)
 		.slice(0, 4);
 
 	// Combiner toutes les images pour la galerie (images de toutes les couleurs)
 	const allImages = [
-		...product.colors.flatMap((color: any) => [
+		...(product as any).colors.flatMap((color: any) => [
 			color.mainImage,
 			...(color.additionalImages || []),
 		]),
