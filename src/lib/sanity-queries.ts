@@ -595,6 +595,11 @@ export async function getAllUnifiedProducts(): Promise<Product[]> {
       isNew,
       isPromo,
       promoPercentage,
+      "badges": {
+        "isPromo": isPromo,
+        "promoType": "percentage",
+        "promoPercentage": promoPercentage
+      },
       tags,
       _createdAt,
       _updatedAt
@@ -668,6 +673,11 @@ export async function getUnifiedProductBySlug(
       isNew,
       isPromo,
       promoPercentage,
+      "badges": {
+        "isPromo": isPromo,
+        "promoType": "percentage",
+        "promoPercentage": promoPercentage
+      },
       tags,
       _createdAt,
       _updatedAt
@@ -730,6 +740,11 @@ export async function getUnifiedProductsByCategory(
       isNew,
       isPromo,
       promoPercentage,
+      "badges": {
+        "isPromo": isPromo,
+        "promoType": "percentage",
+        "promoPercentage": promoPercentage
+      },
       tags,
       _createdAt,
       _updatedAt
@@ -790,6 +805,11 @@ export async function getFeaturedUnifiedProducts(): Promise<Product[]> {
       isNew,
       isPromo,
       promoPercentage,
+      "badges": {
+        "isPromo": isPromo,
+        "promoType": "percentage",
+        "promoPercentage": promoPercentage
+      },
       tags,
       _createdAt,
       _updatedAt
@@ -857,6 +877,11 @@ export async function searchUnifiedProducts(
       isNew,
       isPromo,
       promoPercentage,
+      "badges": {
+        "isPromo": isPromo,
+        "promoType": "percentage",
+        "promoPercentage": promoPercentage
+      },
       tags,
       _createdAt,
       _updatedAt
