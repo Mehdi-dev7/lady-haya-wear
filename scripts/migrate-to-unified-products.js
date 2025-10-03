@@ -5,7 +5,28 @@
  * en un seul document "productUnified" simplifié.
  */
 
+// Charger les variables d'environnement depuis .env ou .env.local
+require("dotenv").config({ path: ".env" });
+require("dotenv").config({ path: ".env.local" });
+
 const { createClient } = require("@sanity/client");
+
+// Vérifier les variables d'environnement
+if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
+	console.error("❌ Erreur : NEXT_PUBLIC_SANITY_PROJECT_ID manquant dans .env");
+	process.exit(1);
+}
+
+if (!process.env.NEXT_PUBLIC_SANITY_DATASET) {
+	console.error("❌ Erreur : NEXT_PUBLIC_SANITY_DATASET manquant dans .env");
+	process.exit(1);
+}
+
+if (!process.env.SANITY_API_TOKEN) {
+	console.error("❌ Erreur : SANITY_API_TOKEN manquant dans .env");
+	console.error("💡 Créez un token sur https://www.sanity.io/manage");
+	process.exit(1);
+}
 
 const client = createClient({
 	projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
