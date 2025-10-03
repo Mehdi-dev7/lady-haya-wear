@@ -1,7 +1,7 @@
 "use client";
 
 import ProductGrid from "@/components/ProductGrid/ProductGrid";
-import { getAllCategories, getAllProducts } from "@/lib/sanity-queries";
+import { getAllCategories, getAllUnifiedProducts } from "@/lib/sanity-queries";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -15,7 +15,7 @@ export default function AllProducts() {
 			try {
 				console.log("🔍 Début du chargement des données...");
 				const [productsData, categoriesData] = await Promise.all([
-					getAllProducts(),
+					getAllUnifiedProducts(),
 					getAllCategories(),
 				]);
 				console.log("📦 Produits récupérés:", productsData.length);

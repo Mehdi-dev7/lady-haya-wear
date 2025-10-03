@@ -1,6 +1,6 @@
 import {
-	getAllProductDetails,
-	getProductDetailBySlug,
+	getAllUnifiedProducts,
+	getUnifiedProductBySlug,
 } from "@/lib/sanity-queries";
 import { notFound } from "next/navigation";
 import { ProductPageClient } from "./ProductPageClient";
@@ -13,13 +13,13 @@ interface ProductPageProps {
 
 export default async function ProductPage({ params }: ProductPageProps) {
 	const resolvedParams = await params;
-	const product = await getProductDetailBySlug(resolvedParams.slug);
+	const product = await getUnifiedProductBySlug(resolvedParams.slug);
 
 	if (!product) {
 		notFound();
 	}
 
-	const allProducts = await getAllProductDetails();
+	const allProducts = await getAllUnifiedProducts();
 	const currentIndex = allProducts.findIndex(
 		(p) => p.slug?.current === resolvedParams.slug
 	);
@@ -36,9 +36,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 		)
 		.slice(0, 4);
 
-	// Combiner toutes les images pour la galerie (images générales + images de toutes les couleurs)
+	// Combiner toutes les images pour la galerie (images de toutes les couleurs)
 	const allImages = [
-		...(product.galleryImages || []),
 		...product.colors.flatMap((color: any) => [
 			color.mainImage,
 			...(color.additionalImages || []),

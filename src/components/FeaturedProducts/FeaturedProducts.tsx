@@ -1,7 +1,7 @@
 "use client";
 
 import { urlFor } from "@/lib/sanity";
-import { getFeaturedProducts } from "@/lib/sanity-queries";
+import { getFeaturedUnifiedProducts } from "@/lib/sanity-queries";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import SafeImage from "../ui/SafeImage";
@@ -37,7 +37,7 @@ export default function FeaturedProducts() {
 	useEffect(() => {
 		const fetchFeaturedProducts = async () => {
 			try {
-				const products = await getFeaturedProducts();
+				const products = await getFeaturedUnifiedProducts();
 				setFeaturedProducts(products as unknown as FeaturedProduct[]);
 			} catch (error) {
 				console.error(

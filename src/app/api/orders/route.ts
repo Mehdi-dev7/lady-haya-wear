@@ -116,9 +116,10 @@ export async function POST(request: NextRequest) {
 				);
 
 				// Récupérer le produit détaillé depuis Sanity
-				const productDetail = await sanityClient.fetch(
+				// Essayer d'abord avec le nouveau système unifié
+				let productDetail = await sanityClient.fetch(
 					`
-					*[_type == "productDetail" && product._ref == $productId][0] {
+					*[_type == "productUnified" && _id == $productId][0] {
 						_id,
 						colors[] {
 							name,
@@ -134,8 +135,29 @@ export async function POST(request: NextRequest) {
 					{ productId: item.id }
 				);
 
+				// Si pas trouvé, essayer avec l'ancien système (pour compatibilité)
 				if (!productDetail) {
-					console.warn(`⚠️ Produit détaillé non trouvé pour l'ID: ${item.id}`);
+					productDetail = await sanityClient.fetch(
+						`
+						*[_type == "productDetail" && product._ref == $productId][0] {
+							_id,
+							colors[] {
+								name,
+								sizes[] {
+									size,
+									available,
+									quantity
+								},
+								available
+							}
+						}
+					`,
+						{ productId: item.id }
+					);
+				}
+
+				if (!productDetail) {
+					console.warn(`⚠️ Produit non trouvé pour l'ID: ${item.id}`);
 					continue;
 				}
 

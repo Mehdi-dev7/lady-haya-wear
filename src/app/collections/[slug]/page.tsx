@@ -1,7 +1,10 @@
 import ProductGrid from "@/components/ProductGrid/ProductGrid";
 import SafeImage from "@/components/ui/SafeImage";
 import { urlFor } from "@/lib/sanity";
-import { getCategoryBySlug, getProductsByCategory } from "@/lib/sanity-queries";
+import {
+	getCategoryBySlug,
+	getUnifiedProductsByCategory,
+} from "@/lib/sanity-queries";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -19,7 +22,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
 		notFound();
 	}
 
-	const products = await getProductsByCategory(resolvedParams.slug);
+	const products = await getUnifiedProductsByCategory(resolvedParams.slug);
 
 	return (
 		<div>

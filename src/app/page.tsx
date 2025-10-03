@@ -8,7 +8,7 @@ import Slider from "@/components/Slider/Slider";
 import {
 	getAllCategories,
 	getFeaturedCategories,
-	getFeaturedProducts,
+	getFeaturedUnifiedProducts,
 } from "@/lib/sanity-queries";
 
 // Revalidation toutes les 60 secondes pour récupérer les nouvelles données de Sanity
@@ -17,7 +17,7 @@ export const revalidate = 60;
 export default async function Home() {
 	const featuredCategories = await getFeaturedCategories();
 	const allCategories = await getAllCategories();
-	const featuredProducts = await getFeaturedProducts();
+	const featuredProducts = await getFeaturedUnifiedProducts();
 
 	return (
 		<>
