@@ -5,6 +5,9 @@ import {
 import { notFound } from "next/navigation";
 import { ProductPageClient } from "./ProductPageClient";
 
+// Revalidation toutes les 60 secondes pour récupérer les nouvelles données de Sanity
+export const revalidate = 60;
+
 interface ProductPageProps {
 	params: Promise<{
 		slug: string;

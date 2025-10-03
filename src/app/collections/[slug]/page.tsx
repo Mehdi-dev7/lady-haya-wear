@@ -8,6 +8,9 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+// Revalidation toutes les 60 secondes pour récupérer les nouvelles données de Sanity
+export const revalidate = 60;
+
 type Props = {
 	params: Promise<{ slug: string }>;
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
