@@ -4,7 +4,7 @@ import { sanityClient } from "./sanity";
 export async function getProductDetails(productId: string) {
 	try {
 		const query = `
-      *[_type == "product" && _id == $productId][0] {
+      *[_type == "productUnified" && _id == $productId][0] {
         _id,
         name,
         price,

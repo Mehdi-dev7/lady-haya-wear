@@ -12,6 +12,12 @@ export const config = {
 // Client Sanity pour les requêtes
 export const sanityClient = createClient(config);
 
+// Client Sanity sans cache pour le dashboard admin (données en temps réel)
+export const sanityClientNoCache = createClient({
+	...config,
+	useCdn: false, // Toujours désactivé, même en production
+});
+
 // Builder pour les images Sanity
 const builder = imageUrlBuilder(sanityClient);
 

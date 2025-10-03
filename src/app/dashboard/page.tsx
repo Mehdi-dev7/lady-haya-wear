@@ -2,7 +2,7 @@
 
 import SalesChart from "@/components/Dashboard/SalesChart";
 import StatsCard from "@/components/Dashboard/StatsCard";
-import { sanityClient } from "@/lib/sanity";
+import { sanityClientNoCache } from "@/lib/sanity";
 import {
 	AlertTriangle,
 	Edit3,
@@ -18,9 +18,6 @@ import { useEffect, useState } from "react";
 interface LowStockProduct {
 	_id: string;
 	name: string;
-	product: {
-		name: string;
-	};
 	colors: Array<{
 		name: string;
 		sizes: Array<{
@@ -40,13 +37,10 @@ export default function DashboardPage() {
 	useEffect(() => {
 		const fetchLowStockProducts = async () => {
 			try {
-				const products = await sanityClient.fetch(`
-					*[_type == "productDetail"] {
+				const products = await sanityClientNoCache.fetch(`
+					*[_type == "productUnified"] {
 						_id,
 						name,
-						product-> {
-							name
-						},
 						colors[] {
 							name,
 							sizes[] {
