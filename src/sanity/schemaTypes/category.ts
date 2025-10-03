@@ -51,9 +51,11 @@ export default defineType({
 		}),
 		defineField({
 			name: "order",
-			title: "Ordre d'affichage",
+			title: "Ordre d'affichage (Carrousel 3D)",
 			type: "number",
 			initialValue: 0,
+			description:
+				"Définit l'ordre dans le carrousel 3D 'Nos Collections'. 0 = première position, 1 = deuxième, etc.",
 		}),
 	],
 	orderings: [

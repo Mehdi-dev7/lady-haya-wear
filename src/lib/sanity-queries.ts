@@ -416,8 +416,9 @@ export async function getAllCategories(): Promise<Category[]> {
         asset->,
         alt,
         caption
-      }
-    } | order(name asc)
+      },
+      order
+    } | order(order asc)
   `;
 
 	try {
