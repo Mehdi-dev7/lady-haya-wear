@@ -1,8 +1,6 @@
 import { getAdminFromRequest } from "@/lib/auth-utils";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 // POST - Nettoyer les anciennes campagnes (6 mois et plus)
 export async function POST(request: NextRequest) {

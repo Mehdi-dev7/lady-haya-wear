@@ -1,11 +1,9 @@
 import { sendCustomEmail, sendOrderConfirmationEmail } from "@/lib/brevo";
 import { generateInvoicePDFAsBuffer } from "@/lib/invoice-generator";
+import { prisma } from "@/lib/prisma";
 import { sanityClient } from "@/lib/sanity";
-import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 // Fonction pour générer un numéro de commande unique
 function generateOrderNumber(): string {

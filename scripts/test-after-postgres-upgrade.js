@@ -1,6 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const { prisma } = require("./prisma-client");
 
 async function testAfterUpgrade() {
 	try {
@@ -91,4 +89,3 @@ async function testAfterUpgrade() {
 }
 
 testAfterUpgrade();
-

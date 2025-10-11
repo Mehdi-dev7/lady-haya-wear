@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/prisma";
 import {
 	checkRateLimit,
 	logSecurityEvent,
@@ -6,13 +7,10 @@ import {
 	secureNameSchema,
 	validatePasswordStrength,
 } from "@/lib/security";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-
-const prisma = new PrismaClient();
 
 const registerSchema = z.object({
 	email: secureEmailSchema,

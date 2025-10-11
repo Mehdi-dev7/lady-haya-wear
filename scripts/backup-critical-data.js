@@ -1,8 +1,6 @@
-const { PrismaClient } = require("@prisma/client");
+const { prisma } = require("./prisma-client");
 const fs = require("fs");
 const path = require("path");
-
-const prisma = new PrismaClient();
 
 async function backupCriticalData() {
 	try {
@@ -100,4 +98,3 @@ async function backupCriticalData() {
 }
 
 backupCriticalData();
-

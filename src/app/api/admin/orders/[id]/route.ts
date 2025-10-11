@@ -1,9 +1,7 @@
 import { sendOrderStatusUpdateEmail } from "@/lib/brevo";
+import { prisma } from "@/lib/prisma";
 import { triggerReviewRequestForOrder } from "@/lib/review-automation";
-import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 // GET - Récupérer une commande spécifique
 export async function GET(

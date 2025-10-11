@@ -1,7 +1,6 @@
-import { PrismaClient, PromoType } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { PromoType } from "@prisma/client";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 export async function POST() {
 	try {

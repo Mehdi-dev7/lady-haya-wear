@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { randomBytes } from "crypto";
 import { sendReviewRequestEmail } from "./brevo";
-
-const prisma = new PrismaClient();
+import { prisma } from "./prisma";
 
 /**
  * Fonction pour déclencher automatiquement l'envoi d'email de demande d'avis

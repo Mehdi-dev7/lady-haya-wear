@@ -1,6 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const { prisma } = require("./prisma-client");
 
 async function removeConfirmedStatus() {
 	try {
@@ -48,10 +46,13 @@ async function removeConfirmedStatus() {
 			console.log(`  - ${stat.status}: ${stat._count.status} commande(s)`);
 		});
 	} catch (error) {
-		console.error("❌ Erreur lors de la suppression du statut CONFIRMED:", error);
+		console.error(
+			"❌ Erreur lors de la suppression du statut CONFIRMED:",
+			error
+		);
 	} finally {
 		await prisma.$disconnect();
 	}
 }
 
-removeConfirmedStatus(); 
+removeConfirmedStatus();

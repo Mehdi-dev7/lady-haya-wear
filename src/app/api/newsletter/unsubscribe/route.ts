@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 // POST - Désabonnement de la newsletter
 export async function POST(request: NextRequest) {
@@ -24,10 +22,7 @@ export async function POST(request: NextRequest) {
 		});
 
 		if (!user) {
-			return NextResponse.json(
-				{ error: "Email non trouvé" },
-				{ status: 404 }
-			);
+			return NextResponse.json({ error: "Email non trouvé" }, { status: 404 });
 		}
 
 		if (!user.newsletterSubscribed) {

@@ -1,14 +1,10 @@
-const { PrismaClient } = require("@prisma/client");
+const { prisma } = require("./prisma-client");
 
 // Test avec différentes configurations
 async function testConnection() {
 	console.log("🔍 Test de connexion à la base de données...\n");
 
 	try {
-		const prisma = new PrismaClient({
-			log: ["query", "info", "warn", "error"],
-		});
-
 		console.log("✅ Client Prisma créé");
 
 		// Test simple de connexion
@@ -49,4 +45,3 @@ async function testConnection() {
 }
 
 testConnection();
-

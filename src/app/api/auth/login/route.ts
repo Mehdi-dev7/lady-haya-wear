@@ -1,16 +1,14 @@
+import { prisma } from "@/lib/prisma";
 import {
 	checkRateLimit,
 	logSecurityEvent,
 	sanitizeObject,
 	secureEmailSchema,
 } from "@/lib/security";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-
-const prisma = new PrismaClient();
 
 const loginSchema = z.object({
 	email: secureEmailSchema,
@@ -21,7 +19,9 @@ export async function POST(request: NextRequest) {
 	try {
 		// ===== RATE LIMITING =====
 		const ip =
-			request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
+			request.headers.get("x-forwarded-for") ||
+			request.headers.get("x-real-ip") ||
+			"unknown";
 		const identifier = `login-${ip}`;
 
 		if (!checkRateLimit(identifier, 5, 15 * 60 * 1000)) {

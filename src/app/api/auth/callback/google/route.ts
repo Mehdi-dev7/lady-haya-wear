@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 // SUPPRIMÉ : instanciation globale du client Google
 // const client = new OAuth2Client({ ... });

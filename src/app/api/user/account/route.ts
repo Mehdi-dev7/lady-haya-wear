@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/prisma";
 import {
 	logSecurityEvent,
 	sanitizeObject,
@@ -5,12 +6,9 @@ import {
 	secureNameSchema,
 	securePhoneSchema,
 } from "@/lib/security";
-import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-
-const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
 	try {

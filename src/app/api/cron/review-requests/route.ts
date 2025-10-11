@@ -1,9 +1,7 @@
 import { sendReviewRequestEmail } from "@/lib/brevo";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 // GET - Job CRON pour envoyer les emails de demande d'avis
 export async function GET(request: NextRequest) {

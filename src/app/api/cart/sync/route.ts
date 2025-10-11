@@ -1,9 +1,7 @@
+import { prisma } from "@/lib/prisma";
 import { enrichCartItems } from "@/lib/syncUtils";
-import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 type LocalCartItem = {
 	productId: string;
