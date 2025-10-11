@@ -166,7 +166,7 @@ export default function Slider({ featuredCategories }: SliderProps) {
 								animate={{ y: 0, opacity: 1 }}
 								transition={{ duration: 0.8, delay: 0.6 }}
 							>
-								<h2 className="text-3xl font-semibold text-white drop-shadow-lg text-center text-logo font-balqis">
+								<h2 className="text-3xl font-semibold text-logo drop-shadow-lg text-center font-balqis">
 									{category.name}
 								</h2>
 							</motion.div>
