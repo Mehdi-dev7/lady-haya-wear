@@ -1,7 +1,9 @@
 "use client";
 
+import NotificationBadge from "@/components/Dashboard/NotificationBadge";
 import SalesChart from "@/components/Dashboard/SalesChart";
 import StatsCard from "@/components/Dashboard/StatsCard";
+import { Card, CardContent } from "@/components/ui/card";
 import { sanityClientNoCache } from "@/lib/sanity";
 import {
 	AlertTriangle,
@@ -162,54 +164,56 @@ export default function DashboardPage() {
 
 			{/* Alertes de stock faible */}
 			{lowStockProducts.length > 0 && (
-				<div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
-					<div className="flex items-center gap-3 mb-4">
-						<AlertTriangle className="w-6 h-6 text-orange-600" />
-						<h3 className="text-lg font-semibold text-orange-800">
-							⚠️ Alertes de Stock Faible
-						</h3>
-						<span className="bg-orange-200 text-orange-800 px-2 py-1 rounded-full text-sm font-medium">
-							{lowStockProducts.length} produit
-							{lowStockProducts.length > 1 ? "s" : ""}
-						</span>
+				<div className="bg-orange-50 border border-orange-200 rounded-lg p-3 sm:p-6">
+					<div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+						<div className="flex items-center gap-2">
+							<AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 flex-shrink-0" />
+							<h3 className="text-base sm:text-lg font-semibold text-orange-800">
+								Alertes de Stock Faible
+							</h3>
+						</div>
+						<NotificationBadge count={lowStockProducts.length} />
 					</div>
-					<div className="space-y-3">
+					<div className="space-y-2 sm:space-y-3">
 						{lowStockProducts.slice(0, 5).map((product) => (
-							<div
-								key={product._id}
-								className="flex items-center justify-between bg-white rounded-lg p-3 border border-orange-200"
-							>
-								<div className="flex-1">
-									<p className="font-medium text-nude-dark">{product.name}</p>
-									<div className="flex flex-wrap gap-2 mt-1">
-										{product.colors.map((color, colorIndex) =>
-											color.sizes
-												.filter(
-													(size) => size.quantity > 0 && size.quantity < 5
-												)
-												.map((size, sizeIndex) => (
-													<span
-														key={`${colorIndex}-${sizeIndex}`}
-														className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs font-medium"
-													>
-														{color.name} {size.size}: {size.quantity}
-													</span>
-												))
-										)}
+							<Card key={product._id} className="shadow-sm">
+								<CardContent className="p-2 sm:p-3">
+									<div className="flex items-start sm:items-center justify-between gap-2 flex-col sm:flex-row">
+										<div className="flex-1 w-full">
+											<p className="font-medium text-nude-dark text-sm sm:text-base">
+												{product.name}
+											</p>
+											<div className="flex flex-wrap gap-1.5 sm:gap-2 mt-1.5 sm:mt-2">
+												{product.colors.map((color, colorIndex) =>
+													color.sizes
+														.filter(
+															(size) => size.quantity > 0 && size.quantity < 5
+														)
+														.map((size, sizeIndex) => (
+															<span
+																key={`${colorIndex}-${sizeIndex}`}
+																className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs font-medium whitespace-nowrap"
+															>
+																{color.name} {size.size}: {size.quantity}
+															</span>
+														))
+												)}
+											</div>
+										</div>
+										<Link
+											href="/studio"
+											target="_blank"
+											rel="noopener noreferrer"
+											className="text-orange-600 hover:text-orange-800 text-xs sm:text-sm font-medium whitespace-nowrap self-end sm:self-auto"
+										>
+											Gérer le stock
+										</Link>
 									</div>
-								</div>
-								<Link
-									href="/studio"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="text-orange-600 hover:text-orange-800 text-sm font-medium"
-								>
-									Gérer le stock
-								</Link>
-							</div>
+								</CardContent>
+							</Card>
 						))}
 						{lowStockProducts.length > 5 && (
-							<p className="text-sm text-orange-700 text-center">
+							<p className="text-xs sm:text-sm text-orange-700 text-center pt-1">
 								Et {lowStockProducts.length - 5} autre
 								{lowStockProducts.length - 5 > 1 ? "s" : ""} produit
 								{lowStockProducts.length - 5 > 1 ? "s" : ""}...
