@@ -53,10 +53,10 @@ export default function DashboardPage() {
 					}
 				`);
 
-				// Filtrer les produits avec stock faible (quantité < 5)
+				// Filtrer les produits avec stock faible ou rupture (quantité <= 5)
 				const lowStock = products.filter((product: LowStockProduct) =>
 					product.colors.some((color) =>
-						color.sizes.some((size) => size.quantity > 0 && size.quantity < 5)
+						color.sizes.some((size) => size.quantity >= 0 && size.quantity <= 5)
 					)
 				);
 
@@ -187,14 +187,19 @@ export default function DashboardPage() {
 												{product.colors.map((color, colorIndex) =>
 													color.sizes
 														.filter(
-															(size) => size.quantity > 0 && size.quantity < 5
+															(size) => size.quantity >= 0 && size.quantity <= 5
 														)
 														.map((size, sizeIndex) => (
 															<span
 																key={`${colorIndex}-${sizeIndex}`}
-																className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs font-medium whitespace-nowrap"
+																className={`px-2 py-1 rounded text-xs font-medium whitespace-nowrap ${
+																	size.quantity === 0
+																		? "bg-red-100 text-red-800 font-bold"
+																		: "bg-orange-100 text-orange-800"
+																}`}
 															>
 																{color.name} {size.size}: {size.quantity}
+																{size.quantity === 0 && " ⚠️"}
 															</span>
 														))
 												)}
