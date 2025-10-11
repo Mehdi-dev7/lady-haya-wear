@@ -45,7 +45,7 @@ export default function Newsletter() {
 
 	return (
 		<section
-			className="relative h-[72vh] sm:h-[60vh] md:h-[50vh] lg:h-[48vh] xl:h-[48vh] 2xl:h-[38vh] overflow-hidden"
+			className="relative h-[74vh] sm:h-[60vh] md:h-[50vh] lg:h-[48vh] xl:h-[52vh] overflow-hidden"
 			style={{
 				backgroundImage: "url(/assets/grid/newsletter.jpg)",
 				backgroundSize: "cover",
@@ -70,23 +70,26 @@ export default function Newsletter() {
 				</motion.h2>
 
 				<motion.div
-					className="bg-rose-light px-6 py-3 rounded-xl text-lg font-medium shadow-lg mb-6 lg:mb-4"
+					className="bg-rose-light px-4 sm:px-5 py-2.5 sm:py-2 rounded-xl text-sm sm:text-sm lg:text-base font-medium shadow-lg mb-6 lg:mb-4 max-w-[90vw] sm:max-w-md lg:max-w-lg mx-auto text-center"
 					initial={{ scale: 0, opacity: 0 }}
 					whileInView={{ scale: 1, opacity: 1 }}
 					viewport={{ once: true, amount: 0.1 }}
 					transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
 				>
-					🎉 <span className="font-poppins text-logo">Inscrivez-vous pour bénéficier de 10% de réduction</span>
+					🎉{" "}
+					<span className="font-poppins text-logo">
+						Inscrivez-vous pour bénéficier de 10% de réduction
+					</span>
 				</motion.div>
 
 				<motion.div
-					className="bg-nude-light/80 backdrop-blur-xs rounded-3xl p-1 max-w-sm xl:max-w-md shadow-2xl lg:mb-6 mx-auto lg:ml-auto lg:mr-24 2xl:mr-54 border-2 border-rose-dark"
+					className="bg-nude-light/80 backdrop-blur-xs rounded-3xl p-1 w-[90vw] max-w-[320px] sm:max-w-[340px] md:max-w-[360px] lg:max-w-[380px] xl:max-w-[400px] shadow-2xl lg:mb-6 mx-auto xl:ml-auto xl:mr-24 2xl:mr-54 border-2 border-rose-dark"
 					initial={{ y: 100, opacity: 0, scale: 0.8 }}
 					whileInView={{ y: 0, opacity: 1, scale: 1 }}
 					viewport={{ once: true, amount: 0.1 }}
 					transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
 				>
-					<div className="bg-beige-light/60 backdrop-blur-xs rounded-3xl p-6">
+					<div className="bg-beige-light/60 backdrop-blur-xs rounded-3xl p-4 sm:p-5">
 						<motion.div
 							className="text-center mb-6"
 							initial={{ y: 30, opacity: 0 }}
@@ -120,7 +123,7 @@ export default function Newsletter() {
 								</svg>
 							</motion.div>
 							<motion.p
-								className="text-rose-light font-poppins text-base leading-relaxed drop-shadow-sm"
+								className="text-rose-light font-poppins text-xs sm:text-sm leading-relaxed drop-shadow-sm"
 								initial={{ y: 20, opacity: 0 }}
 								whileInView={{ y: 0, opacity: 1 }}
 								viewport={{ once: true, amount: 0.1 }}
@@ -143,7 +146,7 @@ export default function Newsletter() {
 									value={email}
 									onChange={(e) => setEmail(e.target.value)}
 									placeholder="votre@email.com"
-									className="w-full p-4 rounded-2xl bg-rose-light-2 backdrop-blur-sm border-2 border-nude-medium text-logo placeholder-nude-dark focus:outline-none focus:border-rose-dark-2 focus:bg-rose-light focus:ring-2 focus:ring-rose-dark-2 transition-all duration-300 text-center"
+									className="w-full p-3 sm:p-3 rounded-2xl bg-rose-light-2 backdrop-blur-sm border-2 border-nude-medium text-logo placeholder-nude-dark text-sm focus:outline-none focus:border-rose-dark-2 focus:bg-rose-light focus:ring-2 focus:ring-rose-dark-2 transition-all duration-300 text-center"
 									disabled={isLoading}
 									required
 								/>
@@ -158,7 +161,7 @@ export default function Newsletter() {
 								<button
 									type="submit"
 									disabled={isLoading}
-									className="group w-full bg-gradient-to-r from-logo to-nude-dark hover:from-nude-dark hover:to-logo text-beige-light py-4 rounded-2xl backdrop-blur-sm border-2 border-logo hover:border-nude-dark font-light tracking-wide shadow-lg hover:shadow-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+									className="group w-full bg-gradient-to-r from-logo to-nude-dark hover:from-nude-dark hover:to-logo text-beige-light py-3 rounded-2xl backdrop-blur-sm border-2 border-logo hover:border-nude-dark font-light tracking-wide shadow-lg hover:shadow-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm"
 								>
 									<span className="group-hover:scale-105 inline-block transition-transform duration-200">
 										{isLoading
