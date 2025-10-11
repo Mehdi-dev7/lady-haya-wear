@@ -45,7 +45,7 @@ export default function Newsletter() {
 
 	return (
 		<section
-			className="relative h-[74vh] sm:h-[60vh] md:h-[50vh] lg:h-[48vh] xl:h-[52vh] overflow-hidden"
+			className="relative h-[74vh] sm:h-[72vh] md:h-[72vh] xl:h-[64vh] overflow-hidden"
 			style={{
 				backgroundImage: "url(/assets/grid/newsletter.jpg)",
 				backgroundSize: "cover",
