@@ -476,7 +476,7 @@ export function ProductPageClient({
 											key={i}
 											className={`w-24 h-32 sm:w-28 sm:h-38 lg:w-32 lg:h-44 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 group ${
 												selectedImageIndex === i
-													? "ring-2 ring-nude-dark shadow-lg scale-105"
+													? "ring-4 ring-rose-medium shadow-lg scale-105"
 													: "hover:shadow-md hover:scale-102"
 											}`}
 											onClick={() => setSelectedImageIndex(i)}
@@ -1378,7 +1378,7 @@ export function ProductPageClient({
 						{/* Bouton de fermeture */}
 						<button
 							onClick={closeImageModal}
-							className="absolute top-3 right-3 md:top-4 md:right-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/95 hover:bg-rose-dark hover:text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-lg group"
+							className="absolute top-3 right-3 md:top-4 md:right-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/95 hover:bg-rose-dark hover:text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-lg group cursor-pointer"
 							aria-label="Fermer"
 						>
 							<svg
@@ -1397,7 +1397,7 @@ export function ProductPageClient({
 						</button>
 
 						{/* Barre de miniatures sur le côté GAUCHE (desktop) ou en bas (mobile) */}
-						<div className="md:w-32 lg:w-40 bg-gradient-to-b md:bg-gradient-to-r from-nude-light/95 to-nude-light/80 backdrop-blur-sm border-t md:border-t-0 md:border-r border-nude-dark/10 flex md:flex-col items-center justify-center p-3 md:py-6 md:px-3 overflow-x-auto md:overflow-hidden overflow-y-hidden gap-3 md:order-1 scrollbar-hide">
+						<div className="md:w-32 lg:w-40 bg-gradient-to-b md:bg-gradient-to-r from-nude-light/95 to-nude-light/80 backdrop-blur-sm border-t md:border-t-0 md:border-r border-rose-medium flex md:flex-col items-center justify-center p-3 md:py-6 md:px-3 overflow-x-auto md:overflow-hidden overflow-y-hidden gap-3 md:order-1 scrollbar-hide">
 							{/* Indicateurs de défilement */}
 							{colorImages.length > 5 && (
 								<div className="hidden md:flex flex-col items-center gap-1 mb-2">
@@ -1443,7 +1443,7 @@ export function ProductPageClient({
 											className={`flex-shrink-0 relative w-16 h-20 md:w-20 md:h-24 lg:w-24 lg:h-28 rounded-xl overflow-hidden transition-all duration-300 ${
 												modalImageIndex === index
 													? "ring-4 ring-rose-dark shadow-xl scale-105"
-													: "ring-2 ring-nude-dark/30 hover:ring-rose-dark/60 hover:scale-102 opacity-60 hover:opacity-100"
+													: "ring-2 ring-rose-medium/40 hover:ring-rose-dark hover:scale-102 opacity-60 hover:opacity-100"
 											}`}
 										>
 											<SafeImage
@@ -1511,7 +1511,7 @@ export function ProductPageClient({
 									e.stopPropagation();
 									navigateModalImage("prev");
 								}}
-								className="absolute left-2 md:left-6 w-10 h-10 md:w-14 md:h-14 bg-white/95 hover:bg-rose-dark rounded-full flex items-center justify-center transition-all duration-300 shadow-xl z-10 group hover:scale-110"
+								className="absolute left-2 md:left-6 w-10 h-10 md:w-14 md:h-14 bg-white/95 hover:bg-rose-dark rounded-full flex items-center justify-center transition-all duration-300 shadow-xl z-10 group hover:scale-110 cursor-pointer"
 								aria-label="Image précédente"
 							>
 								<svg
@@ -1556,7 +1556,7 @@ export function ProductPageClient({
 									e.stopPropagation();
 									navigateModalImage("next");
 								}}
-								className="absolute right-2 md:right-6 w-10 h-10 md:w-14 md:h-14 bg-white/95 hover:bg-rose-dark rounded-full flex items-center justify-center transition-all duration-300 shadow-xl z-10 group hover:scale-110"
+								className="absolute right-2 md:right-6 w-10 h-10 md:w-14 md:h-14 bg-white/95 hover:bg-rose-dark rounded-full flex items-center justify-center transition-all duration-300 shadow-xl z-10 group hover:scale-110 cursor-pointer"
 								aria-label="Image suivante"
 							>
 								<svg

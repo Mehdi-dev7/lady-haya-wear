@@ -500,10 +500,16 @@ body.navbar-visible {
 	.border-rose-medium\/30 {
 		border-color: rgba(247, 215, 215, 0.3);
 	}
+	.border-rose-medium\/40 {
+		border-color: rgba(247, 215, 215, 0.4);
+	}
 
 	/* Ring colors pour les bordures et focus */
 	.ring-rose-medium {
 		--tw-ring-color: var(--color-rose-medium);
+	}
+	.ring-rose-dark {
+		--tw-ring-color: var(--color-rose-dark);
 	}
 	.ring-rose-dark-2 {
 		--tw-ring-color: var(--color-rose-dark-2);
@@ -516,6 +522,13 @@ body.navbar-visible {
 	}
 	.ring-logo {
 		--tw-ring-color: var(--color-logo);
+	}
+	/* Ring colors avec opacité */
+	.ring-rose-medium\/40 {
+		--tw-ring-color: rgba(247, 215, 215, 0.4);
+	}
+	.hover\:ring-rose-dark:hover {
+		--tw-ring-color: var(--color-rose-dark);
 	}
 	.focus\:ring-logo:focus {
 		--tw-ring-color: var(--color-logo);
