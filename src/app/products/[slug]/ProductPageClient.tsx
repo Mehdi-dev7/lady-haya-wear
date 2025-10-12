@@ -5,10 +5,10 @@ import SafeImage from "@/components/ui/SafeImage";
 import { useCart } from "@/lib/CartContext";
 import { useFavorites } from "@/lib/FavoritesContext";
 import { urlFor } from "@/lib/sanity";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
 	TbChevronUp,
 	TbCreditCard,
@@ -43,6 +43,10 @@ export function ProductPageClient({
 	const [showViewCart, setShowViewCart] = useState(false);
 	const [similarProductsScrollRef, setSimilarProductsScrollRef] =
 		useState<HTMLDivElement | null>(null);
+	const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+	const [modalImageIndex, setModalImageIndex] = useState(0);
+	const [touchStart, setTouchStart] = useState(0);
+	const [touchEnd, setTouchEnd] = useState(0);
 	const router = useRouter();
 
 	const { addToCart, cartItems } = useCart();
@@ -52,6 +56,32 @@ export function ProductPageClient({
 	const isInFavorites = favorites.some(
 		(fav: any) => fav.productId === product._id
 	);
+
+	// Bloquer le scroll quand la modale est ouverte et gérer les touches clavier
+	useEffect(() => {
+		if (isImageModalOpen) {
+			// Bloquer le scroll
+			document.body.style.overflow = "hidden";
+
+			// Gérer les touches clavier
+			const handleKeyDown = (e: KeyboardEvent) => {
+				if (e.key === "Escape") {
+					closeImageModal();
+				} else if (e.key === "ArrowLeft") {
+					navigateModalImage("prev");
+				} else if (e.key === "ArrowRight") {
+					navigateModalImage("next");
+				}
+			};
+
+			window.addEventListener("keydown", handleKeyDown);
+
+			return () => {
+				document.body.style.overflow = "unset";
+				window.removeEventListener("keydown", handleKeyDown);
+			};
+		}
+	}, [isImageModalOpen]);
 
 	// Couleur actuellement sélectionnée
 	const selectedColor = product.colors[selectedColorIndex];
@@ -63,12 +93,12 @@ export function ProductPageClient({
 				?.quantity) ||
 		0;
 
-	// Toutes les images de la couleur sélectionnée (limitées à 6 images max)
+	// Toutes les images de la couleur sélectionnée (limitées à 15 images max)
 	const colorImages = selectedColor
 		? [
 				selectedColor.mainImage,
 				...(selectedColor.additionalImages || []),
-			].slice(0, 6)
+			].slice(0, 15)
 		: [];
 
 	// Image actuellement affichée
@@ -213,6 +243,89 @@ export function ProductPageClient({
 		}
 	};
 
+	// Fonctions pour la modale d'images
+	const openImageModal = (index: number) => {
+		setModalImageIndex(index);
+		setIsImageModalOpen(true);
+	};
+
+	const closeImageModal = () => {
+		setIsImageModalOpen(false);
+	};
+
+	const navigateModalImage = (direction: "prev" | "next") => {
+		if (direction === "prev") {
+			setModalImageIndex((prev) =>
+				prev === 0 ? colorImages.length - 1 : prev - 1
+			);
+		} else {
+			setModalImageIndex((prev) =>
+				prev === colorImages.length - 1 ? 0 : prev + 1
+			);
+		}
+	};
+
+	// Gestion du swipe tactile
+	const handleTouchStart = (e: React.TouchEvent) => {
+		setTouchStart(e.targetTouches[0].clientX);
+	};
+
+	const handleTouchMove = (e: React.TouchEvent) => {
+		setTouchEnd(e.targetTouches[0].clientX);
+	};
+
+	const handleTouchEnd = () => {
+		if (!touchStart || !touchEnd) return;
+
+		const distance = touchStart - touchEnd;
+		const minSwipeDistance = 50; // Distance minimale pour déclencher le swipe
+
+		if (Math.abs(distance) > minSwipeDistance) {
+			if (distance > 0) {
+				// Swipe vers la gauche -> image suivante
+				navigateModalImage("next");
+			} else {
+				// Swipe vers la droite -> image précédente
+				navigateModalImage("prev");
+			}
+		}
+
+		// Reset
+		setTouchStart(0);
+		setTouchEnd(0);
+	};
+
+	// Calculer les miniatures visibles dans la modale (fenêtre glissante)
+	const visibleThumbnails = useMemo(() => {
+		const totalImages = colorImages.length;
+		const maxVisibleThumbnails = 5; // Nombre max de miniatures visibles à la fois (réduit à 5 pour meilleur affichage)
+
+		// Si on a moins d'images que le max, on affiche tout
+		if (totalImages <= maxVisibleThumbnails) {
+			return colorImages.map((img, idx) => ({ image: img, index: idx }));
+		}
+
+		// Sinon, on crée une fenêtre glissante centrée sur l'image actuelle
+		const halfWindow = Math.floor(maxVisibleThumbnails / 2);
+		let startIndex = Math.max(0, modalImageIndex - halfWindow);
+		let endIndex = Math.min(totalImages, startIndex + maxVisibleThumbnails);
+
+		// Si on est proche de la fin, ajuster le début
+		if (endIndex === totalImages) {
+			startIndex = Math.max(0, totalImages - maxVisibleThumbnails);
+		}
+
+		const visibleImages = [];
+		for (let i = startIndex; i < endIndex; i++) {
+			visibleImages.push({
+				image: colorImages[i],
+				index: i,
+			});
+		}
+
+		return visibleImages;
+	}, [colorImages, modalImageIndex]);
+
 	return (
 		<div className="min-h-screen bg-beige-light">
 			{/* Navigation breadcrumb */}
@@ -300,7 +413,7 @@ export function ProductPageClient({
 					>
 						{/* Image principale */}
 						<motion.div
-							className="h-[450px] md:h-[500px] lg:h-[550px] relative rounded-2xl overflow-hidden shadow-lg"
+							className="h-[450px] md:h-[500px] lg:h-[550px] relative rounded-2xl overflow-hidden shadow-lg cursor-pointer group"
 							initial={{
 								opacity: 0,
 								scale: 0.8,
@@ -316,14 +429,35 @@ export function ProductPageClient({
 								delay: 1.0,
 								ease: [0.68, -0.55, 0.265, 1.55],
 							}}
+							onClick={() => openImageModal(selectedImageIndex)}
 						>
 							{currentImage ? (
-								<SafeImage
-									src={urlFor(currentImage)?.url()}
-									alt={currentImage?.alt || product.name}
-									fill
-									className="object-cover object-center rounded-2xl transition-all duration-300"
-								/>
+								<>
+									<SafeImage
+										src={urlFor(currentImage)?.url()}
+										alt={currentImage?.alt || product.name}
+										fill
+										className="object-cover object-center rounded-2xl transition-all duration-300 group-hover:scale-105"
+									/>
+									{/* Indicateur de zoom au survol */}
+									<div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
+										<div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 rounded-full p-3">
+											<svg
+												className="w-6 h-6 text-nude-dark"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
+												/>
+											</svg>
+										</div>
+									</div>
+								</>
 							) : (
 								<div className="w-full h-full bg-gradient-to-br from-nude-light to-rose-light-2 flex items-center justify-center">
 									<span className="text-6xl">🛍️</span>
@@ -331,97 +465,106 @@ export function ProductPageClient({
 							)}
 						</motion.div>
 
-						{/* Miniatures des images de la couleur sélectionnée - Grille 3x2 */}
+						{/* Miniatures des images de la couleur sélectionnée - Grille 3 colonnes */}
 						{colorImages && colorImages.length > 1 && (
-							<div className="mt-8 space-y-3">
-								{/* Première ligne - 3 premières miniatures (incluant l'image principale) */}
-								<div className="flex justify-center lg:justify-start gap-3">
-									{colorImages.slice(0, 3).map((image: any, i: number) => {
-										return (
-											<motion.div
-												key={i}
-												className={`w-28 h-38 lg:w-32 lg:h-44 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
-													selectedImageIndex === i
-														? "ring-2 ring-nude-dark shadow-lg scale-105"
-														: "hover:shadow-md hover:scale-102"
-												}`}
-												onClick={() => setSelectedImageIndex(i)}
-												initial={{
-													opacity: 0,
-													scale: 0.8,
-													rotate: -8,
-												}}
-												animate={{
-													opacity: 1,
-													scale: 1,
-													rotate: 0,
-												}}
-												transition={{
-													duration: 0.3,
-													delay: 1.4 + i * 0.08,
-													ease: [0.25, 0.46, 0.45, 0.94],
-												}}
-											>
-												<SafeImage
-													src={urlFor(image)?.url()}
-													alt={
-														image?.alt ||
-														`${selectedColor?.name} - Image ${i + 1}`
-													}
-													fill
-													sizes="30vw"
-													className="object-cover object-center rounded-2xl transition-transform duration-300 hover:scale-105"
-												/>
-											</motion.div>
-										);
-									})}
-								</div>
+							<div className="mt-8">
+								{/* Grille de miniatures - 3 colonnes, lignes dynamiques (max 15 images) */}
+								<div className="grid grid-cols-3 gap-2 sm:gap-3 justify-items-center lg:justify-items-start">
+									{/* Afficher les 5 premières miniatures */}
+									{colorImages.slice(0, 5).map((image: any, i: number) => (
+										<motion.div
+											key={i}
+											className={`w-24 h-32 sm:w-28 sm:h-38 lg:w-32 lg:h-44 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 group ${
+												selectedImageIndex === i
+													? "ring-2 ring-nude-dark shadow-lg scale-105"
+													: "hover:shadow-md hover:scale-102"
+											}`}
+											onClick={() => setSelectedImageIndex(i)}
+											initial={{
+												opacity: 0,
+												scale: 0.8,
+												rotate: -8,
+											}}
+											animate={{
+												opacity: 1,
+												scale: 1,
+												rotate: 0,
+											}}
+											transition={{
+												duration: 0.3,
+												delay: 1.4 + i * 0.05,
+												ease: [0.25, 0.46, 0.45, 0.94],
+											}}
+										>
+											<SafeImage
+												src={urlFor(image)?.url()}
+												alt={
+													image?.alt ||
+													`${selectedColor?.name} - Image ${i + 1}`
+												}
+												fill
+												sizes="30vw"
+												className="object-cover object-center rounded-2xl transition-transform duration-300 hover:scale-105"
+											/>
+										</motion.div>
+									))}
 
-								{/* Deuxième ligne - 3 miniatures suivantes (si elles existent) */}
-								{colorImages.length > 3 && (
-									<div className="flex justify-center lg:justify-start gap-3">
-										{colorImages.slice(3, 6).map((image: any, i: number) => {
-											const actualIndex = i + 3; // +3 car on commence après les 3 premières
-											return (
-												<motion.div
-													key={actualIndex}
-													className={`w-28 h-38 lg:w-32 lg:h-44 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
-														selectedImageIndex === actualIndex
-															? "ring-2 ring-nude-dark shadow-lg scale-105"
-															: "hover:shadow-md hover:scale-102"
-													}`}
-													onClick={() => setSelectedImageIndex(actualIndex)}
-													initial={{
-														opacity: 0,
-														scale: 0.8,
-														rotate: -8,
-													}}
-													animate={{
-														opacity: 1,
-														scale: 1,
-														rotate: 0,
-													}}
-													transition={{
-														duration: 0.3,
-														delay: 1.6 + i * 0.08,
-														ease: [0.25, 0.46, 0.45, 0.94],
-													}}
+									{/* Si 6 images ou plus, afficher la miniature "Voir toutes les photos" */}
+									{colorImages.length >= 6 && (
+										<motion.div
+											className="w-24 h-32 sm:w-28 sm:h-38 lg:w-32 lg:h-44 relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 group hover:shadow-lg"
+											onClick={() => openImageModal(0)}
+											initial={{
+												opacity: 0,
+												scale: 0.8,
+												rotate: -8,
+											}}
+											animate={{
+												opacity: 1,
+												scale: 1,
+												rotate: 0,
+											}}
+											transition={{
+												duration: 0.3,
+												delay: 1.4 + 5 * 0.05,
+												ease: [0.25, 0.46, 0.45, 0.94],
+											}}
+										>
+											{/* Image de fond en blur */}
+											<SafeImage
+												src={urlFor(colorImages[5])?.url()}
+												alt="Voir toutes les photos"
+												fill
+												sizes="30vw"
+												className="object-cover object-center rounded-2xl blur-sm"
+											/>
+											{/* Overlay avec texte */}
+											<div className="absolute inset-0 bg-nude-dark/70 rounded-2xl flex flex-col items-center justify-center p-1 sm:p-2 group-hover:bg-nude-dark/80 transition-all duration-300">
+												<svg
+													className="w-6 h-6 sm:w-8 sm:h-8 text-white mb-0.5 sm:mb-1"
+													fill="none"
+													stroke="currentColor"
+													viewBox="0 0 24 24"
 												>
-													<SafeImage
-														src={urlFor(image)?.url()}
-														alt={
-															image?.alt ||
-															`${selectedColor?.name} - Image ${actualIndex + 1}`
-														}
-														fill
-														sizes="30vw"
-														className="object-cover object-center rounded-2xl transition-transform duration-300 hover:scale-105"
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														strokeWidth={2}
+														d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
 													/>
-												</motion.div>
-											);
-										})}
-									</div>
-								)}
+												</svg>
+												<span className="text-white text-[10px] sm:text-xs font-medium text-center leading-tight">
+													Voir toutes
+													<br />
+													les photos
+												</span>
+												<span className="text-white/80 text-[10px] sm:text-xs mt-0.5 sm:mt-1">
+													({colorImages.length})
+												</span>
+											</div>
+										</motion.div>
+									)}
+								</div>
 							</div>
 						)}
 					</motion.div>
@@ -1205,6 +1348,234 @@ export function ProductPageClient({
 						))}
 					</motion.div>
 				</motion.section>
+			)}
+
+			{/* Modale d'affichage des images */}
+			{isImageModalOpen && (
+				<motion.div
+					className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+					transition={{ duration: 0.3 }}
+					onClick={closeImageModal}
+				>
+					{/* Fond avec blur - teinte nude */}
+					<div
+						className="absolute inset-0 backdrop-blur-lg"
+						style={{ backgroundColor: "rgba(180, 153, 130, 0.85)" }}
+					/>
+
+					{/* Conteneur de la modale - AUGMENTÉ DE 10% */}
+					<motion.div
+						className="relative w-full h-full md:w-[95%] md:h-[95%] lg:w-[95%] lg:h-[95%] bg-gradient-to-br from-white to-nude-light/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row"
+						initial={{ scale: 0.8, opacity: 0 }}
+						animate={{ scale: 1, opacity: 1 }}
+						exit={{ scale: 0.8, opacity: 0 }}
+						transition={{ duration: 0.3, ease: "easeOut" }}
+						onClick={(e) => e.stopPropagation()}
+					>
+						{/* Bouton de fermeture */}
+						<button
+							onClick={closeImageModal}
+							className="absolute top-3 right-3 md:top-4 md:right-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/95 hover:bg-rose-dark hover:text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-lg group"
+							aria-label="Fermer"
+						>
+							<svg
+								className="w-5 h-5 md:w-6 md:h-6 text-nude-dark group-hover:text-white transition-colors"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</button>
+
+						{/* Barre de miniatures sur le côté GAUCHE (desktop) ou en bas (mobile) */}
+						<div className="md:w-32 lg:w-40 bg-gradient-to-b md:bg-gradient-to-r from-nude-light/95 to-nude-light/80 backdrop-blur-sm border-t md:border-t-0 md:border-r border-nude-dark/10 flex md:flex-col items-center justify-center p-3 md:py-6 md:px-3 overflow-x-auto md:overflow-hidden overflow-y-hidden gap-3 md:order-1 scrollbar-hide">
+							{/* Indicateurs de défilement */}
+							{colorImages.length > 5 && (
+								<div className="hidden md:flex flex-col items-center gap-1 mb-2">
+									{modalImageIndex > 0 && (
+										<motion.div
+											initial={{ opacity: 0, y: -10 }}
+											animate={{ opacity: 1, y: 0 }}
+											className="text-nude-dark/60"
+										>
+											<svg
+												className="w-4 h-4"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M5 15l7-7 7 7"
+												/>
+											</svg>
+										</motion.div>
+									)}
+								</div>
+							)}
+
+							{/* Miniatures - fenêtre glissante */}
+							<div className="flex md:flex-col items-center gap-3 md:gap-3 touch-pan-x md:touch-pan-y">
+								<AnimatePresence mode="popLayout">
+									{visibleThumbnails.map(({ image, index }) => (
+										<motion.button
+											key={`thumbnail-${index}`}
+											onClick={(e) => {
+												e.stopPropagation();
+												setModalImageIndex(index);
+											}}
+											initial={{ opacity: 0, scale: 0.8, y: 20 }}
+											animate={{ opacity: 1, scale: 1, y: 0 }}
+											exit={{ opacity: 0, scale: 0.8, y: -20 }}
+											transition={{ duration: 0.25, ease: "easeOut" }}
+											layout
+											className={`flex-shrink-0 relative w-16 h-20 md:w-20 md:h-24 lg:w-24 lg:h-28 rounded-xl overflow-hidden transition-all duration-300 ${
+												modalImageIndex === index
+													? "ring-4 ring-rose-dark shadow-xl scale-105"
+													: "ring-2 ring-nude-dark/30 hover:ring-rose-dark/60 hover:scale-102 opacity-60 hover:opacity-100"
+											}`}
+										>
+											<SafeImage
+												src={urlFor(image)?.url()}
+												alt={
+													image?.alt ||
+													`${selectedColor?.name} - Miniature ${index + 1}`
+												}
+												fill
+												sizes="120px"
+												className="object-cover"
+											/>
+											{/* Numéro de l'image */}
+											<div className="absolute top-1 right-1 bg-black/60 text-white text-xs px-1.5 py-0.5 rounded-full">
+												{index + 1}
+											</div>
+										</motion.button>
+									))}
+								</AnimatePresence>
+							</div>
+
+							{/* Indicateurs de défilement bas */}
+							{colorImages.length > 5 && (
+								<div className="hidden md:flex flex-col items-center gap-1 mt-2">
+									{modalImageIndex < colorImages.length - 1 && (
+										<motion.div
+											initial={{ opacity: 0, y: 10 }}
+											animate={{ opacity: 1, y: 0 }}
+											className="text-nude-dark/60"
+										>
+											<svg
+												className="w-4 h-4"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M19 9l-7 7-7-7"
+												/>
+											</svg>
+										</motion.div>
+									)}
+								</div>
+							)}
+
+							{/* Indicateur de position - version desktop */}
+							<div className="hidden md:block text-center text-xs lg:text-sm text-nude-dark font-semibold mt-1 mb-3 bg-white/80 px-3 py-2 rounded-full">
+								{modalImageIndex + 1} / {colorImages.length}
+							</div>
+						</div>
+
+						{/* Zone principale avec l'image */}
+						<div
+							className="flex-1 relative flex items-center justify-center p-2 md:p-6 md:order-2"
+							onTouchStart={handleTouchStart}
+							onTouchMove={handleTouchMove}
+							onTouchEnd={handleTouchEnd}
+						>
+							{/* Flèche gauche */}
+							<button
+								onClick={(e) => {
+									e.stopPropagation();
+									navigateModalImage("prev");
+								}}
+								className="absolute left-2 md:left-6 w-10 h-10 md:w-14 md:h-14 bg-white/95 hover:bg-rose-dark rounded-full flex items-center justify-center transition-all duration-300 shadow-xl z-10 group hover:scale-110"
+								aria-label="Image précédente"
+							>
+								<svg
+									className="w-5 h-5 md:w-7 md:h-7 text-nude-dark group-hover:text-white transition-colors"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2.5}
+										d="M15 19l-7-7 7-7"
+									/>
+								</svg>
+							</button>
+
+							{/* Image principale - PLUS GRANDE */}
+							<div className="relative w-full h-full flex items-center justify-center">
+								<div className="relative w-full h-full max-w-5xl">
+									<SafeImage
+										src={urlFor(colorImages[modalImageIndex])?.url()}
+										alt={
+											colorImages[modalImageIndex]?.alt ||
+											`${product.name} - Image ${modalImageIndex + 1}`
+										}
+										fill
+										className="object-contain drop-shadow-2xl"
+										sizes="(max-width: 768px) 100vw, 85vw"
+										priority
+									/>
+								</div>
+								{/* Indicateur de position - sur l'image en mobile */}
+								<div className="absolute bottom-4 left-1/2 -translate-x-1/2 md:hidden bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+									{modalImageIndex + 1} / {colorImages.length}
+								</div>
+							</div>
+
+							{/* Flèche droite */}
+							<button
+								onClick={(e) => {
+									e.stopPropagation();
+									navigateModalImage("next");
+								}}
+								className="absolute right-2 md:right-6 w-10 h-10 md:w-14 md:h-14 bg-white/95 hover:bg-rose-dark rounded-full flex items-center justify-center transition-all duration-300 shadow-xl z-10 group hover:scale-110"
+								aria-label="Image suivante"
+							>
+								<svg
+									className="w-5 h-5 md:w-7 md:h-7 text-nude-dark group-hover:text-white transition-colors"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2.5}
+										d="M9 5l7 7-7 7"
+									/>
+								</svg>
+							</button>
+						</div>
+					</motion.div>
+				</motion.div>
 			)}
 		</div>
 	);
