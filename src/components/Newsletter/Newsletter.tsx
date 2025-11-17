@@ -45,7 +45,7 @@ export default function Newsletter() {
 
 	return (
 		<section
-			className="relative h-[74vh] sm:h-[72vh] md:h-[72vh] xl:h-[64vh] overflow-hidden"
+			className="relative h-[74vh] sm:h-[72vh] md:h-[72vh] xl:h-[64vh] 2xl:h-[60vh] overflow-hidden"
 			style={{
 				backgroundImage: "url(/assets/grid/newsletter.jpg)",
 				backgroundSize: "cover",
@@ -60,7 +60,7 @@ export default function Newsletter() {
 			{/* Contenu de la newsletter - reste dans l'image */}
 			<div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
 				<motion.h2
-					className="text-5xl lg:text-6xl font-alex-brush text-logo mt-8 mb-4 lg:mb-2 drop-shadow-lg"
+					className="text-5xl lg:text-6xl xl:text-7xl font-alex-brush text-logo mt-8 xl:mt-2 mb-4 lg:mb-2 xl:mb-6 drop-shadow-lg"
 					initial={{ y: 50, opacity: 0 }}
 					whileInView={{ y: 0, opacity: 1 }}
 					viewport={{ once: true, amount: 0.1 }}

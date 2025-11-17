@@ -1,6 +1,7 @@
 import { sendOrderStatusUpdateEmail } from "@/lib/brevo";
 import { prisma } from "@/lib/prisma";
 import { triggerReviewRequestForOrder } from "@/lib/review-automation";
+import { incrementStock, type CartItem } from "@/lib/stock";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET - Récupérer une commande spécifique
@@ -206,6 +207,41 @@ export async function PUT(
 					error
 				);
 				// Ne pas faire échouer la mise à jour de la commande si l'envoi de review échoue
+			}
+		}
+
+		// ===== REMETTRE LE STOCK SI COMMANDE ANNULÉE OU REMBOURSÉE =====
+		if (
+			(status === "CANCELLED" || status === "REFUNDED") &&
+			existingOrder.status !== "CANCELLED" &&
+			existingOrder.status !== "REFUNDED"
+		) {
+			try {
+				console.log(
+					`🔄 Remise en stock des articles de la commande #${order.orderNumber}`
+				);
+
+				// Convertir les items de la commande au format CartItem pour incrementStock
+				const cartItems: CartItem[] = order.items.map((item) => ({
+					productId: item.productId,
+					slug: "", // On utilisera productId pour la recherche dans incrementStock
+					name: item.productName,
+					color: item.colorName,
+					size: item.sizeName,
+					quantity: item.quantity,
+					price: item.unitPrice,
+				}));
+
+				await incrementStock(cartItems);
+				console.log(
+					`✅ Stock remis avec succès pour la commande #${order.orderNumber}`
+				);
+			} catch (error) {
+				console.error(
+					`❌ Erreur lors de la remise en stock pour commande #${order.orderNumber}:`,
+					error
+				);
+				// Ne pas faire échouer la mise à jour de la commande si la remise en stock échoue
 			}
 		}
 

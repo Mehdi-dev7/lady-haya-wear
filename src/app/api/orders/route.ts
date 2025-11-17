@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 import { sanityClient } from "@/lib/sanity";
 import { logSecurityEvent } from "@/lib/security";
+import { checkStockAvailability, decrementStock } from "@/lib/stock";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -90,6 +91,29 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
+		// ===== VÉRIFICATION DU STOCK AVANT CRÉATION DE LA COMMANDE =====
+		console.log("🔍 Vérification du stock pour", cartItems.length, "articles");
+		const stockCheck = await checkStockAvailability(cartItems);
+		const unavailable = stockCheck.filter((r) => !r.available);
+
+		if (unavailable.length > 0) {
+			console.log("❌ Stock insuffisant pour certains articles:", unavailable);
+			const messages = unavailable.map(
+				(r) =>
+					`${r.productName} (${r.color} - ${r.size}): ${r.message || "Stock insuffisant"}`
+			);
+			return NextResponse.json(
+				{
+					error: "Stock insuffisant",
+					details: messages,
+					unavailableItems: unavailable,
+				},
+				{ status: 400 }
+			);
+		}
+
+		console.log("✅ Stock disponible pour tous les articles");
+
 		// Créer la commande
 		const orderNumber = generateOrderNumber();
 		const order = await prisma.order.create({
@@ -132,132 +156,15 @@ export async function POST(request: NextRequest) {
 			},
 		});
 
-		// Décrémenter le stock dans Sanity pour chaque article
+		// ===== DÉCRÉMENTER LE STOCK APRÈS CRÉATION RÉUSSIE DE LA COMMANDE =====
 		try {
-			console.log("🔄 Début de la décrémentation du stock...");
-
-			for (const item of cartItems) {
-				console.log(
-					`📦 Traitement du produit ${item.name} (${item.color}, ${item.size}) - Quantité: ${item.quantity}`
-				);
-
-				// Récupérer le produit détaillé depuis Sanity
-				// Essayer d'abord avec le nouveau système unifié
-				let productDetail = await sanityClient.fetch(
-					`
-					*[_type == "productUnified" && _id == $productId][0] {
-						_id,
-						colors[] {
-							name,
-							sizes[] {
-								size,
-								available,
-								quantity
-							},
-							available
-						}
-					}
-				`,
-					{ productId: item.id }
-				);
-
-				// Si pas trouvé, essayer avec l'ancien système (pour compatibilité)
-				if (!productDetail) {
-					productDetail = await sanityClient.fetch(
-						`
-						*[_type == "productDetail" && product._ref == $productId][0] {
-							_id,
-							colors[] {
-								name,
-								sizes[] {
-									size,
-									available,
-									quantity
-								},
-								available
-							}
-						}
-					`,
-						{ productId: item.id }
-					);
-				}
-
-				if (!productDetail) {
-					console.warn(`⚠️ Produit non trouvé pour l'ID: ${item.id}`);
-					continue;
-				}
-
-				// Trouver la couleur et la taille correspondantes
-				const colorIndex = productDetail.colors.findIndex(
-					(color: any) => color.name === item.color
-				);
-
-				if (colorIndex === -1) {
-					console.warn(
-						`⚠️ Couleur "${item.color}" non trouvée pour le produit ${item.name}`
-					);
-					continue;
-				}
-
-				const sizeIndex = productDetail.colors[colorIndex].sizes.findIndex(
-					(size: any) => size.size === item.size
-				);
-
-				if (sizeIndex === -1) {
-					console.warn(
-						`⚠️ Taille "${item.size}" non trouvée pour le produit ${item.name} (${item.color})`
-					);
-					continue;
-				}
-
-				// Vérifier le stock disponible
-				const currentStock =
-					productDetail.colors[colorIndex].sizes[sizeIndex].quantity;
-				if (currentStock < item.quantity) {
-					console.error(
-						`❌ Stock insuffisant pour ${item.name} (${item.color}, ${item.size}): ${currentStock} disponible, ${item.quantity} demandé`
-					);
-					return NextResponse.json(
-						{
-							error: `Stock insuffisant pour ${item.name} (${item.color}, ${item.size}). Stock disponible: ${currentStock}`,
-						},
-						{ status: 400 }
-					);
-				}
-
-				// Calculer le nouveau stock
-				const newQuantity = currentStock - item.quantity;
-				const newAvailable = newQuantity > 0;
-
-				// Mettre à jour le stock dans Sanity
-				const updatedColors = [...productDetail.colors];
-				const updatedColor = { ...updatedColors[colorIndex] };
-				const updatedSizes = [...updatedColor.sizes];
-				updatedSizes[sizeIndex] = {
-					...updatedSizes[sizeIndex],
-					quantity: newQuantity,
-					available: newAvailable,
-				};
-				updatedColor.sizes = updatedSizes;
-				updatedColors[colorIndex] = updatedColor;
-
-				await sanityClient
-					.patch(productDetail._id)
-					.set({ colors: updatedColors })
-					.commit();
-
-				console.log(
-					`✅ Stock mis à jour pour ${item.name} (${item.color}, ${item.size}): ${currentStock} → ${newQuantity}`
-				);
-			}
-
-			console.log("✅ Décrémentation du stock terminée avec succès");
+			console.log("📦 Décrémentation du stock pour la commande", orderNumber);
+			await decrementStock(cartItems);
+			console.log("✅ Stock décrémenté avec succès");
 		} catch (error) {
 			console.error("❌ Erreur lors de la décrémentation du stock:", error);
-			return NextResponse.json(
-				{ error: "Erreur lors de la mise à jour du stock" },
-				{ status: 500 }
-			);
+			// Note: La commande est déjà créée, on log l'erreur mais on continue
+			// L'admin devra ajuster manuellement le stock si nécessaire
 		}
 
 		// Vider le panier
