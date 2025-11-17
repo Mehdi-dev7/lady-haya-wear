@@ -1,9 +1,35 @@
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
+import { logSecurityEvent } from "@/lib/security";
 import { NextRequest, NextResponse } from "next/server";
 
 // POST - Inscription publique à la newsletter
 export async function POST(request: NextRequest) {
 	try {
+		// ===== RATE LIMITING AVEC REDIS =====
+		const ip =
+			request.headers.get("x-forwarded-for") ||
+			request.headers.get("x-real-ip") ||
+			"unknown";
+		const identifier = `newsletter:${ip}`;
+
+		const rateLimitResult = await checkRateLimit(
+			identifier,
+			RATE_LIMITS.NEWSLETTER_SUBSCRIBE.limit,
+			RATE_LIMITS.NEWSLETTER_SUBSCRIBE.window
+		);
+
+		if (!rateLimitResult.success) {
+			logSecurityEvent("NEWSLETTER_RATE_LIMIT", { ip, ...rateLimitResult }, ip);
+			return NextResponse.json(
+				{
+					error: "Trop de tentatives d'inscription. Réessayez demain.",
+					retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
+				},
+				{ status: 429 }
+			);
+		}
+
 		const { email } = await request.json();
 
 		if (!email) {

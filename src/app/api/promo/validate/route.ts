@@ -1,9 +1,35 @@
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
+import { logSecurityEvent } from "@/lib/security";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
 	try {
+		// ===== RATE LIMITING AVEC REDIS =====
+		const ip =
+			request.headers.get("x-forwarded-for") ||
+			request.headers.get("x-real-ip") ||
+			"unknown";
+		const identifier = `promo:${ip}`;
+
+		const rateLimitResult = await checkRateLimit(
+			identifier,
+			RATE_LIMITS.PROMO_VALIDATE.limit,
+			RATE_LIMITS.PROMO_VALIDATE.window
+		);
+
+		if (!rateLimitResult.success) {
+			logSecurityEvent("PROMO_RATE_LIMIT", { ip, ...rateLimitResult }, ip);
+			return NextResponse.json(
+				{
+					error: "Trop de tentatives de validation de code promo. Réessayez plus tard.",
+					retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
+				},
+				{ status: 429 }
+			);
+		}
+
 		const { code, total } = await request.json();
 
 		if (!code || !total) {

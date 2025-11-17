@@ -1,12 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import {
-	checkRateLimit,
+	checkRateLimit as checkRateLimitMemory,
 	logSecurityEvent,
 	sanitizeObject,
 	secureEmailSchema,
 	secureNameSchema,
 	validatePasswordStrength,
 } from "@/lib/security";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,18 +22,26 @@ const registerSchema = z.object({
 
 export async function POST(request: NextRequest) {
 	try {
-		// ===== RATE LIMITING =====
+		// ===== RATE LIMITING AVEC REDIS =====
 		const ip =
 			request.headers.get("x-forwarded-for") ||
 			request.headers.get("x-real-ip") ||
 			"unknown";
-		const identifier = `register-${ip}`;
+		const identifier = `register:${ip}`;
 
-		if (!checkRateLimit(identifier, 3, 60 * 60 * 1000)) {
-			// 3 tentatives par heure
-			logSecurityEvent("REGISTER_RATE_LIMIT", { ip }, ip);
+		const rateLimitResult = await checkRateLimit(
+			identifier,
+			RATE_LIMITS.REGISTER.limit,
+			RATE_LIMITS.REGISTER.window
+		);
+
+		if (!rateLimitResult.success) {
+			logSecurityEvent("REGISTER_RATE_LIMIT", { ip, ...rateLimitResult }, ip);
 			return NextResponse.json(
-				{ error: "Trop de tentatives. Réessayez dans 1 heure." },
+				{
+					error: "Trop de tentatives. Réessayez dans 1 heure.",
+					retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
+				},
 				{ status: 429 }
 			);
 		}

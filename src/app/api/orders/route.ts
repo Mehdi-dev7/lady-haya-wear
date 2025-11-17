@@ -1,7 +1,9 @@
 import { sendCustomEmail, sendOrderConfirmationEmail } from "@/lib/brevo";
 import { generateInvoicePDFAsBuffer } from "@/lib/invoice-generator";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 import { sanityClient } from "@/lib/sanity";
+import { logSecurityEvent } from "@/lib/security";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -15,6 +17,12 @@ function generateOrderNumber(): string {
 // POST - Créer une nouvelle commande et envoyer les emails
 export async function POST(request: NextRequest) {
 	try {
+		// ===== RATE LIMITING AVEC REDIS =====
+		const ip =
+			request.headers.get("x-forwarded-for") ||
+			request.headers.get("x-real-ip") ||
+			"unknown";
+
 		// Vérifier l'authentification avec le token JWT personnalisé
 		const token = request.cookies.get("auth-token")?.value;
 
@@ -24,6 +32,26 @@ export async function POST(request: NextRequest) {
 
 		// Vérifier le token JWT
 		const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
+
+		// Rate limiting par utilisateur (plus précis que par IP)
+		const identifier = `order:${decoded.userId}`;
+
+		const rateLimitResult = await checkRateLimit(
+			identifier,
+			RATE_LIMITS.ORDER_CREATE.limit,
+			RATE_LIMITS.ORDER_CREATE.window
+		);
+
+		if (!rateLimitResult.success) {
+			logSecurityEvent("ORDER_RATE_LIMIT", { userId: decoded.userId, ip, ...rateLimitResult }, ip);
+			return NextResponse.json(
+				{
+					error: "Trop de commandes créées. Veuillez patienter avant de créer une nouvelle commande.",
+					retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
+				},
+				{ status: 429 }
+			);
+		}
 		const user = await prisma.user.findUnique({
 			where: { id: decoded.userId },
 			include: {

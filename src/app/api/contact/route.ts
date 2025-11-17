@@ -1,12 +1,13 @@
 import { sendContactEmail } from "@/lib/brevo";
 import {
-	checkRateLimit,
+	checkRateLimit as checkRateLimitMemory,
 	logSecurityEvent,
 	sanitizeObject,
 	secureEmailSchema,
 	secureMessageSchema,
 	secureNameSchema,
 } from "@/lib/security";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -23,20 +24,26 @@ const contactSchema = z.object({
 export async function POST(req: NextRequest) {
 	let ip = "unknown";
 	try {
-		// ===== RATE LIMITING =====
+		// ===== RATE LIMITING AVEC REDIS =====
 		ip =
 			req.headers.get("x-forwarded-for") ||
 			req.headers.get("x-real-ip") ||
 			"unknown";
-		const identifier = `contact-${ip}`;
+		const identifier = `contact:${ip}`;
 
-		if (!checkRateLimit(identifier, 3, 60 * 1000)) {
-			// 3 tentatives par minute
-			logSecurityEvent("CONTACT_RATE_LIMIT", { ip }, ip);
+		const rateLimitResult = await checkRateLimit(
+			identifier,
+			RATE_LIMITS.CONTACT_FORM.limit,
+			RATE_LIMITS.CONTACT_FORM.window
+		);
+
+		if (!rateLimitResult.success) {
+			logSecurityEvent("CONTACT_RATE_LIMIT", { ip, ...rateLimitResult }, ip);
 			return NextResponse.json(
 				{
 					success: false,
-					error: "Trop de tentatives. Réessayez dans 1 minute.",
+					error: "Trop de messages envoyés. Réessayez dans 1 heure.",
+					retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
 				},
 				{ status: 429 }
 			);
