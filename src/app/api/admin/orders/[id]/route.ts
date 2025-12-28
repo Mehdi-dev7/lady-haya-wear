@@ -226,8 +226,8 @@ export async function PUT(
 					productId: item.productId,
 					slug: "", // On utilisera productId pour la recherche dans incrementStock
 					name: item.productName,
-					color: item.colorName,
-					size: item.sizeName,
+					color: item.colorName || "",
+					size: item.sizeName || "",
 					quantity: item.quantity,
 					price: item.unitPrice,
 				}));

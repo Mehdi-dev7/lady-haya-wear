@@ -33,13 +33,13 @@ export default async function CollectionPage({ params, searchParams }: Props) {
 			<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 bg-nude-light py-16">
 				<div className="flex flex-col md:flex-row items-center gap-8">
 					{/* Image de la collection */}
-					<div className="relative w-full md:w-1/3 h-80 mt-8 lg:mt-14 rounded-2xl overflow-hidden shadow-lg">
+					<div className="relative w-1/2 md:w-1/3 xl:w-1/4 3xl:w-1/5 h-100 md:h-105 lg:h-[400px] xl:h-[420px] 2xl:h-[480px] 3xl:h-[550px] mt-8 lg:mt-14 rounded-2xl overflow-hidden shadow-lg">
 						{category.image ? (
 							<SafeImage
 								src={urlFor(category.image)?.url()}
 								alt={category.image.alt || category.name}
 								fill
-								sizes="33vw"
+								sizes="(max-width: 768px) 100vw, (max-width: 1280px) 33vw, (max-width: 2200px) 25vw, 20vw"
 								className="object-cover"
 							/>
 						) : (

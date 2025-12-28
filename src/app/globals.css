@@ -4,6 +4,10 @@
 
 @import "tailwindcss";
 
+@theme {
+	--breakpoint-3xl: 120rem;
+}
+
 /* Protection des images */
 img {
 	-webkit-user-select: none !important;
@@ -635,3 +639,4 @@ body {
 		--radius: 0.5rem;
 	}
 }
+
